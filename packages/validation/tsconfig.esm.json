@@ -1,11 +1,13 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "dist/esm",
     "rootDir": "src",
     "lib": ["ES2020", "DOM"],
     "module": "ES2020",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

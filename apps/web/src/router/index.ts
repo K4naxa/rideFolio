@@ -1,4 +1,7 @@
+import { authClient } from "@/lib/authClient";
+import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -9,7 +12,31 @@ const router = createRouter({
       name: "login",
       component: LoginView,
     },
+    {
+      path: "/register",
+      name: "register",
+      component: RegisterView,
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: DashboardView,
+      meta: { requiresAuth: true },
+    },
   ],
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (!to.meta.requiresAuth) next();
+
+  try {
+    const sessionResult = await authClient.getSession();
+    const user = sessionResult.data?.user;
+    if (user) return next();
+    else return next({ name: "login" });
+  } catch (e) {
+    return next({ name: "login" });
+  }
 });
 
 export default router;

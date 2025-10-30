@@ -14,7 +14,7 @@ async function bootstrap() {
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  await app.listen(configService.get<number>('PORT') ?? 3000);
+  await app.listen(configService.get<number>('PORT') ?? 3001);
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

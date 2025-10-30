@@ -1,36 +1,336 @@
-@import "./base.css";
 @import "tailwindcss";
+@import "tw-animate-css";
+/*
+  ---break---
+*/
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+html {
+  scroll-behavior: smooth;
+
+  font-size: 16px; /* shrink the base */
+  -webkit-text-size-adjust: 100%;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+/* Define the keyframe animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
-@media (min-width: 1024px) {
+@keyframes spinner-dash {
+  from {
+    stroke-dasharray: 30 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90 150;
+    stroke-dashoffset: -35;
+  }
+  to {
+    stroke-dasharray: 30 150;
+    stroke-dashoffset: -150;
+  }
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@custom-variant dark (&:is(.dark *));
+@theme {
+  --animate-spinner-dash: spinner-dash 2s ease-in-out infinite;
+  /* Sizing & Spacing */
+  --radius: 0.5rem; /* Base radius for buttons, inputs, etc. */
+  --radius-sm: 0.375rem; /* Smaller radius for buttons, badges */
+  --radius-lg: 0.75rem; /* Larger radius for containers, modals */
+
+  /* Fonts (Recommended: Add Inter from Google Fonts) */
+  --font-sans:
+    "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI ", Roboto, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Core Colors */
+  --color-background: var(--color-white);
+  --color-foreground: oklch(20.5% 0 0); /* Neutral 950 */
+  --color-card: hsl(0, 0%, 100%); /* white */
+  --color-card-foreground: oklch(27.546% 0.03701 260.041); /* slate-800 */
+
+  --color-background-light: hsl(0, 0%, 100%); /* white */
+
+  --color-muted: var(--color-neutral-300); /* slate-300 */
+  --color-muted-foreground: var(--color-neutral-500); /* slate-500 */
+
+  --color-popover: var(--color-card);
+  --color-popover-foreground: var(--color-card-foreground);
+
+  --color-accent: var(--color-neutral-100);
+  --color-accent-foreground: var(--color-foreground);
+
+  --color-border: var(--color-neutral-200);
+  --color-input: var(--color-neutral-50);
+  --color-ring: var(--color-primary);
+
+  --color-primary: var(--color-amber-600); /* indigo-500 */
+
+  --color-primary-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  --color-secondary: hsl(253, 84%, 90%); /* slate-100 */
+  --color-secondary-foreground: hsl(217, 33%, 17%); /* slate-800 */
+
+  --color-destructive: hsl(0, 72%, 51%); /* red-600 */
+  --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
+
+  --color-success: hsl(142, 76%, 36%); /* green-600 */
+  --color-success-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  --color-error: hsl(0, 72%, 51%); /* red-600 */
+  --color-error-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  --color-warning: rgb(245 158 11); /* amber-500 */
+  --color-warning-foreground: rgb(30 41 59); /* slate-800 */
+
+  --color-chart-1: hsl(18, 100%, 48%);
+  --color-chart-2: hsl(175, 100%, 29%);
+  --color-chart-3: hsl(196, 72%, 23%);
+  --color-chart-4: hsl(44, 100%, 50%);
+  --color-chart-5: hsl(36, 100%, 50%);
+
+  /* Scrollbar */
+  --color-scrollbar-thumb: var(--color-neutral-300);
+  --color-scrollbar-track: var(--color-neutral-100);
+
+  /* Log - Refill */
+  --color-refill: hsl(173, 80%, 40%); /* teal-500 */
+  --color-refill-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  /* Log - Maintenance */
+  --color-maintenance: var(--color-amber-600);
+  --color-maintenance-foreground: var(--color-white);
+
+  /* Log - Notes */
+  --color-notes: hsl(199, 89%, 48%); /* sky-500 */
+  --color-notes-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  /* Log - ToDo */
+  --color-toDo: hsl(258, 90%, 66%); /* violet-500 */
+  --color-toDo-foreground: hsl(210, 40%, 98%); /* slate-50 */
+
+  /* Log - Reminder */
+  --color-reminder: hsl(350, 89%, 60%); /* rose-500 */
+  --color-reminder-foreground: hsl(210, 40%, 98%); /* slate-50 */
+}
+
+/*
+  ==========================================================================
+   4. BASE STYLES & REUSABLE COMPONENTS (@layer)
+  ==========================================================================
+*/
+@layer base {
+  h1 {
+    @apply text-2xl font-bold text-foreground;
+  }
+  h2 {
+    @apply text-xl font-semibold text-foreground;
+  }
+  h3 {
+    @apply text-lg font-semibold text-foreground;
+  }
+  .dark {
+    /* Core Colors */
+    --color-background: var(--color-neutral-950); /* slate-950 */
+    --color-foreground: var(--color-neutral-200); /* slate-200 */
+
+    --color-card: var(--color-neutral-950); /* slate-900 */
+    --color-card-foreground: var(--color-neutral-200); /* slate-200 */
+
+    --color-background-light: var(--color-neutral-900); /* slate-900 */
+
+    --color-muted: var(--color-neutral-800); /* slate-800 */
+    --color-muted-foreground: var(--color-neutral-500); /* slate-400 */
+
+    --color-accent: var(--color-neutral-800); /* slate-800 */
+    --color-accent-foreground: var(--color-foreground);
+
+    --color-border: var(--color-neutral-800); /* slate-700 */
+    --color-input: var(--color-neutral-900); /* slate-700 */
+    --color-ring: var(--color-primary); /* indigo-500 */
+
+    --color-primary: var(--color-amber-600); /* indigo-500 */
+    --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
+
+    --color-secondary: var(--color-neutral-700); /* slate-700 */
+    --color-secondary-foreground: var(--color-neutral-50); /* slate-50 */
+
+    --color-destructive: var(--color-red-700);
+    --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */
+
+    --color-success: var(--color-green-700);
+    --color-success-foreground: var(--color-neutral-50); /* slate-50 */
+
+    --color-error: var(--color-red-700); /* red-700 */
+    --color-error-foreground: var(--color-neutral-50); /* slate-50 */
+
+    --color-warning: var(--color-amber-600); /* amber-600 */
+    --color-warning-foreground: var(--color-neutral-900); /* slate-900 */
+
+    /* Scrollbar */
+    --color-scrollbar-thumb: var(--color-neutral-600);
+    --color-scrollbar-track: var(--color-neutral-900);
+
+    /* Log - Refill */
+    --color-refill: hsl(176, 69%, 22%); /* teal-800 */
+    --color-refill-foreground: hsl(171, 77%, 64%); /* teal-300 */
+
+    /* Log - Maintenance */
+    --color-maintenance: var(--color-amber-700);
+    --color-maintenance-foreground: var(--color-amber-50);
+
+    /* Log - Notes */
+    --color-notes: hsl(224, 64%, 33%); /* sky-800 */
+    --color-notes-foreground: hsl(199, 95%, 74%); /* sky-300 */
+
+    /* Log - ToDo */
+    --color-toDo: hsl(263, 69%, 42%); /* violet-800 */
+    --color-toDo-foreground: hsl(252, 95%, 85%); /* violet-300 */
+
+    /* Log - Reminder */
+    --color-reminder: hsl(343, 80%, 35%); /* rose-800 */
+    --color-reminder-foreground: hsl(353, 96%, 82%); /* rose-300 */
+  }
+
   body {
-    display: flex;
-    place-items: center;
+    @apply text-foreground antialiased h-dvh overflow-hidden bg-background;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  #app {
+    @apply flex flex-col h-dvh;
   }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+  * {
+    @apply border-border outline-ring/50 dark:border-border dark:outline-ring/50;
+  }
+  .ProseMirror:focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  .iconBackground {
+    @apply bg-gradient-to-t from-background to-transparent dark:to-transparent;
+  }
+
+  .listHover {
+    @apply border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-75;
+  }
+
+  .cardBackground {
+    @apply bg-gradient-to-b from-background-light to-card;
+  }
+
+  .hide-mobile {
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+}
+
+/*
+  ---break---
+*/
+@layer utilities {
+  .animate-collapsible-down {
+    animation: collapsible-down 0.2s ease-out;
+  }
+  .animate-collapsible-up {
+    animation: collapsible-up 0.2s ease-out;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: var(--color-scrollbar-track);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: 100vh;
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

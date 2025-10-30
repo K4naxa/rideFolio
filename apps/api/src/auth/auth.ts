@@ -24,6 +24,6 @@ export const auth = betterAuth({
 
   // TODO: change these to configService for production use
   baseURL: process.env.BACKEND_URL || 'http://localhost:3001',
-  trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:3000'],
+  trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:5173'],
   basePath: '/auth',
 });
