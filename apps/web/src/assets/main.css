@@ -334,3 +334,39 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+/* Smooth theme transitions using CSS custom properties */
+:root {
+  transition: none;
+}
+
+html.theme-transitioning {
+  /* Transition all CSS custom properties for smooth theme changes */
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Apply smooth transitions to specific high-impact elements only */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning [class*="bg-"],
+html.theme-transitioning [class*="text-"],
+html.theme-transitioning [class*="border-"] {
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent layout shift and ensure smooth rendering */
+html.theme-transitioning * {
+  /* Use GPU acceleration for better performance */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}

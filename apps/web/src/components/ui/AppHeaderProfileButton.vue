@@ -14,8 +14,11 @@ import DropdownMenuGroup from "./dropdown-menu/DropdownMenuGroup.vue";
 import DropdownMenuItem from "./dropdown-menu/DropdownMenuItem.vue";
 import { Icons } from "../utility/icons";
 import DropdownMenuSeparator from "./dropdown-menu/DropdownMenuSeparator.vue";
+import { useThemeStore } from "@/stores/theme";
 
 const router = useRouter();
+const themeStore = useThemeStore();
+
 function getInitials(name?: string | null) {
   if (!name) return "U";
   const names = name.split(" ");
@@ -55,7 +58,7 @@ function handleSignout() {
         <span class="text-muted-foreground text-xs">{{ user?.email ?? "" }}</span>
       </div>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="min-w-56 rounded-lg" side="bottom" align="end">
+    <DropdownMenuContent class="min-w-44 rounded-lg" side="bottom" align="end">
       <DropdownMenuGroup class="">
         <DropdownMenuItem asChild class="cursor-pointer">
           <RouterLink to="/profile">
@@ -69,8 +72,9 @@ function handleSignout() {
             <span>Billing</span>
           </RouterLink>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild class="">
-          <ThemeButton />
+        <DropdownMenuItem @click="themeStore.toggleTheme">
+          <Icons.darkMode v-if="themeStore.resolvedTheme === 'dark'" class="mr-2" />
+          <Icons.lightMode v-else-if="themeStore.resolvedTheme === 'light'" class="mr-2" /> Theme
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
