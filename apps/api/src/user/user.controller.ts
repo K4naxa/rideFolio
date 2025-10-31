@@ -12,7 +12,9 @@ export class UsersController {
   }
 
   @Get('me')
-  getProfile(@Session() session: UserSession) {
-    return this.usersService.getBasicProfile(session.user.id);
+  async getProfile(@Session() session: UserSession) {
+    const value = await this.usersService.getBasicProfile(session.user.id);
+    console.log('User profile requested:', value);
+    return value;
   }
 }

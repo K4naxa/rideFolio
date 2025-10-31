@@ -1,3 +1,4 @@
+import AuthLayout from "@/Layouts/AuthLayout.vue";
 import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
@@ -18,10 +19,17 @@ const router = createRouter({
       component: RegisterView,
     },
     {
-      path: "/dashboard",
-      name: "dashboard",
-      component: DashboardView,
+      path: "/",
+      component: AuthLayout,
       meta: { requiresAuth: true },
+      children: [
+        {
+          path: "/dashboard",
+          name: "dashboard",
+          component: DashboardView,
+          meta: { requiresAuth: true },
+        },
+      ],
     },
   ],
 });
@@ -30,6 +38,7 @@ router.beforeEach(async (to, from, next) => {
   if (!to.meta.requiresAuth) next();
 
   try {
+    console.log("⏳ Session validated");
     const sessionResult = await authClient.getSession();
     const user = sessionResult.data?.user;
     if (user) return next();

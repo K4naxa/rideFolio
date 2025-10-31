@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { configure } from "vee-validate";
-
-configure({
-  validateOnInput: false,
-  validateOnBlur: true,
-});
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 </script>
 
 <template>
   <RouterView />
+  <VueQueryDevtools />
 </template>
 
 <style scoped></style>

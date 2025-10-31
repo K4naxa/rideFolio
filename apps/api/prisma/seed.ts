@@ -9,6 +9,7 @@ const hashedPassword = bcrypt.hashSync(password, 10);
 async function main() {
   // reset current database
   await prisma.user.deleteMany();
+  await prisma.vehiclePartLocation.deleteMany();
   await prisma.vehicleType.deleteMany();
   await prisma.vehiclePart.deleteMany();
   await prisma.maintenanceCategory.deleteMany();

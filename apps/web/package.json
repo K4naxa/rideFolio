@@ -21,6 +21,7 @@
     "@repo/validation": "workspace:*",
     "@tailwindcss/vite": "^4.1.16",
     "@tanstack/vue-query": "^5.90.5",
+    "@tanstack/vue-query-devtools": "^5.91.0",
     "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^14.0.0",
     "axios": "^1.13.1",

@@ -70,14 +70,15 @@ const quickLogin = async (email: string, password: string) => {
                 <p class="text-muted-foreground text-balance">Log in to your account to continue</p>
               </div>
 
-              <Field name="email" v-slot="{ field, errorMessage }" :validate-on-blur="false">
+              <Field
+                name="email"
+                v-slot="{ field, errorMessage }"
+                :validate-on-blur="false"
+                :validate-on-input="false"
+                :validate-on-change="false"
+              >
                 <div>
-                  <FormInput
-                    type="email"
-                    placeholder="name@example.com"
-                    v-bind="field"
-                    :validate-on-blur="false"
-                  />
+                  <FormInput type="email" placeholder="name@example.com" v-bind="field" />
                   <span class="text-sm text-destructive mt-0.5">{{ errorMessage }}</span>
                 </div>
               </Field>

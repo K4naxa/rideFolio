@@ -1,0 +1,25 @@
+name: RideFolio-stack
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres-ridefolio
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ridefolio
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis-ridefolio
+    ports:
+      - "6379:6379"
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer-ridefolio
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
