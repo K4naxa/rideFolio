@@ -6,6 +6,7 @@ export function useAccessiblePools() {
   return useQuery({
     queryKey: ["accessiblePools"],
     queryFn: async () => fetchApi<AccessiblePool[]>("pools/accessible"),
+    initialData: [],
     staleTime: 1000 * 60 * 30,
   });
 }

@@ -9,7 +9,7 @@ import { RegisterSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ const clientSchema = toTypedSchema(
     path: ["confirmPassword"],
   }),
 );
-
+const router = useRouter();
 const registrationError = ref<string | null>(null);
 
 const { handleSubmit, setFieldError } = useForm({
@@ -51,6 +51,9 @@ const onSubmit = handleSubmit(async (values) => {
         if (error.status === 422 && error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
           setFieldError("email", "User already exists. Use another email.");
         } else toast.error(`Registration failed, please try again.`);
+      },
+      onSuccess() {
+        router.push("/dashboard");
       },
     },
   );

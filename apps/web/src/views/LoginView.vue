@@ -11,8 +11,8 @@ import Card from "@/components/ui/card/Card.vue";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 const callbackUrl = (route.query.callbackUrl as string) || "/dashboard";
 
 const loginError = ref<string | undefined>(undefined);
@@ -27,38 +27,38 @@ const form = useForm({
 
 const onSubmit = form.handleSubmit(async (values) => {
   console.log("Login values:", values);
-  try {
-    const { error } = await authClient.signIn.email({
+  await authClient.signIn.email(
+    {
       email: values.email,
       password: values.password,
-      callbackURL: callbackUrl,
-    });
-
-    if (error) {
-      if (error.status === 401) loginError.value = error.message;
-      console.error("Login error:", error);
-    } else {
-      router.push(callbackUrl);
-    }
-  } catch (err) {
-    console.error("Unexpected error during login:", err);
-  }
+    },
+    {
+      onError({ error }) {
+        console.log("Error logging in: ", error.message);
+      },
+      onSuccess() {
+        router.push(callbackUrl);
+      },
+    },
+  );
 });
 
 // DEV: quick login for development
 const quickLogin = async (email: string, password: string) => {
-  console.log("Quick login", { email, password });
-  const { error } = await authClient.signIn.email({
-    email,
-    password,
-    callbackURL: callbackUrl,
-  });
-
-  if (error) {
-    console.error("Login error:", error);
-  } else {
-    router.push(callbackUrl);
-  }
+  await authClient.signIn.email(
+    {
+      email,
+      password,
+    },
+    {
+      onError({ error }) {
+        console.log("Error logging in: ", error.message);
+      },
+      onSuccess() {
+        router.push(callbackUrl);
+      },
+    },
+  );
 };
 </script>
 
