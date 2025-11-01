@@ -18,6 +18,7 @@ import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
 import { useActivePool } from "@/lib/useActivePool";
 import { useModalStore } from "@/stores/modal";
+import { useSidebar } from "@/components/ui/sidebar/utils";
 
 const { data: vehicles } = useAccessibleVehicles();
 const { activeVehicleId } = useActiveVehicle();
@@ -26,6 +27,12 @@ const { data: pools } = useAccessiblePools();
 const { activePoolId } = useActivePool();
 
 const modalStore = useModalStore();
+const { setOpenMobile } = useSidebar();
+
+const handleCreateVehicleClick = () => {
+  modalStore.onOpen("createVehicle");
+  setOpenMobile(false);
+};
 </script>
 
 <template>
@@ -79,7 +86,7 @@ const modalStore = useModalStore();
             Ajoneuvot
             <button
               aria-label="Lisää ajoneuvo"
-              @click="modalStore.onOpen('createVehicle')"
+              @click="handleCreateVehicleClick"
               class="ml-auto flex items-center cursor-pointer hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
             >
               <Icons.plus class="h-4 w-4" />
