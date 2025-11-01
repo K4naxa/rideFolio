@@ -1,27 +1,31 @@
 <script setup lang="ts">
-import { Field, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRoute, useRouter } from "vue-router";
 import { LoginSchema } from "@repo/validation";
 import { authClient } from "@/lib/authClient";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import FormInput from "@/components/ui/input/FormInput.vue";
+import { CardContent } from "@/components/ui/card";
+import Input from "@/components/ui/input/Input.vue";
+import Card from "@/components/ui/card/Card.vue";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 const router = useRouter();
 const route = useRoute();
 const callbackUrl = (route.query.callbackUrl as string) || "/dashboard";
 
-const { handleSubmit, isSubmitting } = useForm({
-  validationSchema: toTypedSchema(LoginSchema),
+const loginError = ref<string | undefined>(undefined);
+
+const form = useForm({
   initialValues: {
     email: "",
     password: "",
-    rememberMe: false,
   },
+  validationSchema: toTypedSchema(LoginSchema),
 });
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async (values) => {
   console.log("Login values:", values);
   try {
     const { error } = await authClient.signIn.email({
@@ -31,8 +35,8 @@ const onSubmit = handleSubmit(async (values) => {
     });
 
     if (error) {
+      if (error.status === 401) loginError.value = error.message;
       console.error("Login error:", error);
-      // Handle login error (e.g., show a notification)
     } else {
       router.push(callbackUrl);
     }
@@ -59,50 +63,32 @@ const quickLogin = async (email: string, password: string) => {
 </script>
 
 <template>
-  <main class="flex h-full w-full items-center justify-center flex-1 p-4">
-    <div class="w-full max-w-xl">
+  <main class="grid place-items-center min-h-screen p-4">
+    <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-6">
-        <Card class="overflow-hidden">
-          <CardContent class="p-8 sm:p-10 lg:p-12">
-            <form @submit="onSubmit" class="flex flex-col gap-6">
+        <Card class="overflow-hidden p-0">
+          <CardContent>
+            <form @submit="onSubmit" class="flex flex-col gap-6 p-4 md:p-8">
               <div class="flex flex-col items-center text-center">
                 <h1 class="text-2xl font-bold">Welcome back</h1>
                 <p class="text-muted-foreground text-balance">Log in to your account to continue</p>
               </div>
 
-              <Field
+              <!-- Error message -->
+              <p v-if="loginError" class="text-sm text-destructive text-center">{{ loginError }}</p>
+
+              <Input
+                label="Email"
+                type="email"
                 name="email"
-                v-slot="{ field, errorMessage }"
+                placeholder="name@example.com"
                 :validate-on-blur="false"
-                :validate-on-input="false"
-                :validate-on-change="false"
-              >
-                <div>
-                  <FormInput type="email" placeholder="name@example.com" v-bind="field" />
-                  <span class="text-sm text-destructive mt-0.5">{{ errorMessage }}</span>
-                </div>
-              </Field>
+              />
 
-              <Field name="password" v-slot="{ field, errorMessage }" :validate-on-blur="false">
-                <div>
-                  <FormInput
-                    type="password"
-                    placeholder="Password"
-                    v-bind="field"
-                    :validate-on-blur="false"
-                  />
-                  <a
-                    href="#"
-                    class="ml-auto text-sm text-muted-foreground underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                  <span class="text-sm text-red-600 mt-1">{{ errorMessage }}</span>
-                </div>
-              </Field>
+              <Input label="Password" type="password" name="password" placeholder="******" />
 
-              <Button type="submit" class="w-full" :disabled="isSubmitting">
-                {{ isSubmitting ? "Logging in..." : "Log in" }}
+              <Button type="submit" class="w-full" :disabled="form.isSubmitting.value">
+                {{ form.isSubmitting.value ? "Logging in..." : "Log in" }}
               </Button>
 
               <div
@@ -114,7 +100,16 @@ const quickLogin = async (email: string, password: string) => {
               </div>
 
               <div class="grid grid-cols-3 gap-4">
-                <Button variant="outline" type="button" class="w-full">
+                <Button
+                  variant="outline"
+                  type="button"
+                  class="w-full"
+                  @click="
+                    toast.error('tried to log in via apple', {
+                      description: 'apple servers are not responding currently',
+                    })
+                  "
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
                       d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
@@ -123,7 +118,12 @@ const quickLogin = async (email: string, password: string) => {
                   </svg>
                   <span class="sr-only">Login with Apple</span>
                 </Button>
-                <Button variant="outline" type="button" class="w-full">
+                <Button
+                  variant="outline"
+                  type="button"
+                  class="w-full"
+                  @click="toast.success('logged in via google')"
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -165,7 +165,7 @@ const quickLogin = async (email: string, password: string) => {
           <router-link to="#">Privacy Policy</router-link>.
         </div>
 
-        <div>
+        <div class="flex gap-3">
           <Button @click="quickLogin('user@example.com', 'password')"> User 1 </Button>
           <Button @click="quickLogin('user2@example.com', 'password')"> User 2 </Button>
         </div>

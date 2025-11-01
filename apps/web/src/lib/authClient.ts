@@ -1,5 +1,3 @@
 import { createAuthClient } from "better-auth/vue";
 
-export const authClient = createAuthClient({
-  baseURL: import.meta.env.VITE_AUTH_URL || "http://localhost:3001/auth",
-});
+export const authClient = createAuthClient({});

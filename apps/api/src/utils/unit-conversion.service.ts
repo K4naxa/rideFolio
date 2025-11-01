@@ -155,7 +155,7 @@ export class UnitConversionService {
   }
 
   // ** Helper functions for unit conversions
-  milesToKm(miles: number | null): number {
+  milesToKm(miles: number | null | undefined): number {
     return Number((miles ? miles * 1.60934 : 0).toFixed(1));
   }
   kmToMiles(km: number | null): number {

@@ -1,13 +1,28 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
-import { Toaster } from "vue-sonner";
+import { Toaster } from "@/components/ui/sonner";
+import CreateVehicleModal from "./modals/createVehicleModal.vue";
+import { configure } from "vee-validate";
+import { useThemeStore } from "./stores/theme";
+
+configure({});
+
+const themeStore = useThemeStore();
 </script>
 
 <template>
   <RouterView />
-  <Toaster />
+  <Toaster
+    class="pointer-events-auto"
+    :theme="themeStore.resolvedTheme"
+    position="top-center"
+    :rich-colors="true"
+  />
   <VueQueryDevtools />
+
+  <!-- Modals -->
+  <CreateVehicleModal />
 </template>
 
 <style scoped></style>

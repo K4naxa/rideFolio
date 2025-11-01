@@ -10,6 +10,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
     requireEmailVerification: false,
   },
   session: {
@@ -20,10 +21,19 @@ export const auth = betterAuth({
   },
   logger: {
     level: 'info',
+    disabled: false,
+  },
+  onAPIError: {
+    throw: true,
+    onError: (error) => {
+      // Custom error handling
+      console.error('Auth error:', error);
+    },
+    errorURL: '/auth/error',
   },
 
   // TODO: change these to configService for production use
   baseURL: process.env.BACKEND_URL || 'http://localhost:3001',
-  trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:5173'],
-  basePath: '/auth',
+  trustedOrigins: process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL || 'http://localhost:5173'] : ['*'], // Allow all origins in development
+  basePath: '/api/auth',
 });

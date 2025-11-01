@@ -1,10 +1,6 @@
-import { faker } from '@faker-js/faker';
-import * as bcrypt from 'bcrypt';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const password = 'password';
-const hashedPassword = bcrypt.hashSync(password, 10);
 
 async function main() {
   // reset current database
@@ -16,28 +12,6 @@ async function main() {
 
   // 1. Create 10 users
   await prisma.$transaction(async (tx) => {
-    const userCount = 10;
-    const users: User[] = [];
-    for (let i = 1; i <= userCount; i++) {
-      const user = await tx.user.create({
-        data: {
-          email: i === 1 ? 'user@example.com' : `user${i}@example.com`,
-          name: faker.internet.username(),
-          image: faker.image.avatar(),
-        },
-      });
-      await tx.account.create({
-        data: {
-          userId: user.id,
-          providerId: 'credentials',
-          accountId: user.id,
-          password: hashedPassword,
-        },
-      });
-
-      users.push(user);
-    }
-
     // ** SEEDING VEHICLE TYPES
     console.log('Seeding vehicle types...');
 

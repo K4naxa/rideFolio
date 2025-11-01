@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const baseAPI = import.meta.env.VITE_API_URL || "";
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, // Important! sends Better Auth cookies
+  baseURL: `${baseAPI}/api`,
+  withCredentials: true,
 });
 
 export async function fetchApi<T>(url: string): Promise<T> {

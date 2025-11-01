@@ -3,7 +3,13 @@ import { VehicleTransformerService } from './../utils/vehicleTransformer.service
 import { VehicleRepository } from './../utils/vehicleRepository';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateVehicleBackendSchemaType, TAccessibleVehicle, TBasicVehicle, TStatCardData } from '@repo/validation';
+import {
+  CreateVehicleBackendSchemaType,
+  CreateVehicleFrontendSchemaType,
+  TAccessibleVehicle,
+  TBasicVehicle,
+  TStatCardData,
+} from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -22,18 +28,18 @@ export class VehiclesService {
 
   async create(
     userSession: UserSession,
-    vehicleData: CreateVehicleBackendSchemaType,
+    vehicleData: CreateVehicleFrontendSchemaType,
   ): Promise<{ newVehicleId: string }> {
     console.log('Starting vehicle transaction');
     try {
       // ** 1. Create the vehicle
 
       const odometer_is_distance_type = vehicleData.odometerType !== 'HOUR';
-      let formattedDistanceOdometer: number | null = vehicleData.odometer;
+      let formattedDistanceOdometer: number | null = vehicleData.odometer || null;
 
       // Extract and remove the odometer value from vehicleData
-      const { odometer, ...formattedVehicleData } = vehicleData;
-      formattedDistanceOdometer = odometer;
+      const { odometer, image, ...formattedVehicleData } = vehicleData;
+      formattedDistanceOdometer = odometer ? odometer : null;
 
       // Change the odometer values based on type
       // Only necessary if the odometer type is miles

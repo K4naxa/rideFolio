@@ -1,0 +1,284 @@
+<script setup lang="ts">
+import Button from "@/components/ui/button/Button.vue";
+import Dialog from "@/components/ui/dialog/Dialog.vue";
+import DialogContent from "@/components/ui/dialog/DialogContent.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
+import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
+import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
+import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
+import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Select from "@/components/ui/select/Select.vue";
+import SelectContent from "@/components/ui/select/SelectContent.vue";
+import SelectItem from "@/components/ui/select/SelectItem.vue";
+import SelectLabel from "@/components/ui/select/SelectLabel.vue";
+import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
+import SelectValue from "@/components/ui/select/SelectValue.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import UploadImage from "@/components/ui/UploadImage.vue";
+import { api } from "@/lib/api";
+import { useModalStore } from "@/stores/modal";
+import {
+  CreateVehicleFrontendSchema,
+  fuelTypeValues,
+  OdometerTypeValues,
+  VehicleTypeCodes,
+} from "@repo/validation";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { toTypedSchema } from "@vee-validate/zod";
+import { ErrorMessage, Field, useForm } from "vee-validate";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
+
+const queryClient = useQueryClient();
+const router = useRouter();
+// Modal logic
+const modalStore = useModalStore();
+const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
+function handleClose() {
+  resetForm();
+  modalStore.onClose();
+}
+
+// Form logic
+const { handleSubmit, resetForm, setFieldError, values, meta } = useForm({
+  validationSchema: toTypedSchema(CreateVehicleFrontendSchema),
+  initialValues: {
+    name: "",
+    type: undefined,
+    make: "",
+    model: "",
+    year: undefined,
+    odometerType: undefined,
+    vin: "",
+    licensePlate: "",
+    odometer: undefined,
+    fuelType: "GASOLINE",
+  },
+});
+
+const createVehicleMutation = useMutation({
+  mutationFn: async (data: typeof values) => {
+    try {
+      console.log("Submitting data", data);
+      const response = await api.post("vehicles", data);
+      console.log("Response", response);
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  },
+  onSuccess: (data) => {
+    toast.success("Vehicle created succesfully");
+    queryClient.invalidateQueries({ queryKey: ["accessibleVehicles"] });
+    handleClose();
+    // Navigate after closing the modal
+    setTimeout(() => {
+      router.push(`/vehicles/${data.newVehicleId}`);
+    }, 100);
+  },
+  onError: (error: any) => {
+    console.error("Mutation error:", error);
+    if (error.response?.data?.field) {
+      setFieldError(error.response.data.field, error.response.data.message);
+    } else {
+      toast.error(`Failed to create vehicle: ${error.message}`);
+    }
+  },
+});
+
+const onSubmit = handleSubmit(async (data) => {
+  createVehicleMutation.mutate(data);
+});
+</script>
+
+<template>
+  <Dialog :open="isModalOpen" @update:open="handleClose">
+    <DialogScrollContent class="max-w-2xl w-full">
+      <DialogHeader>
+        <DialogTitle>Create new vehicle</DialogTitle>
+        <DialogDescription>
+          Fill in the details below to add a new vehicle to your garage.
+        </DialogDescription>
+      </DialogHeader>
+
+      <form @submit="onSubmit" class="space-y-8">
+        <!-- Image Upload -->
+        <Field v-slot="{ value, handleChange }" name="image">
+          <UploadImage
+            title="Upload a picture"
+            :value="value"
+            @change="handleChange"
+            :disabled="createVehicleMutation.isPending.value"
+          />
+          <ErrorMessage name="image" class="text-sm text-destructive mt-1 ml-1" />
+        </Field>
+
+        <!-- Basic information -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="mb-2">Basic details</h4>
+            <Separator />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Name -->
+
+            <Input placeholder="Nickname *" name="name" type="text" />
+
+            <!-- Type -->
+            <Field v-slot="{ value, handleChange }" name="type">
+              <div>
+                <Select :model-value="value" @update:model-value="handleChange">
+                  <SelectTrigger class="w-full">
+                    <SelectValue placeholder="Vehicle type *" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectLabel>Vehicle type</SelectLabel>
+                    <Separator class="mb-1" />
+                    <SelectItem v-for="type in VehicleTypeCodes" :key="type" :value="type">
+                      <span class="flex items-center gap-2">
+                        {{ type }}
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <ErrorMessage name="type" class="text-sm text-destructive mt-1 ml-1" />
+              </div>
+            </Field>
+          </div>
+
+          <!-- Make and Model -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Input placeholder="Make" name="make" type="text" />
+
+            <Input placeholder="Model" name="model" type="text" />
+          </div>
+
+          <!-- Year and Odometer Type -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Input
+              placeholder="Year"
+              type="number"
+              name="year"
+              :min="1900"
+              :max="new Date().getFullYear()"
+            />
+
+            <Field v-slot="{ value, handleChange }" name="odometerType">
+              <div>
+                <Select :model-value="value" @update:model-value="handleChange">
+                  <SelectTrigger class="w-full">
+                    <SelectValue placeholder="Odometer type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectLabel>Odometer type</SelectLabel>
+                    <Separator class="mb-1" />
+
+                    <SelectItem
+                      v-for="type in OdometerTypeValues"
+                      :key="type.value"
+                      :value="type.value"
+                    >
+                      {{ type.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <ErrorMessage name="odometerType" class="text-sm text-destructive mt-1 ml-1" />
+              </div>
+            </Field>
+          </div>
+        </div>
+
+        <!-- Vehicle legal information -->
+        <div class="space-y-4">
+          <div>
+            <h4 class="mb-2">Vehicle specific details</h4>
+            <Separator />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- VIN -->
+
+            <Input placeholder="VIN" toUpperCase name="vin" type="text" />
+
+            <!-- License Plate -->
+
+            <Input placeholder="License plate" toUpperCase name="licensePlate" type="text" />
+          </div>
+        </div>
+
+        <!-- Technical details -->
+        <div class="space-y-4">
+          <div>
+            <h4 class="mb-2">Technical details</h4>
+            <Separator />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Odometer -->
+
+            <div class="relative">
+              <Input
+                placeholder="Odometer"
+                name="odometer"
+                type="number"
+                :min="0"
+                input-mode="numeric"
+                class="pr-12"
+              />
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                {{
+                  values.odometerType === "HOUR"
+                    ? "h"
+                    : values.odometerType === "MILE"
+                      ? "miles"
+                      : "km"
+                }}
+              </span>
+            </div>
+
+            <!-- Fuel Type -->
+            <Field v-slot="{ value, handleChange }" name="fuelType">
+              <div>
+                <Select :model-value="value" @update:model-value="handleChange">
+                  <SelectTrigger class="w-full">
+                    <SelectValue placeholder="Fuel type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectLabel>Fuel type</SelectLabel>
+                    <Separator class="mb-1" />
+
+                    <SelectItem
+                      v-for="type in fuelTypeValues"
+                      :key="type.value"
+                      :value="type.value"
+                    >
+                      {{ type.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <ErrorMessage name="fuelType" class="text-sm text-destructive mt-1 ml-1" />
+              </div>
+            </Field>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button v-if="createVehicleMutation.isPending.value" disabled variant="submit">
+            <Spinner class="mr-2" />
+            Creating...
+          </Button>
+          <Button v-else type="submit" variant="submit" :disabled="!meta.valid"> Create </Button>
+
+          <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose">
+            Peruuta
+          </Button>
+        </DialogFooter>
+      </form>
+    </DialogScrollContent>
+  </Dialog>
+</template>

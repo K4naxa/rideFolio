@@ -5,7 +5,7 @@ import { VehiclesService } from 'src/vehicles/vehicles.service';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import {
   CreateVehicleBackendSchema,
-  CreateVehicleBackendSchemaType,
+  CreateVehicleFrontendSchemaType,
   TAccessibleVehicle,
   TBasicVehicle,
 } from '@repo/validation';
@@ -22,11 +22,11 @@ export class VehiclesController {
     return await this.vehiclesService.getVehicleTypes();
   }
 
-  @Post('new')
+  @Post('')
   async createVehicle(
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(CreateVehicleBackendSchema as ZodType))
-    vehicleDto: CreateVehicleBackendSchemaType,
+    vehicleDto: CreateVehicleFrontendSchemaType,
   ) {
     return await this.vehiclesService.create(userSession, vehicleDto);
   }

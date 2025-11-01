@@ -3,74 +3,50 @@ import { fuelTypeValues, OdometerTypeValues, VehicleTypeCodes } from "./vehicle.
 
 export const BaseVehicleSchema = z.object({
   // Mandatory Name
-  name: z.string().min(1, "Ajoneuvon nimi on pakollinen").trim().max(50, "Nimi saa olla enintään 50 merkkiä pitkä"),
+  name: z.string().min(1, "Vehicle name is required").trim().max(50, "Name can be at most 50 characters long"),
 
   // Optional Make
-  make: z
-    .string()
-    .optional()
-    .nullable()
-    .default(null)
-    .refine((val) => !val || val.length <= 20, {
-      message: "Valmistajan nimi saa olla enintään 20 merkkiä pitkä",
-    }),
+  make: z.string().max(20, "Manufacturer name can be at most 20 characters long").nullable().optional(),
 
   // Optional Model
-  model: z
-    .string()
-    .optional()
-    .nullable()
-    .default(null)
-    .refine((val) => !val || val.length <= 20, {
-      message: "Mallin nimi saa olla enintään 20 merkkiä pitkä",
-    }),
+  model: z.string().max(20, "Model name can be at most 20 characters long").nullable().optional(),
 
   // Mandatory Vehicle Type
   type: z.enum(VehicleTypeCodes, {
-    message: "Ajoneuvon tyyppi on pakollinen",
+    message: "Vehicle type is required",
   }),
 
   // Optional Year
-  year: z.coerce.number().optional().nullable().default(null),
+  year: z.coerce.number().nullable().optional(),
 
   // Optional odometer count
-  odometer: z.coerce.number().optional().nullable().default(null),
+  odometer: z.coerce.number().nullable().optional(),
 
   // Mandatory odometer type
   odometerType: z.enum(
     OdometerTypeValues.map((v) => v.value),
     {
-      message: "Mitoitusjärjestelmä on pakollinen",
+      message: "Odometer type is required",
     }
   ),
 
   // Optional VIN
-  vin: z
-    .string()
-    .trim()
-    .optional()
-    .nullable()
-    .default(null)
-    .refine((val) => !val || val.length === 17, {
-      message: "VIN numerosarjan pituus pitää olla 17 merkkiä",
-    }),
+  vin: z.string().trim().length(17, "VIN must be exactly 17 characters long").nullable().optional().or(z.literal("")),
 
   // Optional License Plate
   licensePlate: z
     .string()
     .trim()
-    .optional()
+    .max(10, "License plate must be at most 10 characters long")
     .nullable()
-    .default(null)
-    .refine((val) => !val || val.length <= 10, {
-      message: "Rekisterikilven tulee olla enintään 10 merkkiä pitkä",
-    }),
+    .optional()
+    .or(z.literal("")),
 
   // Mandatory Fuel Type
   fuelType: z.enum(
     fuelTypeValues.map((v) => v.value),
     {
-      message: "Polttoaineen tyyppi on pakollinen",
+      message: "Fuel type is required",
     }
   ),
 });
@@ -78,19 +54,18 @@ export const BaseVehicleSchema = z.object({
 export const CreateVehicleFrontendSchema = BaseVehicleSchema.extend({
   image: z
     .instanceof(File)
-    .optional()
-    .refine((file) => !file || ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(file.type), {
-      message: "Vain JPG, JPEG, PNG tai GIF -kuvat sallitaan.",
+    .refine((file) => ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(file.type), {
+      message: "Only JPG, JPEG, PNG or GIF images are allowed.",
     })
-    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-      message: "Tiedoston maksimikoko on 5MB.",
+    .refine((file) => file.size <= 5 * 1024 * 1024, {
+      message: "Maximum file size is 5MB.",
     })
     .nullable()
-    .default(null),
+    .optional(),
 });
 export type CreateVehicleFrontendSchemaType = z.infer<typeof CreateVehicleFrontendSchema>;
 
 export const CreateVehicleBackendSchema = BaseVehicleSchema.extend({
-  image: z.url().optional().nullable().default(null),
+  image: z.url().nullable().optional().default(null),
 });
 export type CreateVehicleBackendSchemaType = z.infer<typeof CreateVehicleBackendSchema>;

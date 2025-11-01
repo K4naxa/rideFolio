@@ -17,12 +17,15 @@ import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
 import { useActivePool } from "@/lib/useActivePool";
+import { useModalStore } from "@/stores/modal";
 
 const { data: vehicles } = useAccessibleVehicles();
 const { activeVehicleId } = useActiveVehicle();
 
 const { data: pools } = useAccessiblePools();
 const { activePoolId } = useActivePool();
+
+const modalStore = useModalStore();
 </script>
 
 <template>
@@ -76,13 +79,14 @@ const { activePoolId } = useActivePool();
             Ajoneuvot
             <button
               aria-label="Lisää ajoneuvo"
+              @click="modalStore.onOpen('createVehicle')"
               class="ml-auto flex items-center cursor-pointer hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
             >
               <Icons.plus class="h-4 w-4" />
             </button>
           </span>
         </SidebarGroupLabel>
-        <SidebarGroupContent>
+        <SidebarGroupContent v-if="vehicles && vehicles?.length > 0" class="mb">
           <SidebarMenuSub>
             <SidebarMenuSubItem v-for="vehicle in vehicles" :key="vehicle.vehicleData.id">
               <SidebarMenuSubButton asChild :isActive="activeVehicleId === vehicle.vehicleData.id">
@@ -108,7 +112,7 @@ const { activePoolId } = useActivePool();
             <Icons.plus class="h-4 w-4" />
           </RouterLink>
         </SidebarGroupLabel>
-        <SidebarGroupContent class="space-y-4">
+        <SidebarGroupContent v-if="pools && pools.length > 0">
           <SidebarMenuSub class="gap-0">
             <SidebarMenuSubItem v-for="pool in pools" :key="pool.id">
               <SidebarMenuSubButton asChild :is-active="activePoolId === pool.id">
