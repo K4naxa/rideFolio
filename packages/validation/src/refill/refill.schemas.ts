@@ -3,29 +3,29 @@
 import * as z from "zod";
 
 export const RefillSchema = z.object({
-  vehicleId: z.cuid("Ajoneuvon ID on virheellinen"),
-  date: z.coerce.date("Valitse päivämäärä").refine((date) => date <= new Date(), {
-    message: "Päivämäärän tulee olla nykyhetkeä aikaisempi",
+  vehicleId: z.cuid("Invalid Vehicle"),
+  date: z.coerce.date("Select a date").refine((date) => date <= new Date(), {
+    message: "Date cant be in the future",
   }),
-  odometer: z.coerce.number("Täytä ajokilometrit").min(0, "Ajokilometrit eivät voi olla negatiivisia"),
+  odometer: z.coerce.number("Odometer required").min(0, "Odometer cannot be negative"),
 
   // Fixed boolean handling - simplified approach
   fullRefill: z.preprocess(
     (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
-    z.boolean("Valitse, tankattiinko täyteen")
+    z.boolean("Invalid value")
   ),
 
   skippedRefill: z.preprocess(
     (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
-    z.boolean("Valitse, ohitettiinko tankkaus")
+    z.boolean("Invalid value")
   ),
 
-  fuelAmount: z.coerce.number("Lisää polttoaineen määrä").min(0.01, "invalid value"),
-  pricePerUnit: z.coerce.number("Lisää hinta per yksikkö").min(0, "invalid value"),
+  fuelAmount: z.coerce.number("Required").min(0.01, "invalid value"),
+  pricePerUnit: z.coerce.number("Lisää hinta per yksikkö").min(0, "invalid value").optional().nullable(),
 
-  totalCost: z.coerce.number("Lisää kokonaiskustannus").min(0, "invalid value"),
+  totalCost: z.coerce.number("Lisää kokonaiskustannus").min(0, "invalid value").optional().nullable(),
 
-  notes: z.string().optional().nullable().default(null),
+  notes: z.string().optional().nullable(),
 });
 
 export type RefillSchemaInput = z.input<typeof RefillSchema>;

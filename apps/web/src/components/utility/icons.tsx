@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   Car,
   Bike,
@@ -44,79 +45,80 @@ import {
   CreditCard,
   ChartNoAxesCombined,
   ShoppingCart,
-} from "lucide-vue-next"; // ✅ Vue version of lucide-react
-import { h, type FunctionalComponent } from "vue";
-import type { TVehicleTypeCode } from "@repo/validation"; // adjust path
+} from "lucide-vue-next";
+import type { LucideIcon } from "lucide-vue-next";
+import { type TVehicleTypeCode } from "@repo/validation";
 
-// ---- Icon size classes ----
-export const iconSizes = {
+interface IconSizes {
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+  "2xl": string;
+}
+
+const iconSizes: IconSizes = {
   sm: "w-4 h-4",
   md: "w-5 h-5",
   lg: "w-6 h-6",
   xl: "w-7 h-7",
   "2xl": "w-8 h-8",
-} as const;
+};
 
-export type IconSize = keyof typeof iconSizes;
-
-export interface IconProps {
-  size?: IconSize;
+// Icon props interface extending Lucide's props
+interface IconProps {
+  size?: keyof IconSizes;
   color?: string;
-  class?: string;
+  className?: string;
   strokeWidth?: number;
   disabled?: boolean;
 }
 
-// ---- Helper: create wrapped Lucide components ----
-function createIconComponent(LucideIcon: FunctionalComponent<any>) {
-  const WrappedIcon: FunctionalComponent<IconProps> = (props) => {
-    const { size = "md", color = "currentColor", class: classname = "", strokeWidth = 2 } = props;
-    return h(LucideIcon, {
-      color,
-      strokeWidth,
-      class: `${iconSizes[size]} ${classname}`,
-    });
-  };
-  return WrappedIcon;
-}
-
-// ---- Custom logo ----
-const RideFolioLogo: FunctionalComponent = () =>
-  h(
-    "svg",
-    {
-      width: "32",
-      height: "32",
-      viewBox: "0 0 24 24",
-      fill: "none",
-      xmlns: "http://www.w3.org/2000/svg",
-    },
-    [
-      h("path", {
-        d: "M12 2L2 7L12 12L22 7L12 2Z",
-        stroke: "currentColor",
-        "stroke-width": "2",
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round",
-      }),
-      h("path", {
-        d: "M2 17L12 22L22 17",
-        stroke: "currentColor",
-        "stroke-width": "2",
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round",
-      }),
-      h("path", {
-        d: "M2 12L12 17L22 12",
-        stroke: "currentColor",
-        "stroke-width": "2",
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round",
-      }),
-    ],
+// Create wrapper components for consistent styling
+const createIconComponent = (LucideIcon: LucideIcon) => {
+  const IconComponent = ({
+    size = "md",
+    color = "currentColor",
+    className = "",
+    strokeWidth = 2,
+  }: IconProps) => (
+    <LucideIcon
+      color={color}
+      class={cn(iconSizes[size as keyof IconSizes], className)}
+      strokeWidth={strokeWidth}
+    />
   );
+  IconComponent.displayName = LucideIcon.displayName || LucideIcon.name || "IconComponent";
+  return IconComponent;
+};
 
-// ---- Export all icons ----
+const RideFolioLogo = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M12 2L2 7L12 12L22 7L12 2Z"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M2 17L12 22L22 17"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M2 12L12 17L22 12"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+// Export your Icons object
 export const Icons = {
   logo: RideFolioLogo,
   car: createIconComponent(Car),
@@ -177,14 +179,31 @@ export const Icons = {
   stats: createIconComponent(ChartNoAxesCombined),
 } as const;
 
-export type IconName = keyof typeof Icons;
-
-const VEHICLE_TYPE_ICONS: Record<string, FunctionalComponent<any>> = {
+export const VEHICLE_TYPE_ICONS: Record<string, LucideIcon> = {
   car: Car,
   motorcycle: Bike,
   boat: Ship,
   other: Cog,
 };
 
-export const getVehicleTypeIcon = (type: string): FunctionalComponent<any> =>
-  VEHICLE_TYPE_ICONS[type] ?? VEHICLE_TYPE_ICONS.other!;
+const getVehicleTypeIcon = (type: string): LucideIcon => {
+  return VEHICLE_TYPE_ICONS[type] || VEHICLE_TYPE_ICONS.other!;
+};
+
+export function VehicleTypeIcon({
+  type,
+  className,
+  size,
+  color,
+  strokeWidth,
+  disabled,
+}: { type: TVehicleTypeCode } & IconProps) {
+  const Icon = getVehicleTypeIcon(type);
+  return (
+    <Icon class={cn(iconSizes[size || "md"], className)} color={color} strokeWidth={strokeWidth} />
+  );
+}
+
+// Type exports
+export type IconName = keyof typeof Icons;
+export type { IconProps };

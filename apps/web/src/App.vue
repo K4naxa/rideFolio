@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import CreateVehicleModal from "./modals/createVehicleModal.vue";
 import { configure } from "vee-validate";
 import { useThemeStore } from "./stores/theme";
+import CreateRefillModal from "./modals/createRefillModal.vue";
 
 configure({});
 
@@ -23,6 +24,7 @@ const themeStore = useThemeStore();
 
   <!-- Modals -->
   <CreateVehicleModal />
+  <CreateRefillModal />
 </template>
 
 <style scoped></style>

@@ -2,15 +2,11 @@ import * as z from "zod";
 import { TMaintenanceTypes } from "./maintenance.types";
 
 const BaseMaintenanceSchema = z.object({
-  vehicleId: z.cuid("Ajoneuvon ID on virheellinen"),
-  date: z.coerce.date("Valitse päivämäärä"),
-  odometer: z.coerce.number("Täytä ajokilometrit").min(0, "Ajokilometrit eivät voi olla negatiivisia"),
+  vehicleId: z.cuid("Invalid vehicle"),
+  date: z.coerce.date("Select a date"),
+  odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
   maintenanceType: z.enum(TMaintenanceTypes, { message: "Valitse huollon tyyppi" }),
-  serviceProvider: z
-    .string()
-    .max(255, "Huoltoliikkeen nimi voi olla enintään 255 merkkiä pitkä")
-    .nullable()
-    .default(null),
+  serviceProvider: z.string().max(255, "Max length 255 characters").nullable().default(null),
   parts: z.array(
     z.object({
       id: z.string(),
@@ -31,10 +27,10 @@ export const MaintenanceFrontendSchema = BaseMaintenanceSchema.extend({
     .instanceof(File)
     .optional()
     .refine((file) => !file || ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(file.type), {
-      message: "Vain JPG, JPEG, PNG tai GIF -kuvat sallitaan.",
+      message: "Only JPG, JPEG, PNG or GIF formats are valid.",
     })
     .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-      message: "Tiedoston maksimikoko on 5MB.",
+      message: "Images max size is 5MB.",
     })
     .nullable()
     .default(null),

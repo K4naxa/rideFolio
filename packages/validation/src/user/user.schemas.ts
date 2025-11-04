@@ -15,7 +15,7 @@ export const RegisterSchema = z
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
 export const LoginSchema = z.object({
-  email: z.email({ message: "Valid email is required" }),
+  email: z.email({ message: "Invalid email" }),
   password: z.string(),
   rememberMe: z.boolean().optional(),
 });

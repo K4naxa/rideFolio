@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogContent from "@/components/ui/dialog/DialogContent.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
@@ -17,7 +16,9 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
+import { VehicleTypeIcon } from "@/components/utility/icons";
 import { api } from "@/lib/api";
+import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useModalStore } from "@/stores/modal";
 import {
   CreateVehicleFrontendSchema,
@@ -31,6 +32,23 @@ import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import z from "zod";
+
+const { data: vehicles } = useAccessibleVehicles();
+const clientSchema = CreateVehicleFrontendSchema.extend({
+  licensePlate: z
+    .string()
+    .optional()
+    .refine(
+      async (value) => {
+        if (!value) return true;
+
+        if (!vehicles) return true;
+        return !vehicles.value?.find(({ vehicleData }) => vehicleData.licensePlate === value);
+      },
+      { message: "License plate already exists" },
+    ),
+});
 
 const queryClient = useQueryClient();
 const router = useRouter();
@@ -38,23 +56,23 @@ const router = useRouter();
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
 function handleClose() {
-  resetForm();
   modalStore.onClose();
+  // Reset form after modal closes to ensure proper state
+  setTimeout(() => {
+    resetForm({
+      values: {
+        odometerType: "KILOMETER",
+        fuelType: "GASOLINE",
+      },
+    });
+  }, 100);
 }
 
 // Form logic
-const { handleSubmit, resetForm, setFieldError, values, meta } = useForm({
-  validationSchema: toTypedSchema(CreateVehicleFrontendSchema),
+const { handleSubmit, resetForm, values, meta } = useForm({
+  validationSchema: toTypedSchema(clientSchema),
   initialValues: {
-    name: "",
-    type: undefined,
-    make: "",
-    model: "",
-    year: undefined,
-    odometerType: undefined,
-    vin: "",
-    licensePlate: "",
-    odometer: undefined,
+    odometerType: "KILOMETER",
     fuelType: "GASOLINE",
   },
 });
@@ -79,14 +97,6 @@ const createVehicleMutation = useMutation({
     setTimeout(() => {
       router.push(`/vehicles/${data.newVehicleId}`);
     }, 100);
-  },
-  onError: (error: any) => {
-    console.error("Mutation error:", error);
-    if (error.response?.data?.field) {
-      setFieldError(error.response.data.field, error.response.data.message);
-    } else {
-      toast.error(`Failed to create vehicle: ${error.message}`);
-    }
   },
 });
 
@@ -134,14 +144,21 @@ const onSubmit = handleSubmit(async (data) => {
               <div>
                 <Select :model-value="value" @update:model-value="handleChange">
                   <SelectTrigger class="w-full">
-                    <SelectValue placeholder="Vehicle type *" />
+                    <div class="flex gap-3 items-center">
+                      <VehicleTypeIcon
+                        v-if="value"
+                        :type="value"
+                        class="h-4 w-4 stroke-muted-foreground"
+                      />
+                      <SelectValue placeholder="Select vehicle type *" />
+                    </div>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectLabel>Vehicle type</SelectLabel>
                     <Separator class="mb-1" />
                     <SelectItem v-for="type in VehicleTypeCodes" :key="type" :value="type">
                       <span class="flex items-center gap-2">
-                        {{ type }}
+                        <VehicleTypeIcon :type="type" class="h-4 w-4" /> {{ type }}
                       </span>
                     </SelectItem>
                   </SelectContent>
@@ -272,7 +289,7 @@ const onSubmit = handleSubmit(async (data) => {
             <Spinner class="mr-2" />
             Creating...
           </Button>
-          <Button v-else type="submit" variant="submit" :disabled="!meta.valid"> Create </Button>
+          <Button v-else type="submit" variant="submit" :disabled="!meta.dirty"> Create </Button>
 
           <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose">
             Peruuta

@@ -82,14 +82,14 @@ const handleCreateVehicleClick = () => {
       <SidebarGroup>
         <SidebarGroupLabel class="text-sm">
           <span class="flex items-center gap-3 w-full">
-            <Icons.carFront class="h-4 w-4" />
+            <Icons.carFront />
             Ajoneuvot
             <button
               aria-label="Lisää ajoneuvo"
               @click="handleCreateVehicleClick"
               class="ml-auto flex items-center cursor-pointer hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
             >
-              <Icons.plus class="h-4 w-4" />
+              <Icons.plus />
             </button>
           </span>
         </SidebarGroupLabel>
@@ -116,7 +116,7 @@ const handleCreateVehicleClick = () => {
             to="/pools/new"
             class="ml-auto flex items-center gap-2 hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
           >
-            <Icons.plus class="h-4 w-4" />
+            <Icons.plus />
           </RouterLink>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="pools && pools.length > 0">

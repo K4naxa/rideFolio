@@ -3,6 +3,7 @@ import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import VehicleOverview from "@/views/VehiclePage/VehicleOverview.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -28,6 +29,12 @@ const router = createRouter({
           name: "dashboard",
           component: DashboardView,
           meta: { requiresAuth: true },
+        },
+        {
+          path: "/vehicles/:vehicleId",
+          name: "VehiclePage",
+          meta: { requiresAuth: true },
+          component: VehicleOverview,
         },
       ],
     },

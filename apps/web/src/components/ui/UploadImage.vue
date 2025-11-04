@@ -111,7 +111,7 @@ const handleClick = () => {
             @click="handleRemoveImage"
             class="absolute top-2 right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Icons.close class="w-4 h-4" />
+            <Icons.close />
           </Button>
         </div>
       </template>
@@ -120,7 +120,7 @@ const handleClick = () => {
       <template v-else>
         <div class="space-y-2 text-muted-foreground h-full">
           <div class="flex justify-center">
-            <Icons.camera class="w-10 h-10" />
+            <Icons.camera className="w-10 h-10" />
           </div>
           <div>
             <p class="font-medium text-foreground">{{ props.title }}</p>

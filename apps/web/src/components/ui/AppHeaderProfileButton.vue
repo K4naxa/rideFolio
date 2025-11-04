@@ -62,24 +62,25 @@ function handleSignout() {
       <DropdownMenuGroup class="">
         <DropdownMenuItem asChild class="cursor-pointer">
           <RouterLink to="/profile">
-            <Icons.user class="mr-2" />
+            <Icons.user className="mr-2" />
             <span>Profile</span>
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuItem asChild class="cursor-pointer">
           <RouterLink to="/billing">
-            <Icons.billing class="mr-2" />
+            <Icons.billing className="mr-2" />
             <span>Billing</span>
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuItem @click="themeStore.toggleTheme">
-          <Icons.darkMode v-if="themeStore.resolvedTheme === 'dark'" class="mr-2" />
-          <Icons.lightMode v-else-if="themeStore.resolvedTheme === 'light'" class="mr-2" /> Theme
+          <Icons.darkMode v-if="themeStore.resolvedTheme === 'dark'" className="mr-2" />
+          <Icons.lightMode v-else-if="themeStore.resolvedTheme === 'light'" className="mr-2" />
+          Theme
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem class="cursor-pointer" @click="handleSignout">
-        <Icons.logout class="mr-2" />
+        <Icons.logout className="mr-2" />
         <span>Log out</span>
       </DropdownMenuItem>
     </DropdownMenuContent>

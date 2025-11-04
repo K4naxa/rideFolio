@@ -153,6 +153,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.10.0
+        version: 3.10.0
       '@repo/validation':
         specifier: workspace:*
         version: link:../../packages/validation

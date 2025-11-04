@@ -9,8 +9,8 @@ export const PoolType = z.enum(["PRIVATE", "SHARED", "ASSIGNED"]);
 
 // Client-side form schema (what the form actually works with)
 export const NewPoolFormSchema = z.object({
-  name: z.string().min(1, "Ryhmän nimen tulee olla vähintään 1 merkki pitkä.").max(50, "Nimi on liian pitkä."),
-  description: z.string().max(300, "Kuvaus on liian pitkä.").optional().nullable(),
+  name: z.string().min(1, "Required").max(50, "50 Character limit passed"),
+  description: z.string().max(300, "300 Character limit passed").optional().nullable(),
   type: PoolType,
   vehicleIds: z.array(z.string()),
 

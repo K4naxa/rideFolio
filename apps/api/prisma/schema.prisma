@@ -222,8 +222,8 @@ model Vehicle {
   make        String?
   model       String?
   year       Int?
-  vin             String?   @unique
-  licensePlate    String?   @unique
+  vin             String?  
+  licensePlate    String?   
   image           String?
 
   // Initial odometer (Set once, during vehicle creation or when changing the odometer type distance / hour)
