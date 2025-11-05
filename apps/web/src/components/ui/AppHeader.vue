@@ -23,7 +23,7 @@ const title = computed(
 </script>
 <template>
   <header
-    class="flex h-14 shrink-0 items-center px-2 lg:px-6 gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
+    class="flex h-14 shrink-0 items-center px-2 lg:px-6 gap-2 mb-4 lg:mb-8 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
   >
     <div class="flex w-full items-center gap-1 lg:gap-2">
       <SidebarTrigger class="-ml-1" />

@@ -1,4 +1,5 @@
 import AuthLayout from "@/Layouts/AuthLayout.vue";
+import VehicleLayout from "@/Layouts/VehicleLayout/VehicleLayout.vue";
 import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
@@ -31,10 +32,18 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "/vehicles/:vehicleId",
-          name: "VehiclePage",
+          path: "/vehicles",
+          name: "VehicleLayout",
           meta: { requiresAuth: true },
-          component: VehicleOverview,
+          component: VehicleLayout,
+          children: [
+            {
+              path: ":vehicleId",
+              name: "VehicleOverview",
+              meta: { requiresAuth: true },
+              component: VehicleOverview,
+            },
+          ],
         },
       ],
     },
@@ -42,7 +51,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (!to.meta.requiresAuth) next();
+  if (!to.meta.requiresAuth) return next();
 
   try {
     console.log("⏳ Session validated");
