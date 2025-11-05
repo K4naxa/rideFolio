@@ -8,7 +8,7 @@ const props = defineProps<SelectValueProps>();
 <template>
   <SelectValue
     data-slot="select-value"
-    class="data-[placeholder]:text-muted-foreground"
+    class="data-placeholder:text-muted-foreground"
     v-bind="props"
   >
     <slot />

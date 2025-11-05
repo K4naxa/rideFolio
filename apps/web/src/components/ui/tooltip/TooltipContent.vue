@@ -37,7 +37,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       <slot />
 
       <TooltipArrow
-        class="bg-muted fill-muted z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded"
+        class="bg-muted fill-muted z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded"
       />
     </TooltipContent>
   </TooltipPortal>
