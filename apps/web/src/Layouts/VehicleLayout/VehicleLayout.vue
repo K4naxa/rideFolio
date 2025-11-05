@@ -9,6 +9,7 @@ interface VehicleTab {
   label: string;
   id: string;
   icon?: unknown;
+  isLoading?: boolean;
 }
 
 const { activeVehicleId } = useActiveVehicle();

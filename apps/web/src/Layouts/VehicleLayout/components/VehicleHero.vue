@@ -23,7 +23,7 @@ import { computed, ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
 
 const { activeVehicle } = useActiveVehicle();
-const { data: statCardData } = useQuery({
+const { data: statCardData, isLoading } = useQuery({
   queryFn: async () => {
     if (!activeVehicle.value?.vehicleData.id) {
       throw new Error("No active vehicle");
@@ -182,18 +182,21 @@ const statsOpen = ref(false);
                   :value="`${statCardData?.monthlyAverageConsumption.value} `"
                   :suffix="`${statCardData?.monthlyAverageConsumption.unit}`"
                   :trend="statCardData?.monthlyAverageConsumption.trend"
+                  :is-loading="isLoading"
                 />
                 <div class="grid grid-cols-2 gap-3">
                   <VehicleHeroStatCard
                     :icon="DollarSignIcon"
                     label="Montly Cost"
                     :value="`${statCardData?.monthlyRunningCost.value}`"
+                    :is-loading="isLoading"
                   />
                   <VehicleHeroStatCard
                     :icon="RouteIcon"
                     label="Total Distance"
                     :value="`${statCardData?.trackedUnits.value.toLocaleString()}`"
                     :suffix="`${statCardData?.trackedUnits.unit}`"
+                    :is-loading="isLoading"
                   />
                 </div>
               </div>
@@ -239,17 +242,20 @@ const statsOpen = ref(false);
           :value="`${statCardData?.monthlyAverageConsumption.value} `"
           :suffix="`${statCardData?.monthlyAverageConsumption.unit}`"
           :trend="statCardData?.monthlyAverageConsumption.trend"
+          :is-loading="isLoading"
         />
         <VehicleHeroStatCard
           :icon="DollarSignIcon"
           label="Montly Cost"
           :value="`${statCardData?.monthlyRunningCost.value}`"
+          :is-loading="isLoading"
         />
         <VehicleHeroStatCard
           :icon="RouteIcon"
           label="Total Distance"
           :value="`${statCardData?.trackedUnits.value.toLocaleString()}`"
           :suffix="`${statCardData?.trackedUnits.unit}`"
+          :is-loading="isLoading"
         />
       </div>
     </div>
