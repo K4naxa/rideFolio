@@ -18,6 +18,7 @@ const props = withDefaults(
     validateOnBlur?: boolean;
     validateOnChange?: boolean;
     disableFuture?: boolean;
+    placeholder?: string;
   }>(),
   {
     validateOnBlur: true,
@@ -40,7 +41,7 @@ const { value, errorMessage, handleChange } = useField(props.name, props.validat
 const selectedDate = ref<DateValue | undefined>(
   props.initialValue ? fromDate(new Date(props.initialValue), getLocalTimeZone()) : undefined,
 );
-const df = new DateFormatter(navigator.language, {
+const df = new DateFormatter("en-US", {
   dateStyle: "long",
 });
 
@@ -55,7 +56,7 @@ function onNativeChange(e: Event) {
 }
 
 const formattedDate = computed(() => {
-  return value.value ? df.format(value.value) : "Pick a date";
+  return value.value ? df.format(value.value) : null;
 });
 </script>
 
@@ -69,8 +70,9 @@ const formattedDate = computed(() => {
       <Popover v-model:open="open" key="DateInput">
         <PopoverTrigger as-child>
           <Button variant="input">
-            <CalendarIcon class="mr-2 h-4 w-4" />
-            {{ formattedDate }}
+            <CalendarIcon :class="['mr-2 h-4 w-4', value ? '' : 'stroke-muted-foreground ']" />
+            <span v-if="value">{{ formattedDate }}</span>
+            <span v-else class="text-muted-foreground">{{ placeholder || "Pick a date" }}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent class="w-auto p-0" key="DateInputContent">

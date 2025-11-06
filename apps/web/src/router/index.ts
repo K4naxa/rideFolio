@@ -5,6 +5,7 @@ import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import VehicleOverview from "@/views/VehiclePage/VehicleOverview.vue";
+import VehicleTodos from "@/views/VehiclePage/VehicleTodos/VehicleTodos.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -32,16 +33,22 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "/vehicles",
+          path: "/vehicles/:vehicleId",
           name: "VehicleLayout",
           meta: { requiresAuth: true },
           component: VehicleLayout,
           children: [
             {
-              path: ":vehicleId",
+              path: "",
               name: "VehicleOverview",
               meta: { requiresAuth: true },
               component: VehicleOverview,
+            },
+            {
+              path: "todos",
+              name: "Vehicle Todos",
+              meta: { requiresAuth: true },
+              component: VehicleTodos,
             },
           ],
         },

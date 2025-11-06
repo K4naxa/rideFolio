@@ -5,7 +5,7 @@ export const ShoppingListItemSchema = z.object({
   // Mandatory Name
   name: z.string().min(1, "Required").trim().max(100, "100 Character limit passed"),
   // Optional price
-  price: z.coerce.number().optional().nullable().default(null),
+  price: z.coerce.number().optional().nullable(),
   // isPurchased flag
   isPurchased: z
     .preprocess((val) => (typeof val === "string" ? (val === "false" ? false : true) : val), z.boolean("Invalid value"))

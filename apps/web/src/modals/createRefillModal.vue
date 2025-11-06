@@ -23,6 +23,7 @@ import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Label from "@/components/ui/label/Label.vue";
 
 const { activeVehicle } = useActiveVehicle();
 const selectedVehicle = computed(() =>

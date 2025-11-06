@@ -45,6 +45,7 @@ import {
   CreditCard,
   ChartNoAxesCombined,
   ShoppingCart,
+  FilterIcon,
 } from "lucide-vue-next";
 import type { LucideIcon } from "lucide-vue-next";
 import { type TVehicleTypeCode } from "@repo/validation";
@@ -129,6 +130,7 @@ export const Icons = {
   hash: createIconComponent(Hash),
   vehicleMake: createIconComponent(Building),
   otherInfo: createIconComponent(NotebookPen),
+  filter: createIconComponent(FilterIcon),
 
   odoHours: createIconComponent(Clock),
   odoDistance: createIconComponent(Gauge),

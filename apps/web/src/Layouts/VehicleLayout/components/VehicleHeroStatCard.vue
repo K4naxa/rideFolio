@@ -18,7 +18,7 @@ const TrendIcon =
 
 <template>
   <div
-    class="relative flex flex-col items-center gap-1.5 rounded border cardBackground p-2.5 text-center"
+    class="relative flex-1 flex flex-col items-center gap-1.5 rounded border cardBackground p-2.5 text-center min-w-28"
   >
     <props.icon class="stroke-primary" />
     <div class="flex items-center gap-1">

@@ -211,7 +211,7 @@ html {
   }
 
   .listHover {
-    @apply border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-75;
+    @apply border border-transparent hover:border-border hover:bg-accent/30 transition-colors;
   }
 
   .cardBackground {

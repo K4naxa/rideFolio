@@ -47,7 +47,11 @@ const title = computed(
         <Icons.notes class="text-notes" size="sm" />
         <span class="hidden 2xl:block">Note</span>
       </Button>
-      <Button variant="outline" class="border-toDo hover:bg-toDo/20 text-toDo">
+      <Button
+        variant="outline"
+        @click="modalStore.onOpen('createTodo')"
+        class="border-toDo hover:bg-toDo/20 text-toDo"
+      >
         <Icons.todo size="sm" class="text-toDo" />
         <span class="hidden 2xl:block">Todo</span>
       </Button>

@@ -66,12 +66,6 @@ const handleCreateVehicleClick = () => {
           </RouterLink>
         </SidebarMenuButton>
         <SidebarMenuButton asChild>
-          <RouterLink to="/notesold" class="flex items-center gap-3 font-semibold">
-            <Icons.notes />
-            Muistiinpanot vanha
-          </RouterLink>
-        </SidebarMenuButton>
-        <SidebarMenuButton asChild>
           <RouterLink to="/to-dos" class="flex items-center gap-3 font-semibold">
             <Icons.todo size="sm" />
             Tehtävät

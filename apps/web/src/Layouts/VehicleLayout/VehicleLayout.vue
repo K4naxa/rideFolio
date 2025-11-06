@@ -40,13 +40,13 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
     <VehicleHero />
 
     <!-- Vehicle navigation tabs -->
-    <nav class="sticky top-14 z-20 bg-background text-sm">
-      <ul class="flex border-b px-4 lg:px-8 lg:space-x-8 justify-between lg:justify-normal">
+    <nav class="sticky top-14 z-20 bg-background text-sm mb-0">
+      <ul class="flex border-b px-4 lg:px-8 lg:space-x-8 justify-evenly lg:justify-normal">
         <RouterLink
           v-for="tab in VEHICLE_TABS"
           :key="tab.id"
           :to="tab.to"
-          activeClass="text-primary border-primary"
+          exactActiveClass="text-primary border-primary"
           class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary"
         >
           {{ tab.label }}

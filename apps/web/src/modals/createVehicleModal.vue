@@ -59,22 +59,13 @@ function handleClose() {
   modalStore.onClose();
   // Reset form after modal closes to ensure proper state
   setTimeout(() => {
-    resetForm({
-      values: {
-        odometerType: "KILOMETER",
-        fuelType: "GASOLINE",
-      },
-    });
+    resetForm({});
   }, 100);
 }
 
 // Form logic
 const { handleSubmit, resetForm, values, meta } = useForm({
   validationSchema: toTypedSchema(clientSchema),
-  initialValues: {
-    odometerType: "KILOMETER",
-    fuelType: "GASOLINE",
-  },
 });
 
 const createVehicleMutation = useMutation({

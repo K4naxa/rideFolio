@@ -208,9 +208,9 @@ const statsOpen = ref(false);
 
     <!-- Statistics section -->
     <div
-      class="hidden ml-auto lg:flex w-full flex-col gap-3 border-t px-6 max-w-lg lg:border-l lg:border-t-0 min-w-96"
+      class="hidden ml-auto lg:flex w-full flex-col gap-3 border-t px-6 max-w-lg lg:border-l lg:border-t-0 min-w-32"
     >
-      <div class="lg:flex justify-end hidden">
+      <div class="hidden lg:flex justify-end">
         <DropdownMenu :modal="false">
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="vehicle Actions">
@@ -235,7 +235,7 @@ const statsOpen = ref(false);
         </DropdownMenu>
       </div>
 
-      <div class="grid flex-1 grid-cols-3 gap-2 content-end">
+      <div class="2xl:grid grid-cols-3 flex-1 flex flex-wrap justify-evenly gap-4 content-end">
         <VehicleHeroStatCard
           :icon="GaugeIcon"
           label="Avg. Consumption"
