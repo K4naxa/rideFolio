@@ -35,6 +35,7 @@ export class TodosController {
     @Body() body: { complete: boolean },
   ) {
     await this.todoservice.toggleTodoCompletion(userSession, todoId, body.complete);
+    console.log('Toggled todo completion status:', todoId, body.complete);
     return { status: 'success' };
   }
   @Delete(':todoId')

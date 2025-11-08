@@ -2,6 +2,7 @@
 import AppHeader from "@/components/ui/AppHeader.vue";
 import AppSidebar from "@/components/ui/AppSidebar.vue";
 import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
+import MobileBottomNav from "../VehicleLayout/MobileBottomNav.vue";
 </script>
 <template>
   <div class="min-h-screen flex flex-col">
@@ -16,4 +17,5 @@ import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
       </main>
     </SidebarProvider>
   </div>
+  <MobileBottomNav />
 </template>

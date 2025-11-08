@@ -6,6 +6,7 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
+import NumberFlow from "@number-flow/vue";
 import { Icons, VehicleTypeIcon } from "@/components/utility/icons";
 import { api } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -91,7 +92,10 @@ const statsOpen = ref(false);
               class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground"
             >
               <GaugeIcon class="size-3.5" />
-              {{ activeVehicle?.vehicleData.odometerData.value }}
+              <NumberFlow
+                :value="activeVehicle?.vehicleData.odometerData.value || 0"
+                :animated="true"
+              />
               {{ activeVehicle?.vehicleData.odometerData.unit || "N/A" }}
             </Badge>
           </div>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { RouterView } from "vue-router";
-import VehicleHero from "./components/VehicleHero.vue";
 import { computed } from "vue";
+import VehicleHero from "./components/VehicleHero.vue";
 
 interface VehicleTab {
   to: string;
@@ -47,7 +47,8 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
           :key="tab.id"
           :to="tab.to"
           exactActiveClass="text-primary border-primary"
-          class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary"
+          class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary select-none"
+          draggable="false"
         >
           {{ tab.label }}
         </RouterLink>

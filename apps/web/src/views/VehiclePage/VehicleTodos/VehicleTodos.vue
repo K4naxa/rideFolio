@@ -7,7 +7,6 @@ import Label from "@/components/ui/label/Label.vue";
 import { Icons } from "@/components/utility/icons";
 import { useTodoQueries } from "@/lib/queries/useTodoQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import { CheckCircle } from "lucide-vue-next";
 import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
@@ -20,14 +19,14 @@ import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
 
 const { activeVehicleId } = useActiveVehicle();
-const { vehicleTodos, toggleTodo, deleteTodo } = useTodoQueries(activeVehicleId);
+const { vehicleTodos, toggleTodo, deleteTodo, vehicleTodosLoading } =
+  useTodoQueries(activeVehicleId);
 const settingsStore = useTodoSettingsStore();
 const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
 const { onOpen } = useModalStore();
 
 const searchQuery = ref("");
 
-// Priority configuration
 const PRIORITY_CONFIG = {
   CRITICAL: { color: "bg-purple-700 text-white", label: "Critical" },
   HIGH: { color: "bg-orange-700 text-white", label: "High" },
@@ -35,20 +34,28 @@ const PRIORITY_CONFIG = {
   LOW: { color: "bg-green-700 text-white", label: "Low" },
 } as const;
 
-// Computed filtered and sorted todos for better performance
 const filteredTodos = computed(() => {
   if (!vehicleTodos.value) return [];
 
-  const query = searchQuery.value.toLowerCase().trim();
-  if (!query) return vehicleTodos.value;
+  let filtered = vehicleTodos.value;
 
-  return vehicleTodos.value.filter(
-    (todo) =>
-      todo.title.toLowerCase().includes(query) || todo.description?.toLowerCase().includes(query),
-  );
+  // Apply search filter if query exists
+  const query = searchQuery.value.toLowerCase().trim();
+  if (query) {
+    filtered = filtered.filter(
+      (todo) =>
+        todo.title.toLowerCase().includes(query) || todo.description?.toLowerCase().includes(query),
+    );
+  }
+
+  // Always apply completed filter based on showCompleted setting
+  if (!showCompleted.value) {
+    filtered = filtered.filter((todo) => !todo.isCompleted);
+  }
+
+  return filtered;
 });
 
-// // Helper to get priority config
 const getPriorityConfig = (priority: string) => {
   return (
     PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG] || {
@@ -58,7 +65,6 @@ const getPriorityConfig = (priority: string) => {
   );
 };
 
-// Helper to format date
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString(undefined, {
     year: "numeric",
@@ -67,25 +73,24 @@ const formatDate = (dateString: string) => {
   });
 };
 
-// Helper to format odometer
 const formatOdometer = (value: number, unit: string) => {
   return `${value.toLocaleString()} ${unit}`;
 };
 
+// Dynamic grid template columns based on visible columns
 const tableColumns = computed(() => {
   const cols = ["3rem"];
   if (showPriority.value) cols.push("4rem");
   cols.push("1fr");
   if (showDueInfo.value) cols.push("10rem");
   cols.push("3rem");
-  return cols.join(" "); // Use space, not underscore
+  return cols.join(" ");
 });
 </script>
 
 <template>
   <div class="flex flex-col h-full">
-    <!-- Header - Improved mobile layout -->
-    <header class="flex flex-col sm:flex-row justify-between content-center mb-4 gap-3">
+    <header class="flex flex-col sm:flex-row justify-between content-center mb-6 gap-3">
       <Input
         v-model="searchQuery"
         type="text"
@@ -101,7 +106,7 @@ const tableColumns = computed(() => {
               <Icons.filter /> <span class="md:hidden">Filter</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-40">
+          <DropdownMenuContent class="w-52">
             <DropdownMenuCheckboxItem v-model:model-value="showPriority">
               Show priority
             </DropdownMenuCheckboxItem>
@@ -112,6 +117,9 @@ const tableColumns = computed(() => {
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem v-model:model-value="showCompleted">
               Show completed
+              <Badge variant="outline" class="ml-2">{{
+                vehicleTodos?.filter((todo) => todo.isCompleted).length
+              }}</Badge>
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -124,22 +132,26 @@ const tableColumns = computed(() => {
     </header>
 
     <!-- Desktop Table View -->
-    <div class="border rounded-lg overflow-hidden">
+    <div class="border rounded-lg">
       <div class="overflow-x-auto scrollbar">
         <!-- Table Header -->
         <div
-          class="grid items-center gap-x-3 py-3 px-2 border-b text-sm text-accent-foreground font-medium bg-accent/50"
+          class="grid items-center flex-1 min-w-max gap-x-3 h-14 px-2 border-b text-sm text-accent-foreground font-medium bg-accent/50"
           :style="{ gridTemplateColumns: tableColumns }"
         >
           <Label class="flex justify-center">State</Label>
           <Label v-if="showPriority">Priority</Label>
-          <Label class="min-w-60">Todo</Label>
+          <Label class="min-w-60 max-w-96 md:max-w-none">Todo</Label>
           <Label v-if="showDueInfo">Due</Label>
-          <span></span>
+          <Label></Label>
         </div>
 
         <!-- Table Body -->
-        <div class="divide-y divide-border">
+        <ul
+          v-if="!vehicleTodosLoading"
+          v-auto-animate
+          class="divide-y divide-border min-w-max flex-1 overflow-hidden"
+        >
           <div
             v-for="todo in filteredTodos"
             :key="todo.id"
@@ -220,16 +232,15 @@ const tableColumns = computed(() => {
               </DropdownMenu>
             </div>
           </div>
-        </div>
+        </ul>
       </div>
     </div>
 
     <!-- Empty State -->
     <div
-      v-if="!filteredTodos.length"
+      v-if="!filteredTodos.length && !vehicleTodosLoading"
       class="flex flex-col items-center justify-center py-12 text-center"
     >
-      <CheckCircle class="size-12 text-muted-foreground mb-3" />
       <p class="text-muted-foreground">
         {{
           searchQuery

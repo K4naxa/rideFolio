@@ -10,6 +10,8 @@ import router from "./router";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import { useThemeStore } from "@/stores/theme";
 
+import { autoAnimatePlugin } from "@formkit/auto-animate/vue";
+
 const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -17,6 +19,8 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 app.use(router);
 app.use(VueQueryPlugin);
+
+app.use(autoAnimatePlugin);
 
 const themeStore = useThemeStore();
 themeStore.initialize();

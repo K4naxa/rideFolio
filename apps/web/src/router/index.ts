@@ -1,10 +1,12 @@
-import AuthLayout from "@/Layouts/AuthLayout.vue";
+import AuthLayout from "@/Layouts/AuthLayout/AuthLayout.vue";
 import VehicleLayout from "@/Layouts/VehicleLayout/VehicleLayout.vue";
 import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
 import VehicleOverview from "@/views/VehiclePage/VehicleOverview.vue";
+import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
 import VehicleTodos from "@/views/VehiclePage/VehicleTodos/VehicleTodos.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -49,6 +51,18 @@ const router = createRouter({
               name: "Vehicle Todos",
               meta: { requiresAuth: true },
               component: VehicleTodos,
+            },
+            {
+              path: "shopping-list",
+              name: "Vehicle Shopping list",
+              meta: { requiresAuth: true },
+              component: VehicleShoppingView,
+            },
+            {
+              path: "notes",
+              name: "Vehicle notes",
+              meta: { requiresAuth: true },
+              component: VehicleNotesView,
             },
           ],
         },

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ShoppingListItemSchema, ShoppingListItemSchemaType } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
@@ -23,13 +23,14 @@ export class ShoppingListController {
     return await this.shoppingListService.getItemsForVehicle(userSession, vehicleId);
   }
 
-  @Post(':itemId/toggle')
+  @Patch(':itemId/toggle')
   async togglePurchased(
     @Session() userSession: UserSession,
     @Param('itemId') itemId: string,
     @Body() body: { isPurchased: boolean },
   ) {
     await this.shoppingListService.toggleItemPurchased(userSession, itemId, body.isPurchased);
+    console.log('Toggled item purchase status:', itemId, body.isPurchased);
     return { status: 'success' };
   }
 
