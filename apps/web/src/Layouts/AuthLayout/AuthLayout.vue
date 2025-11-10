@@ -5,13 +5,13 @@ import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
 import MobileBottomNav from "../VehicleLayout/MobileBottomNav.vue";
 </script>
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="flex flex-col" id="authLayout">
     <SidebarProvider>
       <AppSidebar />
 
-      <main class="flex-1 flex flex-col min-w-0">
+      <main class="flex-1 flex flex-col min-w-0 mb-20 lg:mb-0" id="authMainSection">
         <AppHeader />
-        <div class="">
+        <div class="flex-1 flex">
           <RouterView />
         </div>
       </main>
@@ -19,3 +19,5 @@ import MobileBottomNav from "../VehicleLayout/MobileBottomNav.vue";
   </div>
   <MobileBottomNav />
 </template>
+
+<style></style>

@@ -7,7 +7,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
 import VehicleOverview from "@/views/VehiclePage/VehicleOverview.vue";
 import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
-import VehicleTodos from "@/views/VehiclePage/VehicleTodos/VehicleTodos.vue";
+import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -50,7 +50,7 @@ const router = createRouter({
               path: "todos",
               name: "Vehicle Todos",
               meta: { requiresAuth: true },
-              component: VehicleTodos,
+              component: VehicleTodosView,
             },
             {
               path: "shopping-list",

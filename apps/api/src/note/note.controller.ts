@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { NoteSchema, NoteSchemaType } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { NoteService } from 'src/note/note.service';
@@ -15,7 +15,7 @@ export class NoteController {
     @Body(new ZodValidationPipe(NoteSchema as ZodType)) noteDto: NoteSchemaType,
   ) {
     const newNote = await this.noteService.createNote(session, noteDto);
-    return { status: 'success', data: { id: newNote.id } };
+    return { status: 'success', id: newNote.id };
   }
 
   @Get()
@@ -28,7 +28,17 @@ export class NoteController {
     return this.noteService.getNoteById(session.user.id, noteId);
   }
 
-  @Post(':noteId')
+  @Patch(':noteId/pin')
+  async toggleNotePin(
+    @Session() session: UserSession,
+    @Param('noteId') noteId: string,
+    @Body('pinned') pinned: boolean,
+  ) {
+    await this.noteService.notePinnedToggle(session, noteId, pinned);
+    return { status: 'success' };
+  }
+
+  @Patch(':noteId')
   async updateNote(
     @Session() session: UserSession,
     @Param('noteId') noteId: string,

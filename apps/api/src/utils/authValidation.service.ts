@@ -59,7 +59,10 @@ export class AuthValidationService {
     console.log('Access granted to pool.');
   }
 
-  async canCreateLogs(userId: string, vehicleId: string): Promise<void> {
+  async canCreateLogs(userId: string, vehicleId?: string | null): Promise<void> {
+    if (!vehicleId) {
+      throw new NotFoundException('Vehicle not found or access denied.');
+    }
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: vehicleId,
@@ -111,7 +114,10 @@ export class AuthValidationService {
     console.log('Permission to create logs granted.');
   }
 
-  async canEditLogs(userId: string, vehicleId: string): Promise<void> {
+  async canEditLogs(userId: string, vehicleId?: string | null): Promise<void> {
+    if (!vehicleId) {
+      throw new NotFoundException('Vehicle not found or access denied.');
+    }
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: vehicleId,
@@ -162,7 +168,10 @@ export class AuthValidationService {
     // If we reach here, the user has permission to create logs.
     console.log('Permission to create logs granted.');
   }
-  async canDeleteLogs(userId: string, vehicleId: string): Promise<void> {
+  async canDeleteLogs(userId: string, vehicleId?: string | null): Promise<void> {
+    if (!vehicleId) {
+      throw new NotFoundException('Vehicle not found or access denied.');
+    }
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: vehicleId,

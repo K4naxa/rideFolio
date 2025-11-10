@@ -182,9 +182,9 @@ html {
     --color-notes: hsl(224, 64%, 33%); /* sky-800 */
     --color-notes-foreground: hsl(199, 95%, 74%); /* sky-300 */
 
-    /* Log - ToDo */
-    --color-toDo: hsl(263, 69%, 42%); /* violet-800 */
-    --color-toDo-foreground: hsl(252, 95%, 85%); /* violet-300 */
+    /* Log - Todo */
+    --color-todo: hsl(263, 69%, 42%); /* violet-800 */
+    --color-todo-foreground: hsl(252, 95%, 85%); /* violet-300 */
 
     /* Log - Reminder */
     --color-reminder: hsl(343, 80%, 35%); /* rose-800 */
@@ -277,9 +277,6 @@ html {
 }
 
 /* Smooth theme transitions using CSS custom properties */
-:root {
-  transition: none;
-}
 
 html.theme-transitioning {
   /* Transition all CSS custom properties for smooth theme changes */

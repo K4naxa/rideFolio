@@ -41,7 +41,7 @@ const handleCleanup = async () => {
 };
 </script>
 <template>
-  <main class="space-y-6">
+  <main class="space-y-6 flex-1">
     <form @submit="onSubmit">
       <div class="flex gap-4 items-start flex-wrap justify-evenly sm:justify-normal">
         <Input

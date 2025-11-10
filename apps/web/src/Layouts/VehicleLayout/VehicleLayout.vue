@@ -35,29 +35,45 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 </script>
 
 <template>
-  <div class="w-full space-y-4 lg:space-y-8">
+  <div class="flex flex-1 flex-col min-w-0">
     <!-- Vehicle layout Hero -->
-    <VehicleHero />
+    <div class="my-4 lg:my-6">
+      <VehicleHero />
+    </div>
 
     <!-- Vehicle navigation tabs -->
-    <nav class="sticky top-14 z-20 bg-background text-sm mb-0">
-      <ul class="flex border-b px-4 lg:px-8 lg:space-x-8 justify-evenly lg:justify-normal">
-        <RouterLink
-          v-for="tab in VEHICLE_TABS"
-          :key="tab.id"
-          :to="tab.to"
-          exactActiveClass="text-primary border-primary"
-          class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary select-none"
-          draggable="false"
-        >
-          {{ tab.label }}
-        </RouterLink>
-      </ul>
-    </nav>
 
-    <!-- Vehicle pages -->
-    <main class="w-full p-4 lg:p-8">
-      <RouterView />
-    </main>
+    <div class="flex flex-col flex-1">
+      <nav
+        class="sticky top-(--app-header-height) z-20 bg-background text-sm h-(--vehicle-navbar-height) mb-0"
+      >
+        <ul class="flex h-full border-b px-4 lg:px-8 lg:space-x-8 justify-evenly lg:justify-normal">
+          <RouterLink
+            v-for="tab in VEHICLE_TABS"
+            :key="tab.id"
+            :to="tab.to"
+            exactActiveClass="text-primary border-primary"
+            class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary select-none"
+            draggable="false"
+          >
+            {{ tab.label }}
+          </RouterLink>
+        </ul>
+      </nav>
+
+      <!-- Vehicle pages -->
+      <main
+        class="p-4 flex flex-col lg:p-8 flex-1 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height))]"
+      >
+        <!-- Vehicle RouterView -->
+        <RouterView />
+      </main>
+    </div>
   </div>
 </template>
+
+<style>
+:root {
+  --vehicle-navbar-height: 3rem; /* Adjust this value to match your nav height */
+}
+</style>

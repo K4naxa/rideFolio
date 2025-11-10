@@ -47,6 +47,7 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   const createNoteMutation = useMutation({
     mutationFn: async (data: NoteSchemaType) => {
       const response = await api.post<{ success: boolean | null; id: string }>("/notes", data);
+      console.log("Created note response:", response.data);
       return response.data;
     },
     onSuccess: (_, variables) => {
@@ -61,10 +62,36 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
     },
   });
 
+  const togglePinNoteMutation = useMutation({
+    mutationFn: async ({
+      noteId,
+      pinned,
+      vehicleId,
+    }: {
+      noteId: string;
+      pinned: boolean;
+      vehicleId: string;
+    }) => {
+      const response = await api.patch<{ success: boolean | null }>(`/notes/${noteId}/pin`, {
+        pinned,
+      });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+
+      if (variables.vehicleId) {
+        queryClient.invalidateQueries({
+          queryKey: ["notes", "vehicle", variables.vehicleId],
+        });
+      }
+    },
+  });
+
   // Update note
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, data }: { noteId: string; data: NoteSchemaType }) => {
-      const response = await api.post<{ success: boolean | null }>(`/notes/${noteId}`, data);
+      const response = await api.patch<{ success: boolean | null }>(`/notes/${noteId}`, data);
       return response.data;
     },
     onSuccess: (_, variables) => {
@@ -84,15 +111,15 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Delete note
   const deleteNoteMutation = useMutation({
-    mutationFn: async (noteId: string) => {
+    mutationFn: async ({ noteId, vehicleId }: { noteId: string; vehicleId: string }) => {
       const response = await api.delete<{ success: boolean | null }>(`/notes/${noteId}`);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      if (unref(vehicleId)) {
+      if (variables.vehicleId) {
         queryClient.invalidateQueries({
-          queryKey: ["notes", "vehicle", unref(vehicleId)],
+          queryKey: ["notes", "vehicle", variables.vehicleId],
         });
       }
     },
@@ -110,6 +137,12 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
     vehicleNotesLoading: vehicleNotesQuery.isLoading,
     vehicleNotesError: vehicleNotesQuery.error,
     refetchVehicleNotes: vehicleNotesQuery.refetch,
+
+    // Toggle pin
+    togglePin: togglePinNoteMutation.mutate,
+    togglePinAsync: togglePinNoteMutation.mutateAsync,
+    isTogglingPin: togglePinNoteMutation.isPending,
+    togglePinError: togglePinNoteMutation.error,
 
     // Get Note By ID (function that returns a query)
     getNoteById,

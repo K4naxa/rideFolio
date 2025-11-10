@@ -46,6 +46,8 @@ import {
   ChartNoAxesCombined,
   ShoppingCart,
   FilterIcon,
+  Pin,
+  PinOff,
 } from "lucide-vue-next";
 import type { LucideIcon } from "lucide-vue-next";
 import { type TVehicleTypeCode } from "@repo/validation";
@@ -134,6 +136,9 @@ export const Icons = {
 
   odoHours: createIconComponent(Clock),
   odoDistance: createIconComponent(Gauge),
+
+  pin: createIconComponent(Pin),
+  pinOff: createIconComponent(PinOff),
 
   refill: createIconComponent(Fuel),
   maintenance: createIconComponent(Wrench),

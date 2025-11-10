@@ -1,134 +1,162 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import { Icons } from "@/components/utility/icons";
-import { useModalStore } from "@/stores/modal";
-import { onClickOutside } from "@vueuse/core";
-import type { Component } from "vue";
-import type { ModalType } from "@/stores/modal";
-import Button from "@/components/ui/button/Button.vue";
+<template>
+  <div ref="containerRef" class="relative flex items-center justify-center">
+    <!-- Backdrop -->
+    <Transition @enter="onBackdropEnter" @leave="onBackdropLeave">
+      <div v-if="isOpen" class="" aria-hidden="true" />
+    </Transition>
 
-interface QuickAddAction {
+    <!-- Action buttons container -->
+    <Motion
+      :initial="{ opacity: 0 }"
+      :animate="actionContainerAnimation"
+      class="absolute left-1/2 bottom-full mb-4 flex gap-3"
+      :style="{
+        pointerEvents: isOpen ? 'auto' : 'none',
+        transform: 'translateX(-50%)',
+      }"
+    >
+      <Motion
+        v-for="(action, index) in actions"
+        :key="action.id"
+        :initial="{ y: 20, opacity: 0, scale: 0.5 }"
+        :animate="getChildAnimation(index)"
+        :transition="{ delay: isOpen ? index * 0.05 + 0.05 : (actions.length - index - 1) * 0.05 }"
+      >
+        <button
+          :class="
+            twMerge(
+              'h-14 w-14 rounded-full shadow-lg inline-flex items-center justify-center border bg-background',
+              action.class,
+            )
+          "
+          @click="handleActionClick(action.modal)"
+        >
+          <component :is="action.icon" class="h-6 w-6 stroke-inherit" />
+          <span class="sr-only">{{ action.label }}</span>
+        </button>
+      </Motion>
+    </Motion>
+
+    <!-- Main trigger button -->
+    <button
+      :class="[
+        'relative z-10 mb-2 h-10 w-10 rounded-full shadow-lg transition-transform duration-300 ease-in-out inline-flex items-center justify-center',
+        isOpen ? 'bg-secondary text-destructive-foreground' : 'bg-primary text-primary-foreground',
+      ]"
+      @click="toggleOpen"
+    >
+      <Motion :animate="{ rotate: isOpen ? 45 : 0 }"> <Icons.plus class-name="h-6 w-6" /> </Motion>
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, type Component } from "vue";
+import { Motion } from "motion-v";
+import { onClickOutside } from "@vueuse/core";
+import { useModalStore, type ModalType } from "@/stores/modal";
+import { Icons } from "@/components/utility/icons";
+import { twMerge } from "tailwind-merge";
+
+// Composables
+const { onOpen } = useModalStore();
+
+// State
+const isOpen = ref(false);
+const containerRef = ref<HTMLElement | null>(null);
+
+// Types
+type QuickAddAction = {
   id: string;
   icon: Component;
-  color: string;
-  foreground: string;
+  class: string;
   label: string;
   modal: ModalType;
-}
+};
 
+// Actions configuration
 const actions: QuickAddAction[] = [
   {
     id: "fuel",
     icon: Icons.refill,
-    color: "bg-refill",
-    foreground: "text-refill-foreground",
+    class: "border-refill stroke-refill",
     label: "Fuel Up",
     modal: "createRefill",
   },
   {
     id: "maintenance",
     icon: Icons.maintenance,
-    color: "bg-maintenance",
-    foreground: "text-maintenance-foreground",
+    class: "border-maintenance stroke-maintenance",
     label: "Maintenance",
     modal: "createMaintenance",
   },
   {
     id: "note",
     icon: Icons.notes,
-    color: "bg-notes",
-    foreground: "text-notes-foreground",
+    class: "border-notes stroke-notes",
     label: "Note",
     modal: "createNote",
   },
   {
     id: "todo",
     icon: Icons.todo,
-    color: "bg-toDo",
-    foreground: "text-toDo-foreground",
+    class: "border-todo stroke-todo",
     label: "Todo",
     modal: "createTodo",
   },
   {
     id: "vehicle",
     icon: Icons.carFront,
-    color: "bg-primary",
-    foreground: "text-primary-foreground",
+    class: "border-primary stroke-primary-foreground",
     label: "Add Vehicle",
     modal: "createVehicle",
   },
 ];
 
-const isOpen = ref(false);
-const modalStore = useModalStore();
-const containerRef = ref<HTMLElement | null>(null);
-
+// Click outside handler
 onClickOutside(containerRef, () => {
   isOpen.value = false;
 });
 
+// Computed animations
+const actionContainerAnimation = computed(() => ({
+  opacity: 1,
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getChildAnimation = (index: number) => {
+  return isOpen.value ? { y: 0, opacity: 1, scale: 1 } : { y: 20, opacity: 0, scale: 0.5 };
+};
+
+// Methods
+const toggleOpen = () => {
+  isOpen.value = !isOpen.value;
+};
+
 const handleActionClick = (modal: ModalType) => {
-  modalStore.onOpen(modal);
+  onOpen(modal);
   isOpen.value = false;
 };
 
-const toggleMenu = () => {
-  isOpen.value = !isOpen.value;
+// Transition handlers
+const onBackdropEnter = (el: Element, done: () => void) => {
+  const element = el as HTMLElement;
+  element.style.opacity = "0";
+  requestAnimationFrame(() => {
+    element.style.transition = "opacity 0.3s";
+    element.style.opacity = "1";
+    setTimeout(done, 300);
+  });
+};
+
+const onBackdropLeave = (el: Element, done: () => void) => {
+  const element = el as HTMLElement;
+  element.style.transition = "opacity 0.3s";
+  element.style.opacity = "0";
+  setTimeout(done, 300);
 };
 </script>
 
-<template>
-  <div ref="containerRef" class="absolute flex justify-center w-full bottom-0 left-0 h-28">
-    <div class="relative w-[calc(100%-2rem)] h-28">
-      <Button
-        size="icon-lg"
-        @click="toggleMenu"
-        class="absolute rounded-full bottom-2 left-1/2 -translate-x-1/2"
-        ><Icons.plus
-      /></Button>
-
-      <Button
-        v-if="isOpen"
-        class="absolute rounded-full top-0"
-        style="left: 0%; transform: translateX(0%)"
-        @click="toggleMenu"
-      >
-        <Icons.refill />
-      </Button>
-      <Button
-        v-if="isOpen"
-        class="absolute rounded-full top-0"
-        style="left: 25%; transform: translateX(-50%)"
-        @click="toggleMenu"
-      >
-        <Icons.refill />
-      </Button>
-      <Button
-        v-if="isOpen"
-        class="absolute rounded-full top-0"
-        style="left: 50%; transform: translateX(-50%)"
-        @click="toggleMenu"
-      >
-        <Icons.refill />
-      </Button>
-      <Button
-        v-if="isOpen"
-        class="absolute rounded-full top-0"
-        style="left: 75%; transform: translateX(-50%)"
-        @click="toggleMenu"
-      >
-        <Icons.refill />
-      </Button>
-      <Button
-        v-if="isOpen"
-        class="absolute rounded-full top-0"
-        style="left: 100%; transform: translateX(-100%)"
-        @click="toggleMenu"
-      >
-        <Icons.refill />
-      </Button>
-    </div>
-  </div>
-</template>
-
-<style scoped></style>
+<style scoped>
+/* Add any additional styles if needed */
+</style>

@@ -66,7 +66,7 @@ const formattedDate = computed(() => {
       label
     }}</label>
     <!-- Desktop / Tablet -->
-    <div v-if="!isMobile">
+    <div>
       <Popover v-model:open="open" key="DateInput">
         <PopoverTrigger as-child>
           <Button variant="input">
@@ -82,14 +82,14 @@ const formattedDate = computed(() => {
     </div>
 
     <!-- Mobile -->
-    <div v-else>
+    <!-- <div v-else>
       <input
         type="date"
         class="rounded-md border border-input bg-background px-3 py-2 text-sm"
         :value="value ? new Date(value).toISOString().split('T')[0] : ''"
         @input="onNativeChange"
       />
-    </div>
+    </div> -->
 
     <!-- Validation error -->
     <p v-if="errorMessage" class="text-red-500 text-xs mt-1">

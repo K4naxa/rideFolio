@@ -23,7 +23,7 @@ const title = computed(
 </script>
 <template>
   <header
-    class="flex h-14 shrink-0 items-center px-2 lg:px-6 gap-2 mb-4 lg:mb-8 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
+    class="flex h-(--app-header-height) shrink-0 items-center px-2 lg:px-6 gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
   >
     <div class="flex w-full items-center gap-1 lg:gap-2">
       <SidebarTrigger class="-ml-1" />
@@ -43,7 +43,11 @@ const title = computed(
         <Icons.maintenance class="text-maintenance" size="sm" />
         <span class="hidden 2xl:block">Maintenance</span>
       </Button>
-      <Button variant="outline" class="border-notes hover:bg-notes/20 text-notes">
+      <Button
+        variant="outline"
+        @click="modalStore.onOpen('createNote')"
+        class="border-notes hover:bg-notes/20 text-notes"
+      >
         <Icons.notes class="text-notes" size="sm" />
         <span class="hidden 2xl:block">Note</span>
       </Button>
@@ -66,3 +70,8 @@ const title = computed(
     </div>
   </header>
 </template>
+<style>
+:root {
+  --app-header-height: 3.5rem;
+}
+</style>

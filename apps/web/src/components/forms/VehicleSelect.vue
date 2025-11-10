@@ -3,18 +3,18 @@ import { computed, ref } from "vue";
 import Popover from "../ui/popover/Popover.vue";
 import PopoverTrigger from "../ui/popover/PopoverTrigger.vue";
 import Button from "../ui/button/Button.vue";
-import type { TAccessibleVehicle } from "@repo/validation";
 import VehicleSelectItem from "@/components/forms/VehicleSelectItem.vue";
 import { ChevronsUpDown } from "lucide-vue-next";
 import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
 import Separator from "../ui/separator/Separator.vue";
+import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 
 interface VehicleSelectProps {
-  vehicles: TAccessibleVehicle[];
   value?: string;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  canCreateValidation?: boolean;
 }
 const props = defineProps<VehicleSelectProps>();
 const emits = defineEmits<{
@@ -25,24 +25,31 @@ function handleSelect(vehicleId: string) {
   emits("valueChange", vehicleId);
   open.value = false;
 }
-
-console.log("vehicles: ", props.vehicles);
-
 const open = ref(false);
 const search = ref<string>("");
 const filteredVehicles = computed(() => {
   const searchLower = search.value.toLowerCase();
-  return props.vehicles.filter(
+  if (!vehicles?.value) return [];
+
+  const filtered = vehicles.value.filter(
     ({ vehicleData }) =>
       vehicleData.name.toLowerCase().includes(searchLower) ||
       vehicleData.licensePlate?.toLowerCase().includes(searchLower) ||
       vehicleData.model?.toLowerCase().includes(searchLower) ||
       vehicleData.make?.toLowerCase().includes(searchLower),
   );
+
+  if (props.canCreateValidation) {
+    return filtered.filter((v) => v.canCreateLogs);
+  }
+
+  return filtered;
 });
 
+const { data: vehicles } = useAccessibleVehicles();
+
 const selectedVehicle = computed(() =>
-  props.vehicles.find((vehicle) => vehicle.vehicleData.id === props.value),
+  vehicles?.value?.find((vehicle) => vehicle.vehicleData.id === props.value),
 );
 </script>
 

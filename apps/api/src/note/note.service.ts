@@ -38,6 +38,15 @@ export class NoteService {
     });
   }
 
+  async notePinnedToggle(UserSession: UserSession, noteId: string, pinned: boolean) {
+    const note = await this.prisma.note.findUnique({ where: { id: noteId } });
+    await this.validation.canEditLogs(UserSession.user.id, note?.vehicleId);
+    return this.prisma.note.update({
+      where: { id: noteId },
+      data: { pinned },
+    });
+  }
+
   async deleteNote(UserSession: UserSession, noteId: string) {
     const note = await this.prisma.note.findUnique({
       where: { id: noteId },
@@ -118,6 +127,7 @@ export class NoteService {
         createdByUser: { select: { id: true, name: true, image: true } },
         vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
       },
+      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }, { createdAt: 'desc' }],
     });
 
     return notes.map((note) => ({
@@ -143,7 +153,8 @@ export class NoteService {
     await this.validation.hasAccessToVehicle(UserSession.user.id, vehicleId);
     const notes = await this.prisma.note.findMany({
       where: { vehicleId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }, { createdAt: 'desc' }],
+
       select: {
         id: true,
         title: true,

@@ -24,6 +24,7 @@ import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Label from "@/components/ui/label/Label.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 
 const { activeVehicle } = useActiveVehicle();
 const selectedVehicle = computed(() =>
@@ -133,82 +134,86 @@ watch(isModalOpen, (open) => {
           <Icons.refill />
           Create new refill
         </DialogTitle>
+        <DialogDescription class="text-start"
+          >Log a new fuel refill for your vehicle</DialogDescription
+        >
       </DialogHeader>
+      <form @submit.prevent="onSubmit" class="justify-between flex flex-col">
+        <div class="flex flex-col gap-6">
+          <Field v-slot="{ value, handleChange }" name="vehicleId">
+            <div>
+              <VehicleSelect
+                :vehicles="accessibleVehicles || []"
+                :value="value"
+                @valueChange="handleChange"
+                placeholder="Select a vehicle"
+              />
+              <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+            </div>
+          </Field>
 
-      <form @submit.prevent="onSubmit" class="space-y-6">
-        <Field v-slot="{ value, handleChange }" name="vehicleId">
-          <div>
-            <VehicleSelect
-              :vehicles="accessibleVehicles || []"
-              :value="value"
-              @valueChange="handleChange"
-              placeholder="Select a vehicle"
+          <!-- Date & Odometer -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DateInput name="date" :initial-value="new Date()" disableFuture />
+            <Input
+              name="odometer"
+              type="number"
+              placeholder="Odometer"
+              :suffix="selectedVehicle?.vehicleData.odometerData.unit"
             />
-            <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
           </div>
-        </Field>
 
-        <!-- Date & Odometer -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DateInput name="date" :initial-value="new Date()" disableFuture />
-          <Input
-            name="odometer"
-            type="number"
-            placeholder="Odometer"
-            :suffix="selectedVehicle?.vehicleData.odometerData.unit"
-          />
+          <!-- Fill Type -->
+          <div class="grid gap-6 grid-cols-2">
+            <Field v-slot="{ value, handleChange }" name="fullRefill">
+              <Label
+                class="flex items-center gap-4 text leading-none select-none border rounded px-4 py-3 font-semibold"
+              >
+                <Switch :model-value="value" @update:checked="handleChange" />
+                <p>Full refill</p>
+              </Label>
+            </Field>
+            <Field v-slot="{ value, handleChange }" name="skippedRefill">
+              <label
+                class="flex items-center space-x-2 border rounded px-4 py-3 select-none font-semibold"
+              >
+                <Switch :model-value="value" @update:model-value="handleChange" />
+                <p>Skipped refill</p>
+                <HelpTooltip message="Was last refill not logged?" />
+              </label>
+            </Field>
+          </div>
+
+          <!-- Cost fields  -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Input
+              name="fuelAmount"
+              type="number"
+              step="0.01"
+              placeholder="Amount"
+              :onValueChange="handleFuelAmountChange"
+            />
+            <Input
+              name="pricePerUnit"
+              type="number"
+              step="0.001"
+              placeholder="Unit Price"
+              suffix="€"
+              :onValueChange="handlePricePerUnitChange"
+            />
+            <Input
+              name="totalCost"
+              type="number"
+              step="0.01"
+              placeholder="Total cost"
+              :onValueChange="handleTotalCostChange"
+            />
+          </div>
+
+          <Textarea name="notes" placeholder="Refill notes.." />
         </div>
 
-        <!-- Fill Type -->
-        <div class="grid gap-6 grid-cols-2">
-          <Field v-slot="{ value, handleChange }" name="fullRefill">
-            <Label
-              class="flex items-center gap-4 text leading-none select-none border rounded px-4 py-3 font-semibold"
-            >
-              <Switch :model-value="value" @update:checked="handleChange" />
-              <p>Full refill</p>
-            </Label>
-          </Field>
-          <Field v-slot="{ value, handleChange }" name="skippedRefill">
-            <label
-              class="flex items-center space-x-2 border rounded px-4 py-3 select-none font-semibold"
-            >
-              <Switch :model-value="value" @update:model-value="handleChange" />
-              <p>Skipped refill</p>
-              <HelpTooltip message="Was last refill not logged?" />
-            </label>
-          </Field>
-        </div>
-
-        <!-- Cost fields  -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Input
-            name="fuelAmount"
-            type="number"
-            step="0.01"
-            placeholder="Amount"
-            :onValueChange="handleFuelAmountChange"
-          />
-          <Input
-            name="pricePerUnit"
-            type="number"
-            step="0.001"
-            placeholder="Unit Price"
-            suffix="€"
-            :onValueChange="handlePricePerUnitChange"
-          />
-          <Input
-            name="totalCost"
-            type="number"
-            step="0.01"
-            placeholder="Total cost"
-            :onValueChange="handleTotalCostChange"
-          />
-        </div>
-
-        <Textarea name="notes" placeholder="Refill notes.." />
-
-        <DialogFooter>
+        <DialogFooter class="pt-auto">
           <Button type="submit" :disabled="isSubmitting">
             <span v-if="!isSubmitting">Create</span>
             <span v-else> <Spinner /> Creating.. </span>

@@ -6,6 +6,7 @@ import CreateVehicleModal from "./modals/createVehicleModal.vue";
 import { configure } from "vee-validate";
 import { useThemeStore } from "./stores/theme";
 import CreateRefillModal from "./modals/createRefillModal.vue";
+import CreateNoteModal from "./modals/createNoteModal.vue";
 import CreateTodoModal from "./modals/CreateTodoModal.vue";
 
 configure({});
@@ -27,6 +28,7 @@ const themeStore = useThemeStore();
   <CreateVehicleModal />
   <CreateRefillModal />
   <CreateTodoModal />
+  <CreateNoteModal />
 </template>
 
 <style scoped></style>
