@@ -203,6 +203,8 @@ watch(
   { deep: true, flush: "pre" },
 );
 
+// TODO: add logic to check outside updates (other users) and refresh form data
+
 function hasNoteChanged(initial: NoteSchemaType, current: NoteSchemaType): boolean {
   return (
     current.title !== initial.title ||

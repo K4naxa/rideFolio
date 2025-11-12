@@ -29,6 +29,15 @@ const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createNote");
 const initialNote = computed(() => modalStore.data as Note | null);
 
+console.log("Initial note in modal:", initialNote.value);
+console.log("Initial note values in modal:", {
+  vehicleId: initialNote.value?.vehicle.id,
+  title: initialNote.value?.title,
+  content: initialNote.value?.content,
+  pinned: initialNote.value?.pinned,
+  tags: initialNote.value?.tags,
+});
+
 const { values, errors, setFieldValue, resetForm, meta } = useForm<NoteSchemaType>({
   initialValues: {
     vehicleId: initialNote.value?.vehicle.id || "",
@@ -127,8 +136,20 @@ const handleRemoveTag = (tagToRemove: string) => {
 watch(isModalOpen, (isOpen) => {
   if (!isOpen) return;
 
-  // Creating new note
-  if (activeVehicleId.value) {
+  // If editing existing note, populate form with note data
+  if (initialNote.value) {
+    resetForm({
+      values: {
+        vehicleId: initialNote.value.vehicle.id,
+        title: initialNote.value.title,
+        content: initialNote.value.content,
+        tags: initialNote.value.tags || [],
+        pinned: initialNote.value.pinned || false,
+      },
+    });
+    createdNoteId.value = initialNote.value.id;
+  } else if (activeVehicleId.value) {
+    // Creating new note with active vehicle
     resetForm({
       values: {
         vehicleId: activeVehicleId.value,
@@ -181,7 +202,8 @@ watch(isModalOpen, (isOpen) => {
           <!-- Editor Content -->
           <div class="flex h-full min-h-64 flex-1">
             <TipTapEditor
-              v-model="values.content"
+              :value="values.content"
+              @update:value="(value) => setFieldValue('content', value)"
               :editable="true"
               :error="errors.content ?? undefined"
               class="pb-2 px-3.5"

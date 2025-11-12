@@ -36,7 +36,10 @@ const selectedNoteId = computed({
 
 const selectNote = (note: Note) => {
   if (!isMobile.value) selectedNoteId.value = note.id;
-  else onOpen("createNote", note);
+  else {
+    console.log("Opening modal for mobile view");
+    onOpen("createNote", note);
+  }
 };
 
 const getTextSnippet = (html: string, maxLength: number = 100): string => {
@@ -47,7 +50,10 @@ const getTextSnippet = (html: string, maxLength: number = 100): string => {
 };
 
 const handleNewClick = () => {
-  selectedNoteId.value = "new";
+  if (!isMobile.value) selectedNoteId.value = "new";
+  else {
+    onOpen("createNote", null);
+  }
 };
 </script>
 
