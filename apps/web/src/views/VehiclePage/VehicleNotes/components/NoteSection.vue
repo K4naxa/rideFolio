@@ -22,16 +22,12 @@ import { toast } from "vue-sonner";
 const queryClient = useQueryClient();
 const router = useRouter();
 
-const props = defineProps({
-  noteId: {
-    type: String,
-    required: true,
-  },
-  vehicleId: {
-    type: String,
-    required: true,
-  },
-});
+interface NoteSectionProps {
+  noteId: Note["id"];
+  vehicleId: Note["vehicle"]["id"];
+}
+
+const props = defineProps<NoteSectionProps>();
 
 const {
   getEditableNote,
@@ -45,7 +41,7 @@ const {
 
 const tagInput = ref("");
 const isSubmitting = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
-const pendingSaves = ref(new Map<string, { noteId: string; data: NoteSchemaType }>());
+const pendingSaves = ref(new Map<string, { noteId: Note["id"]; data: NoteSchemaType }>());
 // If new, no query — otherwise fetch note
 const currentNoteId = ref(props.noteId);
 const isNew = computed(() => props.noteId === "new");
@@ -106,8 +102,7 @@ function handlePendingSaves() {
     }
   });
 }
-async function saveNote(noteId: string, saveData: NoteSchemaType) {
-  if (!meta.value.dirty || isSubmitting.value) return;
+async function saveNote(noteId: Note["id"], saveData: NoteSchemaType) {
   try {
     if (noteId === "new") {
       const response = await createNoteAsync(saveData);
@@ -269,7 +264,9 @@ const handleRemoveTag = (tagToRemove: string) => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full flex-1 min-h-0">
+  <div
+    class="absolute bg-background p-4 lg:p-0 lg:relative z-50 lg:z-0 top-0 left-0 lg:flex flex-col w-full flex-1 min-h-0"
+  >
     <form class="flex flex-col space-y-4 flex-1 min-h-0" @submit.prevent>
       <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
 

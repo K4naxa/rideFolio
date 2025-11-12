@@ -31,26 +31,23 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   });
 
   // Fetch single note by ID
-  const getEditableNote = (noteId: MaybeRef<string | undefined>) => {
+  const getEditableNote = (noteId: MaybeRef<Note["id"]>) => {
     return useQuery({
       queryKey: computed(() => ["notes", unref(noteId)]),
       queryFn: async () => {
         const id = unref(noteId);
-        if (!id || id === "new") return undefined;
-        const response = await api.get<NoteSchemaType>(`/notes/${id}/editable`);
+        if (!id) throw new Error("Note ID is required");
+        const response = await api.get<Required<NoteSchemaType>>(`/notes/${id}/editable`);
         return response.data;
       },
-      enabled: computed(() => {
-        const id = unref(noteId);
-        return !!id && id !== "new";
-      }),
+      enabled: computed(() => !!unref(noteId)),
     });
   };
 
   // Create note
   const createNoteMutation = useMutation({
     mutationFn: async (data: NoteSchemaType) => {
-      const response = await api.post<{ success: boolean | null; id: string }>("/notes", data);
+      const response = await api.post<{ success: boolean; id: Note["id"] }>("/notes", data);
       console.log("Created note response:", response.data);
       return response.data;
     },
@@ -72,11 +69,11 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
       pinned,
       vehicleId,
     }: {
-      noteId: string;
-      pinned: boolean;
-      vehicleId: string;
+      noteId: Note["id"];
+      pinned: Note["pinned"];
+      vehicleId: Note["vehicle"]["id"];
     }) => {
-      const response = await api.patch<{ success: boolean | null }>(`/notes/${noteId}/pin`, {
+      const response = await api.patch<{ success: boolean }>(`/notes/${noteId}/pin`, {
         pinned,
       });
       return response.data;
@@ -94,8 +91,8 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Update note
   const updateNoteMutation = useMutation({
-    mutationFn: async ({ noteId, data }: { noteId: string; data: NoteSchemaType }) => {
-      const response = await api.patch<{ success: boolean | null }>(`/notes/${noteId}`, data);
+    mutationFn: async ({ noteId, data }: { noteId: Note["id"]; data: NoteSchemaType }) => {
+      const response = await api.patch<{ success: boolean }>(`/notes/${noteId}`, data);
       return response.data;
     },
     onSuccess: (_, variables) => {
@@ -115,8 +112,14 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Delete note
   const deleteNoteMutation = useMutation({
-    mutationFn: async ({ noteId, vehicleId }: { noteId: string; vehicleId: string }) => {
-      const response = await api.delete<{ success: boolean | null }>(`/notes/${noteId}`);
+    mutationFn: async ({
+      noteId,
+      vehicleId,
+    }: {
+      noteId: Note["id"];
+      vehicleId: Note["vehicle"]["id"];
+    }) => {
+      const response = await api.delete<{ success: boolean }>(`/notes/${noteId}`);
       return response.data;
     },
     onSuccess: (_, variables) => {

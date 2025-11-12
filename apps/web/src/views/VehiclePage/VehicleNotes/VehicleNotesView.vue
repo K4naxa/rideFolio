@@ -27,7 +27,7 @@ const { vehicleNotes, vehicleNotesLoading } = useNoteQueries(activeVehicleId);
 
 const selectedNoteId = computed({
   get: () => route.query.note as string | null,
-  set: (noteId: string | null) => {
+  set: (noteId: Note["id"] | null) => {
     router.push({
       query: { ...route.query, note: noteId || undefined },
     });
@@ -35,11 +35,11 @@ const selectedNoteId = computed({
 });
 
 const selectNote = (note: Note) => {
-  if (!isMobile.value) selectedNoteId.value = note.id;
-  else {
-    console.log("Opening modal for mobile view");
-    onOpen("createNote", note);
-  }
+  selectedNoteId.value = note.id;
+  // else {
+  //   console.log("Opening modal for mobile view");
+  //   onOpen("createNote", note);
+  // }
 };
 
 const getTextSnippet = (html: string, maxLength: number = 100): string => {
@@ -145,7 +145,7 @@ const handleNewClick = () => {
       </div>
     </div>
 
-    <div class="hidden lg:flex flex-1 flex-col">
+    <div :class="[' lg:flex flex-1 flex-col', selectedNoteId ? 'flex' : 'hidden']">
       <NoteSection
         v-if="selectedNoteId"
         :note-id="selectedNoteId"
