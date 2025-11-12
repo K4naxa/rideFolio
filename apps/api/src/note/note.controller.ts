@@ -23,9 +23,9 @@ export class NoteController {
     return this.noteService.getAccessibleNotes(session.user.id);
   }
 
-  @Get(':noteId')
-  async getNoteById(@Session() session: UserSession, @Param('noteId') noteId: string) {
-    return this.noteService.getNoteById(session.user.id, noteId);
+  @Get(':noteId/editable')
+  async getEditableNote(@Session() session: UserSession, @Param('noteId') noteId: string) {
+    return this.noteService.getEditableNote(session.user.id, noteId);
   }
 
   @Patch(':noteId/pin')

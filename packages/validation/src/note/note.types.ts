@@ -1,3 +1,5 @@
+import { NoteSchemaType } from "./note.shemas";
+
 export type Note = {
   id: string;
   title: string | null;
@@ -15,3 +17,13 @@ export type Note = {
     type: string | null;
   };
 };
+
+export function newNote({ vehicleId, title, content, tags }: Partial<NoteSchemaType> = {}): NoteSchemaType {
+  return {
+    vehicleId: vehicleId || "",
+    title: title || null,
+    content: content || null,
+    tags: tags || [],
+    pinned: false,
+  };
+}

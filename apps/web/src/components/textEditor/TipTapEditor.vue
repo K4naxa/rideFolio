@@ -4,7 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import { type HTMLAttributes } from "vue";
+import { watch, type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
 import EditorMenuBar from "./EditorMenuBar.vue";
 
@@ -63,6 +63,19 @@ const editor = useEditor({
     },
   },
 });
+
+// Watch for external value changes and update editor content
+// This helps in not needing to use :key on the editor component (causes full re-mount / loss of focus)
+watch(
+  () => props.value,
+  (newValue) => {
+    if (!editor) return;
+    const currentContent = editor.value?.getHTML();
+    if (newValue !== currentContent) {
+      editor.value?.commands.setContent(newValue || "");
+    }
+  },
+);
 </script>
 
 <template>

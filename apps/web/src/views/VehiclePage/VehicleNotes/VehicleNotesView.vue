@@ -10,10 +10,10 @@ import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import NoteSection from "./components/NoteSection.vue";
-import { twMerge } from "tailwind-merge";
 import { useMediaQuery } from "@vueuse/core";
 import { useModalStore } from "@/stores/modal";
-import type { Note } from "@repo/validation";
+import { type Note } from "@repo/validation";
+import Badge from "@/components/ui/badge/Badge.vue";
 
 const searchQuery = ref("");
 
@@ -21,6 +21,9 @@ const router = useRouter();
 const route = useRoute();
 const { onOpen } = useModalStore();
 const isMobile = useMediaQuery("(max-width: 1024px)");
+
+const { activeVehicleId } = useActiveVehicle();
+const { vehicleNotes, vehicleNotesLoading } = useNoteQueries(activeVehicleId);
 
 const selectedNoteId = computed({
   get: () => route.query.note as string | null,
@@ -30,18 +33,11 @@ const selectedNoteId = computed({
     });
   },
 });
-const selectedNote = computed(() => {
-  const notes = vehicleNotes.value || [];
-  return notes.find((note) => note.id === selectedNoteId.value) || null;
-});
 
 const selectNote = (note: Note) => {
   if (!isMobile.value) selectedNoteId.value = note.id;
   else onOpen("createNote", note);
 };
-
-const { activeVehicleId } = useActiveVehicle();
-const { vehicleNotes, vehicleNotesLoading, togglePin } = useNoteQueries(activeVehicleId);
 
 const getTextSnippet = (html: string, maxLength: number = 100): string => {
   const div = document.createElement("div");
@@ -51,14 +47,14 @@ const getTextSnippet = (html: string, maxLength: number = 100): string => {
 };
 
 const handleNewClick = () => {
-  // Invent the logic
+  selectedNoteId.value = "new";
 };
 </script>
 
 <template>
-  <div class="flex gap-8 lg:min-h-0">
+  <div class="flex gap-8 lg:min-h-0 flex-1">
     <!-- left side -->
-    <div class="flex flex-col gap-8 lg:border-r lg:max-w-96 min-w-0">
+    <div class="flex flex-col gap-8 lg:border-r lg:max-w-96 min-w-0 w-full">
       <!-- controls -->
       <div class="flex flex-col gap-4 lg:pr-8">
         <Input
@@ -90,43 +86,37 @@ const handleNewClick = () => {
         <ul
           v-auto-animate
           v-if="vehicleNotes && vehicleNotes.length"
-          class="flex flex-col gap-6 lg:gap-2 min-w-0"
+          class="flex flex-col gap-6 lg:gap-2 w-full"
         >
           <li
             v-for="note in vehicleNotes"
             :key="note.id"
-            :class="
-              twMerge(
-                'py-3 px-3 bg-accent/50 lg:bg-transparent rounded cursor-pointer border-transparent hover:bg-accent/50 block listHover group',
-                selectedNoteId === note.id ? 'bg-accent/60' : '',
-              )
-            "
+            :class="[
+              'py-3 px-3 bg-accent/50 rounded cursor-pointer border-transparent hover:bg-accent/50 block listHover group',
+              selectedNoteId === note.id ? 'bg-accent/60' : 'lg:bg-transparent',
+            ]"
             @click="selectNote(note)"
           >
             <div class="flex justify-between items-center gap-1">
               <span class="font-medium truncate">{{ note.title }}</span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                class="opacity-0 group-hover:opacity-100 transition-opacity"
-                :class="{ 'opacity-100': note.pinned }"
-                @click.stop="
-                  togglePin({ noteId: note.id, pinned: !note.pinned, vehicleId: note.vehicle.id })
-                "
-              >
-                <Icons.pinOff
-                  v-if="note.pinned"
-                  className="size-4 text-primary stroke-primary hover:text-muted-foreground hover:stroke-muted-foreground transition-colors"
-                />
-                <Icons.pin
-                  v-else
-                  className="size-4 text-muted-foreground stroke-muted-foreground hover:text-primary hover:stroke-primary transition-colors"
-                />
-              </Button>
+
+              <Icons.pin
+                v-if="note.pinned"
+                className="size-4 text-primary stroke-primary hover:text-primary hover:stroke-primary transition-colors"
+              />
             </div>
             <div class="text-muted-foreground text-sm mt-1 line-clamp-6 lg:line-clamp-3">
               {{ getTextSnippet(String(note.content), 80) }}
+            </div>
+            <div class="truncate">
+              <Badge
+                v-for="tag in note.tags"
+                variant="outline"
+                :key="tag"
+                class="mt-2 mr-1 px-2 py-1.5 text-xs"
+              >
+                {{ tag }}
+              </Badge>
             </div>
           </li>
         </ul>
@@ -150,9 +140,15 @@ const handleNewClick = () => {
     </div>
 
     <div class="hidden lg:flex flex-1 flex-col">
-      <NoteSection v-if="selectedNote" :note="selectedNote" :key="selectedNote.id" />
+      <NoteSection
+        v-if="selectedNoteId"
+        :note-id="selectedNoteId"
+        :vehicle-id="activeVehicleId || ''"
+      />
       <div v-else class="flex-1 flex items-center justify-center text-muted-foreground">
         Select a note to view or edit
+
+        {{ selectedNoteId }}
       </div>
     </div>
   </div>

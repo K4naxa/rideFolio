@@ -67,15 +67,10 @@ watchDebounced(
 
     try {
       isSubmitting.value = true;
-      console.log(
-        "autosaving, deciding if to create or update. createdNoteId:",
-        createdNoteId.value,
-      );
 
       if (!createdNoteId.value) {
         // Create new note
         const response = await createNoteAsync(values);
-        console.log("Auto-saved new note with ID:", response.id);
         createdNoteId.value = response.id;
       } else {
         // Update existing note
@@ -115,8 +110,8 @@ const handleClose = async () => {
 
 const handleAddTag = () => {
   const trimmedTag = tagInput.value.trim();
-  if (trimmedTag !== "" && !values.tags.includes(trimmedTag)) {
-    setFieldValue("tags", [...values.tags, trimmedTag]);
+  if (trimmedTag !== "" && !values?.tags?.includes(trimmedTag)) {
+    setFieldValue("tags", [...(values.tags || []), trimmedTag]);
     tagInput.value = "";
   }
 };
@@ -124,7 +119,7 @@ const handleAddTag = () => {
 const handleRemoveTag = (tagToRemove: string) => {
   setFieldValue(
     "tags",
-    values.tags.filter((tag) => tag !== tagToRemove),
+    values.tags?.filter((tag) => tag !== tagToRemove),
   );
 };
 
@@ -160,10 +155,7 @@ watch(isModalOpen, (isOpen) => {
 
 <template>
   <Dialog v-model:open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
-    <DialogContent
-      aria-describedby="Create or edit a note"
-      class="max-w-4xl lg:max-h-[90vh] flex flex-col min-h-0"
-    >
+    <DialogContent class="max-w-4xl lg:max-h-[90vh] flex flex-col min-h-0">
       <DialogHeader class="flex flex-row justify-between w-full gap-2">
         <DialogTitle class="flex items-center gap-2"> Create Note </DialogTitle>
         <Button v-if="!initialNote" variant="outline" @click="handleCancel">Cancel</Button>

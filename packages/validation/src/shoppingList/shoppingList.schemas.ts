@@ -6,6 +6,9 @@ export const ShoppingListItemSchema = z.object({
   name: z.string().min(1, "Required").trim().max(100, "100 Character limit passed"),
   // Optional price
   price: z.coerce.number().optional().nullable(),
+  isPurchased: z
+    .preprocess((val) => (typeof val === "string" ? (val === "false" ? false : true) : val), z.boolean())
+    .optional(),
 });
 
 export type ShoppingListItemSchemaType = z.infer<typeof ShoppingListItemSchema>;

@@ -20,6 +20,30 @@ import { useActivePool } from "@/lib/useActivePool";
 import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
 
+interface MainSideBarLinks {
+  label: string;
+  icon: keyof typeof Icons;
+  to: string;
+}
+
+const mainSidebarLinks: MainSideBarLinks[] = [
+  {
+    label: "Dashboard",
+    icon: "home",
+    to: "/dashboard",
+  },
+  {
+    label: "Muistiinpanot",
+    icon: "notes",
+    to: "",
+  },
+  {
+    label: "Tehtävät",
+    icon: "todo",
+    to: "",
+  },
+];
+
 const { data: vehicles } = useAccessibleVehicles();
 const { activeVehicleId } = useActiveVehicle();
 
@@ -53,22 +77,10 @@ const handleCreateVehicleClick = () => {
 
     <SidebarContent>
       <SidebarGroup>
-        <SidebarMenuButton asChild>
-          <RouterLink to="/dashboard" class="flex items-center gap-3 font-semibold">
-            <Icons.home />
-            Dashboard
-          </RouterLink>
-        </SidebarMenuButton>
-        <SidebarMenuButton asChild>
-          <RouterLink to="/notes" class="flex items-center gap-3 font-semibold">
-            <Icons.notes />
-            Muistiinpanot
-          </RouterLink>
-        </SidebarMenuButton>
-        <SidebarMenuButton asChild>
-          <RouterLink to="/to-dos" class="flex items-center gap-3 font-semibold">
-            <Icons.todo size="sm" />
-            Tehtävät
+        <SidebarMenuButton :key="link.label" v-for="link in mainSidebarLinks" as-child>
+          <RouterLink :to="link.to" class="flex items-center gap-3 font-semibold">
+            <component :is="Icons[link.icon]" />
+            {{ link.label }}
           </RouterLink>
         </SidebarMenuButton>
       </SidebarGroup>
@@ -107,7 +119,7 @@ const handleCreateVehicleClick = () => {
             Ryhmät
           </span>
           <RouterLink
-            to="/pools/new"
+            to=""
             class="ml-auto flex items-center gap-2 hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
           >
             <Icons.plus />
@@ -128,12 +140,12 @@ const handleCreateVehicleClick = () => {
         <SidebarGroupContent class="space-y-4">
           <SidebarMenu class="gap-0">
             <SidebarMenuButton asChild>
-              <RouterLink to="#" class="flex items-center gap-3">
+              <RouterLink to="" class="flex items-center gap-3">
                 <Icons.settings size="sm" /> Asetukset
               </RouterLink>
             </SidebarMenuButton>
             <SidebarMenuButton asChild>
-              <RouterLink to="/billing" class="flex items-center gap-3">
+              <RouterLink to="" class="flex items-center gap-3">
                 <Icons.subscription size="sm" /> Upgrade to Pro
               </RouterLink>
             </SidebarMenuButton>

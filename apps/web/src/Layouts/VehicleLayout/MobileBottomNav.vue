@@ -12,9 +12,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: "Home", route: "/dashboard", icon: Icons.home },
-  { name: "Notes", route: "/notes", icon: Icons.notes },
-  { name: "Todos", route: "/todos", icon: Icons.todo },
-  { name: "Profile", route: "/profile", icon: Icons.user },
+  { name: "Notes", route: "", icon: Icons.notes },
+  { name: "Todos", route: "", icon: Icons.todo },
+  { name: "Profile", route: "", icon: Icons.user },
 ];
 </script>
 

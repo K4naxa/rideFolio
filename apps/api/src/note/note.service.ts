@@ -60,7 +60,7 @@ export class NoteService {
     });
   }
 
-  async getNoteById(userId: string, noteId: string): Promise<Note> {
+  async getEditableNote(userId: string, noteId: string): Promise<NoteSchemaType> {
     const note = await this.prisma.note.findUnique({
       where: {
         id: noteId,
@@ -71,12 +71,7 @@ export class NoteService {
         content: true,
         tags: true,
         pinned: true,
-        createdAt: true,
-        updatedAt: true,
         vehicleId: true,
-        createdById: true,
-        createdByUser: { select: { id: true, name: true, image: true } },
-        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
       },
     });
     if (!note) {
@@ -84,23 +79,7 @@ export class NoteService {
     }
     await this.validation.hasAccessToVehicle(userId, note.vehicleId);
 
-    return {
-      id: note.id,
-      title: note.title ?? '',
-      content: note.content ?? '',
-      tags: note.tags ?? [],
-      pinned: note.pinned ?? false,
-      createdAt: note.createdAt,
-      updatedAt: note.updatedAt,
-      vehicle: {
-        id: note.vehicle.id,
-        name: note.vehicle.name,
-        make: note.vehicle.make ?? '',
-        model: note.vehicle.model ?? '',
-        year: note.vehicle.year ?? 0,
-        type: note.vehicle.type,
-      },
-    };
+    return note;
   }
 
   async getAccessibleNotes(userId: string): Promise<Note[]> {
@@ -127,7 +106,7 @@ export class NoteService {
         createdByUser: { select: { id: true, name: true, image: true } },
         vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
       },
-      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }, { createdAt: 'desc' }],
+      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
     });
 
     return notes.map((note) => ({
@@ -153,7 +132,7 @@ export class NoteService {
     await this.validation.hasAccessToVehicle(UserSession.user.id, vehicleId);
     const notes = await this.prisma.note.findMany({
       where: { vehicleId },
-      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }, { createdAt: 'desc' }],
+      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
 
       select: {
         id: true,

@@ -13,6 +13,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
       const response = await api.get<Todo[]>("/todos");
       return response.data;
     },
+    enabled: false,
   });
 
   // Fetch vehicle-specific todos

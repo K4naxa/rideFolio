@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type Component } from "vue";
+import { computed, h, type Component } from "vue";
 import { twMerge } from "tailwind-merge";
 import { type Editor } from "@tiptap/vue-3";
 import Toggle from "@/components/ui/toggle/Toggle.vue";
@@ -63,7 +63,9 @@ const editorState = computed(() => {
 });
 
 const ParagraphIcon = {
-  template: '<p class="text-sm text-gray-500">P</p>',
+  setup() {
+    return () => h("p", { class: "text-sm " }, "P");
+  },
 };
 
 const menuOptions = computed<MenuOptions[]>(() => {

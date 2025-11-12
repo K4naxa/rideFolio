@@ -3,122 +3,267 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { XIcon } from "lucide-vue-next";
+import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { type NoteSchemaType, type Note, NoteSchema } from "@repo/validation";
-import { ref } from "vue";
+import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
+import { computed, onUnmounted, ref, watch } from "vue";
 
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { toTypedSchema } from "@vee-validate/zod";
 import Button from "@/components/ui/button/Button.vue";
-import { watchDebounced } from "@vueuse/core";
+import { useDebounceFn } from "@vueuse/core";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import { Icons } from "@/components/utility/icons";
+import Separator from "@/components/ui/separator/Separator.vue";
+import { useQueryClient } from "@tanstack/vue-query";
+import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
 
-const props = defineProps<{
-  note: Note;
-}>();
+const queryClient = useQueryClient();
+const router = useRouter();
 
-const tagInput = ref("");
-const isSubmitting = ref(false);
-const createdNoteId = ref<string | null>(props.note.id);
-const { createNoteAsync, updateNoteAsync } = useNoteQueries();
-
-const { values, errors, meta, setFieldValue } = useForm<NoteSchemaType>({
-  validationSchema: toTypedSchema(NoteSchema),
-  initialValues: {
-    vehicleId: props.note.vehicle.id,
-    title: props.note.title,
-    content: props.note.content,
-    pinned: props.note.pinned,
-    tags: props.note.tags || [],
+const props = defineProps({
+  noteId: {
+    type: String,
+    required: true,
+  },
+  vehicleId: {
+    type: String,
+    required: true,
   },
 });
 
-watchDebounced(
-  () => [values.title, values.content, values.tags],
-  async () => {
-    // Only auto-save if we have required fields filled
-    if (!meta.value.dirty) {
+const {
+  getEditableNote,
+  createNoteAsync,
+  updateNoteAsync,
+  isCreating,
+  isUpdating,
+  isDeleting,
+  deleteNoteAsync,
+} = useNoteQueries();
+
+const tagInput = ref("");
+const isSubmitting = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const pendingSaves = ref(new Map<string, { noteId: string; data: NoteSchemaType }>());
+// If new, no query — otherwise fetch note
+const currentNoteId = ref(props.noteId);
+const isNew = computed(() => props.noteId === "new");
+const noteQuery = getEditableNote(computed(() => props.noteId));
+const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
+
+const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
+  validationSchema: toTypedSchema(NoteSchema),
+  initialValues: newNote({ vehicleId: props.vehicleId }),
+});
+
+// Watcher to keep our form in sync with prop changes
+watch(
+  () => [props.noteId, noteQuery.isLoading.value],
+  () => {
+    currentNoteId.value = props.noteId;
+    debouncedSave;
+
+    if (props.noteId === "new") {
+      resetForm({
+        values: newNote({ vehicleId: props.vehicleId }),
+      });
       return;
     }
 
-    try {
-      isSubmitting.value = true;
-      console.log(
-        "autosaving, deciding if to create or update. createdNoteId:",
-        createdNoteId.value,
-      );
-
-      if (!createdNoteId.value) {
-        // Create new note
-        const response = await createNoteAsync(values);
-        console.log("Auto-saved new note with ID:", response.id);
-        createdNoteId.value = response.id;
-      } else {
-        // Update existing note
-        await updateNoteAsync({
-          noteId: createdNoteId.value,
-          data: values,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to auto-save note:", error);
-    } finally {
-      isSubmitting.value = false;
-    }
-
-    return () => {};
-  },
-  {
-    debounce: 2500,
-    maxWait: 10000,
-    immediate: true,
-    deep: true,
+    // Skip while loading
+    if (noteQuery.isLoading.value) return;
+    lastServerState.value = noteQuery.data.value as NoteSchemaType;
+    resetForm({
+      values: noteQuery.data.value,
+    });
   },
 );
 
+function handleDelete() {
+  try {
+    deleteNoteAsync({
+      noteId: currentNoteId.value,
+      vehicleId: values.vehicleId,
+    });
+
+    router.replace({
+      query: { ...router.currentRoute.value.query, note: undefined },
+    });
+  } catch (error) {
+    toast.error("Failed to delete note", {
+      description: (error as Error)?.message || "Unknown error",
+    });
+  }
+}
+function handlePendingSaves() {
+  pendingSaves.value.forEach(async (save) => {
+    try {
+      await saveNote(save.noteId, save.data);
+      pendingSaves.value.delete(save.noteId);
+    } catch (error) {
+      console.error("Failed to save pending note:", error);
+    }
+  });
+}
+async function saveNote(noteId: string, saveData: NoteSchemaType) {
+  if (!meta.value.dirty || isSubmitting.value) return;
+  try {
+    if (noteId === "new") {
+      const response = await createNoteAsync(saveData);
+      currentNoteId.value = response.id;
+      router.replace({
+        query: { ...router.currentRoute.value.query, note: response.id },
+      });
+      // Update server state after successful save
+      lastServerState.value = { ...saveData };
+    } else {
+      await updateNoteAsync({
+        noteId: noteId,
+        data: saveData,
+      });
+
+      // Update server state after successful save
+      lastServerState.value = { ...saveData };
+    }
+  } catch (error) {
+    toast.error("Something went wrong", {
+      description: (error as Error)?.message || "Unknown error",
+      action: {
+        label: "Try again",
+        onClick: () => saveNote(noteId, saveData),
+      },
+    });
+    console.error("DeBounce: Failed to save note:", error);
+  }
+}
+
+const debouncedSave = useDebounceFn(
+  () => {
+    handlePendingSaves();
+  },
+  2500,
+  {
+    maxWait: 10000,
+  },
+);
+
+watch(
+  () => [values.title, values.content, values.tags, values.pinned, values.vehicleId],
+  () => {
+    // Check if we should auto-save (compare against last server state)
+    if (shouldAutoSave(lastServerState.value, values)) {
+      pendingSaves.value.set(currentNoteId.value, {
+        noteId: currentNoteId.value,
+        data: { ...values },
+      });
+      debouncedSave();
+    } else {
+      pendingSaves.value.delete(currentNoteId.value);
+    }
+
+    // Eye candy: Immediately update caches on field changes
+    if (currentNoteId.value) {
+      // Immediately update all relevant caches
+      queryClient.setQueryData<Note[]>(
+        ["notes"],
+        (old) =>
+          old?.map((n) =>
+            n.id === currentNoteId.value
+              ? {
+                  ...n,
+                  title: values.title ?? null,
+                  content: values.content ?? null,
+                  pinned: values.pinned ?? false,
+                  tags: values.tags ?? [],
+                }
+              : n,
+          ) || [],
+      );
+
+      if (values.vehicleId) {
+        queryClient.setQueryData<Note[]>(
+          ["notes", "vehicle", values.vehicleId],
+          (old) =>
+            old?.map((n) =>
+              n.id === currentNoteId.value
+                ? {
+                    ...n,
+                    title: values.title ?? null,
+                    content: values.content ?? null,
+                    pinned: values.pinned ?? false,
+                    tags: values.tags ?? [],
+                  }
+                : n,
+            ) || [],
+        );
+      }
+    }
+  },
+  { deep: true, flush: "pre" },
+);
+
+function hasNoteChanged(initial: NoteSchemaType, current: NoteSchemaType): boolean {
+  return (
+    current.title !== initial.title ||
+    current.content !== initial.content ||
+    current.pinned !== initial.pinned ||
+    JSON.stringify(current.tags) !== JSON.stringify(initial.tags)
+  );
+}
+
+function shouldAutoSave(serverState: NoteSchemaType, current: NoteSchemaType): boolean {
+  // Must have changes compared to last server state
+  if (!hasNoteChanged(serverState, current)) {
+    return false;
+  }
+  return meta.value.dirty;
+}
+
+// Fallback for page unloads
+window.addEventListener("beforeunload", async () => {
+  console.log("beforeunload triggered");
+  if (pendingSaves.value.size > 1) {
+    pendingSaves.value.forEach(async (save) => {
+      const endpoint = save.noteId === "new" ? "/api/notes" : `/api/notes/${save.noteId}`;
+      const method = save.noteId === "new" ? "POST" : "PATCH";
+
+      fetch(endpoint, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(save.data),
+        keepalive: true, // keeps request alive after page unload
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notes", "vehicle", save.data.vehicleId],
+      });
+    });
+    queryClient.invalidateQueries({ queryKey: ["notes"] });
+  }
+});
+onUnmounted(() => {
+  window.removeEventListener("beforeunload", () => {});
+});
+
 const handleAddTag = () => {
   const trimmedTag = tagInput.value.trim();
-  if (trimmedTag !== "" && !values.tags.includes(trimmedTag)) {
-    setFieldValue("tags", [...values.tags, trimmedTag]);
+  const currentTags = values.tags || [];
+  if (trimmedTag !== "" && !currentTags.includes(trimmedTag)) {
+    setFieldValue("tags", [...currentTags, trimmedTag]);
     tagInput.value = "";
   }
 };
 
 const handleRemoveTag = (tagToRemove: string) => {
+  const currentTags = values.tags || [];
   setFieldValue(
     "tags",
-    values.tags.filter((tag) => tag !== tagToRemove),
+    currentTags.filter((tag) => tag !== tagToRemove),
   );
 };
-
-// Eeye candy: Immediately update caches on field changes
-// watch(
-//   () => [values.tags, values.title, values.pinned, values.content],
-//   () => {
-//     const updatedNote = {
-//       ...props.note,
-//       title: values.title,
-//       content: values.content,
-//       pinned: values.pinned,
-//       tags: values.tags,
-//     };
-
-//     // Immediately update all relevant caches
-//     queryClient.setQueryData<Note[]>(
-//       ["notes"],
-//       (old) => old?.map((note) => (note.id === createdNoteId.value ? updatedNote : note)) || [],
-//     );
-
-//     queryClient.setQueryData<Note>(["notes", createdNoteId.value], updatedNote);
-
-//     if (values.vehicleId) {
-//       queryClient.setQueryData<Note[]>(
-//         ["notes", "vehicle", values.vehicleId],
-//         (old) => old?.map((note) => (note.id === createdNoteId.value ? updatedNote : note)) || [],
-//       );
-//     }
-//   },
-// );
 </script>
 
 <template>
@@ -127,7 +272,7 @@ const handleRemoveTag = (tagToRemove: string) => {
       <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
 
       <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <div>
+        <div v-if="isNew && !props.vehicleId">
           <VehicleSelect
             :value="value"
             @valueChange="handleChange"
@@ -136,6 +281,45 @@ const handleRemoveTag = (tagToRemove: string) => {
           <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
         </div>
       </Field>
+
+      <header class="flex items-center justify-between">
+        {{ !isNew ? "Edit Note" : "Create Note" }}
+        <div class="flex items-center gap-4">
+          <!-- Status indicator -->
+          <div class="aspect-square border rounded-sm w-9 grid place-items-center">
+            <div v-if="isSubmitting"><Spinner class="size-4" /></div>
+            <div v-else-if="pendingSaves.has(currentNoteId)">
+              <SaveIcon class="size-4 stroke-warning" />
+            </div>
+            <div v-else><CheckIcon class="size-4 stroke-success" /></div>
+          </div>
+
+          <!-- control buttons -->
+          <div v-if="!isNew" class="flex gap-2">
+            <Separator orientation="vertical" class="mx-2 w-1" />
+            <Button
+              variant="outline"
+              size="icon"
+              class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
+              @click="handleDelete"
+              ><Icons.trash className="stroke-inherit"
+            /></Button>
+            <Button
+              variant="outline"
+              size="icon"
+              class="group"
+              @click="setFieldValue('pinned', !values.pinned)"
+            >
+              <Icons.pin v-if="!values.pinned" className="" />
+              <Icons.pin v-if="values.pinned" className="group-hover:hidden stroke-primary" />
+              <Icons.pinOff
+                v-if="values.pinned"
+                className="hidden group-hover:block stroke-primary"
+              />
+            </Button>
+          </div>
+        </div>
+      </header>
 
       <!-- Make this container flex with full height -->
       <div class="flex flex-col flex-1 min-h-0">
@@ -156,8 +340,8 @@ const handleRemoveTag = (tagToRemove: string) => {
               maxlength="50"
               class="flex-1"
               input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl"
+              :validate-on-blur="false"
             />
-            <span v-if="errors.title" class="text-sm text-destructive">{{ errors.title }}</span>
           </div>
         </TipTapEditor>
       </div>
@@ -182,17 +366,19 @@ const handleRemoveTag = (tagToRemove: string) => {
             <Badge
               v-for="(tag, index) in values.tags"
               :key="index"
-              variant="secondary"
-              class="px-2 py-1.5"
+              variant="outline"
+              class="text-sm px-3 py-1.5"
             >
               {{ tag }}
-              <button
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 type="button"
+                class="ml-2"
                 @click="handleRemoveTag(tag)"
-                class="hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
               >
                 <XIcon class="h-3 w-3" />
-              </button>
+              </Button>
             </Badge>
           </div>
         </div>

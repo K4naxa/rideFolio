@@ -15,6 +15,7 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
       const response = await api.get<Note[]>("/notes");
       return response.data;
     },
+    enabled: false,
   });
 
   // Fetch vehicle-specific notes
@@ -30,16 +31,19 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   });
 
   // Fetch single note by ID
-  const getNoteById = (noteId: MaybeRef<string | undefined>) => {
+  const getEditableNote = (noteId: MaybeRef<string | undefined>) => {
     return useQuery({
       queryKey: computed(() => ["notes", unref(noteId)]),
       queryFn: async () => {
         const id = unref(noteId);
-        if (!id) throw new Error("Note ID is required");
-        const response = await api.get<Note>(`/notes/${id}`);
+        if (!id || id === "new") return undefined;
+        const response = await api.get<NoteSchemaType>(`/notes/${id}/editable`);
         return response.data;
       },
-      enabled: computed(() => !!unref(noteId)),
+      enabled: computed(() => {
+        const id = unref(noteId);
+        return !!id && id !== "new";
+      }),
     });
   };
 
@@ -145,7 +149,7 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
     togglePinError: togglePinNoteMutation.error,
 
     // Get Note By ID (function that returns a query)
-    getNoteById,
+    getEditableNote: getEditableNote,
 
     // Create Mutation
     createNote: createNoteMutation.mutate,

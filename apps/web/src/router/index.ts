@@ -75,7 +75,6 @@ router.beforeEach(async (to, from, next) => {
   if (!to.meta.requiresAuth) return next();
 
   try {
-    console.log("⏳ Session validated");
     const sessionResult = await authClient.getSession();
     const user = sessionResult.data?.user;
     if (user) return next();
