@@ -178,9 +178,11 @@ watch(isModalOpen, (isOpen) => {
   <Dialog v-model:open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
     <DialogContent class="max-w-4xl lg:max-h-[90vh] flex flex-col min-h-0">
       <DialogHeader class="flex flex-row justify-between w-full gap-2">
-        <DialogTitle class="flex items-center gap-2"> Create Note </DialogTitle>
+        <DialogTitle class="flex justify-start items-center truncate gap-2">
+          <span v-if="initialNote">{{ values.title }}</span>
+          <span v-else>Create Note</span>
+        </DialogTitle>
         <Button v-if="!initialNote" variant="outline" @click="handleCancel">Cancel</Button>
-        <div></div>
       </DialogHeader>
 
       <form class="space-y-4 min-h-0 flex flex-col" @submit.prevent>

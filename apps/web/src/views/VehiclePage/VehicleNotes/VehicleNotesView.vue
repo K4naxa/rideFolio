@@ -35,11 +35,11 @@ const selectedNoteId = computed({
 });
 
 const selectNote = (note: Note) => {
-  selectedNoteId.value = note.id;
-  // else {
-  //   console.log("Opening modal for mobile view");
-  //   onOpen("createNote", note);
-  // }
+  if (!isMobile.value) selectedNoteId.value = note.id;
+  else {
+    console.log("Opening modal for mobile view");
+    onOpen("createNote", note);
+  }
 };
 
 const getTextSnippet = (html: string, maxLength: number = 100): string => {
@@ -145,7 +145,7 @@ const handleNewClick = () => {
       </div>
     </div>
 
-    <div :class="[' lg:flex flex-1 flex-col', selectedNoteId ? 'flex' : 'hidden']">
+    <div class="hidden lg:flex flex-1 flex-col">
       <NoteSection
         v-if="selectedNoteId"
         :note-id="selectedNoteId"
