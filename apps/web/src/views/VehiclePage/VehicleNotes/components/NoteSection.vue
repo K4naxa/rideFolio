@@ -7,17 +7,16 @@ import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
 import { computed, onUnmounted, ref, watch } from "vue";
-
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { toTypedSchema } from "@vee-validate/zod";
 import Button from "@/components/ui/button/Button.vue";
 import { useDebounceFn } from "@vueuse/core";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { Icons } from "@/components/utility/icons";
 import Separator from "@/components/ui/separator/Separator.vue";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import Icon from "@/components/icons/Icon.vue";
 
 const queryClient = useQueryClient();
 const router = useRouter();
@@ -301,17 +300,19 @@ const handleRemoveTag = (tagToRemove: string) => {
               size="icon"
               class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
               @click="handleDelete"
-              ><Icons.trash className="stroke-inherit"
-            /></Button>
+            >
+              <Icon name="trash" className="stroke-inherit" />
+            </Button>
             <Button
               variant="outline"
               size="icon"
               class="group"
               @click="setFieldValue('pinned', !values.pinned)"
             >
-              <Icons.pin v-if="!values.pinned" className="" />
-              <Icons.pin v-if="values.pinned" className="group-hover:hidden stroke-primary" />
-              <Icons.pinOff
+              <Icon name="pin" v-if="!values.pinned" className="" />
+              <Icon name="pin" v-if="values.pinned" className="group-hover:hidden stroke-primary" />
+              <Icon
+                name="pinOff"
                 v-if="values.pinned"
                 className="hidden group-hover:block stroke-primary"
               />

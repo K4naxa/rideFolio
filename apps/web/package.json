@@ -68,6 +68,7 @@
     "jsdom": "^27.0.1",
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.23.0",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "typescript": "~5.9.0",
     "vite": "npm:rolldown-vite@latest",
     "vitest": "^3.2.4",

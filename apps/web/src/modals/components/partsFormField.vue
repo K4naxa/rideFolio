@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import {
   Combobox,
@@ -12,7 +13,6 @@ import {
 
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { Icons } from "@/components/utility/icons";
 import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
 import type {
   TAccessibleVehicle,
@@ -290,9 +290,9 @@ function handleDeletePart(groupId: string) {
               }}
             </Button>
           </div>
-          <Button variant="outline" size="icon" @click.prevent="handleDeletePart(part.groupId)"
-            ><Icons.trash
-          /></Button>
+          <Button variant="outline" size="icon" @click.prevent="handleDeletePart(part.groupId)">
+            <Icon name="trash" />
+          </Button>
         </li>
       </ul>
     </div>

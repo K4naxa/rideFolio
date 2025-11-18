@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DateInput from "@/components/forms/DateInput.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
@@ -16,7 +17,6 @@ import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
-import { Icons } from "@/components/utility/icons";
 import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useTodoQueries } from "@/lib/queries/useTodoQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -77,7 +77,7 @@ const onSubmit = handleSubmit(async (values) => {
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="max-w-2xl w-full" key="CreateTodoModal">
       <DialogHeader>
-        <DialogTitle> <Icons.todo /> Create To-do </DialogTitle>
+        <DialogTitle> <Icon name="todo" /> Create To-do </DialogTitle>
       </DialogHeader>
       <form @submit="onSubmit" class="flex flex-col gap-5">
         <Field v-slot="{ value, handleChange }" name="vehicleId">

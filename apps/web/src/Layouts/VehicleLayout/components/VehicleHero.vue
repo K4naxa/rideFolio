@@ -7,7 +7,6 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import NumberFlow from "@number-flow/vue";
-import { Icons, VehicleTypeIcon } from "@/components/utility/icons";
 import { api } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { type TStatCardData } from "@repo/validation";
@@ -22,6 +21,7 @@ import {
 } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
+import Icon from "@/components/icons/Icon.vue";
 
 const { activeVehicle } = useActiveVehicle();
 const { data: statCardData, isLoading } = useQuery({
@@ -126,7 +126,7 @@ const statsOpen = ref(false);
                 aria-label="Delete Vehicle"
                 class="text-destructive"
               >
-                <Icons.trash />
+                <Icon name="trash" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -232,7 +232,7 @@ const statsOpen = ref(false);
               aria-label="Delete Vehicle"
               class="text-destructive"
             >
-              <Icons.trash />
+              <Icon name="trash" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

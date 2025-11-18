@@ -31,7 +31,7 @@
           "
           @click="handleActionClick(action.modal)"
         >
-          <component :is="action.icon" class="h-6 w-6 stroke-inherit" />
+          <Icon :name="action.icon" class="size-6 stroke-inherit" />
           <span class="sr-only">{{ action.label }}</span>
         </button>
       </Motion>
@@ -45,18 +45,21 @@
       ]"
       @click="toggleOpen"
     >
-      <Motion :animate="{ rotate: isOpen ? 45 : 0 }"> <Icons.plus class-name="h-6 w-6" /> </Motion>
+      <Motion :animate="{ rotate: isOpen ? 45 : 0 }">
+        <Icon name="plus" class="h-6 w-6" />
+      </Motion>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, type Component } from "vue";
+import { ref, computed } from "vue";
 import { Motion } from "motion-v";
 import { onClickOutside } from "@vueuse/core";
 import { useModalStore, type ModalType } from "@/stores/modal";
-import { Icons } from "@/components/utility/icons";
 import { twMerge } from "tailwind-merge";
+import type { IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 
 // Composables
 const { onOpen } = useModalStore();
@@ -68,7 +71,7 @@ const containerRef = ref<HTMLElement | null>(null);
 // Types
 type QuickAddAction = {
   id: string;
-  icon: Component;
+  icon: IconProps["name"];
   class: string;
   label: string;
   modal: ModalType;
@@ -78,35 +81,35 @@ type QuickAddAction = {
 const actions: QuickAddAction[] = [
   {
     id: "fuel",
-    icon: Icons.refill,
+    icon: "refill",
     class: "border-refill stroke-refill",
     label: "Fuel Up",
     modal: "createRefill",
   },
   {
     id: "maintenance",
-    icon: Icons.maintenance,
+    icon: "maintenance",
     class: "border-maintenance stroke-maintenance",
     label: "Maintenance",
     modal: "createMaintenance",
   },
   {
     id: "note",
-    icon: Icons.notes,
+    icon: "notes",
     class: "border-notes stroke-notes",
     label: "Note",
     modal: "createNote",
   },
   {
     id: "todo",
-    icon: Icons.todo,
+    icon: "todo",
     class: "border-todo stroke-todo",
     label: "Todo",
     modal: "createTodo",
   },
   {
     id: "vehicle",
-    icon: Icons.carFront,
+    icon: "carFront",
     class: "border-primary stroke-primary-foreground",
     label: "Add Vehicle",
     modal: "createVehicle",

@@ -7,7 +7,6 @@ import SidebarMenuItem from "./sidebar/SidebarMenuItem.vue";
 import SidebarContent from "./sidebar/SidebarContent.vue";
 import SidebarGroup from "./sidebar/SidebarGroup.vue";
 import SidebarMenuButton from "./sidebar/SidebarMenuButton.vue";
-import { Icons } from "@/components/utility/icons";
 import SidebarGroupLabel from "@/components/ui/sidebar/SidebarGroupLabel.vue";
 import SidebarGroupContent from "@/components/ui/sidebar/SidebarGroupContent.vue";
 import SidebarMenuSub from "@/components/ui/sidebar/SidebarMenuSub.vue";
@@ -19,10 +18,12 @@ import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
 import { useActivePool } from "@/lib/useActivePool";
 import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
+import AppLogo from "../icons/AppLogo.vue";
+import Icon, { type IconProps } from "../icons/Icon.vue";
 
 interface MainSideBarLinks {
   label: string;
-  icon: keyof typeof Icons;
+  icon: IconProps["name"];
   to: string;
 }
 
@@ -68,7 +69,7 @@ const handleCreateVehicleClick = () => {
             to="/dashboard"
             class="flex items-center gap-3 transition-colors duration-200 rounded-md"
           >
-            <Icons.logo />
+            <AppLogo class="size-10" />
             <h1 class="text-lg font-semibold">RideFolio</h1>
           </RouterLink>
         </SidebarMenuItem>
@@ -79,7 +80,7 @@ const handleCreateVehicleClick = () => {
       <SidebarGroup>
         <SidebarMenuButton :key="link.label" v-for="link in mainSidebarLinks" as-child>
           <RouterLink :to="link.to" class="flex items-center gap-3 font-semibold">
-            <component :is="Icons[link.icon]" />
+            <Icon :name="link.icon" />
             {{ link.label }}
           </RouterLink>
         </SidebarMenuButton>
@@ -88,14 +89,14 @@ const handleCreateVehicleClick = () => {
       <SidebarGroup>
         <SidebarGroupLabel class="text-sm">
           <span class="flex items-center gap-3 w-full">
-            <Icons.carFront />
+            <Icon name="carFront" />
             Ajoneuvot
             <button
               aria-label="Lisää ajoneuvo"
               @click="handleCreateVehicleClick"
               class="ml-auto flex items-center cursor-pointer hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
             >
-              <Icons.plus />
+              <Icon name="plus" />
             </button>
           </span>
         </SidebarGroupLabel>
@@ -115,14 +116,14 @@ const handleCreateVehicleClick = () => {
       <SidebarGroup data-slot="pools" class="mb-4">
         <SidebarGroupLabel class="text-sm select-none">
           <span class="flex items-center gap-3">
-            <Icons.users size="sm" />
+            <Icon name="users" size="sm" />
             Ryhmät
           </span>
           <RouterLink
             to=""
             class="ml-auto flex items-center gap-2 hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
           >
-            <Icons.plus />
+            <Icon name="plus" />
           </RouterLink>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="pools && pools.length > 0">
@@ -141,12 +142,12 @@ const handleCreateVehicleClick = () => {
           <SidebarMenu class="gap-0">
             <SidebarMenuButton asChild>
               <RouterLink to="" class="flex items-center gap-3">
-                <Icons.settings size="sm" /> Asetukset
+                <Icon name="settings" size="sm" /> Asetukset
               </RouterLink>
             </SidebarMenuButton>
             <SidebarMenuButton asChild>
               <RouterLink to="" class="flex items-center gap-3">
-                <Icons.subscription size="sm" /> Upgrade to Pro
+                <Icon name="subscription" size="sm" /> Upgrade to Pro
               </RouterLink>
             </SidebarMenuButton>
           </SidebarMenu>

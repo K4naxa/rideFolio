@@ -1,17 +1,15 @@
-"use client";
 <script setup lang="ts">
-import { computed, type Component } from "vue";
+import { computed } from "vue";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-
 import { Button } from "@/components/ui/button";
-import { Icons } from "../utility/icons";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useActivePool } from "@/lib/useActivePool";
 import { useRoute } from "vue-router";
 import AppHeaderProfileButton from "./AppHeaderProfileButton.vue";
 import { useModalStore } from "@/stores/modal";
 import { twMerge } from "tailwind-merge";
+import Icons from "../icons/Icon.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();
@@ -22,9 +20,11 @@ const title = computed(
   () => activeVehicleName.value || activePoolName.value || route.name?.toString(),
 );
 
+type IconName = "refill" | "maintenance" | "notes" | "todo" | "bell";
+
 interface AppHeaderButton {
   label: string;
-  icon: Component;
+  icon: IconName;
   onClick: () => void;
   class: string;
 }
@@ -32,30 +32,31 @@ interface AppHeaderButton {
 const headerButtons = computed<AppHeaderButton[]>(() => [
   {
     label: "Refill",
-    icon: Icons.refill,
+    icon: "refill",
     onClick: () => modalStore.onOpen("createRefill"),
-    class: "border-refill hover:bg-refill/10 ",
+    class: "border-refill hover:bg-refill/10",
   },
   {
     label: "Maintenance",
-    icon: Icons.maintenance,
+    icon: "maintenance",
     onClick: () => modalStore.onOpen("createMaintenance"),
-    class: "border-maintenance hover:bg-maintenance/10 ",
+    class: "border-maintenance hover:bg-maintenance/10",
   },
   {
     label: "Note",
-    icon: Icons.notes,
+    icon: "notes",
     onClick: () => modalStore.onOpen("createNote"),
-    class: "border-notes hover:bg-notes/20 ",
+    class: "border-notes hover:bg-notes/20",
   },
   {
     label: "Todo",
-    icon: Icons.todo,
+    icon: "todo",
     onClick: () => modalStore.onOpen("createTodo"),
-    class: "border-toDo hover:bg-toDo/20 ",
+    class: "border-toDo hover:bg-toDo/20",
   },
 ]);
 </script>
+
 <template>
   <header
     class="flex h-(--app-header-height) shrink-0 items-center px-2 lg:px-6 gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
@@ -71,15 +72,15 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
         v-for="button in headerButtons"
         :key="button.label"
         @click="button.onClick"
-        :class="twMerge(' hover:shadow-sm hover:shadow-refill/50', button.class)"
+        :class="twMerge('hover:shadow-sm hover:shadow-refill/50', button.class)"
       >
-        <component :is="button.icon" />
+        <Icons :name="button.icon" />
         <span class="hidden 2xl:block">{{ button.label }}</span>
       </Button>
     </div>
     <div class="ml-auto flex gap-x-2.5 items-center">
       <Button variant="ghost" class="p-2">
-        <Icons.bell size="sm" />
+        <Icons name="bell" size="sm" />
         <span class="sr-only">Notification</span>
       </Button>
 
@@ -87,6 +88,7 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
     </div>
   </header>
 </template>
+
 <style>
 :root {
   --app-header-height: 3.5rem;

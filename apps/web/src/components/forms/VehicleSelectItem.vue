@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { VehicleTypeIcon } from "@/components/utility/icons";
 import { type TAccessibleVehicle } from "@repo/validation";
+import VehicleTypeIcon from "../icons/VehicleTypeIcon.vue";
 interface SelectItemProps {
   vehicle: TAccessibleVehicle["vehicleData"];
   customClass?: string;

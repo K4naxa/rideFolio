@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref, watch } from "vue";
-import { Icons } from "../utility/icons";
 import Button from "./button/Button.vue";
+import Icon from "../icons/Icon.vue";
 
 interface Props {
   value?: File | string | null;
@@ -111,7 +111,7 @@ const handleClick = () => {
             @click="handleRemoveImage"
             class="absolute top-2 right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Icons.close />
+            <Icon name="close" />
           </Button>
         </div>
       </template>
@@ -120,7 +120,7 @@ const handleClick = () => {
       <template v-else>
         <div class="space-y-2 text-muted-foreground h-full">
           <div class="flex justify-center">
-            <Icons.camera className="w-10 h-10" />
+            <Icon name="camera" class="h-10" />
           </div>
           <div>
             <p class="font-medium text-foreground">{{ props.title }}</p>

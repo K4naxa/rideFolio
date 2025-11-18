@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
@@ -16,7 +17,6 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { VehicleTypeIcon } from "@/components/utility/icons";
 import { api } from "@/lib/api";
 import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useModalStore } from "@/stores/modal";

@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { Icons } from "@/components/utility/icons";
 import { RouterLink } from "vue-router";
-import type { Component } from "vue";
 import MobileQuickAddButton from "../AuthLayout/MobileQuickAddButton.vue";
+import type { IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 
 interface NavItem {
   name: string;
   route: string;
-  icon: Component;
+  icon: IconProps["name"];
 }
 
 const navItems: NavItem[] = [
-  { name: "Home", route: "/dashboard", icon: Icons.home },
-  { name: "Notes", route: "", icon: Icons.notes },
-  { name: "Todos", route: "", icon: Icons.todo },
-  { name: "Profile", route: "", icon: Icons.user },
+  { name: "Home", route: "/dashboard", icon: "home" },
+  { name: "Notes", route: "", icon: "notes" },
+  { name: "Todos", route: "", icon: "todo" },
+  { name: "Profile", route: "", icon: "user" },
 ];
 </script>
 
@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
         :to="item.route"
         class="flex flex-col items-center justify-center flex-1 py-2 px-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 router-link-active:text-primary"
       >
-        <component :is="item.icon" class="h-5 w-5 mb-1" />
+        <Icon :name="item.icon" class="size-5 mb-1" />
         <span class="text-xs">{{ item.name }}</span>
       </RouterLink>
 

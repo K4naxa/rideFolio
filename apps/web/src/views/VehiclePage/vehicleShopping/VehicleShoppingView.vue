@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
-import { Icons } from "@/components/utility/icons";
 import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { ShoppingListItemSchema } from "@repo/validation";
@@ -121,8 +121,9 @@ const handleCleanup = async () => {
             variant="outline"
             size="icon"
             @click="deleteItem({ itemId: item.id, vehicleId: item.vehicleId })"
-            ><Icons.trash
-          /></Button>
+          >
+            <Icon name="trash" className="stroke-inherit" />
+          </Button>
         </div>
       </ul>
       <ScrollBar orientation="horizontal" />

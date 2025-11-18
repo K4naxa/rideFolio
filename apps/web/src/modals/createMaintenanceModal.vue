@@ -17,7 +17,6 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { Icons } from "@/components/utility/icons";
 import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -29,6 +28,7 @@ import { computed, ref, watch } from "vue";
 import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { toast } from "vue-sonner";
+import Icon from "@/components/icons/Icon.vue";
 
 // Modal store
 const modalStore = useModalStore();
@@ -106,7 +106,7 @@ watch(isModalOpen, (open) => {
     <DialogScrollContent class="max-w-7xl">
       <form @submit="onSubmit" class="flex flex-col gap-6">
         <DialogHeader>
-          <DialogTitle> <Icons.maintenance /> Create Maintenance </DialogTitle>
+          <DialogTitle> <Icon name="maintenance" /> Create Maintenance </DialogTitle>
           <DialogDescription>
             Fill in the details below to create a new maintenance record.
           </DialogDescription>
@@ -114,7 +114,7 @@ watch(isModalOpen, (open) => {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
           <!--Left column  -->
-          <div class="gap-6 flex flex-col">
+          <div class="flex flex-col gap-6">
             <Field v-slot="{ value, handleChange }" name="vehicleId">
               <div>
                 <VehicleSelect
@@ -122,7 +122,7 @@ watch(isModalOpen, (open) => {
                   @valueChange="handleChange"
                   placeholder="Select a vehicle"
                 />
-                <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+                <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
               </div>
             </Field>
 
@@ -136,7 +136,7 @@ watch(isModalOpen, (open) => {
               />
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <Field v-slot="{ value, handleChange }" name="maintenanceType">
                 <div>
                   <Select :model-value="value" @update:model-value="handleChange">
@@ -149,7 +149,7 @@ watch(isModalOpen, (open) => {
                       }}</SelectItem>
                     </SelectContent>
                   </Select>
-                  <ErrorMessage name="maintenanceType" class="text-sm text-destructive mt-1 ml-1" />
+                  <ErrorMessage name="maintenanceType" class="text-destructive mt-1 ml-1 text-sm" />
                 </div>
               </Field>
 
@@ -163,10 +163,10 @@ watch(isModalOpen, (open) => {
               :validate-on-blur="false"
             />
 
-            <div class="hidden lg:block space-y-3">
+            <div class="hidden space-y-3 lg:block">
               <Field v-slot="{ value, handleChange }" name="image">
                 <UploadImage title="Upload a picture" :value="value" @change="handleChange" />
-                <ErrorMessage name="image" class="text-sm text-destructive mt-1 ml-1" />
+                <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
               </Field>
             </div>
 
@@ -174,25 +174,25 @@ watch(isModalOpen, (open) => {
           </div>
 
           <!-- RIGHT COLUMN -->
-          <div class="flex flex-col flex-1">
-            <Label><Icons.maintenance /> Serviced parts</Label>
+          <div class="flex flex-1 flex-col">
+            <Label><Icon name="maintenance" /> Serviced parts</Label>
 
-            <div class="flex-1 flex">
+            <div class="flex flex-1">
               <PartsFormField
                 :values="formParts"
                 @update:values="formParts = $event"
                 :selected-vehicle="selectedVehicle"
               />
-              <ErrorMessage name="parts" class="text-sm text-destructive mt-1 ml-1" />
+              <ErrorMessage name="parts" class="text-destructive mt-1 ml-1 text-sm" />
             </div>
           </div>
         </div>
 
         <!-- MOBILE ONLY / RECEIPT AND NOTES -->
-        <div class="lg:hidden flex flex-col gap-6 mt-6">
+        <div class="mt-6 flex flex-col gap-6 lg:hidden">
           <Field v-slot="{ value, handleChange }" name="image">
             <UploadImage title="Upload a picture" :value="value" @change="handleChange" />
-            <ErrorMessage name="image" class="text-sm text-destructive mt-1 ml-1" />
+            <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
           </Field>
 
           <Textarea name="notes" class="" placeholder="Maintenance notes" />

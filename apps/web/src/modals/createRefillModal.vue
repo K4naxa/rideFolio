@@ -4,7 +4,6 @@ import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import { Icons } from "@/components/utility/icons";
 import { api } from "@/lib/api";
 import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useModalStore } from "@/stores/modal";
@@ -25,6 +24,7 @@ import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
+import Icons from "@/components/icons/Icon.vue";
 
 const { activeVehicle } = useActiveVehicle();
 const selectedVehicle = computed(() =>
@@ -131,7 +131,7 @@ watch(isModalOpen, (open) => {
     <DialogScrollContent class="max-w-xl w-full" key="CreateRefillModal">
       <DialogHeader>
         <DialogTitle>
-          <Icons.refill />
+          <Icons name="refill" />
           Create new refill
         </DialogTitle>
         <DialogDescription class="text-start"

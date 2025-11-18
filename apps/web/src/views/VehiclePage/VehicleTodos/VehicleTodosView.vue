@@ -4,7 +4,6 @@ import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
-import { Icons } from "@/components/utility/icons";
 import { useTodoQueries } from "@/lib/queries/useTodoQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
@@ -19,6 +18,7 @@ import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
+import Icon from "@/components/icons/Icon.vue";
 
 const { activeVehicleId } = useActiveVehicle();
 const { vehicleTodos, toggleTodo, deleteTodo, vehicleTodosLoading } =
@@ -105,7 +105,7 @@ const tableColumns = computed(() => {
         <DropdownMenu :modal="false">
           <DropdownMenuTrigger as-child>
             <Button variant="outline" class="flex-1">
-              <Icons.filter /> <span class="md:hidden">Filter</span>
+              <Icon name="filter" /> <span class="md:hidden">Filter</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent class="w-52">
@@ -127,7 +127,7 @@ const tableColumns = computed(() => {
         </DropdownMenu>
 
         <Button variant="default" class="flex-1 sm:w-auto" @click="onOpen('createTodo')">
-          <Icons.plus className="stroke-white" />
+          <Icon name="plus" className="stroke-white" />
           Create To-do
         </Button>
       </div>
@@ -219,7 +219,7 @@ const tableColumns = computed(() => {
           <div class="flex items-center justify-center">
             <DropdownMenu :modal="false">
               <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost"> <Icons.dotsHorizontal /></Button>
+                <Button size="icon" variant="ghost"> <Icon name="dotsHorizontal" /></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem> Edit </DropdownMenuItem>

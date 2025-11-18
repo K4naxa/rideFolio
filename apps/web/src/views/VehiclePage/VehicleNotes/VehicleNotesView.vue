@@ -4,7 +4,6 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { Icons } from "@/components/utility/icons";
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { computed, ref } from "vue";
@@ -14,6 +13,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { useModalStore } from "@/stores/modal";
 import { type Note } from "@repo/validation";
 import Badge from "@/components/ui/badge/Badge.vue";
+import Icon from "@/components/icons/Icon.vue";
 
 const searchQuery = ref("");
 
@@ -75,14 +75,14 @@ const handleNewClick = () => {
           <DropdownMenu :modal="false">
             <DropdownMenuTrigger as-child>
               <Button variant="outline" class="flex-1">
-                <Icons.filter /> <span class="md:hidden">Filter</span>
+                <Icon name="filter" /> <span class="md:hidden">Filter</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent class="w-52"> </DropdownMenuContent>
           </DropdownMenu>
 
           <Button variant="default" class="flex-1 sm:w-auto" @click="handleNewClick">
-            <Icons.plus className="stroke-white" />
+            <Icon name="plus" class="stroke-white" />
             Create Note
           </Button>
         </div>
@@ -106,7 +106,8 @@ const handleNewClick = () => {
             <div class="flex justify-between items-center gap-1">
               <span class="font-medium truncate">{{ note.title }}</span>
 
-              <Icons.pin
+              <Icon
+                name="pin"
                 v-if="note.pinned"
                 className="size-4 text-primary stroke-primary hover:text-primary hover:stroke-primary transition-colors"
               />
@@ -137,7 +138,7 @@ const handleNewClick = () => {
               class="mt-4 items-center flex content-center justify-center"
               @click="handleNewClick"
             >
-              <Icons.plus className="stroke-white" />
+              <Icon name="plus" class="stroke-white" />
               Create Note
             </Button>
           </div>
