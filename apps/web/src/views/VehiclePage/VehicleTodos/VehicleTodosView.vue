@@ -17,6 +17,8 @@ import Badge from "@/components/ui/badge/Badge.vue";
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
+import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
+import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 
 const { activeVehicleId } = useActiveVehicle();
 const { vehicleTodos, toggleTodo, deleteTodo, vehicleTodosLoading } =
@@ -132,109 +134,109 @@ const tableColumns = computed(() => {
     </header>
 
     <!-- Desktop Table View -->
-    <div class="border rounded-lg">
-      <div class="overflow-x-auto scrollbar">
-        <!-- Table Header -->
+    <ScrollArea v-if="filteredTodos.length > 0" class="border rounded">
+      <!-- Table Header -->
+      <div
+        class="grid items-center flex-1 min-w-max gap-x-3 h-14 px-2 border-b text-sm text-accent-foreground font-medium bg-accent/50"
+        :style="{ gridTemplateColumns: tableColumns }"
+      >
+        <Label class="flex justify-center">State</Label>
+        <Label v-if="showPriority">Priority</Label>
+        <Label class="min-w-60 max-w-96 md:max-w-none">Todo</Label>
+        <Label v-if="showDueInfo">Due</Label>
+        <Label></Label>
+      </div>
+
+      <!-- Table Body -->
+      <ul
+        v-if="!vehicleTodosLoading"
+        v-auto-animate
+        class="divide-y divide-border min-w-max flex-1 overflow-hidden"
+      >
         <div
-          class="grid items-center flex-1 min-w-max gap-x-3 h-14 px-2 border-b text-sm text-accent-foreground font-medium bg-accent/50"
+          v-for="todo in filteredTodos"
+          :key="todo.id"
+          :class="[
+            'grid gap-x-3 py-4 px-2 hover:bg-accent/30 transition-colors duration-150',
+            (todo.dueDate?.overdue || todo.dueOdometer?.overdue) &&
+              'border-l-2 border-l-destructive',
+          ]"
           :style="{ gridTemplateColumns: tableColumns }"
         >
-          <Label class="flex justify-center">State</Label>
-          <Label v-if="showPriority">Priority</Label>
-          <Label class="min-w-60 max-w-96 md:max-w-none">Todo</Label>
-          <Label v-if="showDueInfo">Due</Label>
-          <Label></Label>
-        </div>
+          <!-- Checkbox -->
+          <div class="flex items-center justify-center">
+            <Checkbox
+              :model-value="todo.isCompleted"
+              @update:model-value="
+                toggleTodo({
+                  todoId: todo.id,
+                  vehicleId: todo.vehicleData.id,
+                  complete: !todo.isCompleted,
+                })
+              "
+              class="size-6"
+            />
+          </div>
 
-        <!-- Table Body -->
-        <ul
-          v-if="!vehicleTodosLoading"
-          v-auto-animate
-          class="divide-y divide-border min-w-max flex-1 overflow-hidden"
-        >
-          <div
-            v-for="todo in filteredTodos"
-            :key="todo.id"
-            :class="[
-              'grid gap-x-3 py-4 px-2 hover:bg-accent/30 transition-colors duration-150',
-              (todo.dueDate?.overdue || todo.dueOdometer?.overdue) &&
-                'border-l-2 border-l-destructive',
-            ]"
-            :style="{ gridTemplateColumns: tableColumns }"
-          >
-            <!-- Checkbox -->
-            <div class="flex items-center justify-center">
-              <Checkbox
-                :model-value="todo.isCompleted"
-                @update:model-value="
-                  toggleTodo({
-                    todoId: todo.id,
-                    vehicleId: todo.vehicleData.id,
-                    complete: !todo.isCompleted,
-                  })
-                "
-                class="size-6"
-              />
+          <!-- Priority Badge -->
+          <div v-if="showPriority" class="flex items-center justify-center">
+            <Badge
+              variant="outline"
+              v-if="todo.priority"
+              :class="['lowercase', getPriorityConfig(todo.priority).color]"
+            >
+              {{ getPriorityConfig(todo.priority).label }}
+            </Badge>
+          </div>
+
+          <!-- Todo Content -->
+          <div class="flex flex-col justify-center gap-1 min-w-60">
+            <span :class="{ 'line-through text-muted-foreground': todo.isCompleted }">
+              {{ todo.title }}
+            </span>
+            <span v-if="todo.description" class="text-sm text-muted-foreground">
+              {{ todo.description }}
+            </span>
+          </div>
+
+          <!-- Due Info -->
+          <div v-if="showDueInfo" class="flex flex-col gap-1 justify-center text-sm">
+            <div
+              v-if="todo.dueOdometer"
+              :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue }"
+            >
+              {{ formatOdometer(todo.dueOdometer.value, todo.dueOdometer.unit) }}
             </div>
-
-            <!-- Priority Badge -->
-            <div v-if="showPriority" class="flex items-center justify-center">
-              <Badge
-                variant="outline"
-                v-if="todo.priority"
-                :class="['lowercase', getPriorityConfig(todo.priority).color]"
-              >
-                {{ getPriorityConfig(todo.priority).label }}
-              </Badge>
-            </div>
-
-            <!-- Todo Content -->
-            <div class="flex flex-col justify-center gap-1 min-w-60">
-              <span :class="{ 'line-through text-muted-foreground': todo.isCompleted }">
-                {{ todo.title }}
-              </span>
-              <span v-if="todo.description" class="text-sm text-muted-foreground">
-                {{ todo.description }}
-              </span>
-            </div>
-
-            <!-- Due Info -->
-            <div v-if="showDueInfo" class="flex flex-col gap-1 justify-center text-sm">
-              <div
-                v-if="todo.dueOdometer"
-                :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue }"
-              >
-                {{ formatOdometer(todo.dueOdometer.value, todo.dueOdometer.unit) }}
-              </div>
-              <div
-                v-if="todo.dueDate"
-                :class="{ 'text-destructive font-medium': todo.dueDate.overdue }"
-              >
-                {{ formatDate(String(todo.dueDate.date)) }}
-              </div>
-            </div>
-
-            <!-- Actions (placeholder) -->
-            <div class="flex items-center justify-center">
-              <DropdownMenu :modal="false">
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost"> <Icons.dotsHorizontal /></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem> Edit </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    @click="deleteTodo({ todoId: todo.id, vehicleId: todo.vehicleData.id })"
-                  >
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <div
+              v-if="todo.dueDate"
+              :class="{ 'text-destructive font-medium': todo.dueDate.overdue }"
+            >
+              {{ formatDate(String(todo.dueDate.date)) }}
             </div>
           </div>
-        </ul>
-      </div>
-    </div>
+
+          <!-- Actions (placeholder) -->
+          <div class="flex items-center justify-center">
+            <DropdownMenu :modal="false">
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="ghost"> <Icons.dotsHorizontal /></Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem> Edit </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  @click="deleteTodo({ todoId: todo.id, vehicleId: todo.vehicleData.id })"
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </ul>
+
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
 
     <!-- Empty State -->
     <div

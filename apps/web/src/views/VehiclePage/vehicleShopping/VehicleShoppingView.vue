@@ -3,6 +3,8 @@ import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
+import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
+import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { Icons } from "@/components/utility/icons";
 import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -13,7 +15,7 @@ import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 const { activeVehicleId } = useActiveVehicle();
 
-const { vehicleShoppingList, vehicleShoppingListLoading, toggleItem, deleteItem, createItem } =
+const { vehicleShoppingList, toggleItem, deleteItem, createItem } =
   useShoppingQueries(activeVehicleId);
 
 const { handleSubmit, resetForm } = useForm({
@@ -62,80 +64,76 @@ const handleCleanup = async () => {
       </div>
     </form>
 
-    <div class="border rounded-lg">
-      <div class="overflow-x-auto scrollbar">
-        <!-- Table Header -->
+    <ScrollArea
+      v-if="vehicleShoppingList && vehicleShoppingList.length > 0"
+      class="border rounded-lg"
+    >
+      <!-- Table Header -->
+      <div
+        class="grid grid-cols-[3rem_1fr_6rem_3rem] min-w-max items-center gap-x-3 h-14 px-3 border-b text-sm text-accent-foreground font-medium bg-accent/50"
+      >
+        <Label class="flex justify-center">State</Label>
+        <Label class="min-w-60">Name</Label>
+        <Label>Price</Label>
+        <Button variant="outline" size="icon" @click="handleCleanup()">
+          <BrushCleaningIcon
+        /></Button>
+      </div>
+
+      <!-- Table Body -->
+      <ul v-auto-animate class="divide-y divide-border min-w-max overflow-hidden">
         <div
-          class="grid grid-cols-[3rem_1fr_6rem_3rem] min-w-max items-center gap-x-3 h-14 px-3 border-b text-sm text-accent-foreground font-medium bg-accent/50"
+          v-for="item in vehicleShoppingList || []"
+          :key="item.id"
+          :class="[
+            'grid grid-cols-[3rem_1fr_6rem_3rem] gap-x-3 py-4 px-3 hover:bg-accent/30 transition-colors duration-150',
+          ]"
         >
-          <Label class="flex justify-center">State</Label>
-          <Label class="min-w-60">Name</Label>
-          <Label>Price</Label>
-          <Button variant="outline" size="icon" @click="handleCleanup()">
-            <BrushCleaningIcon
+          <!-- Checkbox -->
+          <div class="flex items-center justify-center">
+            <Checkbox
+              :model-value="item.isPurchased"
+              @update:model-value="
+                toggleItem({
+                  itemId: item.id,
+                  vehicleId: item.vehicleId,
+                  purchased: !item.isPurchased,
+                })
+              "
+              class="size-6"
+            />
+          </div>
+
+          <!-- Todo Content -->
+          <div class="flex flex-col justify-center gap-1 min-w-60">
+            <span :class="{ 'line-through text-muted-foreground': item.isPurchased }">
+              {{ item.name }}
+            </span>
+          </div>
+
+          <!-- Due Info -->
+
+          <span>
+            {{ item.price ? `$${item.price.toFixed(2)}` : "-" }}
+          </span>
+
+          <Button
+            variant="outline"
+            size="icon"
+            @click="deleteItem({ itemId: item.id, vehicleId: item.vehicleId })"
+            ><Icons.trash
           /></Button>
         </div>
-
-        <!-- Table Body -->
-        <ul
-          v-auto-animate
-          v-if="!vehicleShoppingListLoading"
-          class="divide-y divide-border min-w-max overflow-hidden"
-        >
-          <div
-            v-for="item in vehicleShoppingList"
-            :key="item.id"
-            :class="[
-              'grid grid-cols-[3rem_1fr_6rem_3rem] gap-x-3 py-4 px-3 hover:bg-accent/30 transition-colors duration-150',
-            ]"
-          >
-            <!-- Checkbox -->
-            <div class="flex items-center justify-center">
-              <Checkbox
-                :model-value="item.isPurchased"
-                @update:model-value="
-                  toggleItem({
-                    itemId: item.id,
-                    vehicleId: item.vehicleId,
-                    purchased: !item.isPurchased,
-                  })
-                "
-                class="size-6"
-              />
-            </div>
-
-            <!-- Todo Content -->
-            <div class="flex flex-col justify-center gap-1 min-w-60">
-              <span :class="{ 'line-through text-muted-foreground': item.isPurchased }">
-                {{ item.name }}
-              </span>
-            </div>
-
-            <!-- Due Info -->
-
-            <span>
-              {{ item.price ? `$${item.price.toFixed(2)}` : "-" }}
-            </span>
-
-            <Button
-              variant="outline"
-              size="icon"
-              @click="deleteItem({ itemId: item.id, vehicleId: item.vehicleId })"
-              ><Icons.trash
-            /></Button>
-          </div>
-        </ul>
-      </div>
-    </div>
+      </ul>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
 
     <!-- Empty State -->
     <div
       v-if="vehicleShoppingList && vehicleShoppingList.length === 0"
       class="flex flex-col items-center justify-center py-12 text-center"
     >
-      <p class="text-muted-foreground">
-        {{ "Your shopping list is empty. Add items using the form above to get started!" }}
-      </p>
+      <p class="text-muted-foreground">Your shopping list is empty.</p>
     </div>
   </main>
 </template>
