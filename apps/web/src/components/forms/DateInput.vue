@@ -3,7 +3,7 @@ import type { DateValue } from "@internationalized/date";
 import { DateFormatter, fromDate, getLocalTimeZone } from "@internationalized/date";
 import { CalendarIcon } from "lucide-vue-next";
 
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -51,10 +51,6 @@ function onCalendarSelect(val: DateValue | undefined) {
   handleChange(val ? val.toDate(getLocalTimeZone()) : null);
   open.value = false;
 }
-function onNativeChange(e: Event) {
-  const val = (e.target as HTMLInputElement).value;
-  handleChange(val ? new Date(val) : null);
-}
 
 const formattedDate = computed(() => {
   return value.value ? df.value.format(value.value) : null;
@@ -81,16 +77,6 @@ const formattedDate = computed(() => {
         </PopoverContent>
       </Popover>
     </div>
-
-    <!-- Mobile -->
-    <!-- <div v-else>
-      <input
-        type="date"
-        class="rounded-md border border-input bg-background px-3 py-2 text-sm"
-        :value="value ? new Date(value).toISOString().split('T')[0] : ''"
-        @input="onNativeChange"
-      />
-    </div> -->
 
     <!-- Validation error -->
     <p v-if="errorMessage" class="text-red-500 text-xs mt-1">
