@@ -66,14 +66,18 @@ enum PoolInviteStatus {
   DECLINED // Invite has been declined
 }
 
-// ** MAINTENANCE ENUMS
+
 enum MaintenanceType {
-  PREVENTIVE    // Scheduled maintenance
-  REPAIR        // Fixing broken parts
-  INSPECTION    // Regular checks, MOT, etc.
-  WARRANTY      // Warranty/recall work
-  MODIFICATION  // Upgrades/modifications
+  PREVENTIVE
+  MAINTENANCE
+  REPAIR
+  WARRANTY
+  INSPECTION
+  DOCUMENTATION
+  UPGRADE
+  OTHER
 }
+
 
 // ---- TODO ENUMS
 enum TodoDueTypes {
@@ -92,15 +96,7 @@ enum TodoPriority {
   HIGH
   CRITICAL
 }
-enum TodoCategory {
-  PREVENTIVE
-  MAINTENANCE
-  REPAIR
-  INSPECTION
-  DOCUMENTATION
-  UPGRADE
-  OTHER
-}
+
 
 generator client {
   provider = "prisma-client-js"
@@ -219,11 +215,11 @@ model Vehicle {
 
   fuelType     FuelTypes
   odometerType OdometerTypes
-  make        String?
-  model       String?
+  make        String? @default("")
+  model       String? @default("")
   year       Int?
   vin             String?  
-  licensePlate    String?   
+  licensePlate    String?  
   image           String?
 
   // Initial odometer (Set once, during vehicle creation or when changing the odometer type distance / hour)
@@ -309,26 +305,21 @@ model Maintenance {
 
 // Junction table for maintenance logs and parts (many-to-many)
 model MaintenancePart {
-  id               String   @id @default(cuid())
-  maintenanceId String
-  partId           String
-
+  id              String   @id @default(cuid())
+  maintenanceId   String
+  partId          String
+  groupId         String   
   // Where the parts / part was installed
-  locationId       String?   
-
-
-  label String?
+  locationId      String?   
+  // User given custom label & description for this part
+  label           String? @default("")
+  description     String? @default("")
   // This is used to store user's custom string
-  customPartType String?
+  customPartLabel  String?
 
-
-  description        String?
-  quantity       Int @default(1)
-  cost           Float?
-
-  maintenance Maintenance @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
-  part           VehiclePart    @relation(fields: [partId], references: [id], onDelete: Cascade)
-  location       VehiclePartLocation?      @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  maintenance     Maintenance           @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+  part            VehiclePart           @relation(fields: [partId], references: [id], onDelete: Cascade)
+  location        VehiclePartLocation?  @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
   @@index([maintenanceId])
   @@index([partId])
@@ -339,7 +330,7 @@ model Todo {
   vehicleId String
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   title String
-  description String?
+  description String? @default("")
   priority TodoPriority?
   isCompleted Boolean @default(false)
 
@@ -363,8 +354,8 @@ model Note{
   id String @id @default(cuid())
   vehicleId String
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  title String?
-  content String?
+  title String? @default("")
+  content String? @default("")
   tags String[]
   pinned Boolean @default(false)
 

@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
-  MaintenanceBackendSchema,
+  MaintenanceSchema,
   RecentActivityInfiniteResponse,
   RecentActivityQueryOptions,
   RefillSchema,
   RefillSchemaOutput,
-  TMaintenanceBackendSchema,
+  TMaintenanceSchema,
   TVehicleTypeCode,
 } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
@@ -37,8 +37,8 @@ export class LogsController {
 
   // ** MAINTENANCE **
   @AllowAnonymous() // Allow anonymous access
-  @Get('maintenance/maintenance-categories-and-parts')
-  async getCategoriesAndParts(@Query('vehicleTypeCode') vehicleType: TVehicleTypeCode) {
+  @Get('maintenance/categories/:vehicleTypeCode')
+  async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: TVehicleTypeCode) {
     console.log('fetching maintenance categories and parts for vehicle type:', vehicleType);
     return await this.maintenanceService.getCategoriesAndParts(vehicleType);
   }
@@ -46,8 +46,8 @@ export class LogsController {
   @Post('maintenance')
   async createMaintenance(
     @Session() SessionUser: UserSession,
-    @Body(new ZodValidationPipe(MaintenanceBackendSchema as ZodType))
-    maintenanceDto: TMaintenanceBackendSchema,
+    @Body(new ZodValidationPipe(MaintenanceSchema as ZodType))
+    maintenanceDto: TMaintenanceSchema,
   ) {
     await this.maintenanceService.createMaintenance(SessionUser, maintenanceDto);
     return { status: 'success' };

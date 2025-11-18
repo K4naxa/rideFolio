@@ -1,0 +1,300 @@
+<script setup lang="ts">
+import Button from "@/components/ui/button/Button.vue";
+import {
+  Combobox,
+  ComboboxAnchor,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+
+import Label from "@/components/ui/label/Label.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import { Icons } from "@/components/utility/icons";
+import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
+import type {
+  TAccessibleVehicle,
+  TMaintenanceCategory,
+  TMaintenanceCategoryPart,
+  TMaintenanceFormPart,
+} from "@repo/validation";
+import { computed, ref } from "vue";
+
+interface PartDisplay {
+  groupId: string;
+  code: TMaintenanceFormPart["code"];
+  label: TMaintenanceFormPart["label"];
+  locations: TMaintenanceFormPart["validLocations"];
+  instances: TMaintenanceFormPart[];
+}
+
+const props = defineProps<{
+  selectedVehicle?: TAccessibleVehicle;
+  values: TMaintenanceFormPart[];
+}>();
+const emits = defineEmits<{
+  (e: "update:values", value: TMaintenanceFormPart[]): void;
+}>();
+
+const selectedVehicleType = computed(() => props.selectedVehicle?.vehicleData.type || undefined);
+
+const selectedCategory = ref<TMaintenanceCategory | null>(null);
+const selectedPart = ref<TMaintenanceCategoryPart | null>(null);
+const customTypeInput = ref<string>("");
+
+const { partCategories, partCategoriesLoading } = useMaintenanceQueries({
+  typeCode: selectedVehicleType,
+});
+
+const displayParts = computed<PartDisplay[]>(() => {
+  const parts = props.values || [];
+  const partMap = new Map<string, PartDisplay>();
+
+  for (const part of parts) {
+    if (!part.groupId) throw new Error("Part is missing groupId");
+    if (!partMap.has(part.groupId)) {
+      partMap.set(part.groupId, {
+        groupId: part.groupId,
+        code: part.code,
+        label: part.label,
+        locations: part.validLocations,
+        instances: [part],
+      });
+    } else {
+      partMap.get(part.groupId)?.instances.push(part);
+    }
+  }
+  return Array.from(partMap.values());
+});
+
+function handleAddPart() {
+  if (selectedPart.value) {
+    const newPart: TMaintenanceFormPart = {
+      groupId: Date.now().toString(),
+      partId: selectedPart.value.id,
+      locationId: null,
+      code: selectedPart.value.code,
+      label: null,
+      description: null,
+      validLocations: selectedPart.value.validLocations,
+      customPartLabel: customTypeInput.value || null,
+    };
+
+    const currentParts = props.values || [];
+
+    emits("update:values", [...currentParts, newPart]);
+    // Reset selections
+
+    selectedPart.value = null;
+    customTypeInput.value = "";
+  }
+}
+
+function handleLocationToggle(locationId: string, groupId: string) {
+  const partGroup = props.values.filter((part) => part.groupId === groupId);
+
+  if (partGroup.length === 0) return;
+
+  const existingPartWithLocation = partGroup.find((part) => part.locationId === locationId);
+
+  // If location is already selected, remove or nullify it
+  if (existingPartWithLocation) {
+    if (partGroup.length === 1) {
+      // Only instance - set locationId to null
+      const updatedParts = props.values.map((part) =>
+        part.groupId === groupId ? { ...part, locationId: null } : part,
+      );
+      emits("update:values", updatedParts);
+    } else {
+      // Multiple instances - remove this specific one
+      const updatedParts = props.values.filter(
+        (part) => !(part.groupId === groupId && part.locationId === locationId),
+      );
+      emits("update:values", updatedParts);
+    }
+    return;
+  }
+
+  // Location is not selected - add or update
+  const partWithoutLocation = partGroup.find((part) => part.locationId === null);
+
+  if (partWithoutLocation) {
+    // Update existing part without location
+    const updatedParts = props.values.map((part) =>
+      part === partWithoutLocation ? { ...part, locationId } : part,
+    );
+    emits("update:values", updatedParts);
+  } else {
+    if (!partGroup[0]) return;
+    // Create new instance
+    const newPart: TMaintenanceFormPart = {
+      ...partGroup[0],
+      locationId,
+    };
+    emits("update:values", [...props.values, newPart]);
+  }
+}
+
+function handeLabelUpdate(newLabel: string, groupId: string) {
+  const updatedParts = props.values.map((part) => {
+    if (part.groupId === groupId) {
+      return {
+        ...part,
+        label: newLabel,
+      };
+    }
+    return part;
+  });
+  emits("update:values", updatedParts);
+}
+
+function handleDeletePart(groupId: string) {
+  const updatedParts = props.values.filter((part) => part.groupId !== groupId);
+  emits("update:values", updatedParts);
+}
+</script>
+
+<template>
+  <div class="flex flex-col flex-1 pt-3 gap-6 min-w-0 overflow-hidden min-h-0 max-h-full lg:h-full">
+    <!-- part Creation -->
+    <div class="flex gap-4 flex-col lg:flex-row">
+      <div class="flex-2">
+        <Combobox
+          v-model="selectedCategory"
+          by="code"
+          open-on-click
+          reset-search-term-on-select
+          :disabled="!selectedVehicle"
+        >
+          <ComboboxAnchor>
+            <div class="inputField">
+              <ComboboxInput
+                placeholder="Select category"
+                class="w-full"
+                :display-value="(val: TMaintenanceCategory | null) => val?.code ?? ''"
+              />
+            </div>
+          </ComboboxAnchor>
+          <ComboboxList>
+            <ComboboxEmpty v-if="partCategoriesLoading" class=""
+              ><span class="w-full flex gap-2"><Spinner />Loading...</span></ComboboxEmpty
+            >
+            <ComboboxEmpty class="text-muted-foreground"> No categories found. </ComboboxEmpty>
+            <ComboboxGroup>
+              <ComboboxItem
+                v-for="category in partCategories"
+                :key="category.id"
+                :value="category"
+                :class="selectedCategory?.id === category.id && 'bg-accent/50'"
+              >
+                {{ category.code }}
+              </ComboboxItem>
+            </ComboboxGroup>
+          </ComboboxList>
+        </Combobox>
+      </div>
+
+      <div class="flex-2">
+        <Combobox
+          v-model="selectedPart"
+          by="code"
+          open-on-click
+          reset-search-term-on-select
+          :disabled="!selectedCategory || !selectedVehicle"
+        >
+          <ComboboxAnchor>
+            <div class="inputField">
+              <ComboboxInput
+                placeholder="Select part"
+                :display-value="(val: TMaintenanceCategoryPart) => val?.code ?? ''"
+              />
+            </div>
+          </ComboboxAnchor>
+          <ComboboxList>
+            <ComboboxEmpty> No categories found. </ComboboxEmpty>
+            <ComboboxGroup>
+              <ComboboxItem
+                v-for="part in selectedCategory?.parts"
+                :key="part.id"
+                :value="part"
+                :class="selectedPart?.id === part.id && 'bg-accent/50'"
+              >
+                {{ part.code }}
+              </ComboboxItem>
+            </ComboboxGroup>
+          </ComboboxList>
+        </Combobox>
+      </div>
+
+      <Button type="button" class="flex-1" @click="handleAddPart" :disabled="!selectedPart"
+        >Add</Button
+      >
+    </div>
+
+    <!-- parts list -->
+    <div class="flex-1 flex flex-col rounded border overflow-hidden min-h-0 lg:max-h-full">
+      <!-- header -->
+      <div
+        class="grid grid-cols-[minmax(16rem,1fr)_12rem_2rem] h-10 px-3 border-b text-sm text-accent-foreground font-medium bg-accent/20 gap-4"
+      >
+        <Label>Part</Label>
+        <Label>Locations</Label>
+        <div></div>
+      </div>
+      <!-- content -->
+      <ul
+        v-auto-animate
+        class="flex-1 flex-col flex scrollbar overflow-y-auto p-1.5 min-h-24 divide-y divide-border max-h-96 lg:overflow-x-hidden"
+      >
+        <span v-if="displayParts.length < 1" class="text-muted-foreground text-center my-auto"
+          >Add serviced parts to the list to see them here</span
+        >
+        <li
+          v-for="part in displayParts"
+          :key="part.groupId"
+          class="grid grid-cols-[minmax(12rem,1fr)_12rem_2rem] gap-4 py-1.5 px-2 my-2 items-center"
+        >
+          <!-- part code / label -->
+          <div>
+            <input
+              type="text"
+              :placeholder="part.code"
+              :value="part.label"
+              @input="handeLabelUpdate(($event.target as HTMLInputElement).value, part.groupId)"
+              class="outline-0 focus-visible:outline-0 w-full py-1 text-sm bg-transparent"
+            />
+            <span v-if="part.label" class="text-xs text-muted-foreground">{{ part.code }}</span>
+          </div>
+
+          <!-- locations -->
+          <div class="flex gap-0.5">
+            <Button
+              variant="outline"
+              size="sm"
+              @click.prevent="handleLocationToggle(loc.id, part.groupId)"
+              :class="
+                part.instances.some((instance) => instance.locationId === loc.id)
+                  ? 'bg-primary/50! text-accent-foreground'
+                  : ''
+              "
+              v-for="loc in part.locations"
+              :key="loc.code"
+            >
+              {{
+                loc.code
+                  .split("_")
+                  .map((word) => word[0]?.toUpperCase() || "")
+                  .join("")
+              }}
+            </Button>
+          </div>
+          <Button variant="outline" size="icon" @click.prevent="handleDeletePart(part.groupId)"
+            ><Icons.trash
+          /></Button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>

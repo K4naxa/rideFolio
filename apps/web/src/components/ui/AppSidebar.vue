@@ -104,7 +104,7 @@ const handleCreateVehicleClick = () => {
             <SidebarMenuSubItem v-for="vehicle in vehicles" :key="vehicle.vehicleData.id">
               <SidebarMenuSubButton asChild :isActive="activeVehicleId === vehicle.vehicleData.id">
                 <RouterLink :to="`/vehicles/${vehicle.vehicleData.id}`" class="w-full">
-                  {{ vehicle.vehicleData.name }}
+                  <span>{{ vehicle.vehicleData.name }}</span>
                 </RouterLink>
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>

@@ -70,7 +70,6 @@
     "oxlint": "~1.23.0",
     "typescript": "~5.9.0",
     "vite": "npm:rolldown-vite@latest",
-    "vite-plugin-vue-devtools": "^8.0.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.1.1"
   }

@@ -1,28 +1,9 @@
 import * as z from "zod";
 import { TMaintenanceTypes } from "./maintenance.types";
 
-const BaseMaintenanceSchema = z.object({
-  vehicleId: z.cuid("Invalid vehicle"),
+export const MaintenanceSchema = z.object({
+  vehicleId: z.cuid("Select a vehicle"),
   date: z.coerce.date("Select a date"),
-  odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
-  maintenanceType: z.enum(TMaintenanceTypes, { message: "Valitse huollon tyyppi" }),
-  serviceProvider: z.string().max(255, "Max length 255 characters").nullable().default(null),
-  parts: z.array(
-    z.object({
-      id: z.string(),
-      categoryId: z.string(),
-      code: z.string(),
-      description: z.string().max(255).optional().nullable().default(null),
-      customPartType: z.string().max(255).optional().nullable().default(null),
-      locationId: z.string().optional().nullable().default(null),
-      cost: z.coerce.number().nullable().default(null),
-      quantity: z.coerce.number().optional().default(1),
-    })
-  ),
-  totalCost: z.coerce.number().nullable().default(null),
-  notes: z.string().nullable().default(null),
-});
-export const MaintenanceFrontendSchema = BaseMaintenanceSchema.extend({
   image: z
     .instanceof(File)
     .optional()
@@ -32,12 +13,21 @@ export const MaintenanceFrontendSchema = BaseMaintenanceSchema.extend({
     .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
       message: "Images max size is 5MB.",
     })
-    .nullable()
-    .default(null),
+    .nullable(),
+  odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
+  maintenanceType: z.enum(TMaintenanceTypes, { message: "Select maintenance reason" }),
+  serviceProvider: z.string().max(255, "Max length 255 characters").nullable(),
+  parts: z.array(
+    z.object({
+      partId: z.string(),
+      groupId: z.string(),
+      locationId: z.string().optional().nullable(),
+      label: z.string().max(60).optional().nullable(),
+      description: z.string().max(255).optional().nullable(),
+      customPartLabel: z.string().max(255).optional().nullable(),
+    })
+  ),
+  totalCost: z.coerce.number().nullable(),
+  notes: z.string().nullable(),
 });
-export type TCreateMaintenanceFrontendSchema = z.infer<typeof MaintenanceFrontendSchema>;
-
-export const MaintenanceBackendSchema = BaseMaintenanceSchema.extend({
-  image: z.url().optional().nullable().default(null),
-});
-export type TMaintenanceBackendSchema = z.infer<typeof MaintenanceBackendSchema>;
+export type TMaintenanceSchema = z.infer<typeof MaintenanceSchema>;

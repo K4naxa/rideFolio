@@ -20,7 +20,7 @@ const navItems: NavItem[] = [
 
 <template>
   <div
-    class="md:hidden mobile-bottom-nav fixed bottom-0 w-screen flex border-t bg-background/80 backdrop-blur-lg shadow-md px-2 z-20"
+    class="md:hidden bottom-safe-area fixed bottom-0 w-screen flex border-t bg-background/80 backdrop-blur-lg shadow-md px-2 z-20"
   >
     <nav class="flex justify-evenly items-center w-full pt-2">
       <!-- First two nav items -->
@@ -52,8 +52,8 @@ const navItems: NavItem[] = [
     </nav>
   </div>
 </template>
-<style scoped>
-.mobile-bottom-nav {
+<style>
+.bottom-safe-area {
   /* Ensure it appears above other content */
   padding-bottom: env(safe-area-inset-bottom);
 }

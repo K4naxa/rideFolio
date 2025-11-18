@@ -50,6 +50,7 @@ const { handleSubmit, resetForm, isSubmitting } = useForm({
 
 watch(isModalOpen, (open) => {
   if (open && activeVehicle.value) {
+    showDueOptions.value = false;
     resetForm({
       values: {
         vehicleId: activeVehicle.value.vehicleData.id,
@@ -78,7 +79,7 @@ const onSubmit = handleSubmit(async (values) => {
       <DialogHeader>
         <DialogTitle> <Icons.todo /> Create To-do </DialogTitle>
       </DialogHeader>
-      <form @submit="onSubmit" class="space-y-5">
+      <form @submit="onSubmit" class="flex flex-col gap-5">
         <Field v-slot="{ value, handleChange }" name="vehicleId">
           <div>
             <VehicleSelect
@@ -93,7 +94,7 @@ const onSubmit = handleSubmit(async (values) => {
         <Input name="title" placeholder="To-do" type="text" />
         <Textarea name="description" placeholder="To-do description" />
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Field v-slot="{ value, handleChange }" name="priority">
             <Select :model-value="value" @update:model-value="handleChange" class="w-full">
               <SelectTrigger class="w-full">

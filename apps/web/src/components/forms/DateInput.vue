@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useField } from "vee-validate";
+import { useMediaQuery } from "@vueuse/core";
 
 const props = withDefaults(
   defineProps<{
@@ -28,10 +29,7 @@ const props = withDefaults(
 );
 
 const open = ref(false);
-const isMobile = ref(false);
-onMounted(() => {
-  isMobile.value = window.innerWidth < 768; // switch threshold as you like
-});
+const isMobile = useMediaQuery("(max-width: 768px)");
 
 const { value, errorMessage, handleChange } = useField(props.name, props.validator, {
   initialValue: props.initialValue,
@@ -41,9 +39,12 @@ const { value, errorMessage, handleChange } = useField(props.name, props.validat
 const selectedDate = ref<DateValue | undefined>(
   props.initialValue ? fromDate(new Date(props.initialValue), getLocalTimeZone()) : undefined,
 );
-const df = new DateFormatter("en-US", {
-  dateStyle: "long",
-});
+const df = computed(
+  () =>
+    new DateFormatter(navigator.language, {
+      dateStyle: isMobile.value ? "short" : "long",
+    }),
+);
 
 function onCalendarSelect(val: DateValue | undefined) {
   selectedDate.value = val;
@@ -56,7 +57,7 @@ function onNativeChange(e: Event) {
 }
 
 const formattedDate = computed(() => {
-  return value.value ? df.format(value.value) : null;
+  return value.value ? df.value.format(value.value) : null;
 });
 </script>
 

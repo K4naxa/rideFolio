@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<InputProps>(), {
   validator: undefined,
   initialValue: undefined,
   validateOnChange: false,
-  validateOnBlur: true,
+  validateOnBlur: false,
 
   toUpperCase: false,
 });

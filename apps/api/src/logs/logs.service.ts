@@ -103,7 +103,7 @@ export class LogsService {
         },
         orderBy: [{ date: 'desc' }, { id: 'desc' }],
         take: fetchSize,
-      }) as Promise<RefillSelect[]>,
+      }),
       this.prisma.maintenance.findMany({
         where: { vehicleId: { in: vehicleIds }, ...dateFilter },
         select: {
@@ -117,8 +117,6 @@ export class LogsService {
           parts: {
             select: {
               part: { select: { code: true } },
-              quantity: true,
-              cost: true,
               location: { select: { code: true } },
             },
           },
@@ -126,7 +124,7 @@ export class LogsService {
         },
         orderBy: [{ date: 'desc' }, { id: 'desc' }],
         take: fetchSize,
-      }) as Promise<MaintenanceSelect[]>,
+      }),
     ]);
 
     const merged: RecentActivityItem[] = [

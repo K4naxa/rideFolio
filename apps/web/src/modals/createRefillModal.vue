@@ -138,7 +138,7 @@ watch(isModalOpen, (open) => {
           >Log a new fuel refill for your vehicle</DialogDescription
         >
       </DialogHeader>
-      <form @submit.prevent="onSubmit" class="justify-between flex flex-col">
+      <form @submit.prevent="onSubmit" class="justify-between flex flex-col gap-6">
         <div class="flex flex-col gap-6">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>

@@ -3,7 +3,7 @@ import type { DialogContentEmits, DialogContentProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
 import { DialogContent, DialogOverlay, DialogPortal, useForwardPropsEmits } from "reka-ui";
-import { cn } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
 
 const props = defineProps<DialogContentProps & { class?: HTMLAttributes["class"] }>();
 const emits = defineEmits<DialogContentEmits>();
@@ -16,12 +16,12 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 <template>
   <DialogPortal>
     <DialogOverlay
-      class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 backdrop-blur-sm"
+      class="fixed bottom-safe-area inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 backdrop-blur-sm"
     >
       <DialogContent
         :class="
-          cn(
-            'relative z-50 flex flex-col gap-6 w-full  md:my-8  border  bg-background p-6 shadow-lg duration-200 sm:rounded-lg md:w-full',
+          twMerge(
+            'relative z-50 flex flex-col gap-6 w-full p-4 lg:p-6 md:my-8 border bg-background shadow-lg duration-200 sm:rounded-lg md:w-full',
             props.class,
           )
         "

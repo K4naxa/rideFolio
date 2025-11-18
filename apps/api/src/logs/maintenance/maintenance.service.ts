@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { isVehicleTypeCode, TMaintenanceBackendSchema, TVehicleTypeCode } from '@repo/validation';
+import { isVehicleTypeCode, TMaintenanceSchema, TVehicleTypeCode } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -66,7 +66,7 @@ export class MaintenanceService {
     return categories;
   }
 
-  async createMaintenance(userSession: UserSession, maintenanceData: TMaintenanceBackendSchema) {
+  async createMaintenance(userSession: UserSession, maintenanceData: TMaintenanceSchema) {
     // 1. Check if the user has permission to create logs for the vehicle
     await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
 
@@ -86,6 +86,8 @@ export class MaintenanceService {
       // Should never happen, but just to satisfy TypeScript
       throw new Error('Vehicle not found.');
     }
+
+    // TODO: create create logic for image to bucket upload & image to db
 
     // 3. normalize data
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
@@ -110,11 +112,13 @@ export class MaintenanceService {
       for (const part of maintenanceData.parts) {
         await prisma.maintenancePart.create({
           data: {
+            groupId: part.groupId,
             maintenanceId: newMaintenance.id,
-            partId: part.id,
+            partId: part.partId,
             locationId: part.locationId,
-            cost: part.cost,
-            quantity: part.quantity,
+            label: part.label,
+            description: part.description,
+            customPartLabel: part.customPartLabel,
           },
         });
       }

@@ -229,25 +229,20 @@ const onSubmit = handleSubmit(async (data) => {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <!-- Odometer -->
 
-            <div class="relative">
-              <Input
-                placeholder="Odometer"
-                name="odometer"
-                type="number"
-                :min="0"
-                input-mode="numeric"
-                class="pr-12"
-              />
-              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                {{
-                  values.odometerType === "HOUR"
-                    ? "h"
-                    : values.odometerType === "MILE"
-                      ? "miles"
-                      : "km"
-                }}
-              </span>
-            </div>
+            <Input
+              placeholder="Odometer"
+              name="odometer"
+              type="number"
+              :min="0"
+              input-mode="numeric"
+              :suffix="
+                values.odometerType === 'HOUR'
+                  ? 'h'
+                  : values.odometerType === 'MILE'
+                    ? 'miles'
+                    : 'km'
+              "
+            />
 
             <!-- Fuel Type -->
             <Field v-slot="{ value, handleChange }" name="fuelType">

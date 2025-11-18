@@ -8,6 +8,7 @@ import { useThemeStore } from "./stores/theme";
 import CreateRefillModal from "./modals/createRefillModal.vue";
 import CreateNoteModal from "./modals/createNoteModal.vue";
 import CreateTodoModal from "./modals/CreateTodoModal.vue";
+import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
 
 configure({});
 
@@ -29,6 +30,7 @@ const themeStore = useThemeStore();
   <CreateRefillModal />
   <CreateTodoModal />
   <CreateNoteModal />
+  <CreateMaintenanceModal />
 </template>
 
 <style scoped></style>

@@ -23,20 +23,10 @@ import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { XIcon } from "lucide-vue-next";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 
-const modalStore = useModalStore();
-
 // Computed properties
+const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createNote");
 const initialNote = computed(() => modalStore.data as Note | null);
-
-console.log("Initial note in modal:", initialNote.value);
-console.log("Initial note values in modal:", {
-  vehicleId: initialNote.value?.vehicle.id,
-  title: initialNote.value?.title,
-  content: initialNote.value?.content,
-  pinned: initialNote.value?.pinned,
-  tags: initialNote.value?.tags,
-});
 
 const { values, errors, setFieldValue, resetForm, meta } = useForm<NoteSchemaType>({
   initialValues: {
