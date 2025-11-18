@@ -73,7 +73,12 @@ const formattedDate = computed(() => {
           </Button>
         </PopoverTrigger>
         <PopoverContent class="w-auto p-0" key="DateInputContent">
-          <Calendar :v-model="selectedDate" @update:model-value="onCalendarSelect" initial-focus />
+          <Calendar
+            :v-model="selectedDate"
+            @update:model-value="onCalendarSelect"
+            initial-focus
+            :disable-future-dates="disableFuture"
+          />
         </PopoverContent>
       </Popover>
     </div>

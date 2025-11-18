@@ -18,12 +18,15 @@ import {
   CalendarPrevButton,
 } from ".";
 
-const props = defineProps<CalendarRootProps & { class?: HTMLAttributes["class"] }>();
+const props = defineProps<
+  CalendarRootProps & { class?: HTMLAttributes["class"]; disableFutureDates?: boolean }
+>();
 const emits = defineEmits<CalendarRootEmits>();
 
 const delegatedProps = reactiveOmit(props, "class");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 </script>
 
 <template>
@@ -33,6 +36,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     :class="cn('p-3', props.class)"
     v-bind="forwarded"
     :week-starts-on="1"
+    :is-date-disabled="
+      (date) => date.toDate(timeZone).getTime() > Date.now() && props.disableFutureDates
+    "
   >
     <CalendarHeader>
       <CalendarHeading />
