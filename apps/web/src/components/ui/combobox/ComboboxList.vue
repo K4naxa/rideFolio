@@ -4,6 +4,7 @@ import type { HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
 import { ComboboxContent, ComboboxPortal, useForwardPropsEmits } from "reka-ui";
 import { cn } from "@/lib/utils";
+import ComboboxViewport from "./ComboboxViewport.vue";
 
 const props = withDefaults(
   defineProps<ComboboxContentProps & { class?: HTMLAttributes["class"] }>(),
