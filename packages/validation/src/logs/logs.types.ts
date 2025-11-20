@@ -1,4 +1,4 @@
-import { TVehicleTypeCode } from "../vehicle";
+import { TConversionResult } from "../vehicle";
 
 export interface RecentActivityQueryOptions {
   vehicleId?: string;
@@ -10,13 +10,39 @@ export interface RecentActivityQueryOptions {
 
 export interface RecentActivityInfiniteResponse {
   items: RecentActivityItem[];
-  nextCursor: { date: string; id: string } | null;
-  name: string | null;
+  nextCursor: string | null;
 }
 
 export interface RecentActivityItem {
   type: "refill" | "maintenance";
   date: Date;
-  vehicle: { name: string; type: TVehicleTypeCode; odometerType: string };
-  data: any; // normalized payload
+  vehicle: { name: string; type: string; image: string | null };
+  data: RefillActivityData | MaintenanceActivityData; // normalized payload
+}
+
+export interface RefillActivityData {
+  id: string;
+  date: Date;
+  fullRefill: boolean;
+  skippedRefill: boolean;
+  fuelAmount: TConversionResult;
+  costTotal: number | null;
+  notes: string | null;
+  consumption: TConversionResult;
+  odometer: TConversionResult;
+}
+export interface MaintenanceActivityData {
+  id: string;
+  date: Date;
+  maintenanceType: string;
+  costTotal: number | null;
+  notes: string | null;
+  odometer: TConversionResult;
+  parts: {
+    groupId: string;
+    partId: string;
+    partCode: string;
+    label: string | null;
+    locations: string[];
+  }[];
 }

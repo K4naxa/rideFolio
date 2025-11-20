@@ -49,4 +49,15 @@ export class VehiclesController {
   async getStatCardData(@Session() userSession: UserSession, @Param('id') vehicleId: string) {
     return this.vehiclesService.getStatCardData(userSession, vehicleId);
   }
+
+  @Get(':vehicleId/infiniteActivities/:cursor/:limit')
+  async getVehicleActivities(
+    @Session() userSession: UserSession,
+    @Param('vehicleId') vehicleId: string,
+    @Param('cursor') cursor: string,
+    @Param('limit') limit: number,
+  ) {
+    console.log(`Fetching vehicle activities for vehicleId: ${vehicleId} with cursor: ${cursor} and limit: ${limit}`);
+    return await this.vehiclesService.getVehicleActivities(userSession, vehicleId, cursor, limit);
+  }
 }

@@ -5,7 +5,7 @@ import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
-import VehicleOverview from "@/views/VehiclePage/VehicleOverview.vue";
+import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
 import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
 import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
 import { createRouter, createWebHistory } from "vue-router";

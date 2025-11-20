@@ -2,10 +2,20 @@ import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleTransformerService } from './../utils/vehicleTransformer.service';
 import { VehicleRepository } from './../utils/vehicleRepository';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import {
-  CreateVehicleBackendSchemaType,
+  Maintenance,
+  MaintenancePart,
+  Prisma,
+  Refill,
+  Vehicle,
+  VehiclePart,
+  VehiclePartLocation,
+} from '@prisma/client';
+import {
   CreateVehicleFrontendSchemaType,
+  MaintenanceActivityData,
+  RecentActivityInfiniteResponse,
+  RecentActivityItem,
   TAccessibleVehicle,
   TBasicVehicle,
   TStatCardData,
@@ -13,6 +23,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
+import { Extend } from 'zod/v4/core/util.cjs';
 
 @Injectable()
 export class VehiclesService {
@@ -30,7 +41,6 @@ export class VehiclesService {
     userSession: UserSession,
     vehicleData: CreateVehicleFrontendSchemaType,
   ): Promise<{ newVehicleId: string }> {
-    console.log('Starting vehicle transaction');
     try {
       // ** 1. Create the vehicle
 
@@ -38,6 +48,7 @@ export class VehiclesService {
       let formattedDistanceOdometer: number | null = vehicleData.odometer || null;
 
       // Extract and remove the odometer value from vehicleData
+      // TODO: add image logic later
       const { odometer, image, ...formattedVehicleData } = vehicleData;
       formattedDistanceOdometer = odometer ? odometer : null;
 
@@ -60,7 +71,6 @@ export class VehiclesService {
         },
       });
 
-      console.log('Vehicle created and linked to private pool successfully');
       return { newVehicleId: vehicle.id };
 
       // Link the vehicle to the user's private pool
@@ -84,7 +94,6 @@ export class VehiclesService {
   }
 
   // ***       FETCH       ***
-
   async getVehicleTypes(): Promise<string[]> {
     try {
       const vehicleTypes = await this.prisma.vehicleType.findMany({
@@ -206,5 +215,167 @@ export class VehiclesService {
     return resData;
   }
 
-  // ***       UTILITY       ***
+  // Used in vehicle page activities tab and recent activities on dashboard
+  // used with tanstack useInfiniteQuery
+  async getVehicleActivities(
+    userSession: UserSession,
+    vehicleId: string,
+    cursor: string,
+    limit: number,
+  ): Promise<RecentActivityInfiniteResponse> {
+    await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userSession.user.id },
+      select: { volumeUnit: true, consumptionUnit_distance: true, consumptionUnit_hour: true },
+    });
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: vehicleId },
+      select: { odometerType: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (!vehicle) throw new NotFoundException('Vehicle not found');
+    const isHourlyOdometer = vehicle.odometerType === 'HOUR';
+    limit = Number(limit);
+
+    const cursorDate = cursor === 'initial' ? new Date() : new Date(cursor);
+
+    const activities = await this.prisma.$transaction(async (tx) => {
+      type DBVehicleSelect = { name: Vehicle['name']; image: Vehicle['image']; type: Vehicle['type'] };
+      type RefillDBSelect = Extend<Refill, { vehicle: DBVehicleSelect }>;
+      type MaintenanceDBSelect = Extend<
+        Maintenance,
+        {
+          vehicle: DBVehicleSelect;
+          parts: {
+            part: { code: VehiclePart['code']; id: VehiclePart['id'] };
+            location: { code: VehiclePartLocation['code'] } | null;
+            label: MaintenancePart['label'];
+            groupId: MaintenancePart['groupId'];
+            description: MaintenancePart['description'];
+            customPartLabel: MaintenancePart['customPartLabel'];
+          }[];
+        }
+      >;
+      // Get refills from dateFilter backwards
+      const refillActivities: RefillDBSelect[] = await tx.refill.findMany({
+        where: {
+          vehicleId,
+          date: { lt: cursorDate },
+        },
+        include: {
+          vehicle: { select: { name: true, type: true, image: true } },
+        },
+        orderBy: { date: 'desc' },
+        take: limit,
+      });
+
+      // Get maintenance activities from dateFilter backwards
+      const maintenanceActivities: MaintenanceDBSelect[] = await tx.maintenance.findMany({
+        where: {
+          vehicleId,
+          date: { lt: cursorDate },
+        },
+        include: {
+          vehicle: { select: { name: true, type: true, image: true, vehicleType: true } },
+          parts: {
+            select: {
+              label: true,
+              groupId: true,
+              description: true,
+              customPartLabel: true,
+              part: { select: { code: true, id: true } },
+              location: { select: { code: true } },
+            },
+          },
+        },
+        orderBy: { date: 'desc' },
+        take: limit,
+      });
+
+      // Normalize refills
+      const normalizedRefills: RecentActivityItem[] = refillActivities.map((r) => ({
+        type: 'refill',
+        date: r.date,
+        vehicle: r.vehicle,
+        data: {
+          id: r.id,
+          fullRefill: r.fullRefill,
+          date: r.date,
+          skippedRefill: r.skippedRefill,
+          fuelAmount: this.unitConversion.getVolumeDataByUnitType(r.fuelAmount_L, user.volumeUnit),
+          costTotal: r.costTotal,
+          notes: r.notes,
+          consumption: this.unitConversion.getConsumptionData(
+            isHourlyOdometer ? r.consumption_L_per_hour : r.consumption_L_per_100km,
+            isHourlyOdometer ? user.consumptionUnit_hour : user.consumptionUnit_distance,
+            isHourlyOdometer ? 'HOUR' : 'DISTANCE',
+          ),
+          // convenience odometer field depending on vehicle odometerType
+          odometer: this.unitConversion.getOdometerDataByType(
+            isHourlyOdometer ? r.odometer_hour : r.odometer_km,
+            vehicle.odometerType,
+          ),
+        },
+      }));
+
+      // Normalize maintenance
+      const normalizedMaintenance: RecentActivityItem[] = maintenanceActivities.map((m) => {
+        // combine parts into their partGroups
+        const partGroups: Record<string, MaintenanceActivityData['parts'][0]> = {};
+
+        m.parts.forEach((p) => {
+          const existing = partGroups[p.groupId];
+
+          if (!existing || existing === undefined || existing === null) {
+            partGroups[p.groupId] = {
+              groupId: p.groupId,
+              partId: p.part.id,
+              partCode: p.part.code,
+              label: p.label || null,
+              locations: p.location ? [p.location.code] : [],
+            };
+          } else {
+            partGroups[p.groupId] = {
+              ...existing, // now safe, because TS knows `existing` is not undefined
+              locations: p.location ? [...existing.locations, p.location.code] : existing.locations,
+            };
+          }
+        });
+        const partGroupArray = Object.values(partGroups);
+
+        const data: MaintenanceActivityData = {
+          id: m.id,
+          date: m.date,
+          maintenanceType: m.maintenanceType,
+          costTotal: m.costTotal,
+          notes: m.notes,
+          parts: partGroupArray,
+          odometer: this.unitConversion.getOdometerDataByType(
+            isHourlyOdometer ? m.odometer_hour : m.odometer_km,
+            vehicle.odometerType,
+          ),
+        };
+
+        return {
+          type: 'maintenance',
+          date: m.date,
+          vehicle: m.vehicle,
+          data: data,
+        };
+      });
+
+      // Combine, sort by date desc and limit to requested count
+      const combinedActivities = [...normalizedRefills, ...normalizedMaintenance]
+        .sort((a, b) => b.date.getTime() - a.date.getTime())
+        .slice(0, limit);
+
+      return combinedActivities;
+    });
+
+    const nextCursor = activities.length === limit ? activities[activities.length - 1].date.toISOString() : null;
+    return {
+      items: activities,
+      nextCursor,
+    };
+  }
 }

@@ -1,8 +1,6 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   MaintenanceSchema,
-  RecentActivityInfiniteResponse,
-  RecentActivityQueryOptions,
   RefillSchema,
   RefillSchemaOutput,
   TMaintenanceSchema,
@@ -51,26 +49,5 @@ export class LogsController {
   ) {
     await this.maintenanceService.createMaintenance(SessionUser, maintenanceDto);
     return { status: 'success' };
-  }
-
-  // ** RECENT ACTIVITY (INFINITE) **
-  @Get('recent-activity')
-  async getRecentActivity(
-    @Session() SessionUser: UserSession,
-    @Query('vehicleId') vehicleId?: string,
-    @Query('poolId') poolId?: string,
-    @Query('take') take?: string,
-    @Query('cursorDate') cursorDate?: string,
-    @Query('cursorId') cursorId?: string,
-    @Query('owned') owned?: boolean,
-  ): Promise<RecentActivityInfiniteResponse> {
-    const options: RecentActivityQueryOptions = {
-      vehicleId: vehicleId || undefined,
-      poolId: poolId || undefined,
-      owned: owned ?? false,
-      take: take ? Math.min(Math.max(parseInt(take, 10) || 20, 1), 100) : 20,
-      cursor: cursorDate && cursorId ? { date: cursorDate, id: cursorId } : undefined,
-    };
-    return this.logsService.getRecentActivity(SessionUser, options);
   }
 }

@@ -159,7 +159,9 @@ model VehicleType {
   vehicles Vehicle[]
   @@index([code])
 }
-model VehiclePartLocation {
+
+//  VEHICLE PARTS AND LOCATIONS
+  model VehiclePartLocation {
   id String @id @default(cuid())
   code String
 
@@ -176,9 +178,9 @@ model VehiclePartLocation {
   @@unique([vehicleTypeId, code])
   @@index([vehicleTypeId])
 
-}
+  }
 
-model VehiclePart {
+  model VehiclePart {
   id         String @id @default(cuid())
   code       String 
   
@@ -201,7 +203,8 @@ model VehiclePart {
 
   @@index([categoryId])
   @@index([isActive])
-}
+  }
+
 
 model Vehicle {
   id   String   @id @default(cuid())
@@ -255,23 +258,9 @@ model Vehicle {
   @@index([ownerId])
 }
 
-// ** MAINTENANCE MODELS **
-
-model MaintenanceCategory {
-  id          String @id @default(cuid())
-  code        String @unique // 'engine', 'brakes', etc.
-  sortOrder   Int    @default(0)
-  isActive    Boolean @default(true)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  parts VehiclePart[]
-}
 
 
-
-model Maintenance {
+  model Maintenance {
   id              String   @id @default(cuid())
   vehicleId       String
   userId          String?  
@@ -301,6 +290,19 @@ model Maintenance {
   @@index([userId])
   @@index([vehicleId, date])
   @@index([date])
+}
+
+// ** MAINTENANCE MODELS **
+  model MaintenanceCategory {
+  id          String @id @default(cuid())
+  code        String @unique // 'engine', 'brakes', etc.
+  sortOrder   Int    @default(0)
+  isActive    Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  parts VehiclePart[]
 }
 
 // Junction table for maintenance logs and parts (many-to-many)
@@ -488,7 +490,7 @@ model Refill {
 
   fuelAmount_L  Float
   pricePerUnit  Float?
-  totalCost     Float?
+  costTotal     Float?
   notes         String?
 
   // Since last refill
