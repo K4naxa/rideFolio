@@ -1,14 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import {
-  CreateVehicleBackendSchema,
-  CreateVehicleFrontendSchemaType,
-  TAccessibleVehicle,
-  TBasicVehicle,
-} from '@repo/validation';
+import { TAccessibleVehicle, TBasicVehicle, VehicleSchema, VehicleSchemaType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
 
@@ -25,10 +20,17 @@ export class VehiclesController {
   @Post('')
   async createVehicle(
     @Session() userSession: UserSession,
-    @Body(new ZodValidationPipe(CreateVehicleBackendSchema as ZodType))
-    vehicleDto: CreateVehicleFrontendSchemaType,
+    @Body(new ZodValidationPipe(VehicleSchema as ZodType))
+    vehicleDto: VehicleSchemaType,
   ) {
     return await this.vehiclesService.create(userSession, vehicleDto);
+  }
+
+  @Delete(':vehicleId')
+  async deleteVehicle(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
+    console.log('Received request to delete vehicle with ID:', vehicleId);
+
+    return await this.vehiclesService.delete(userSession, vehicleId);
   }
 
   @Get('accessible')

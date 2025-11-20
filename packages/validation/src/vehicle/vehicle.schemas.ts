@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { fuelTypeValues, OdometerTypeValues, VehicleTypeCodes } from "./vehicle.types";
 
-export const BaseVehicleSchema = z.object({
+export const VehicleSchema = z.object({
   // Mandatory Name
   name: z.string().min(1, "Vehicle name is required").trim().max(50, "Name can be at most 50 characters long"),
 
@@ -49,9 +49,6 @@ export const BaseVehicleSchema = z.object({
       message: "Fuel type is required",
     }
   ),
-});
-
-export const CreateVehicleFrontendSchema = BaseVehicleSchema.extend({
   image: z
     .instanceof(File)
     .refine((file) => ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(file.type), {
@@ -63,9 +60,5 @@ export const CreateVehicleFrontendSchema = BaseVehicleSchema.extend({
     .nullable()
     .optional(),
 });
-export type CreateVehicleFrontendSchemaType = z.infer<typeof CreateVehicleFrontendSchema>;
 
-export const CreateVehicleBackendSchema = BaseVehicleSchema.extend({
-  image: z.url().nullable().optional().default(null),
-});
-export type CreateVehicleBackendSchemaType = z.infer<typeof CreateVehicleBackendSchema>;
+export type VehicleSchemaType = z.infer<typeof VehicleSchema>;

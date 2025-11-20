@@ -8,6 +8,7 @@ interface Props {
   title: string;
   disabled?: boolean;
   className?: string;
+  dataCy?: string;
 }
 
 const props = defineProps<Props>();
@@ -73,10 +74,10 @@ const handleClick = () => {
   <div :class="['space-y-2', props.className]">
     <div
       :class="[
-        'relative border-2 border-dashed rounded-xl p-4 text-center transition-all duration-200 select-none',
+        'relative rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 select-none',
         isDragging ? 'border-primary bg-primary/10' : 'border-border',
-        !props.disabled && 'cursor-pointer hover:border-muted-foreground',
-        props.disabled && 'hover:cursor-not-allowed opacity-50',
+        !props.disabled && 'hover:border-muted-foreground cursor-pointer',
+        props.disabled && 'opacity-50 hover:cursor-not-allowed',
       ]"
       @drop="handleDrop"
       @dragover="handleDragOver"
@@ -91,17 +92,18 @@ const handleClick = () => {
         class="hidden"
         :disabled="props.disabled"
         @change="handleFileChange(($event.target as HTMLInputElement).files?.[0] || null)"
+        :data-cy="props.dataCy"
       />
 
       <!-- Preview -->
       <template v-if="previewUrl">
-        <div class="relative group">
+        <div class="group relative">
           <img
             :src="previewUrl"
             alt="Image preview"
             width="256"
             height="256"
-            class="max-h-64 w-auto mx-auto rounded-lg shadow-md"
+            class="mx-auto max-h-64 w-auto rounded-lg shadow-md"
           />
           <Button
             v-if="!props.disabled"
@@ -109,7 +111,7 @@ const handleClick = () => {
             size="icon"
             type="button"
             @click="handleRemoveImage"
-            class="absolute top-2 right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            class="absolute top-2 right-2 h-7 w-7 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
           >
             <Icon name="close" />
           </Button>
@@ -118,17 +120,15 @@ const handleClick = () => {
 
       <!-- Placeholder -->
       <template v-else>
-        <div class="space-y-2 text-muted-foreground h-full">
+        <div class="text-muted-foreground h-full space-y-2">
           <div class="flex justify-center">
             <Icon name="camera" class="h-10" />
           </div>
           <div>
-            <p class="font-medium text-foreground">{{ props.title }}</p>
-            <p class="text-sm mt-1">Drag and drop, or click to select</p>
+            <p class="text-foreground font-medium">{{ props.title }}</p>
+            <p class="mt-1 text-sm">Drag and drop, or click to select</p>
           </div>
-          <p class="text-xs text-muted-foreground text-center mt-auto">
-            Supported types: JPG, PNG, GIF (max 5 MB)
-          </p>
+          <p class="text-muted-foreground mt-auto text-center text-xs">Supported types: JPG, PNG, GIF (max 5 MB)</p>
         </div>
       </template>
     </div>

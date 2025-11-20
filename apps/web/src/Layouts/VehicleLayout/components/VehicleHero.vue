@@ -11,51 +11,69 @@ import { api } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { type TStatCardData } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
-import {
-  ChevronDownIcon,
-  DollarSignIcon,
-  EditIcon,
-  GaugeIcon,
-  MoreVerticalIcon,
-  RouteIcon,
-} from "lucide-vue-next";
+import { ChevronDownIcon, DollarSignIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
 import Icon from "@/components/icons/Icon.vue";
+import { useModalStore } from "@/stores/modal";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import type { AlertModalData } from "@/modals/alertModal.vue";
+import { useRouter } from "vue-router";
+import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
 
-const { activeVehicle } = useActiveVehicle();
+const router = useRouter();
+const modalStore = useModalStore();
+const { deleteVehicleAsync } = useVehicleQueries();
+const { activeVehicle, activeVehicleId } = useActiveVehicle();
 const { data: statCardData, isLoading } = useQuery({
   queryFn: async () => {
     if (!activeVehicle.value?.vehicleData.id) {
       throw new Error("No active vehicle");
     }
-    return (
-      await api.get<TStatCardData>(`/vehicles/${activeVehicle.value.vehicleData.id}/stat-card`)
-    ).data;
+    return (await api.get<TStatCardData>(`/vehicles/${activeVehicle.value.vehicleData.id}/stat-card`)).data;
   },
   queryKey: computed(() => [activeVehicle.value?.vehicleData.id, "stat-card"]),
   enabled: computed(() => !!activeVehicle.value?.vehicleData.id),
 });
 
+function handleDeleteClick() {
+  modalStore.onOpen("alert", {
+    title: "Delete Vehicle",
+    description: activeVehicle.value?.vehicleData.name
+      ? `Are you sure you want to delete <b>${activeVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
+      : "Are you sure you want to delete this vehicle? This action cannot be undone.",
+    actionButton: {
+      label: "Delete",
+      class: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    },
+    cancelButton: {
+      label: "Cancel",
+    },
+    onAction: async () => {
+      console.log("Deleting vehicle...");
+      if (!activeVehicleId.value) return;
+      await deleteVehicleAsync(activeVehicleId.value);
+      router.push("/dashboard");
+    },
+  } as AlertModalData);
+}
+
 const statsOpen = ref(false);
 </script>
 
 <template>
-  <div class="w-full px-4 lg:px-8 flex flex-col gap-4 lg:flex-row">
+  <div class="flex w-full flex-col gap-4 px-4 lg:flex-row lg:px-8" data-cy="vehicle-hero">
     <!-- Vehicle image & placeholder -->
-    <div class="h-fit flex justify-center w-full lg:w-auto lg:h-52 shrink-0">
+    <div class="flex h-fit w-full shrink-0 justify-center lg:h-52 lg:w-auto">
       <img
         v-if="activeVehicle?.vehicleData.image"
         :src="activeVehicle.vehicleData.image"
-        class="h-full w-full object-cover rounded lg:w-auto"
+        class="h-full w-full rounded object-cover lg:w-auto"
       />
-      <div
-        v-else
-        class="h-full rounded w-full bg-muted/40 border grid place-items-center lg:aspect-video lg:w-auto"
-      >
+      <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border lg:aspect-video lg:w-auto">
         <VehicleTypeIcon
           :type="activeVehicle?.vehicleData.type || 'other'"
-          className="size-16 stroke-muted-foreground rounded"
+          class="stroke-muted-foreground size-16 rounded"
         />
       </div>
     </div>
@@ -63,14 +81,12 @@ const statsOpen = ref(false);
     <div>
       <!-- Info section -->
 
-      <div
-        class="flex flex-1 w-full lg:flex-col gap-3 lg:px-6 justify-between lg:justify-normal lg:gap-6"
-      >
+      <div class="flex w-full flex-1 justify-between gap-3 lg:flex-col lg:justify-normal lg:gap-6 lg:px-6">
         <div class="space-y-1 lg:pr-10">
-          <h1 class="text-balance text-2xl sm:text-3xl font-bold leading-tight text-foreground">
+          <h1 class="text-foreground text-2xl leading-tight font-bold text-balance sm:text-3xl">
             {{ activeVehicle?.vehicleData.name }}
           </h1>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-muted-foreground text-sm">
             {{ activeVehicle?.vehicleData.make && `${activeVehicle?.vehicleData.make} •` }}
             {{ activeVehicle?.vehicleData.model && `${activeVehicle?.vehicleData.model} •` }}
             {{ activeVehicle?.vehicleData.year }}
@@ -78,53 +94,52 @@ const statsOpen = ref(false);
         </div>
 
         <div class="flex flex-col gap-2">
-          <div class="hidden lg:flex flex-wrap items-center gap-2 text-sm">
+          <div class="hidden flex-wrap items-center gap-2 text-sm lg:flex">
             <Badge
               v-if="activeVehicle?.vehicleData.licensePlate"
               variant="outline"
-              class="px-2.5 py-1 text-xs font-medium rounded-full border"
+              class="rounded-full border px-2.5 py-1 text-xs font-medium"
             >
               {{ activeVehicle?.vehicleData.licensePlate }}
             </Badge>
 
             <Badge
               variant="outline"
-              class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground"
+              class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
             >
               <GaugeIcon class="size-3.5" />
-              <NumberFlow
-                :value="activeVehicle?.vehicleData.odometerData.value || 0"
-                :animated="true"
-              />
+              <NumberFlow :value="activeVehicle?.vehicleData.odometerData.value || 0" :animated="true" />
               {{ activeVehicle?.vehicleData.odometerData.unit || "N/A" }}
             </Badge>
           </div>
           <Badge
             v-if="activeVehicle?.vehicleData.vin"
             variant="outline"
-            class="px-2.5 py-1 text-xs font-medium rounded-full hidden lg:block"
+            class="hidden rounded-full px-2.5 py-1 text-xs font-medium lg:block"
           >
             VIN: {{ activeVehicle.vehicleData.vin }}
           </Badge>
         </div>
 
-        <div class="lg:hidden flex items-center">
+        <div class="flex items-center lg:hidden">
           <DropdownMenu :modal="false">
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="vehicle Actions">
+              <Button variant="ghost" size="icon" aria-label="vehicle Actions" data-cy="actions-trigger">
                 <MoreVerticalIcon class="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem aria-label="Edit Vehicle">
+              <DropdownMenuItem aria-label="Edit Vehicle" data-cy="edit-vehicle-btn">
                 <EditIcon />
                 Edit
               </DropdownMenuItem>
               <Separator class="my-1" />
               <DropdownMenuItem
                 variant="destructive"
+                @click="handleDeleteClick"
                 aria-label="Delete Vehicle"
                 class="text-destructive"
+                data-cy="delete-vehicle-btn"
               >
                 <Icon name="trash" />
                 Delete
@@ -132,19 +147,14 @@ const statsOpen = ref(false);
             </DropdownMenuContent>
           </DropdownMenu>
           <Button variant="ghost" size="icon" @click="statsOpen = !statsOpen" class="">
-            <ChevronDownIcon
-              :class="[
-                'transition-transform duration-200 ease-in-out ',
-                { 'rotate-180': statsOpen },
-              ]"
-            />
+            <ChevronDownIcon :class="['transition-transform duration-200 ease-in-out', { 'rotate-180': statsOpen }]" />
           </Button>
         </div>
       </div>
 
       <!-- Mobile Details Panel - Contains both badges and stat cards -->
       <Transition name="slide-expand">
-        <div v-if="statsOpen" class="lg:hidden w-full stats-panel overflow-hidden pb-4">
+        <div v-if="statsOpen" class="stats-panel w-full overflow-hidden pb-4 lg:hidden">
           <div class="stats-content space-y-4">
             <Separator class="my-4" />
             <!-- Vehicle Info Badges -->
@@ -153,14 +163,14 @@ const statsOpen = ref(false);
                 <Badge
                   v-if="activeVehicle?.vehicleData.licensePlate"
                   variant="outline"
-                  class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                  class="rounded-full border px-2.5 py-1 text-xs font-medium"
                 >
                   {{ activeVehicle?.vehicleData.licensePlate }}
                 </Badge>
 
                 <Badge
                   variant="outline"
-                  class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground"
+                  class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
                 >
                   <GaugeIcon class="size-3.5" />
                   {{ activeVehicle?.vehicleData.odometerData.value }}
@@ -170,7 +180,7 @@ const statsOpen = ref(false);
                 <Badge
                   v-if="activeVehicle?.vehicleData.vin"
                   variant="outline"
-                  class="px-2.5 py-1 text-xs font-medium rounded-full"
+                  class="rounded-full px-2.5 py-1 text-xs font-medium"
                 >
                   VIN: {{ activeVehicle.vehicleData.vin }}
                 </Badge>
@@ -211,10 +221,8 @@ const statsOpen = ref(false);
     </div>
 
     <!-- Statistics section -->
-    <div
-      class="hidden ml-auto lg:flex w-full flex-col gap-3 border-t px-6 max-w-lg lg:border-l lg:border-t-0 min-w-32"
-    >
-      <div class="hidden lg:flex justify-end">
+    <div class="ml-auto hidden w-full max-w-lg min-w-32 flex-col gap-3 border-t px-6 lg:flex lg:border-t-0 lg:border-l">
+      <div class="hidden justify-end lg:flex">
         <DropdownMenu :modal="false">
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="vehicle Actions">
@@ -229,8 +237,10 @@ const statsOpen = ref(false);
             <Separator class="my-1" />
             <DropdownMenuItem
               variant="destructive"
+              @click="handleDeleteClick"
               aria-label="Delete Vehicle"
               class="text-destructive"
+              data-cy="delete-vehicle-btn"
             >
               <Icon name="trash" />
               Delete
@@ -239,7 +249,7 @@ const statsOpen = ref(false);
         </DropdownMenu>
       </div>
 
-      <div class="2xl:grid grid-cols-3 flex-1 flex flex-wrap justify-evenly gap-4 content-end">
+      <div class="flex flex-1 grid-cols-3 flex-wrap content-end justify-evenly gap-4 2xl:grid">
         <VehicleHeroStatCard
           :icon="GaugeIcon"
           label="Avg. Consumption"

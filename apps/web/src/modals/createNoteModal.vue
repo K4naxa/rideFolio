@@ -15,13 +15,13 @@ import { useModalStore } from "@/stores/modal";
 // Types
 import type { Note, NoteSchemaType } from "@repo/validation";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import Input from "@/components/ui/input/Input.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { watchDebounced } from "@vueuse/core";
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { XIcon } from "lucide-vue-next";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 // Computed properties
 const modalStore = useModalStore();
@@ -40,16 +40,14 @@ const { values, errors, setFieldValue, resetForm, meta } = useForm<NoteSchemaTyp
 
 const selectedVehicle = computed(() => {
   if (values.vehicleId) {
-    return accessibleVehicles.value?.find((v) => v.vehicleData.id === values.vehicleId) || null;
+    return vehicles.value?.find((v) => v.vehicleData.id === values.vehicleId) || null;
   }
   return null;
 });
 const { activeVehicleId } = useActiveVehicle();
-const { data: accessibleVehicles } = useAccessibleVehicles();
+const { vehicles } = useVehicleQueries();
 
-const { createNoteAsync, updateNoteAsync, deleteNote } = useNoteQueries(
-  selectedVehicle.value?.vehicleData.id,
-);
+const { createNoteAsync, updateNoteAsync, deleteNote } = useNoteQueries(selectedVehicle.value?.vehicleData.id);
 
 // State
 const createdNoteId = ref<string | null>(null);
@@ -166,39 +164,35 @@ watch(isModalOpen, (isOpen) => {
 
 <template>
   <Dialog v-model:open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
-    <DialogContent class="max-w-4xl lg:max-h-[90vh] flex flex-col min-h-0">
-      <DialogHeader class="flex flex-row justify-between w-full gap-2">
-        <DialogTitle class="flex justify-start items-center truncate gap-2">
+    <DialogContent class="flex min-h-0 max-w-4xl flex-col lg:max-h-[90vh]">
+      <DialogHeader class="flex w-full flex-row justify-between gap-2">
+        <DialogTitle class="flex items-center justify-start gap-2 truncate">
           <span v-if="initialNote">{{ values.title }}</span>
           <span v-else>Create Note</span>
         </DialogTitle>
         <Button v-if="!initialNote" variant="outline" @click="handleCancel">Cancel</Button>
       </DialogHeader>
 
-      <form class="space-y-4 min-h-0 flex flex-col" @submit.prevent>
+      <form class="flex min-h-0 flex-col space-y-4" @submit.prevent>
         <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
         <div v-if="!activeVehicleId" class="flex flex-col">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
-              <VehicleSelect
-                :value="value"
-                @valueChange="handleChange"
-                placeholder="Select a vehicle"
-              />
-              <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+              <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
+              <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
             </div>
           </Field>
         </div>
 
-        <div class="border border-border rounded bg-input flex flex-col flex-1 space-y-2 min-h-0">
+        <div class="border-border bg-input flex min-h-0 flex-1 flex-col space-y-2 rounded border">
           <!-- Editor Content -->
           <div class="flex h-full min-h-64 flex-1">
             <TipTapEditor
               :value="values.content"
-              @update:value="(value) => setFieldValue('content', value)"
+              @update:value="(value: string) => setFieldValue('content', value)"
               :editable="true"
               :error="errors.content ?? undefined"
-              class="pb-2 px-3.5"
+              class="px-3.5 pb-2"
             >
               <!-- Title Field -->
               <div>
@@ -211,7 +205,7 @@ watch(isModalOpen, (isOpen) => {
                   class="flex-1"
                   input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl"
                 />
-                <span v-if="errors.title" class="text-sm text-destructive">{{ errors.title }}</span>
+                <span v-if="errors.title" class="text-destructive text-sm">{{ errors.title }}</span>
               </div>
             </TipTapEditor>
           </div>
@@ -225,21 +219,14 @@ watch(isModalOpen, (isOpen) => {
                 type="text"
                 v-model="tagInput"
                 placeholder="Lisää tägi"
-                class="flex-1 appearance-none file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground border flex w-full min-w-0 rounded-md bg-input px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2"
+                class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 flex w-full min-w-0 flex-1 appearance-none rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 @keydown.enter.prevent="handleAddTag"
               />
-              <Button type="button" variant="outline" size="sm" @click="handleAddTag">
-                Lisää
-              </Button>
+              <Button type="button" variant="outline" size="sm" @click="handleAddTag"> Lisää </Button>
             </div>
 
             <div v-if="values.tags && values.tags.length > 0" class="flex flex-wrap gap-2">
-              <Badge
-                v-for="(tag, index) in values.tags"
-                :key="index"
-                variant="secondary"
-                class="px-2 py-1.5"
-              >
+              <Badge v-for="(tag, index) in values.tags" :key="index" variant="secondary" class="px-2 py-1.5">
                 {{ tag }}
                 <button
                   type="button"
@@ -251,7 +238,7 @@ watch(isModalOpen, (isOpen) => {
               </Badge>
             </div>
           </div>
-          <span v-if="errors.tags" class="text-sm text-destructive">{{ errors.tags }}</span>
+          <span v-if="errors.tags" class="text-destructive text-sm">{{ errors.tags }}</span>
         </div>
       </form>
     </DialogContent>

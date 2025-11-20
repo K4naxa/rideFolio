@@ -4,7 +4,7 @@ export type FuelTypeOption = { value: FuelTypes; label: string };
 
 // !Todo: change to use translated labels
 export const fuelTypeValues: FuelTypeOption[] = [
-  { value: "GASOLINE", label: "Bensiini" },
+  { value: "GASOLINE", label: "Gasoline" },
   { value: "DIESEL", label: "Diesel" },
   { value: "HYBRID", label: "Hybrid" },
 ];

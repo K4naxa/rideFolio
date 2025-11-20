@@ -16,9 +16,7 @@ const modalStore = useModalStore();
 const { activeVehicleName } = useActiveVehicle();
 const { activePoolName } = useActivePool();
 
-const title = computed(
-  () => activeVehicleName.value || activePoolName.value || route.name?.toString(),
-);
+const title = computed(() => activeVehicleName.value || activePoolName.value || route.name?.toString());
 
 type IconName = "refill" | "maintenance" | "notes" | "todo" | "bell";
 
@@ -27,6 +25,7 @@ interface AppHeaderButton {
   icon: IconName;
   onClick: () => void;
   class: string;
+  cypressDataAttr: string;
 }
 
 const headerButtons = computed<AppHeaderButton[]>(() => [
@@ -35,50 +34,55 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
     icon: "refill",
     onClick: () => modalStore.onOpen("createRefill"),
     class: "border-refill hover:bg-refill/10",
+    cypressDataAttr: "create-refill-button",
   },
   {
     label: "Maintenance",
     icon: "maintenance",
     onClick: () => modalStore.onOpen("createMaintenance"),
     class: "border-maintenance hover:bg-maintenance/10",
+    cypressDataAttr: "create-maintenance-button",
   },
   {
     label: "Note",
     icon: "notes",
     onClick: () => modalStore.onOpen("createNote"),
     class: "border-notes hover:bg-notes/20",
+    cypressDataAttr: "create-note-button",
   },
   {
     label: "Todo",
     icon: "todo",
     onClick: () => modalStore.onOpen("createTodo"),
     class: "border-toDo hover:bg-toDo/20",
+    cypressDataAttr: "create-todo-button",
   },
 ]);
 </script>
 
 <template>
   <header
-    class="flex h-(--app-header-height) shrink-0 items-center px-2 lg:px-6 gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-20 w-full bg-background"
+    class="bg-background sticky top-0 z-20 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) lg:px-6"
   >
-    <div class="flex w-full overflow-hidden items-center gap-1 lg:gap-2">
+    <div class="flex w-full items-center gap-1 overflow-hidden lg:gap-2">
       <SidebarTrigger class="-ml-1" />
       <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
       <h3 class="truncate">{{ title }}</h3>
     </div>
-    <div class="hidden md:flex items-center gap-2 ml-auto pr-4 lg:pr-6 text-sm">
+    <div class="ml-auto hidden items-center gap-2 pr-4 text-sm md:flex lg:pr-6">
       <Button
         variant="outline"
         v-for="button in headerButtons"
         :key="button.label"
         @click="button.onClick"
-        :class="twMerge('hover:shadow-sm hover:shadow-refill/50', button.class)"
+        :class="twMerge('hover:shadow-refill/50 hover:shadow-sm', button.class)"
+        :data-cy="button.cypressDataAttr"
       >
         <Icons :name="button.icon" />
         <span class="hidden 2xl:block">{{ button.label }}</span>
       </Button>
     </div>
-    <div class="ml-auto flex gap-x-2.5 items-center">
+    <div class="ml-auto flex items-center gap-x-2.5">
       <Button variant="ghost" class="p-2">
         <Icons name="bell" size="sm" />
         <span class="sr-only">Notification</span>

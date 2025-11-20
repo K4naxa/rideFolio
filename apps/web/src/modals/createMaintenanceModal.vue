@@ -17,7 +17,6 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useModalStore } from "@/stores/modal";
@@ -29,16 +28,15 @@ import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { toast } from "vue-sonner";
 import Icon from "@/components/icons/Icon.vue";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 // Modal store
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createMaintenance");
 // Vehicle info
 const { activeVehicleId } = useActiveVehicle();
-const { data: vehicles } = useAccessibleVehicles();
-const selectedVehicle = computed(() =>
-  vehicles.value?.find(({ vehicleData }) => vehicleData.id === values.vehicleId),
-);
+const { vehicles } = useVehicleQueries();
+const selectedVehicle = computed(() => vehicles.value?.find(({ vehicleData }) => vehicleData.id === values.vehicleId));
 
 // Maintenance queries
 const { createMaintenanceAsync } = useMaintenanceQueries({ vehicleId: activeVehicleId });
@@ -107,9 +105,7 @@ watch(isModalOpen, (open) => {
       <form @submit="onSubmit" class="flex flex-col gap-6">
         <DialogHeader>
           <DialogTitle> <Icon name="maintenance" /> Create Maintenance </DialogTitle>
-          <DialogDescription>
-            Fill in the details below to create a new maintenance record.
-          </DialogDescription>
+          <DialogDescription> Fill in the details below to create a new maintenance record. </DialogDescription>
         </DialogHeader>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
@@ -117,11 +113,7 @@ watch(isModalOpen, (open) => {
           <div class="flex flex-col gap-6">
             <Field v-slot="{ value, handleChange }" name="vehicleId">
               <div>
-                <VehicleSelect
-                  :value="value"
-                  @valueChange="handleChange"
-                  placeholder="Select a vehicle"
-                />
+                <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
                 <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
               </div>
             </Field>
@@ -144,9 +136,7 @@ watch(isModalOpen, (open) => {
                       <SelectValue placeholder="Maintenance type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem v-for="type in TMaintenanceTypes" :key="type" :value="type">{{
-                        type
-                      }}</SelectItem>
+                      <SelectItem v-for="type in TMaintenanceTypes" :key="type" :value="type">{{ type }}</SelectItem>
                     </SelectContent>
                   </Select>
                   <ErrorMessage name="maintenanceType" class="text-destructive mt-1 ml-1 text-sm" />
@@ -156,12 +146,7 @@ watch(isModalOpen, (open) => {
               <Input name="totalCost" type="number" suffix="€" placeholder="Total cost" />
             </div>
 
-            <Input
-              name="serviceProvider"
-              type="text"
-              placeholder="Service Provider"
-              :validate-on-blur="false"
-            />
+            <Input name="serviceProvider" type="text" placeholder="Service Provider" :validate-on-blur="false" />
 
             <div class="hidden space-y-3 lg:block">
               <Field v-slot="{ value, handleChange }" name="image">

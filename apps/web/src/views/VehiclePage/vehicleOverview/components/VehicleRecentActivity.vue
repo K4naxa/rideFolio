@@ -14,7 +14,7 @@ const { activeVehicleId, activeVehicle } = useActiveVehicle();
 
 const LIMIT = 10;
 
-const { data, fetchNextPage, hasNextPage, isFetchNextPage, isLoading, isError } = useInfiniteQuery({
+const { data, isLoading, isError } = useInfiniteQuery({
   queryKey: ["vehicle-recent-activity", activeVehicleId],
   queryFn: async ({ pageParam }) => {
     const cursor = pageParam;

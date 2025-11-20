@@ -17,8 +17,8 @@ import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useTodoQueries } from "@/lib/queries/useTodoQueries";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useModalStore } from "@/stores/modal";
 import { TodoSchema } from "@repo/validation";
@@ -28,7 +28,7 @@ import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
 const { activeVehicle } = useActiveVehicle();
-const { data: accessibleVehicles } = useAccessibleVehicles();
+const { vehicles } = useVehicleQueries();
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createTodo");
@@ -75,65 +75,67 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="max-w-2xl w-full" key="CreateTodoModal">
+    <DialogScrollContent class="w-full max-w-2xl" key="CreateTodoModal">
       <DialogHeader>
         <DialogTitle> <Icon name="todo" /> Create To-do </DialogTitle>
       </DialogHeader>
-      <form @submit="onSubmit" class="flex flex-col gap-5">
+      <form @submit="onSubmit" class="flex flex-col gap-5" data-cy="create-todo-form">
         <Field v-slot="{ value, handleChange }" name="vehicleId">
           <div>
             <VehicleSelect
-              :vehicles="accessibleVehicles || []"
+              :vehicles="vehicles"
               :value="value"
               @valueChange="handleChange"
               placeholder="Select a vehicle"
+              data-cy="vehicle-select"
             />
-            <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+            <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
           </div>
         </Field>
-        <Input name="title" placeholder="To-do" type="text" />
-        <Textarea name="description" placeholder="To-do description" />
+        <Input name="title" placeholder="To-do" type="text" data-cy="todo-title-input" />
+        <Textarea name="description" placeholder="To-do description" data-cy="todo-description-input" />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Field v-slot="{ value, handleChange }" name="priority">
-            <Select :model-value="value" @update:model-value="handleChange" class="w-full">
-              <SelectTrigger class="w-full">
+            <Select :model-value="value" @update:model-value="handleChange" class="w-full" data-cy="priority-select">
+              <SelectTrigger class="w-full" data-cy="priority-trigger">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="LOW">Low</SelectItem>
-                <SelectItem value="MEDIUM">Medium</SelectItem>
-                <SelectItem value="HIGH">High</SelectItem>
-                <SelectItem value="CRITICAL">Critical</SelectItem>
+                <SelectItem value="LOW" data-cy="priority-select-low">Low</SelectItem>
+                <SelectItem value="MEDIUM" data-cy="priority-select-medium">Medium</SelectItem>
+                <SelectItem value="HIGH" data-cy="priority-select-high">High</SelectItem>
+                <SelectItem value="CRITICAL" data-cy="priority-select-critical">Critical</SelectItem>
               </SelectContent>
             </Select>
           </Field>
 
-          <label class="flex gap-3 items-center font-semibold select-none">
+          <label class="flex items-center gap-3 font-semibold select-none" data-cy="due-checkbox-label">
             <Checkbox
               :model-value="showDueOptions"
               @update:model-value="showDueOptions = !showDueOptions"
               class="size-6"
+              data-cy="due-checkbox"
             />
             <p>Set due information</p>
           </label>
         </div>
 
         <Transition name="slide">
-          <div v-if="showDueOptions" class="slide-panel">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 slide-content">
-              <DateInput name="dueDate" placeholder="Select due date" />
-              <Input name="dueOdometer" type="number" placeholder="Due Odometer" />
+          <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
+            <div class="slide-content grid grid-cols-1 gap-6 md:grid-cols-2">
+              <DateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
+              <Input name="dueOdometer" type="number" placeholder="Due Odometer" data-cy="due-odometer-input" />
             </div>
           </div>
         </Transition>
 
         <DialogFooter>
-          <Button type="submit" :disabled="isSubmitting">
+          <Button type="submit" :disabled="isSubmitting" data-cy="submit-todo-btn">
             <span v-if="!isSubmitting">Create</span>
             <span v-else> <Spinner /> Creating.. </span>
           </Button>
-          <Button type="button" variant="outline" @click="handleClose">Cancel</Button>
+          <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-todo-btn">Cancel</Button>
         </DialogFooter>
       </form>
     </DialogScrollContent>

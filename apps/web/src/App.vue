@@ -9,6 +9,7 @@ import CreateRefillModal from "./modals/createRefillModal.vue";
 import CreateNoteModal from "./modals/createNoteModal.vue";
 import CreateTodoModal from "./modals/CreateTodoModal.vue";
 import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
+import AlertModal from "./modals/alertModal.vue";
 
 configure({});
 
@@ -17,15 +18,11 @@ const themeStore = useThemeStore();
 
 <template>
   <RouterView />
-  <Toaster
-    class="pointer-events-auto"
-    :theme="themeStore.resolvedTheme"
-    position="top-center"
-    :rich-colors="true"
-  />
+  <Toaster class="pointer-events-auto" :theme="themeStore.resolvedTheme" position="top-center" :rich-colors="true" />
   <VueQueryDevtools />
 
   <!-- Modals -->
+  <AlertModal />
   <CreateVehicleModal />
   <CreateRefillModal />
   <CreateTodoModal />

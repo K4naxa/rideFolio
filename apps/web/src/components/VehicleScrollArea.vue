@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { ScrollArea } from "./ui/scroll-area";
 import ScrollBar from "./ui/scroll-area/ScrollBar.vue";
 import VehicleTypeIcon from "./icons/VehicleTypeIcon.vue";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
-const { data: vehicles } = useAccessibleVehicles();
+const { vehicles } = useVehicleQueries();
 </script>
 
 <template>

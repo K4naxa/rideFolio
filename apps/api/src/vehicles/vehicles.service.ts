@@ -12,13 +12,13 @@ import {
   VehiclePartLocation,
 } from '@prisma/client';
 import {
-  CreateVehicleFrontendSchemaType,
   MaintenanceActivityData,
   RecentActivityInfiniteResponse,
   RecentActivityItem,
   TAccessibleVehicle,
   TBasicVehicle,
   TStatCardData,
+  VehicleSchemaType,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -37,10 +37,7 @@ export class VehiclesService {
 
   // ***       Management       ***
 
-  async create(
-    userSession: UserSession,
-    vehicleData: CreateVehicleFrontendSchemaType,
-  ): Promise<{ newVehicleId: string }> {
+  async create(userSession: UserSession, vehicleData: VehicleSchemaType): Promise<{ newVehicleId: string }> {
     try {
       // ** 1. Create the vehicle
 
@@ -93,6 +90,22 @@ export class VehiclesService {
     }
   }
 
+  async delete(userSession: UserSession, vehicleId: string) {
+    console.log('Deleting vehicle with ID:', vehicleId);
+    try {
+      await this.prisma.vehicle.delete({
+        where: {
+          id: vehicleId,
+          ownerId: userSession.user.id,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      throw new BadRequestException({
+        message: 'Error deleting vehicle.',
+      });
+    }
+  }
   // ***       FETCH       ***
   async getVehicleTypes(): Promise<string[]> {
     try {

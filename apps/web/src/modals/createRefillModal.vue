@@ -5,7 +5,6 @@ import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import { api } from "@/lib/api";
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useModalStore } from "@/stores/modal";
 import { RefillSchema, type RefillSchemaInput } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
@@ -25,11 +24,11 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import Icons from "@/components/icons/Icon.vue";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 const { activeVehicle } = useActiveVehicle();
-const selectedVehicle = computed(() =>
-  accessibleVehicles.value?.find((vehicle) => vehicle.vehicleData.id === values.vehicleId),
-);
+const { vehicles } = useVehicleQueries();
+const selectedVehicle = computed(() => vehicles.value?.find((vehicle) => vehicle.vehicleData.id === values.vehicleId));
 
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
   validationSchema: toTypedSchema(RefillSchema),
@@ -86,8 +85,6 @@ const handleClose = () => {
   modalStore.onClose();
 };
 
-const { data: accessibleVehicles } = useAccessibleVehicles();
-
 const createRefillMutation = useMutation({
   mutationFn: async (data: RefillSchemaInput) => {
     console.log("runnign mutation");
@@ -128,46 +125,47 @@ watch(isModalOpen, (open) => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="max-w-xl w-full" key="CreateRefillModal">
+    <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal">
       <DialogHeader>
         <DialogTitle>
           <Icons name="refill" />
           Create new refill
         </DialogTitle>
-        <DialogDescription class="text-start"
-          >Log a new fuel refill for your vehicle</DialogDescription
-        >
+        <DialogDescription class="text-start">Log a new fuel refill for your vehicle</DialogDescription>
       </DialogHeader>
-      <form @submit.prevent="onSubmit" class="justify-between flex flex-col gap-6">
+      <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
         <div class="flex flex-col gap-6">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect
-                :vehicles="accessibleVehicles || []"
+                :vehicles="vehicles"
                 :value="value"
                 @valueChange="handleChange"
                 placeholder="Select a vehicle"
+                data-cy="vehicle-select"
               />
-              <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+              <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
             </div>
           </Field>
 
           <!-- Date & Odometer -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DateInput name="date" :initial-value="new Date()" disableFuture />
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <DateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
             <Input
               name="odometer"
               type="number"
               placeholder="Odometer"
               :suffix="selectedVehicle?.vehicleData.odometerData.unit"
+              data-cy="odometer-input"
             />
           </div>
 
           <!-- Fill Type -->
-          <div class="grid gap-6 grid-cols-2">
+          <div class="grid grid-cols-2 gap-6">
             <Field v-slot="{ value, handleChange }" name="fullRefill">
               <Label
-                class="flex items-center gap-4 text leading-none select-none border rounded px-4 py-3 font-semibold"
+                class="text flex items-center gap-4 rounded border px-4 py-3 leading-none font-semibold select-none"
+                data-cy="full-refill-switch"
               >
                 <Switch :model-value="value" @update:checked="handleChange" />
                 <p>Full refill</p>
@@ -175,7 +173,8 @@ watch(isModalOpen, (open) => {
             </Field>
             <Field v-slot="{ value, handleChange }" name="skippedRefill">
               <label
-                class="flex items-center space-x-2 border rounded px-4 py-3 select-none font-semibold"
+                class="flex items-center space-x-2 rounded border px-4 py-3 font-semibold select-none"
+                data-cy="skipped-refill-switch"
               >
                 <Switch :model-value="value" @update:model-value="handleChange" />
                 <p>Skipped refill</p>
@@ -185,13 +184,14 @@ watch(isModalOpen, (open) => {
           </div>
 
           <!-- Cost fields  -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <Input
               name="fuelAmount"
               type="number"
               step="0.01"
               placeholder="Amount"
               :onValueChange="handleFuelAmountChange"
+              data-cy="fuel-amount-input"
             />
             <Input
               name="pricePerUnit"
@@ -200,6 +200,7 @@ watch(isModalOpen, (open) => {
               placeholder="Unit Price"
               suffix="€"
               :onValueChange="handlePricePerUnitChange"
+              data-cy="price-per-unit-input"
             />
             <Input
               name="totalCost"
@@ -207,18 +208,19 @@ watch(isModalOpen, (open) => {
               step="0.01"
               placeholder="Total cost"
               :onValueChange="handleTotalCostChange"
+              data-cy="total-cost-input"
             />
           </div>
 
-          <Textarea name="notes" placeholder="Refill notes.." />
+          <Textarea name="notes" placeholder="Refill notes.." data-cy="notes-input" />
         </div>
 
         <DialogFooter class="pt-auto">
-          <Button type="submit" :disabled="isSubmitting">
+          <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
             <span v-if="!isSubmitting">Create</span>
             <span v-else> <Spinner /> Creating.. </span>
           </Button>
-          <Button type="button" variant="outline" @click="handleClose">Cancel</Button>
+          <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
         </DialogFooter>
       </form>
     </DialogScrollContent>

@@ -1,6 +1,6 @@
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { useAccessibleVehicles } from "./queries/useAccessibleVehicles";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 export function useActiveVehicle() {
   const route = useRoute();
@@ -14,7 +14,7 @@ export function useActiveVehicle() {
   const hasActiveVehicle = computed(() => !!activeVehicleId.value);
 
   // Get the full vehicle data from the accessible vehicles list
-  const { data: vehicles } = useAccessibleVehicles();
+  const { vehicles } = useVehicleQueries();
 
   const activeVehicle = computed(() => {
     if (!activeVehicleId.value || !vehicles.value) return null;

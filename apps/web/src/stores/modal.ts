@@ -1,12 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export type ModalType =
-  | "createVehicle"
-  | "createRefill"
-  | "createMaintenance"
-  | "createNote"
-  | "createTodo";
+export type ModalType = "createVehicle" | "createRefill" | "createMaintenance" | "createNote" | "createTodo" | "alert";
 
 export const useModalStore = defineStore("modal", () => {
   const type = ref<ModalType | null>(null);
@@ -18,7 +13,11 @@ export const useModalStore = defineStore("modal", () => {
   };
 
   const onClose = () => {
-    ((type.value = null), (data.value = undefined), (isOpen.value = false));
+    isOpen.value = false;
+    setTimeout(() => {
+      type.value = null;
+      data.value = undefined;
+    }, 500);
   };
 
   return {

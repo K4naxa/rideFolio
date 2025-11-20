@@ -12,7 +12,6 @@ import SidebarGroupContent from "@/components/ui/sidebar/SidebarGroupContent.vue
 import SidebarMenuSub from "@/components/ui/sidebar/SidebarMenuSub.vue";
 import SidebarMenuSubItem from "@/components/ui/sidebar/SidebarMenuSubItem.vue";
 import SidebarMenuSubButton from "@/components/ui/sidebar/SidebarMenuSubButton.vue";
-import { useAccessibleVehicles } from "@/lib/queries/useAccessibleVehicles";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
 import { useActivePool } from "@/lib/useActivePool";
@@ -20,6 +19,7 @@ import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
 import AppLogo from "../icons/AppLogo.vue";
 import Icon, { type IconProps } from "../icons/Icon.vue";
+import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 interface MainSideBarLinks {
   label: string;
@@ -34,18 +34,18 @@ const mainSidebarLinks: MainSideBarLinks[] = [
     to: "/dashboard",
   },
   {
-    label: "Muistiinpanot",
+    label: "Notes",
     icon: "notes",
     to: "",
   },
   {
-    label: "Tehtävät",
+    label: "To-dos",
     icon: "todo",
     to: "",
   },
 ];
 
-const { data: vehicles } = useAccessibleVehicles();
+const { vehicles } = useVehicleQueries();
 const { activeVehicleId } = useActiveVehicle();
 
 const { data: pools } = useAccessiblePools();
@@ -62,13 +62,10 @@ const handleCreateVehicleClick = () => {
 
 <template>
   <Sidebar>
-    <SidebarHeader class="px-4 h-16">
+    <SidebarHeader class="h-16 px-4">
       <SidebarMenu>
         <SidebarMenuItem>
-          <RouterLink
-            to="/dashboard"
-            class="flex items-center gap-3 transition-colors duration-200 rounded-md"
-          >
+          <RouterLink to="/dashboard" class="flex items-center gap-3 rounded-md transition-colors duration-200">
             <AppLogo class="size-10" />
             <h1 class="text-lg font-semibold">RideFolio</h1>
           </RouterLink>
@@ -88,13 +85,14 @@ const handleCreateVehicleClick = () => {
 
       <SidebarGroup>
         <SidebarGroupLabel class="text-sm">
-          <span class="flex items-center gap-3 w-full">
+          <span class="flex w-full items-center gap-3">
             <Icon name="carFront" />
-            Ajoneuvot
+            Vehicles
             <button
-              aria-label="Lisää ajoneuvo"
+              aria-label="Create vehicle"
               @click="handleCreateVehicleClick"
-              class="ml-auto flex items-center cursor-pointer hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
+              data-cy="create-vehicle-button"
+              class="hover:text-primary/90 hover:border-primary/50 ml-auto flex cursor-pointer items-center rounded-md border border-transparent p-1 transition-colors duration-200"
             >
               <Icon name="plus" />
             </button>
@@ -117,11 +115,11 @@ const handleCreateVehicleClick = () => {
         <SidebarGroupLabel class="text-sm select-none">
           <span class="flex items-center gap-3">
             <Icon name="users" size="sm" />
-            Ryhmät
+            Groups
           </span>
           <RouterLink
             to=""
-            class="ml-auto flex items-center gap-2 hover:text-primary/90 p-1 rounded-md border border-transparent hover:border-primary/50 transition-colors duration-200"
+            class="hover:text-primary/90 hover:border-primary/50 ml-auto flex items-center gap-2 rounded-md border border-transparent p-1 transition-colors duration-200"
           >
             <Icon name="plus" />
           </RouterLink>
@@ -142,7 +140,7 @@ const handleCreateVehicleClick = () => {
           <SidebarMenu class="gap-0">
             <SidebarMenuButton asChild>
               <RouterLink to="" class="flex items-center gap-3">
-                <Icon name="settings" size="sm" /> Asetukset
+                <Icon name="settings" size="sm" /> Settings
               </RouterLink>
             </SidebarMenuButton>
             <SidebarMenuButton asChild>

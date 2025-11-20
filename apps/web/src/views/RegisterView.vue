@@ -61,7 +61,7 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <main class="grid place-items-center min-h-screen p-4">
+  <main class="grid min-h-screen place-items-center p-4">
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-6">
         <Card class="overflow-hidden p-0">
@@ -69,23 +69,26 @@ const onSubmit = handleSubmit(async (values) => {
             <form @submit="onSubmit" class="flex flex-col gap-6 p-4 md:p-8">
               <CardHeader class="flex flex-col items-center text-center">
                 <h1>Create your account</h1>
-                <p class="text-muted-foreground">
-                  Fill the following fields to create a new account
-                </p>
+                <p class="text-muted-foreground">Fill the following fields to create a new account</p>
               </CardHeader>
 
-              <span v-if="registrationError" class="text-sm text-destructive text-center">
+              <span v-if="registrationError" class="text-destructive text-center text-sm">
                 {{ registrationError }}</span
               >
-              <Input placeholder="Username" name="name" type="text" />
+              <Input placeholder="Username" name="name" type="text" data-cy="name-input" />
 
-              <Input type="email" placeholder="Email" name="email" />
+              <Input type="email" placeholder="Email" name="email" data-cy="email-input" />
 
-              <Input type="password" placeholder="Password" name="password" />
+              <Input type="password" placeholder="Password" name="password" data-cy="password-input" />
 
-              <Input type="password" placeholder="Confirm Password" name="confirmPassword" />
+              <Input
+                type="password"
+                placeholder="Confirm Password"
+                name="confirmPassword"
+                data-cy="confirm-password-input"
+              />
 
-              <Button type="submit" class="w-full"> Register </Button>
+              <Button type="submit" class="w-full" data-cy="submit"> Register </Button>
 
               <div
                 class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
@@ -125,9 +128,9 @@ const onSubmit = handleSubmit(async (values) => {
                 </Button>
               </div>
 
-              <p class="text-center text-sm text-muted-foreground">
+              <p class="text-muted-foreground text-center text-sm">
                 Already have an account?
-                <Button variant="link" asChild class="p-0 h-auto">
+                <Button variant="link" asChild class="h-auto p-0">
                   <RouterLink to="/login">Login</RouterLink>
                 </Button>
               </p>
@@ -135,20 +138,15 @@ const onSubmit = handleSubmit(async (values) => {
           </CardContent>
         </Card>
         <div
-          class="text-muted-foreground text-center text-xs [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary"
+          class="text-muted-foreground [&_a:hover]:text-primary text-center text-xs [&_a]:underline [&_a]:underline-offset-4"
         >
           By using this service, you agree to the
-          <RouterLink to="">Terms of Service</RouterLink> and
-          <RouterLink to="">Privacy Policy</RouterLink>.
+          <RouterLink to="">Terms of Service</RouterLink> and <RouterLink to="">Privacy Policy</RouterLink>.
         </div>
       </div>
       <div class="flex gap-3 pt-5">
-        <Button @click="quickRegister('user 1', 'user@example.com', 'password')">
-          Create user 1
-        </Button>
-        <Button @click="quickRegister('user 2', 'user2@example.com', 'password')">
-          Create user 2
-        </Button>
+        <Button @click="quickRegister('user 1', 'user@example.com', 'password')"> Create user 1 </Button>
+        <Button @click="quickRegister('user 2', 'user2@example.com', 'password')"> Create user 2 </Button>
       </div>
     </div>
   </main>

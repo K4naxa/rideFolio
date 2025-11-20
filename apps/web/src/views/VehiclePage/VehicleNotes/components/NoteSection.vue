@@ -28,15 +28,8 @@ interface NoteSectionProps {
 
 const props = defineProps<NoteSectionProps>();
 
-const {
-  getEditableNote,
-  createNoteAsync,
-  updateNoteAsync,
-  isCreating,
-  isUpdating,
-  isDeleting,
-  deleteNoteAsync,
-} = useNoteQueries();
+const { getEditableNote, createNoteAsync, updateNoteAsync, isCreating, isUpdating, isDeleting, deleteNoteAsync } =
+  useNoteQueries();
 
 const tagInput = ref("");
 const isSubmitting = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
@@ -264,19 +257,15 @@ const handleRemoveTag = (tagToRemove: string) => {
 
 <template>
   <div
-    class="absolute bg-background p-4 lg:p-0 lg:relative z-50 lg:z-0 top-0 left-0 lg:flex flex-col w-full flex-1 min-h-0"
+    class="bg-background absolute top-0 left-0 z-50 min-h-0 w-full flex-1 flex-col p-4 lg:relative lg:z-0 lg:flex lg:p-0"
   >
-    <form class="flex flex-col space-y-4 flex-1 min-h-0" @submit.prevent>
+    <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
       <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
 
       <Field v-slot="{ value, handleChange }" name="vehicleId">
         <div v-if="isNew && !props.vehicleId">
-          <VehicleSelect
-            :value="value"
-            @valueChange="handleChange"
-            placeholder="Select a vehicle"
-          />
-          <ErrorMessage name="vehicleId" class="text-sm text-destructive mt-1 ml-2" />
+          <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
+          <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
         </div>
       </Field>
 
@@ -284,12 +273,12 @@ const handleRemoveTag = (tagToRemove: string) => {
         {{ !isNew ? "Edit Note" : "Create Note" }}
         <div class="flex items-center gap-4">
           <!-- Status indicator -->
-          <div class="aspect-square border rounded-sm w-9 grid place-items-center">
+          <div class="grid aspect-square w-9 place-items-center rounded-sm border">
             <div v-if="isSubmitting"><Spinner class="size-4" /></div>
             <div v-else-if="pendingSaves.has(currentNoteId)">
-              <SaveIcon class="size-4 stroke-warning" />
+              <SaveIcon class="stroke-warning size-4" />
             </div>
-            <div v-else><CheckIcon class="size-4 stroke-success" /></div>
+            <div v-else><CheckIcon class="stroke-success size-4" /></div>
           </div>
 
           <!-- control buttons -->
@@ -303,30 +292,21 @@ const handleRemoveTag = (tagToRemove: string) => {
             >
               <Icon name="trash" className="stroke-inherit" />
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              class="group"
-              @click="setFieldValue('pinned', !values.pinned)"
-            >
+            <Button variant="outline" size="icon" class="group" @click="setFieldValue('pinned', !values.pinned)">
               <Icon name="pin" v-if="!values.pinned" className="" />
               <Icon name="pin" v-if="values.pinned" className="group-hover:hidden stroke-primary" />
-              <Icon
-                name="pinOff"
-                v-if="values.pinned"
-                className="hidden group-hover:block stroke-primary"
-              />
+              <Icon name="pinOff" v-if="values.pinned" className="hidden group-hover:block stroke-primary" />
             </Button>
           </div>
         </div>
       </header>
 
       <!-- Make this container flex with full height -->
-      <div class="flex flex-col flex-1 min-h-0">
+      <div class="flex min-h-0 flex-1 flex-col">
         <!-- or min-h-[60vh] -->
         <TipTapEditor
           :value="values.content"
-          @update:value="(value) => setFieldValue('content', value)"
+          @update:value="(value: string) => setFieldValue('content', value)"
           placeholder="Write your note here..."
           :editable="true"
           :error="errors.content ?? undefined"
@@ -349,40 +329,27 @@ const handleRemoveTag = (tagToRemove: string) => {
       <!-- Tags Field -->
       <div class="mt-auto">
         <div class="space-y-2">
-          <div class="flex gap-2 items-center">
+          <div class="flex items-center gap-2">
             <input
               type="text"
               v-model="tagInput"
               placeholder="Add a tag"
-              class="flex-1 appearance-none file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground border flex w-full min-w-0 rounded-md bg-input px-3 py-1.5 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2"
+              class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 flex w-full min-w-0 flex-1 appearance-none rounded-md border px-3 py-1.5 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
               @keydown.enter.prevent="handleAddTag"
             />
-            <Button type="button" variant="outline" @click="handleAddTag" class="h-full">
-              Add
-            </Button>
+            <Button type="button" variant="outline" @click="handleAddTag" class="h-full"> Add </Button>
           </div>
 
           <div v-if="values.tags && values.tags.length > 0" class="flex flex-wrap gap-2">
-            <Badge
-              v-for="(tag, index) in values.tags"
-              :key="index"
-              variant="outline"
-              class="text-sm px-3 py-1.5"
-            >
+            <Badge v-for="(tag, index) in values.tags" :key="index" variant="outline" class="px-3 py-1.5 text-sm">
               {{ tag }}
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                type="button"
-                class="ml-2"
-                @click="handleRemoveTag(tag)"
-              >
+              <Button variant="ghost" size="icon-sm" type="button" class="ml-2" @click="handleRemoveTag(tag)">
                 <XIcon class="h-3 w-3" />
               </Button>
             </Badge>
           </div>
         </div>
-        <span v-if="errors.tags" class="text-sm text-destructive">{{ errors.tags }}</span>
+        <span v-if="errors.tags" class="text-destructive text-sm">{{ errors.tags }}</span>
       </div>
     </form>
   </div>

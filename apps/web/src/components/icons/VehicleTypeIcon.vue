@@ -10,8 +10,5 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <Icons
-    :name="type === 'other' ? 'otherVehicle' : type"
-    :class="twMerge(`size-4  `, props.class)"
-  />
+  <Icons :name="type === 'other' ? 'otherVehicle' : type" :class="twMerge(`size-4`, props.class)" />
 </template>
