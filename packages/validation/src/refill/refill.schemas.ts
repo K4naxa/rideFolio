@@ -20,10 +20,10 @@ export const RefillSchema = z.object({
     z.boolean("Invalid value")
   ),
 
-  fuelAmount: z.coerce.number("Required").min(0.01, "invalid value"),
-  pricePerUnit: z.coerce.number("Lisää hinta per yksikkö").min(0, "invalid value").optional().nullable(),
+  fuelAmount: z.coerce.number("add amount").min(0.01, "invalid value"),
+  pricePerUnit: z.coerce.number("add unit price").min(0, "invalid value").optional().nullable(),
 
-  totalCost: z.coerce.number("Lisää kokonaiskustannus").min(0, "invalid value").optional().nullable(),
+  costTotal: z.coerce.number("add cost").min(0, "invalid value").optional().nullable(),
 
   notes: z.string().optional().nullable(),
 });

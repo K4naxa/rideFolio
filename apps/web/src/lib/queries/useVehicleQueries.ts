@@ -23,6 +23,10 @@ export function useVehicleQueries() {
       queryClient.invalidateQueries({ queryKey: ["vehicles"], exact: true });
       return data;
     },
+    onError: (error) => {
+      toast.error("Error creating the Vehicle");
+      console.error("Create vehicle error:", error);
+    },
   });
 
   // Deletion of a vehicle

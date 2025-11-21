@@ -1,21 +1,15 @@
-import { api } from "@/lib/api";
+import { api, fetchApi } from "@/lib/api";
 import {
   type TMaintenanceCategory,
   type TBasicVehicle,
   type TVehicleTypeCode,
   type TMaintenanceSchema,
-  VehicleTypeCodes,
 } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { unref, type MaybeRef } from "vue";
+import { toast } from "vue-sonner";
 
-export function useMaintenanceQueries({
-  vehicleId,
-  typeCode,
-}: {
-  vehicleId?: MaybeRef<TBasicVehicle["id"] | undefined>;
-  typeCode?: MaybeRef<TVehicleTypeCode | undefined>;
-}) {
+export function useMaintenanceQueries({ typeCode }: { typeCode?: MaybeRef<TVehicleTypeCode | undefined> }) {
   const queryClient = useQueryClient();
 
   // FETCHES
@@ -25,10 +19,7 @@ export function useMaintenanceQueries({
       if (!typeCode || !unref(typeCode)) {
         throw new Error("Vehicle type code is required to fetch maintenance categories");
       }
-      const response = await api.get<TMaintenanceCategory[]>(
-        `/logs/maintenance/categories/${unref(typeCode)}`,
-      );
-      return response.data;
+      return await fetchApi<TMaintenanceCategory[]>(`/logs/maintenance/categories/${unref(typeCode)}`);
     },
   });
 
@@ -38,6 +29,10 @@ export function useMaintenanceQueries({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [] });
+    },
+    onError: (error) => {
+      console.error("MAINTENANCE CREATION API ERROR: ", error);
+      toast.error("Error creating the Maintenance log");
     },
   });
 

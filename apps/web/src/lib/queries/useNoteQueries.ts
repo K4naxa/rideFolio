@@ -1,9 +1,9 @@
-// composables/useNoteQueries.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import type { MaybeRef } from "vue";
 import { unref, computed } from "vue";
 import type { Note, NoteSchemaType } from "@repo/validation";
-import { api } from "@/lib/api";
+import { api, fetchApi } from "@/lib/api";
+import { toast } from "vue-sonner";
 
 export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
@@ -37,8 +37,7 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
       queryFn: async () => {
         const id = unref(noteId);
         if (!id) throw new Error("Note ID is required");
-        const response = await api.get<Required<NoteSchemaType>>(`/notes/${id}/editable`);
-        return response.data;
+        return await fetchApi<Required<NoteSchemaType>>(`/notes/${id}/editable`);
       },
       enabled: computed(() => !!unref(noteId)),
     });
@@ -60,6 +59,10 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
           queryKey: ["notes", "vehicle", variables.vehicleId],
         });
       }
+    },
+    onError: (error) => {
+      toast.error("Error creating the Note");
+      console.error("NOTE API ERROR: ", error);
     },
   });
 
@@ -87,6 +90,10 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
         });
       }
     },
+    onError: (error) => {
+      toast.error("Error toggling pin on the Note");
+      console.error("NOTE PIN API ERROR: ", error);
+    },
   });
 
   // Update note
@@ -108,17 +115,15 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
         });
       }
     },
+    onError: (error) => {
+      toast.error("Error updating the Note");
+      console.error("NOTE API ERROR: ", error);
+    },
   });
 
   // Delete note
   const deleteNoteMutation = useMutation({
-    mutationFn: async ({
-      noteId,
-      vehicleId,
-    }: {
-      noteId: Note["id"];
-      vehicleId: Note["vehicle"]["id"];
-    }) => {
+    mutationFn: async ({ noteId, vehicleId }: { noteId: Note["id"]; vehicleId: Note["vehicle"]["id"] }) => {
       const response = await api.delete<{ success: boolean }>(`/notes/${noteId}`);
       return response.data;
     },
@@ -129,6 +134,10 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
           queryKey: ["notes", "vehicle", variables.vehicleId],
         });
       }
+    },
+    onError: (error) => {
+      toast.error("Error deleting the Note");
+      console.error("NOTE API ERROR: ", error);
     },
   });
 

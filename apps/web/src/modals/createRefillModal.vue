@@ -4,10 +4,8 @@ import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import { api } from "@/lib/api";
 import { useModalStore } from "@/stores/modal";
-import { RefillSchema, type RefillSchemaInput } from "@repo/validation";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { RefillSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { computed, watch } from "vue";
@@ -25,13 +23,32 @@ import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import Icons from "@/components/icons/Icon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import { useRefillQueries } from "@/lib/queries/useRefillQueries";
+import z from "zod";
 
 const { activeVehicle } = useActiveVehicle();
 const { vehicles } = useVehicleQueries();
 const selectedVehicle = computed(() => vehicles.value?.find((vehicle) => vehicle.vehicleData.id === values.vehicleId));
+const lastOdometer = computed(() => {
+  return selectedVehicle.value?.vehicleData.odometerData.value || null;
+});
 
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
-  validationSchema: toTypedSchema(RefillSchema),
+  validationSchema: toTypedSchema(
+    RefillSchema.extend({
+      odometer: z.number().refine(
+        async (value): Promise<boolean> => {
+          if (!value) return true;
+
+          if (!lastOdometer.value) return true;
+          return lastOdometer.value < value;
+        },
+        {
+          message: "Must be greater than last refill ",
+        },
+      ),
+    }),
+  ),
   initialValues: {
     fullRefill: true,
     skippedRefill: false,
@@ -49,7 +66,7 @@ const handleFuelAmountChange = (value: string | number) => {
 
   if (!isNaN(fuelAmount) && pricePerUnit) {
     const total = parseFloat((fuelAmount * pricePerUnit).toFixed(2));
-    setFieldValue("totalCost", total, true);
+    setFieldValue("costTotal", total, true);
   }
 };
 
@@ -61,13 +78,13 @@ const handlePricePerUnitChange = (value: string | number) => {
 
   if (!isNaN(pricePerUnit) && fuelAmount) {
     const total = parseFloat((fuelAmount * pricePerUnit).toFixed(2));
-    setFieldValue("totalCost", total, true);
+    setFieldValue("costTotal", total, true);
   }
 };
 
-const handleTotalCostChange = (value: string | number) => {
+const handleCostTotalChange = (value: string | number) => {
   const totalCost = typeof value === "string" ? parseFloat(value) : value;
-  setFieldValue("totalCost", isNaN(totalCost) ? null : totalCost, true);
+  setFieldValue("costTotal", isNaN(totalCost) ? null : totalCost, true);
 
   const fuelAmount = Number(values.fuelAmount);
 
@@ -78,34 +95,20 @@ const handleTotalCostChange = (value: string | number) => {
   }
 };
 
-const queryClient = useQueryClient();
+const { createRefillAsync } = useRefillQueries();
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createRefill");
 const handleClose = () => {
   modalStore.onClose();
 };
 
-const createRefillMutation = useMutation({
-  mutationFn: async (data: RefillSchemaInput) => {
-    console.log("runnign mutation");
-    const response = await api.post("/logs/refill", data);
-    return response.data;
-  },
-  onSuccess(_, variables) {
-    toast.success("Refill created succesfully");
-    queryClient.invalidateQueries({ queryKey: [variables.vehicleId] });
-    queryClient.invalidateQueries({ queryKey: ["accessibleVehicles"] });
-    handleClose();
-  },
-  onError(error) {
-    console.error("API ERROR: ", error);
-    toast.error("Error creating the Refill");
-  },
-});
-
 const onSubmit = handleSubmit(async (values) => {
-  console.log("debug: onsubmit");
-  createRefillMutation.mutate(values);
+  createRefillAsync(values, {
+    onSuccess: () => {
+      toast.success("Refill created succesfully");
+      handleClose();
+    },
+  });
 });
 
 watch(isModalOpen, (open) => {
@@ -151,13 +154,18 @@ watch(isModalOpen, (open) => {
           <!-- Date & Odometer -->
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <DateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
-            <Input
-              name="odometer"
-              type="number"
-              placeholder="Odometer"
-              :suffix="selectedVehicle?.vehicleData.odometerData.unit"
-              data-cy="odometer-input"
-            />
+            <div class="relative pb-3">
+              <Input
+                name="odometer"
+                type="number"
+                placeholder="Odometer"
+                :suffix="selectedVehicle?.vehicleData.odometerData.unit"
+                data-cy="odometer-input"
+              />
+              <span v-if="lastOdometer" class="text-muted-foreground absolute -bottom-2 left-2 text-xs"
+                >Last: {{ lastOdometer }} {{ selectedVehicle?.vehicleData.odometerData.unit }}</span
+              >
+            </div>
           </div>
 
           <!-- Fill Type -->
@@ -203,11 +211,11 @@ watch(isModalOpen, (open) => {
               data-cy="price-per-unit-input"
             />
             <Input
-              name="totalCost"
+              name="costTotal"
               type="number"
               step="0.01"
               placeholder="Total cost"
-              :onValueChange="handleTotalCostChange"
+              :onValueChange="handleCostTotalChange"
               data-cy="total-cost-input"
             />
           </div>

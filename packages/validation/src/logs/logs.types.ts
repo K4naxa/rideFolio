@@ -13,11 +13,21 @@ export interface RecentActivityInfiniteResponse {
   nextCursor: string | null;
 }
 
-export interface RecentActivityItem {
-  type: "refill" | "maintenance";
+export type RecentActivityItem = RefillActivity | MaintenanceActivity;
+
+interface BaseActivity {
   date: Date;
   vehicle: { name: string; type: string; image: string | null };
-  data: RefillActivityData | MaintenanceActivityData; // normalized payload
+}
+
+export interface RefillActivity extends BaseActivity {
+  type: "refill";
+  data: RefillActivityData;
+}
+
+export interface MaintenanceActivity extends BaseActivity {
+  type: "maintenance";
+  data: MaintenanceActivityData;
 }
 
 export interface RefillActivityData {
@@ -31,6 +41,7 @@ export interface RefillActivityData {
   consumption: TConversionResult;
   odometer: TConversionResult;
 }
+
 export interface MaintenanceActivityData {
   id: string;
   date: Date;

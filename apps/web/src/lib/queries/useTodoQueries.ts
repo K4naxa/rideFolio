@@ -1,7 +1,8 @@
-import { api } from "@/lib/api";
+import { api, fetchApi } from "@/lib/api";
 import type { Todo, TodoSchemaType } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
+import { toast } from "vue-sonner";
 
 export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
@@ -22,8 +23,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
     queryFn: async () => {
       const id = unref(vehicleId);
       if (!id) throw new Error("Vehicle ID is required");
-      const response = await api.get<Todo[]>(`/todos/${id}`);
-      return response.data;
+      return await fetchApi<Todo[]>(`/todos/${id}`);
     },
     staleTime: 1000 * 60 * 10,
     enabled: computed(() => !!unref(vehicleId)),
@@ -42,19 +42,15 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
         exact: true,
       });
     },
+    onError: (error) => {
+      console.error("TODO CREATION API ERROR: ", error);
+      toast.error("Error creating the Todo item");
+    },
   });
 
   // Update todo
   const updateTodoMutation = useMutation({
-    mutationFn: async ({
-      todoId,
-      vehicleId,
-      data,
-    }: {
-      todoId: string;
-      vehicleId: string;
-      data: TodoSchemaType;
-    }) => {
+    mutationFn: async ({ todoId, vehicleId, data }: { todoId: string; vehicleId: string; data: TodoSchemaType }) => {
       const response = await api.put(`/todos/${todoId}`, data);
       return response.data;
     },
@@ -65,19 +61,15 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
         exact: true,
       });
     },
+    onError: (error) => {
+      console.error("TODO UPDATE API ERROR: ", error);
+      toast.error("Error updating the Todo item");
+    },
   });
 
   // Toggle todo completion
   const toggleTodoMutation = useMutation({
-    mutationFn: async ({
-      todoId,
-      vehicleId,
-      complete,
-    }: {
-      todoId: string;
-      vehicleId: string;
-      complete: boolean;
-    }) => {
+    mutationFn: async ({ todoId, vehicleId, complete }: { todoId: string; vehicleId: string; complete: boolean }) => {
       const response = await api.patch(`/todos/${todoId}/toggle`, { complete });
       return response.data;
     },
@@ -87,6 +79,10 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
         queryKey: ["todos", "vehicle", variables.vehicleId],
         exact: true,
       });
+    },
+    onError: (error) => {
+      console.error("TODO TOGGLE API ERROR: ", error);
+      toast.error("Error toggling the Todo item");
     },
   });
 
@@ -102,6 +98,10 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
         queryKey: ["todos", "vehicle", variables.vehicleId],
         exact: true,
       });
+    },
+    onError: (error) => {
+      console.error("TODO DELETION API ERROR: ", error);
+      toast.error("Error deleting the Todo item");
     },
   });
 

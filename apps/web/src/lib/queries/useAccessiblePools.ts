@@ -4,9 +4,8 @@ import { useQuery } from "@tanstack/vue-query";
 
 export function useAccessiblePools() {
   return useQuery({
-    queryKey: ["accessiblePools"],
+    queryKey: ["pools"],
     queryFn: async () => fetchApi<AccessiblePool[]>("pools/accessible"),
-    initialData: [],
     staleTime: 1000 * 60 * 30,
   });
 }

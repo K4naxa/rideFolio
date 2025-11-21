@@ -1,7 +1,8 @@
-import { api } from "@/lib/api";
+import { api, fetchApi } from "@/lib/api";
 import type { ShoppingListItem, ShoppingListItemSchemaType } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
+import { toast } from "vue-sonner";
 
 export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
@@ -10,8 +11,7 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
   const allShoppingQuery = useQuery({
     queryKey: ["shopping-list"],
     queryFn: async () => {
-      const response = await api.get<ShoppingListItem[]>(`/shopping-list`);
-      return response.data;
+      return await fetchApi<ShoppingListItem[]>(`/shopping-list`);
     },
     enabled: false,
   });
@@ -22,8 +22,7 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
     queryFn: async () => {
       const id = unref(vehicleId);
       if (!id) throw new Error("Vehicle ID is required");
-      const response = await api.get<ShoppingListItem[]>(`/shopping-list/${id}`);
-      return response.data;
+      return await fetchApi<ShoppingListItem[]>(`/shopping-list/${id}`);
     },
     staleTime: 1000 * 60 * 10,
     enabled: computed(() => !!unref(vehicleId)),
@@ -42,19 +41,15 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
         exact: true,
       });
     },
+    onError: (error) => {
+      toast.error("Error creating the Shopping List item");
+      console.error("SHOPPING LIST CREATION API ERROR: ", error);
+    },
   });
 
   // Update shopping list item
   const updateItemMutation = useMutation({
-    mutationFn: async ({
-      itemId,
-      vehicleId,
-      data,
-    }: {
-      itemId: string;
-      vehicleId: string;
-      data: ShoppingListItem;
-    }) => {
+    mutationFn: async ({ itemId, vehicleId, data }: { itemId: string; vehicleId: string; data: ShoppingListItem }) => {
       const response = await api.put(`/shopping-list/${itemId}`, data);
       return response.data;
     },
@@ -65,19 +60,15 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
         exact: true,
       });
     },
+    onError: (error) => {
+      toast.error("Error updating the Shopping List item");
+      console.error("SHOPPING LIST UPDATE API ERROR: ", error);
+    },
   });
 
   // Toggle shopping list item completion
   const toggleItemMutation = useMutation({
-    mutationFn: async ({
-      itemId,
-      vehicleId,
-      purchased,
-    }: {
-      itemId: string;
-      vehicleId: string;
-      purchased: boolean;
-    }) => {
+    mutationFn: async ({ itemId, vehicleId, purchased }: { itemId: string; vehicleId: string; purchased: boolean }) => {
       console.log("Toggling item:", itemId, "to purchased:", purchased);
       const response = await api.patch(`/shopping-list/${itemId}/toggle`, {
         isPurchased: purchased,
@@ -90,6 +81,10 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
         queryKey: ["shopping-list", "vehicle", variables.vehicleId],
         exact: true,
       });
+    },
+    onError: (error) => {
+      toast.error("Error toggling the Shopping List item");
+      console.error("SHOPPING LIST TOGGLE API ERROR: ", error);
     },
   });
 
@@ -105,6 +100,10 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
         queryKey: ["shopping-list", "vehicle", variables.vehicleId],
         exact: true,
       });
+    },
+    onError: (error) => {
+      toast.error("Error deleting the Shopping List item");
+      console.error("SHOPPING LIST DELETION API ERROR: ", error);
     },
   });
 
