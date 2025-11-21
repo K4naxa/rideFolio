@@ -7,12 +7,12 @@ import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import { api } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import { capitalize } from "@/lib/utility/capitalize";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
 import { useInfiniteQuery } from "@tanstack/vue-query";
 import { useTimeAgo } from "@vueuse/core";
 import { computed, ref } from "vue";
 import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
+import { capitalize } from "@/lib/utils";
 
 const { activeVehicleId, activeVehicle } = useActiveVehicle();
 

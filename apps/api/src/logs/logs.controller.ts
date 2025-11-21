@@ -33,6 +33,15 @@ export class LogsController {
     return { status: 'success' };
   }
 
+  @Get('refills/chart/:vehicleId/:limit')
+  async getRefills(
+    @Session() SessionUser: UserSession,
+    @Param('vehicleId') vehicleId: string,
+    @Param('limit') limit: Date,
+  ) {
+    return await this.refillService.getRefillsForChart(SessionUser, vehicleId, limit);
+  }
+
   // ** MAINTENANCE **
   @AllowAnonymous() // Allow anonymous access
   @Get('maintenance/categories/:vehicleTypeCode')

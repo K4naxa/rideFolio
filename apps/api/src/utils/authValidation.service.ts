@@ -38,9 +38,6 @@ export class AuthValidationService {
       console.error('Access denied: User does not have access to the vehicle.');
       throw new NotFoundException('Vehicle not found or access denied.');
     }
-
-    // If we reach here, the user has access. The function implicitly returns.
-    console.log('Access granted to vehicle.');
   }
 
   async hasAccessToPool(userId: string, poolId: string): Promise<void> {
@@ -55,8 +52,6 @@ export class AuthValidationService {
       console.error('Access denied: User does not have access to the pool.');
       throw new NotFoundException(`Pool not found or access denied.`);
     }
-    // If we reach here, the user has access to the pool.
-    console.log('Access granted to pool.');
   }
 
   async canCreateLogs(userId: string, vehicleId?: string | null): Promise<void> {

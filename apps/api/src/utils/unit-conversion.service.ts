@@ -27,7 +27,6 @@ export class UnitConversionService {
 
   getOdometerDataByType(baseValue: number | null, odometerType: Vehicle['odometerType']): TConversionResult {
     if (baseValue === null) {
-      console.error('❌ Base value for odometer is null, cannot convert.');
       baseValue = 0;
     }
     switch (odometerType) {
@@ -58,7 +57,6 @@ export class UnitConversionService {
     type: 'HOUR' | 'DISTANCE',
   ): TConversionResult {
     if (baseValue === null) {
-      console.error('❌ Base value for consumption is null, cannot convert.');
       baseValue = 0;
     }
 

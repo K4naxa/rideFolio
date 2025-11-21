@@ -1,10 +1,11 @@
 import { UnitConversionService } from './../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, Refill } from '@prisma/client';
-import { RefillSchemaOutput } from '@repo/validation';
+import { Prisma, Refill, User, Vehicle } from '@prisma/client';
+import { RefillSchemaOutput, TConversionResult, TRefillDatesForChart, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
+import { Extend } from 'zod/v4/core/util.cjs';
 
 @Injectable()
 export class RefillsService {
@@ -144,6 +145,96 @@ export class RefillsService {
     });
   }
 
+  async getRefillsForChart(
+    UserSession: UserSession,
+    vehicleId: string,
+    dateLimit: Date,
+  ): Promise<TRefillDatesForChart[]> {
+    await this.authValidation.hasAccessToVehicle(UserSession.user.id, vehicleId);
+
+    const [vehicle, user, refills] = (await Promise.all([
+      this.prisma.vehicle.findUnique({
+        where: { id: vehicleId },
+        select: { odometerType: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: UserSession.user.id },
+        select: { consumptionUnit_hour: true, consumptionUnit_distance: true, volumeUnit: true },
+      }),
+      this.prisma.refill.findMany({
+        where: {
+          vehicleId,
+          date: { gte: dateLimit },
+        },
+        orderBy: { date: 'asc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      }),
+    ])) as [
+      { odometerType: Vehicle['odometerType'] } | null,
+      {
+        consumptionUnit_hour: User['consumptionUnit_hour'];
+        consumptionUnit_distance: User['consumptionUnit_distance'];
+        volumeUnit: User['volumeUnit'];
+      } | null,
+      Array<Extend<Refill, { user: { id: string; name: string; image: string | null } }>>,
+    ];
+
+    const isVehicleHourly = vehicle?.odometerType === 'HOUR';
+    const userUnit = isVehicleHourly ? user!.consumptionUnit_hour : user!.consumptionUnit_distance;
+
+    // Single-pass grouping with running average
+    const groupedByDate = refills.reduce(
+      (map, refill) => {
+        const dateKey = refill.date.toISOString().split('T')[0];
+
+        const rawConsumption = isVehicleHourly ? refill.consumption_L_per_hour : refill.consumption_L_per_100km;
+
+        const convertedConsumption = this.unitConversion.getConsumptionData(
+          rawConsumption,
+          userUnit,
+          isVehicleHourly ? 'HOUR' : 'DISTANCE',
+        );
+
+        if (!map.has(dateKey)) {
+          map.set(dateKey, {
+            date: dateKey,
+            consumption: { ...convertedConsumption }, // Clone to avoid reference issues
+            refills: [this.formatRefillForClient(refill, vehicle!, user!)],
+            sumConsumption: convertedConsumption.value, // Track sum for easier avg calculation
+          });
+        } else {
+          const group = map.get(dateKey)!;
+          group.sumConsumption += convertedConsumption.value;
+          group.refills.push(this.formatRefillForClient(refill, vehicle!, user!));
+          group.consumption.value = Number((group.sumConsumption / group.refills.length).toFixed(2));
+        }
+
+        return map;
+      },
+      new Map<
+        string,
+        {
+          date: string;
+          consumption: TConversionResult;
+          refills: TRefillForClient[];
+          sumConsumption: number;
+        }
+      >(),
+    );
+
+    // Convert to array and remove the helper sumConsumption property
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return Array.from(groupedByDate.values()).map(({ sumConsumption, ...rest }) => rest);
+  }
+
   /* ===== HELPER METHODS ===== */
 
   private validateOdometerIncrease(previousLog: Refill | null, newOdometer: number, isOdometerHourly: boolean): void {
@@ -271,5 +362,36 @@ export class RefillsService {
       where: { id: monthlyStats.id },
       data: updateData,
     });
+  }
+  private formatRefillForClient(
+    refill: Extend<Refill, { user: { id: string; name: string; image: string | null } }>,
+    vehicle: Pick<Vehicle, 'odometerType'>,
+    user: Pick<User, 'consumptionUnit_hour' | 'consumptionUnit_distance' | 'volumeUnit'>,
+  ): TRefillForClient {
+    return {
+      id: refill.id,
+      vehicleId: refill.vehicleId,
+      creator: {
+        id: refill.user.id,
+        name: refill.user.name,
+        image: refill.user.image,
+      },
+      date: refill.date,
+      odometer: this.unitConversion.getOdometerDataByType(
+        vehicle.odometerType === 'HOUR' ? refill.odometer_hour : refill.odometer_km,
+        vehicle.odometerType,
+      ),
+      fullRefill: refill.fullRefill,
+      skippedRefill: refill.skippedRefill,
+      fuelVolume: this.unitConversion.getVolumeDataByUnitType(refill.fuelAmount_L, user.volumeUnit),
+      pricePerUnit: refill.pricePerUnit,
+      costTotal: refill.costTotal,
+      notes: refill.notes,
+      consumption: this.unitConversion.getConsumptionData(
+        vehicle.odometerType === 'HOUR' ? refill.consumption_L_per_hour : refill.consumption_L_per_100km,
+        vehicle.odometerType === 'HOUR' ? user.consumptionUnit_hour : user.consumptionUnit_distance,
+        vehicle.odometerType === 'HOUR' ? 'HOUR' : 'DISTANCE',
+      ),
+    };
   }
 }
