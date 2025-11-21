@@ -5,20 +5,20 @@ import Button from "@/components/ui/button/Button.vue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { api } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { capitalize } from "@/lib/utility/capitalize";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
 import { useInfiniteQuery } from "@tanstack/vue-query";
 import { useTimeAgo } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
 
 const { activeVehicleId, activeVehicle } = useActiveVehicle();
 
-const LIMIT = 10;
+const LIMIT = 4;
 
-const { data, isLoading, isError } = useInfiniteQuery({
+const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
   queryKey: ["vehicle-recent-activity", activeVehicleId],
   queryFn: async ({ pageParam }) => {
     const cursor = pageParam;
@@ -37,6 +37,9 @@ const allActivities = computed<RecentActivityInfiniteResponse["items"]>(() => {
 const isEmpty = computed(() => {
   return !isLoading.value && allActivities.value.length === 0;
 });
+
+const scrollAreaRef = ref<HTMLElement | null>(null);
+const loadMoreTrigger = ref<HTMLElement | null>(null);
 </script>
 
 <template>
@@ -46,11 +49,13 @@ const isEmpty = computed(() => {
       <CardDescription> Latest activity for {{ activeVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
     </CardHeader>
     <CardContent class="min-h-0 flex-1 rounded px-0">
-      <ScrollArea class="h-full w-full px-2.5">
+      <ScrollArea ref="scrollAreaRef" class="h-full w-full px-2.5">
         <div class="flex flex-col gap-4" v-auto-animate>
-          <p v-if="isLoading" class="text-muted-foreground mx-auto my-8 flex items-center gap-2 text-center">
-            <Spinner /> Loading...
-          </p>
+          <div v-if="isLoading" class="flex flex-col gap-8">
+            <VehicleRecentActivitySkeleton />
+            <VehicleRecentActivitySkeleton />
+            <VehicleRecentActivitySkeleton />
+          </div>
           <p v-else-if="isError" class="text-destructive text-center text-sm">Error loading recent activity.</p>
           <p v-else-if="isEmpty" class="text-muted-foreground text-center text-sm">No recent activity found.</p>
 
@@ -58,7 +63,9 @@ const isEmpty = computed(() => {
             <div v-for="activity in allActivities" :key="activity.data.id">
               <!-- Refill activity -->
               <div v-if="activity.type === 'refill'" class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5">
-                <div class="bg-refill/30 rounded p-2.5"><Icon name="refill" class="stroke-refill" /></div>
+                <div class="bg-refill/30 grid size-11 place-content-center rounded">
+                  <Icon name="refill" class="stroke-refill" />
+                </div>
                 <div class="space-y-1">
                   <div class="flex gap-3">
                     <Label>Refill</Label>
@@ -83,7 +90,7 @@ const isEmpty = computed(() => {
                 v-if="activity.type === 'maintenance'"
                 class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5"
               >
-                <div class="bg-maintenance/20 rounded p-2.5">
+                <div class="bg-maintenance/30 grid size-11 place-content-center rounded">
                   <Icon name="maintenance" class="stroke-maintenance" />
                 </div>
                 <div class="space-y-1">
@@ -100,6 +107,19 @@ const isEmpty = computed(() => {
 
                 <Button variant="outline" size="icon"> <Icon name="dotsHorizontal" /> </Button>
               </div>
+            </div>
+
+            <div ref="loadMoreTrigger" class="py-4 text-center">
+              <VehicleRecentActivitySkeleton v-if="isFetchingNextPage" />
+              <Button
+                v-else-if="hasNextPage"
+                variant="link"
+                @click="fetchNextPage"
+                class="text-primary text-sm hover:underline"
+              >
+                Load more
+              </Button>
+              <p v-else class="text-muted-foreground text-sm">No more activities</p>
             </div>
           </template>
         </div>
