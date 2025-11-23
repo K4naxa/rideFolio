@@ -1,6 +1,8 @@
 import { api, fetchApi } from "@/lib/api";
+import { authClient } from "@/lib/authClient";
 import type { TAccessibleVehicle, VehicleSchemaType } from "@repo/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
+import { computed } from "vue";
 import { toast } from "vue-sonner";
 
 export function useVehicleQueries() {
@@ -11,6 +13,7 @@ export function useVehicleQueries() {
     queryKey: ["vehicles"],
     queryFn: async () => fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
     staleTime: 1000 * 60 * 30,
+    enabled: computed(() => authClient.useSession().value.data !== null),
   });
 
   // Creation of a new vehicle

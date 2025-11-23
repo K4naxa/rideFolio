@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import { fetchApi } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -20,44 +20,67 @@ const { data: chartData } = useQuery<TRefillDatesForChart[]>({
   enabled: computed(() => !!activeVehicleId.value),
 });
 
+interface TChartItem {
+  date: string;
+  consumption?: {
+    value: number;
+    unit: string;
+  };
+  smoothingConsumption: number;
+  refills?: TRefillForClient[];
+}
+
+// Bottom value for the chart Y axis
+const chartMinValue = computed<number>(() => {
+  if (!chartData.value) return 0;
+
+  let sum = 0;
+  let count = 0;
+
+  for (const item of chartData.value) {
+    if (item.consumption) {
+      sum += item.consumption.value;
+      count++;
+    }
+  }
+
+  return Math.floor(sum / count / 2) || 0;
+});
+
 // Fill in missing dates and apply smoothing
-const filledChartData = computed(() => {
+const filledChartData = computed((): TChartItem[] => {
   if (!chartData.value) return [];
 
-  const dataMap = new Map<string, TRefillDatesForChart>(chartData.value.map((item) => [item.date, item]));
+  const dataMap = new Map<string, TChartItem>();
 
-  // First pass: create array with all dates, filling missing consumption with previous value
-  const rawData = Array.from({ length: timeRange.value }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (timeRange.value - 1 - i));
-    const dateKey = date.toISOString().split("T")[0] ?? "";
-
-    // Check if we have data for this date
-    const existing = dataMap.get(dateKey);
-
-    let consumption: number | null = null;
-    let unit = "";
-    let refills: TRefillForClient[] = [];
-
-    // if existing date has consumption value, use it else use last known
-    if (existing && existing.consumption.value !== null && existing.consumption.value !== undefined) {
-      consumption = existing.consumption.value;
-      unit = existing.consumption.unit;
-      refills = existing.refills ?? [];
-    }
-
-    return {
-      date: new Date(dateKey).getTime(),
-      rawConsumption: consumption,
-      consumptionUnit: unit,
-      refills,
-      dateKey,
-    };
+  chartData.value.forEach((entry) => {
+    dataMap.set(entry.date, { ...entry, smoothingConsumption: entry.consumption.value });
   });
-  return rawData.map((d) => ({
-    ...d,
-    consumption: d.rawConsumption,
-  }));
+
+  let lastValidConsumption: number = 0;
+
+  for (let i = timeRange.value; i > 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dateKey = date.toISOString().split("T")[0];
+    if (!dateKey) throw new Error("Invalid date generated");
+
+    // if date is missing
+    if (!dataMap.has(dateKey)) {
+      dataMap.set(dateKey, {
+        date: dateKey,
+        smoothingConsumption: lastValidConsumption,
+      });
+    } else {
+      lastValidConsumption = dataMap.get(dateKey)!.smoothingConsumption;
+    }
+  }
+  return Array.from(dataMap.values()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+});
+
+watch(filledChartData, () => {
+  console.log("Updated filledChartData:", filledChartData.value);
+  console.log("Chart min value:", chartMinValue.value);
 });
 </script>
 

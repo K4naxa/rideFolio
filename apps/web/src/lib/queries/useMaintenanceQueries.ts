@@ -9,10 +9,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { unref, type MaybeRef } from "vue";
 import { toast } from "vue-sonner";
 
-export function useMaintenanceQueries({ typeCode }: { typeCode?: MaybeRef<TVehicleTypeCode | undefined> }) {
+export function useMaintenanceQueries(typeCode?: MaybeRef<TVehicleTypeCode | undefined>) {
   const queryClient = useQueryClient();
 
-  // FETCHES
   const partCategories = useQuery({
     queryKey: ["maintenance", "part-categories", typeCode],
     queryFn: async () => {

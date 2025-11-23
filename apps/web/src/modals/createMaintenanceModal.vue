@@ -39,7 +39,7 @@ const { vehicles } = useVehicleQueries();
 const selectedVehicle = computed(() => vehicles.value?.find(({ vehicleData }) => vehicleData.id === values.vehicleId));
 
 // Maintenance queries
-const { createMaintenanceAsync } = useMaintenanceQueries({ vehicleId: activeVehicleId });
+const { createMaintenanceAsync } = useMaintenanceQueries();
 
 const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm({
   validationSchema: toTypedSchema(MaintenanceSchema),

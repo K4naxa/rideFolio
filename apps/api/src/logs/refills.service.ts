@@ -165,6 +165,7 @@ export class RefillsService {
         where: {
           vehicleId,
           date: { gte: dateLimit },
+          OR: [{ consumption_L_per_100km: { not: null } }, { consumption_L_per_hour: { not: null } }],
         },
         orderBy: { date: 'asc' },
         include: {
