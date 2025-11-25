@@ -44,9 +44,7 @@ const selectedCategory = ref<TMaintenanceCategory | null>(null);
 const selectedPart = ref<TMaintenanceCategoryPart | null>(null);
 const customTypeInput = ref<string>("");
 
-const { partCategories, partCategoriesLoading } = useMaintenanceQueries({
-  typeCode: selectedVehicleType,
-});
+const { partCategories, partCategoriesLoading } = useMaintenanceQueries(selectedVehicleType.value);
 
 const displayParts = computed<PartDisplay[]>(() => {
   const parts = props.values || [];
@@ -109,9 +107,7 @@ function handleLocationToggle(locationId: string, groupId: string) {
       emits("update:values", updatedParts);
     } else {
       // Multiple instances - remove this specific one
-      const updatedParts = props.values.filter(
-        (part) => !(part.groupId === groupId && part.locationId === locationId),
-      );
+      const updatedParts = props.values.filter((part) => !(part.groupId === groupId && part.locationId === locationId));
       emits("update:values", updatedParts);
     }
     return;
@@ -122,9 +118,7 @@ function handleLocationToggle(locationId: string, groupId: string) {
 
   if (partWithoutLocation) {
     // Update existing part without location
-    const updatedParts = props.values.map((part) =>
-      part === partWithoutLocation ? { ...part, locationId } : part,
-    );
+    const updatedParts = props.values.map((part) => (part === partWithoutLocation ? { ...part, locationId } : part));
     emits("update:values", updatedParts);
   } else {
     if (!partGroup[0]) return;
@@ -157,9 +151,9 @@ function handleDeletePart(groupId: string) {
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 pt-3 gap-6 min-w-0 overflow-hidden min-h-0 max-h-full lg:h-full">
+  <div class="flex max-h-full min-h-0 min-w-0 flex-1 flex-col gap-6 overflow-hidden pt-3 lg:h-full">
     <!-- part Creation -->
-    <div class="flex gap-4 flex-col lg:flex-row">
+    <div class="flex flex-col gap-4 lg:flex-row">
       <div class="flex-2">
         <Combobox
           v-model="selectedCategory"
@@ -179,7 +173,7 @@ function handleDeletePart(groupId: string) {
           </ComboboxAnchor>
           <ComboboxList>
             <ComboboxEmpty v-if="partCategoriesLoading" class=""
-              ><span class="w-full flex gap-2"><Spinner />Loading...</span></ComboboxEmpty
+              ><span class="flex w-full gap-2"><Spinner />Loading...</span></ComboboxEmpty
             >
             <ComboboxEmpty class="text-muted-foreground"> No categories found. </ComboboxEmpty>
             <ComboboxGroup>
@@ -228,16 +222,14 @@ function handleDeletePart(groupId: string) {
         </Combobox>
       </div>
 
-      <Button type="button" class="flex-1" @click="handleAddPart" :disabled="!selectedPart"
-        >Add</Button
-      >
+      <Button type="button" class="flex-1" @click="handleAddPart" :disabled="!selectedPart">Add</Button>
     </div>
 
     <!-- parts list -->
-    <div class="flex-1 flex flex-col rounded border overflow-hidden min-h-0 lg:max-h-full">
+    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded border lg:max-h-full">
       <!-- header -->
       <div
-        class="grid grid-cols-[minmax(16rem,1fr)_12rem_2rem] h-10 px-3 border-b text-sm text-accent-foreground font-medium bg-accent/20 gap-4"
+        class="text-accent-foreground bg-accent/20 grid h-10 grid-cols-[minmax(16rem,1fr)_12rem_2rem] gap-4 border-b px-3 text-sm font-medium"
       >
         <Label>Part</Label>
         <Label>Locations</Label>
@@ -246,15 +238,15 @@ function handleDeletePart(groupId: string) {
       <!-- content -->
       <ul
         v-auto-animate
-        class="flex-1 flex-col flex scrollbar overflow-y-auto p-1.5 min-h-24 divide-y divide-border max-h-96 lg:overflow-x-hidden"
+        class="scrollbar divide-border flex max-h-96 min-h-24 flex-1 flex-col divide-y overflow-y-auto p-1.5 lg:overflow-x-hidden"
       >
-        <span v-if="displayParts.length < 1" class="text-muted-foreground text-center my-auto"
+        <span v-if="displayParts.length < 1" class="text-muted-foreground my-auto text-center"
           >Add serviced parts to the list to see them here</span
         >
         <li
           v-for="part in displayParts"
           :key="part.groupId"
-          class="grid grid-cols-[minmax(12rem,1fr)_12rem_2rem] gap-4 py-1.5 px-2 my-2 items-center"
+          class="my-2 grid grid-cols-[minmax(12rem,1fr)_12rem_2rem] items-center gap-4 px-2 py-1.5"
         >
           <!-- part code / label -->
           <div>
@@ -263,9 +255,9 @@ function handleDeletePart(groupId: string) {
               :placeholder="part.code"
               :value="part.label"
               @input="handeLabelUpdate(($event.target as HTMLInputElement).value, part.groupId)"
-              class="outline-0 focus-visible:outline-0 w-full py-1 text-sm bg-transparent"
+              class="w-full bg-transparent py-1 text-sm outline-0 focus-visible:outline-0"
             />
-            <span v-if="part.label" class="text-xs text-muted-foreground">{{ part.code }}</span>
+            <span v-if="part.label" class="text-muted-foreground text-xs">{{ part.code }}</span>
           </div>
 
           <!-- locations -->

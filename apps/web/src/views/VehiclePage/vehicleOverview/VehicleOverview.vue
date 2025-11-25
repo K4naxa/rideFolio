@@ -3,16 +3,16 @@ import VehicleConsumptionChart from "./components/VehicleConsumptionChart.vue";
 import VehicleRecentActivity from "./components/VehicleRecentActivity.vue";
 </script>
 <template>
-  <!-- First row -->
-  <div class="flex h-120 min-h-0 w-full flex-col gap-4 lg:flex-row">
-    <!--  Left  -->
-    <div class="flex flex-2">
-      <VehicleConsumptionChart />
-    </div>
+  <div class="">
+    <!-- First row -->
+    <div class="grid grid-cols-1 gap-4 lg:h-120 lg:grid-cols-3">
+      <div class="h-full min-h-0 w-full lg:col-span-2">
+        <VehicleConsumptionChart />
+      </div>
 
-    <!-- Right -->
-    <div class="flex flex-1">
-      <VehicleRecentActivity />
+      <div class="h-full min-h-0 w-full lg:col-span-1">
+        <VehicleRecentActivity />
+      </div>
     </div>
   </div>
 </template>

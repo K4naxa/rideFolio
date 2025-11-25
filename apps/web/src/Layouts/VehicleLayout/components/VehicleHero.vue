@@ -64,13 +64,13 @@ const statsOpen = ref(false);
 <template>
   <div class="flex w-full flex-col gap-4 px-4 lg:flex-row lg:px-8" data-cy="vehicle-hero">
     <!-- Vehicle image & placeholder -->
-    <div class="flex h-fit w-full shrink-0 justify-center lg:h-52 lg:w-auto">
+    <div class="flex h-52 w-full shrink-0 justify-center lg:aspect-video lg:w-auto">
       <img
         v-if="activeVehicle?.vehicleData.image"
         :src="activeVehicle.vehicleData.image"
-        class="h-full w-full rounded object-cover lg:w-auto"
+        class="h-full w-full rounded object-cover"
       />
-      <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border lg:aspect-video lg:w-auto">
+      <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border">
         <VehicleTypeIcon
           :type="activeVehicle?.vehicleData.type || 'other'"
           class="stroke-muted-foreground size-16 rounded"

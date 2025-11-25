@@ -15,6 +15,7 @@ export function useRefillQueries() {
       queryClient.invalidateQueries({ queryKey: [variables.vehicleId] });
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["vehicle-recent-activity", variables.vehicleId] });
+      queryClient.invalidateQueries({ queryKey: ["vehicle-consumption-chart-data", variables.vehicleId] });
     },
     onError(error) {
       console.error("REFILL CREATION API ERROR: ", error);

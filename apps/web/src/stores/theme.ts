@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 type Theme = "light" | "dark" | "system";
 
@@ -8,6 +8,26 @@ export const useThemeStore = defineStore("theme", () => {
 
   const resolvedTheme = ref<"light" | "dark">("light");
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const colors = ref({
+    background: getComputedStyle(document.documentElement).getPropertyValue("--color-background").trim(),
+    primary: getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim(),
+    foreground: getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim(),
+    mutedForeground: getComputedStyle(document.documentElement).getPropertyValue("--color-muted-foreground").trim(),
+    muted: getComputedStyle(document.documentElement).getPropertyValue("--color-muted").trim(),
+  });
+  watch(
+    () => resolvedTheme.value,
+    () => {
+      colors.value = {
+        background: getComputedStyle(document.documentElement).getPropertyValue("--color-background").trim(),
+        primary: getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim(),
+        foreground: getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim(),
+        mutedForeground: getComputedStyle(document.documentElement).getPropertyValue("--color-muted-foreground").trim(),
+        muted: getComputedStyle(document.documentElement).getPropertyValue("--color-muted").trim(),
+      };
+    },
+  );
 
   const getResolvedTheme = (): "light" | "dark" => {
     if (theme.value === "system") {
@@ -88,5 +108,7 @@ export const useThemeStore = defineStore("theme", () => {
     toggleTheme,
     initialize,
     cleanup,
+
+    colors,
   };
 });

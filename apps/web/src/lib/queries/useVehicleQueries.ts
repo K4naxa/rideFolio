@@ -13,7 +13,6 @@ export function useVehicleQueries() {
     queryKey: ["vehicles"],
     queryFn: async () => fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
     staleTime: 1000 * 60 * 30,
-    enabled: computed(() => authClient.useSession().value.data !== null),
   });
 
   // Creation of a new vehicle

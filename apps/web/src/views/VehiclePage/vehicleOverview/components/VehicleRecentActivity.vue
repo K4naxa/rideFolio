@@ -16,7 +16,7 @@ import { capitalize } from "@/lib/utils";
 
 const { activeVehicleId, activeVehicle } = useActiveVehicle();
 
-const LIMIT = 4;
+const LIMIT = 10;
 
 const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
   queryKey: ["vehicle-recent-activity", activeVehicleId],
@@ -43,7 +43,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <Card class="flex min-h-0 flex-1 flex-col">
+  <Card class="flex h-full flex-col">
     <CardHeader>
       <CardTitle> <Icon name="stats" class="stroke-primary" /> Recent activity</CardTitle>
       <CardDescription> Latest activity for {{ activeVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
@@ -75,7 +75,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                       >{{ activity.data.fuelAmount.value }}
                       <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
                     </Badge>
-                    <Badge variant="outline" class="px-2 py-1">
+                    <Badge variant="outline" class="px-2 py-1" v-if="activity.data.consumption.value">
                       {{ activity.data.consumption.value }}
                       <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
                     </Badge>
