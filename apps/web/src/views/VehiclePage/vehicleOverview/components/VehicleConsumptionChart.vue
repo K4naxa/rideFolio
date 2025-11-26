@@ -5,87 +5,154 @@ import { computed, ref, watch } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import { fetchApi } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import type { TRefillDatesForChart, TRefillForClient } from "@repo/validation";
+import type { TRefillDatesForChart } from "@repo/validation";
+import VChart from "vue-echarts";
+import { graphic, use } from "echarts/core";
+import { CanvasRenderer } from "echarts/renderers";
+import { LineChart } from "echarts/charts";
+import { TooltipComponent, GridComponent } from "echarts/components";
+import { type EChartsOption } from "echarts";
+import { useThemeStore } from "@/stores/theme";
+import Label from "@/components/ui/label/Label.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+
+// Register ECharts components
+use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
+
+const themeStore = useThemeStore();
 
 const { activeVehicleId } = useActiveVehicle();
 const timeRange = ref(30);
 
-const { data: chartData } = useQuery<TRefillDatesForChart[]>({
+const {
+  data: chartData,
+  isLoading,
+  isPlaceholderData,
+  isError,
+} = useQuery<TRefillDatesForChart[]>({
   queryKey: ["vehicle-consumption-chart-data", activeVehicleId, timeRange],
   queryFn: async () => {
     const limitDate = new Date();
     limitDate.setDate(limitDate.getDate() - timeRange.value);
+
     return await fetchApi(`/logs/refills/chart/${activeVehicleId.value}/${limitDate.toISOString()}`);
   },
   enabled: computed(() => !!activeVehicleId.value),
+  placeholderData: (prev) => prev,
 });
 
-interface TChartItem {
-  date: string;
-  consumption?: {
-    value: number;
-    unit: string;
-  };
-  smoothingConsumption: number;
-  refills?: TRefillForClient[];
-}
+watch(chartData, (newData) => {
+  console.log("Chart data updated:", newData);
+});
 
-// Bottom value for the chart Y axis
-const chartMinValue = computed<number>(() => {
-  if (!chartData.value) return 0;
-
-  let sum = 0;
-  let count = 0;
-
-  for (const item of chartData.value) {
-    if (item.consumption) {
-      sum += item.consumption.value;
-      count++;
-    }
+// Chart options
+const chartOptions = computed((): EChartsOption => {
+  if (!chartData.value) {
+    return {};
   }
 
-  return Math.floor(sum / count / 2) || 0;
-});
+  const xAxisData = chartData.value
+    .filter((item) => typeof item.consumption?.value === "number")
+    .map((item) => {
+      const date = new Date(item.date);
 
-// Fill in missing dates and apply smoothing
-const filledChartData = computed((): TChartItem[] => {
-  if (!chartData.value) return [];
-
-  const dataMap = new Map<string, TChartItem>();
-
-  chartData.value.forEach((entry) => {
-    dataMap.set(entry.date, { ...entry, smoothingConsumption: entry.consumption.value });
-  });
-
-  let lastValidConsumption: number = 0;
-
-  for (let i = timeRange.value; i > 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dateKey = date.toISOString().split("T")[0];
-    if (!dateKey) throw new Error("Invalid date generated");
-
-    // if date is missing
-    if (!dataMap.has(dateKey)) {
-      dataMap.set(dateKey, {
-        date: dateKey,
-        smoothingConsumption: lastValidConsumption,
+      return date.toLocaleDateString(undefined, {
+        month: "numeric",
+        day: "numeric",
       });
-    } else {
-      lastValidConsumption = dataMap.get(dateKey)!.smoothingConsumption;
-    }
-  }
-  return Array.from(dataMap.values()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-});
+    });
 
-watch(filledChartData, () => {
-  console.log("Updated filledChartData:", filledChartData.value);
-  console.log("Chart min value:", chartMinValue.value);
+  const yAxisData = chartData.value
+    .filter((item) => typeof item.consumption?.value === "number")
+
+    .map((item) => ({
+      value: item.consumption.value,
+      itemData: item,
+    }));
+
+  return {
+    tooltip: {
+      trigger: "axis",
+      backgroundColor: "transparent",
+      borderWidth: 0,
+      padding: 0,
+      extraCssText: "box-shadow: none;",
+      z: 0,
+      zlevel: 0,
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: xAxisData,
+      axisLabel: {
+        color: themeStore.colors.mutedForeground,
+        fontSize: 10,
+        margin: 12,
+      },
+      axisTick: {
+        show: false,
+      },
+      axisLine: {
+        show: false,
+      },
+    },
+
+    yAxis: [
+      {
+        type: "value",
+        scale: true,
+        axisLine: {
+          show: false,
+        },
+        axisLabel: {
+          color: themeStore.colors.mutedForeground,
+          fontSize: 10,
+          margin: 12,
+        },
+        splitLine: {
+          lineStyle: {
+            color: themeStore.colors.muted,
+            opacity: 0.4,
+          },
+        },
+      },
+    ],
+
+    grid: {
+      left: "0",
+      right: "0",
+      bottom: "0",
+      top: "0",
+    },
+
+    series: {
+      type: "line",
+      smooth: true,
+      showSymbol: true,
+      symbol: "circle",
+      symbolSize: 6,
+
+      lineStyle: {
+        width: 1,
+        color: "rgba(225, 113, 0, 0.5)",
+      },
+      areaStyle: {
+        color: new graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: "#e17100" },
+          { offset: 0.5, color: "rgba(225, 113, 0, 0.3)" }, // Semi-transparent orange
+          { offset: 1, color: "rgba(225, 113, 0, 0)" },
+        ]),
+        origin: "start",
+      },
+      data: yAxisData,
+    },
+  };
 });
 </script>
 
 <template>
-  <Card class="flex min-h-0 flex-1 flex-col">
+  <Card class="flex h-full w-full flex-col">
     <CardHeader class="flex items-center gap-2 space-y-0 border-b sm:flex-row">
       <div class="grid flex-1 gap-1">
         <CardTitle>Fuel consumption</CardTitle>
@@ -104,12 +171,59 @@ watch(filledChartData, () => {
     </CardHeader>
 
     <!-- Chart -->
-    <CardContent class="flex-1 px-2 pt-4 pb-4 sm:px-6 sm:pt-6">
-      <div v-if="filledChartData.length > 0" autoresize class="flex-1" />
+    <CardContent class="relative flex h-full min-h-80 w-full">
+      <div
+        v-if="isLoading || isPlaceholderData"
+        class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
+      >
+        <span class="text-muted-foreground animate-pulse"> <Spinner class="size-12" /> </span>
+      </div>
+      <VChart :option="chartOptions" autoresize class="chart">
+        <template #tooltip="params: any">
+          <div class="bg-background/90 text-foreground z-0 rounded p-2 text-sm shadow-lg">
+            <div v-for="({ data }, i) in params" :key="i" class="flex flex-col gap-2">
+              <h4 class="font-semibold">
+                {{
+                  new Date(data.itemData?.date).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                }}
+              </h4>
+              <p class="text-muted-foreground text-sm">
+                Consumption: <span>{{ data.itemData?.consumption?.value }} </span>
+                <span class="ml-1 text-xs">{{ data.itemData?.consumption?.unit }}</span>
+              </p>
 
-      <div v-else class="text-muted-foreground flex h-full items-center justify-center">
-        No consumption data available for this period
+              <div>
+                <Label>Refills:</Label>
+                <ul v-if="data.itemData?.refills && data.itemData?.refills.length > 0" class="flex flex-col gap-1">
+                  <li v-for="(refill, index) in data.itemData?.refills" :key="index" class="flex gap-2">
+                    <Badge variant="outline"
+                      >{{ Number(refill.odometer.value).toLocaleString() }} {{ refill.odometer.unit }}</Badge
+                    >
+                    :
+                    <Badge variant="secondary">
+                      <span>{{ refill.fuelVolume.value }} </span>
+                      <span class="text-muted-foreground ml-1 text-xs">{{ refill.fuelVolume.unit }}</span></Badge
+                    >
+                    @
+                    <Badge variant="secondary">{{ refill.pricePerUnit }} € </Badge>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </template>
+      </VChart>
+      <div v-if="chartData && chartData.length < 1" class="absolute inset-0 grid place-items-center">
+        <p class="text-muted-foreground m-auto text-center">Not enough data to display consumption chart.</p>
+      </div>
+      <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
+        <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
       </div>
     </CardContent>
   </Card>
 </template>
+<style scoped></style>

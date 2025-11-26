@@ -5,7 +5,7 @@ import VehicleRecentActivity from "./components/VehicleRecentActivity.vue";
 <template>
   <div class="">
     <!-- First row -->
-    <div class="grid grid-cols-1 gap-4 lg:h-120 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-6 lg:h-120 lg:grid-cols-3">
       <div class="h-full min-h-0 w-full lg:col-span-2">
         <VehicleConsumptionChart />
       </div>
