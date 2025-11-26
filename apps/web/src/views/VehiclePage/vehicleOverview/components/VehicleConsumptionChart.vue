@@ -16,6 +16,7 @@ import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import ButtonGroup from "@/components/ui/button-group/ButtonGroup.vue";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);

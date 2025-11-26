@@ -5,6 +5,7 @@ import TodoTable from "../VehicleTodos/components/TodoTable.vue";
 import ButtonGroup from "@/components/ui/button-group/ButtonGroup.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { ref } from "vue";
+import ShoppingTable from "../vehicleShopping/components/shoppingTable.vue";
 
 const activeTable = ref<"todos" | "shoppinglist">("todos");
 </script>
@@ -39,7 +40,10 @@ const activeTable = ref<"todos" | "shoppinglist">("todos");
             Shopping list
           </Button>
         </ButtonGroup>
-        <TodoTable size="sm" hide-completed />
+        <Transition name="fade" mode="out-in">
+          <TodoTable v-if="activeTable === 'todos'" class="flex-1" key="todoTable" />
+          <ShoppingTable v-else :hide-purchased="true" size="sm" key="shoppingTable" />
+        </Transition>
       </div>
     </div>
   </div>

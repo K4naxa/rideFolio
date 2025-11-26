@@ -112,7 +112,7 @@ const formatDate = (dateString: string) => {
           :class="[
             'listHover grid gap-x-3 px-2',
             (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive border-l-2',
-            props.size ? (props.size === 'sm' ? 'py-2' : 'py-4') : 'py-4',
+            props.size ? (props.size === 'sm' ? 'py-2 text-sm' : 'py-4 text-base') : 'py-4',
           ]"
           :style="{ gridTemplateColumns: tableColumns }"
         >
