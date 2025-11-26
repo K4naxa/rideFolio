@@ -90,9 +90,9 @@ const formatDate = (dateString: string) => {
 };
 </script>
 <template>
-  <div class="flex min-h-0 flex-1 flex-col rounded border">
+  <div class="flex min-h-0 flex-1 flex-col">
     <div
-      class="text-accent-foreground bg-accent/50 grid min-w-max items-center gap-x-3 border-b px-2"
+      class="text-accent-foreground bg-accent/50 grid items-center gap-x-3 rounded-t border-b px-2"
       :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
       :style="{ gridTemplateColumns: tableColumns }"
     >

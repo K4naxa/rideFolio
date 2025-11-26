@@ -206,6 +206,12 @@ function shouldAutoSave(serverState: NoteSchemaType, current: NoteSchemaType): b
   if (!hasNoteChanged(serverState, current)) {
     return false;
   }
+  if (
+    (values.content === null || values.content === undefined || values.content.trim() === "") &&
+    (values.title === null || values.title === undefined || values.title.trim() === "")
+  ) {
+    return false;
+  }
   return meta.value.dirty;
 }
 

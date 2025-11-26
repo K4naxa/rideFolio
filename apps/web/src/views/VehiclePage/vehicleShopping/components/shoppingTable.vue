@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
@@ -9,6 +7,7 @@ import { BrushCleaningIcon } from "lucide-vue-next";
 import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { computed } from "vue";
+import Icon from "@/components/icons/Icon.vue";
 
 interface ShoppingTableProps {
   hidePurchased?: boolean;
@@ -36,11 +35,11 @@ const handleCleanup = async () => {
 };
 </script>
 <template>
-  <div class="flex min-h-0 flex-1 flex-col rounded-lg border">
+  <div class="flex min-h-0 flex-1 flex-col">
     <!-- Table Header -->
     <div
-      class="text-accent-foreground bg-accent/50 grid grid-cols-[3rem_1fr_6rem_3rem] items-center gap-x-3 border-b px-2 text-sm font-medium"
-      :class="props.size ? (props.size === 'sm' ? 'py-2 text-sm' : 'py-4 text-base') : 'py-4'"
+      class="text-accent-foreground bg-accent/50 grid grid-cols-[3rem_1fr_6rem_3rem] items-center gap-x-3 rounded-t border-b px-2"
+      :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
     >
       <Label class="flex justify-center">State</Label>
       <Label class="min-w-60">Name</Label>
@@ -65,18 +64,31 @@ const handleCleanup = async () => {
           :class="[props.size ? (props.size === 'sm' ? 'py-2' : 'py-4') : 'py-4']"
         >
           <!-- Checkbox -->
-          <div class="flex items-center justify-center">
-            <Checkbox
-              :model-value="item.isPurchased"
-              @update:model-value="
+          <div class="flex w-12 items-center justify-center">
+            <button
+              v-if="!item.isPurchased"
+              @click="
                 toggleItem({
                   itemId: item.id,
                   vehicleId: item.vehicleId,
                   purchased: !item.isPurchased,
                 })
               "
-              class="size-6"
-            />
+              class="border-foreground/50 text-foreground/40 flex size-5 items-center justify-center rounded-full border transition-colors duration-150 hover:cursor-pointer hover:border-blue-500 hover:text-blue-500"
+            ></button>
+            <button
+              v-else
+              @click="
+                toggleItem({
+                  itemId: item.id,
+                  vehicleId: item.vehicleId,
+                  purchased: !item.isPurchased,
+                })
+              "
+              class="flex items-center justify-center rounded-full transition-colors duration-150 hover:cursor-pointer"
+            >
+              <Icon name="check" class="stroke-green-500" />
+            </button>
           </div>
 
           <!-- Item Content -->

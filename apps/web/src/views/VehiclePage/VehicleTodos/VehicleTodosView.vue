@@ -57,6 +57,8 @@ const searchQuery = ref("");
         </Button>
       </div>
     </header>
-    <TodoTable :search-query="searchQuery" />
+    <div class="flex flex-1 rounded border">
+      <TodoTable :search-query="searchQuery" />
+    </div>
   </div>
 </template>

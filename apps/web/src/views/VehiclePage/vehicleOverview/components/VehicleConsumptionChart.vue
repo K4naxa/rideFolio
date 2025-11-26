@@ -16,7 +16,6 @@ import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import ButtonGroup from "@/components/ui/button-group/ButtonGroup.vue";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
@@ -172,7 +171,7 @@ const chartOptions = computed((): EChartsOption => {
     </CardHeader>
 
     <!-- Chart -->
-    <CardContent class="relative flex h-full min-h-80 w-full">
+    <CardContent class="relative flex h-full min-h-64 w-full flex-1 pb-2">
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"

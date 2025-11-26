@@ -58,9 +58,9 @@ const handleNewClick = () => {
 </script>
 
 <template>
-  <div class="flex gap-8 lg:min-h-0 flex-1">
+  <div class="flex flex-1 gap-8 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)]">
     <!-- left side -->
-    <div class="flex flex-col gap-8 lg:border-r lg:max-w-96 min-w-0 w-full">
+    <div class="flex w-full min-w-0 flex-col gap-8 lg:max-w-96 lg:border-r">
       <!-- controls -->
       <div class="flex flex-col gap-4 lg:pr-8">
         <Input
@@ -71,7 +71,7 @@ const handleNewClick = () => {
           placeholder="Search notes..."
           class="w-full"
         />
-        <div class="flex gap-4 justify-evenly content-center">
+        <div class="flex content-center justify-evenly gap-4">
           <DropdownMenu :modal="false">
             <DropdownMenuTrigger as-child>
               <Button variant="outline" class="flex-1">
@@ -88,23 +88,19 @@ const handleNewClick = () => {
         </div>
       </div>
 
-      <div class="flex overflow-y-auto scrollbar lg:pr-8" v-if="!vehicleNotesLoading">
-        <ul
-          v-auto-animate
-          v-if="vehicleNotes && vehicleNotes.length"
-          class="flex flex-col gap-6 lg:gap-2 w-full"
-        >
+      <div class="scrollbar flex overflow-y-auto lg:pr-8" v-if="!vehicleNotesLoading">
+        <ul v-auto-animate v-if="vehicleNotes && vehicleNotes.length" class="flex w-full flex-col gap-6 lg:gap-2">
           <li
             v-for="note in vehicleNotes"
             :key="note.id"
             :class="[
-              'py-3 px-3 bg-accent/50 rounded cursor-pointer border-transparent hover:bg-accent/50 block listHover group',
+              'bg-accent/50 hover:bg-accent/50 listHover group block cursor-pointer rounded border-transparent px-3 py-3',
               selectedNoteId === note.id ? 'bg-accent/60' : 'lg:bg-transparent',
             ]"
             @click="selectNote(note)"
           >
-            <div class="flex justify-between items-center gap-1">
-              <span class="font-medium truncate">{{ note.title }}</span>
+            <div class="flex items-center justify-between gap-1">
+              <span class="truncate font-medium">{{ note.title }}</span>
 
               <Icon
                 name="pin"
@@ -112,30 +108,23 @@ const handleNewClick = () => {
                 className="size-4 text-primary stroke-primary hover:text-primary hover:stroke-primary transition-colors"
               />
             </div>
-            <div class="text-muted-foreground text-sm mt-1 line-clamp-6 lg:line-clamp-3">
+            <div class="text-muted-foreground mt-1 line-clamp-6 text-sm lg:line-clamp-3">
               {{ getTextSnippet(String(note.content), 80) }}
             </div>
             <div class="truncate">
-              <Badge
-                v-for="tag in note.tags"
-                variant="outline"
-                :key="tag"
-                class="mt-2 mr-1 px-2 py-1.5 text-xs"
-              >
+              <Badge v-for="tag in note.tags" variant="outline" :key="tag" class="mt-2 mr-1 px-2 py-1.5 text-xs">
                 {{ tag }}
               </Badge>
             </div>
           </li>
         </ul>
-        <div v-else class="flex-1 flex justify-center items-center">
-          <div class="flex justify-center flex-col text-center p-6">
+        <div v-else class="flex flex-1 items-center justify-center">
+          <div class="flex flex-col justify-center p-6 text-center">
             <h3>No notes found</h3>
-            <p class="text-sm text-muted-foreground mt-2">
-              You don't have any notes for this vehicle yet.
-            </p>
+            <p class="text-muted-foreground mt-2 text-sm">You don't have any notes for this vehicle yet.</p>
             <Button
               variant="default"
-              class="mt-4 items-center flex content-center justify-center"
+              class="mt-4 flex content-center items-center justify-center"
               @click="handleNewClick"
             >
               <Icon name="plus" class="stroke-white" />
@@ -146,13 +135,9 @@ const handleNewClick = () => {
       </div>
     </div>
 
-    <div class="hidden lg:flex flex-1 flex-col">
-      <NoteSection
-        v-if="selectedNoteId"
-        :note-id="selectedNoteId"
-        :vehicle-id="activeVehicleId || ''"
-      />
-      <div v-else class="flex-1 flex items-center justify-center text-muted-foreground">
+    <div class="hidden flex-1 flex-col lg:flex">
+      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" :vehicle-id="activeVehicleId || ''" />
+      <div v-else class="text-muted-foreground flex flex-1 items-center justify-center">
         Select a note to view or edit
 
         {{ selectedNoteId }}

@@ -36,7 +36,9 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
       queryKey: computed(() => ["notes", unref(noteId)]),
       queryFn: async () => {
         const id = unref(noteId);
+
         if (!id) throw new Error("Note ID is required");
+        if (id === "new") return {};
         return await fetchApi<Required<NoteSchemaType>>(`/notes/${id}/editable`);
       },
       enabled: computed(() => !!unref(noteId)),

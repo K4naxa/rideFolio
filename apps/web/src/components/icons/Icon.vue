@@ -50,6 +50,7 @@ import {
   FilterIcon,
   Pin,
   PinOff,
+  CheckIcon,
   type LucideIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
@@ -59,6 +60,7 @@ type IconSize = "sm" | "md" | "lg" | "xl" | "2xl";
 type IconName =
   | "car"
   | "carFront"
+  | "check"
   | "motorcycle"
   | "boat"
   | "otherVehicle"
@@ -127,6 +129,7 @@ const iconSizes: Record<IconSize, string> = {
 const iconMap: Record<IconName, LucideIcon> = {
   car: Car,
   carFront: CarFront,
+  check: CheckIcon,
   motorcycle: Bike,
   boat: Ship,
   otherVehicle: Cog,

@@ -35,7 +35,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col min-w-0">
+  <div class="flex min-w-0 flex-1 flex-col">
     <!-- Vehicle layout Hero -->
     <div class="my-4 lg:my-6">
       <VehicleHero />
@@ -43,17 +43,15 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 
     <!-- Vehicle navigation tabs -->
 
-    <div class="flex flex-col flex-1">
-      <nav
-        class="sticky top-(--app-header-height) z-20 bg-background text-sm h-(--vehicle-navbar-height) mb-0"
-      >
-        <ul class="flex h-full border-b px-4 lg:px-8 lg:space-x-8 justify-evenly lg:justify-normal">
+    <div class="flex flex-1 flex-col">
+      <nav class="bg-background sticky top-(--app-header-height) z-20 mb-0 h-(--vehicle-navbar-height) text-sm">
+        <ul class="flex h-full justify-evenly border-b px-4 lg:justify-normal lg:space-x-8 lg:px-8">
           <RouterLink
             v-for="tab in VEHICLE_TABS"
             :key="tab.id"
             :to="tab.to"
             exactActiveClass="text-primary border-primary"
-            class="px-1 flex gap-1 lg:px-4 py-3 font-medium transition-colors duration-200 ease-in-out border-b-2 border-background text-muted-foreground hover:text-primary select-none"
+            class="border-background text-muted-foreground hover:text-primary flex gap-1 border-b-2 px-1 py-3 font-medium transition-colors duration-200 ease-in-out select-none lg:px-4"
             draggable="false"
           >
             {{ tab.label }}
@@ -62,9 +60,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
       </nav>
 
       <!-- Vehicle pages -->
-      <main
-        class="p-4 flex flex-col lg:p-8 flex-1 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height))]"
-      >
+      <main class="flex flex-1 flex-col p-4 lg:p-8">
         <!-- Vehicle RouterView -->
         <RouterView />
       </main>
