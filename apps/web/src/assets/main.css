@@ -58,6 +58,9 @@ html {
   --color-accent: var(--color-neutral-100);
   --color-accent-foreground: var(--color-foreground);
 
+  --color-table-header-background: var(--color-neutral-50);
+  --color-table-row-hover: var(--color-neutral-100);
+
   --color-border: var(--color-neutral-200);
   --color-input: var(--color-neutral-50);
   --color-ring: var(--color-primary);
@@ -143,6 +146,9 @@ html {
     --color-accent: var(--color-neutral-800); /* slate-800 */
     --color-accent-foreground: var(--color-foreground);
 
+    --color-table-header-background: var(--color-neutral-900);
+    --color-table-row-hover: var(--color-neutral-900);
+
     --color-border: var(--color-neutral-800); /* slate-700 */
     --color-input: var(--color-neutral-900); /* slate-700 */
     --color-ring: var(--color-primary); /* indigo-500 */
@@ -210,7 +216,7 @@ html {
   }
 
   .listHover {
-    @apply hover:border-border hover:bg-accent/30 border border-transparent;
+    @apply hover:border-border hover:bg-table-row-hover transition-colors duration-75 ease-in-out;
   }
 
   .cardBackground {
