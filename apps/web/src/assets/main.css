@@ -215,7 +215,7 @@ html {
   }
 
   .listHover {
-    @apply hover:border-border hover:bg-table-row-hover transition-colors duration-75 ease-in-out;
+    @apply hover:border-border hover:bg-table-row-hover;
   }
 
   .cardBackground {
@@ -295,17 +295,31 @@ html.theme-transitioning {
 }
 
 /* Apply smooth transitions to specific high-impact elements only */
+
+.transition-colors-safe {
+  transition:
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When theme is transitioning, disable element-level transitions */
+html.theme-transitioning .transition-colors-safe {
+  transition: none !important;
+}
+
 html.theme-transitioning,
-html.theme-transitioning body,
+html.theme-transitioning a,
 html.theme-transitioning [class*="bg-"],
 html.theme-transitioning [class*="text-"],
+html.theme-transitioning [class*="divide-"],
 html.theme-transitioning [class*="border-"] {
   transition:
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
     border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
     color 250ms cubic-bezier(0.4, 0, 0.2, 1),
     fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    stroke 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    stroke 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Prevent layout shift and ensure smooth rendering */

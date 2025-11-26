@@ -31,9 +31,7 @@ onUnmounted(() => {
   }
 });
 
-const overlayStyle = computed(() =>
-  viewportHeight.value ? { maxHeight: `${viewportHeight.value}px` } : undefined,
-);
+const overlayStyle = computed(() => (viewportHeight.value ? { maxHeight: `${viewportHeight.value}px` } : undefined));
 </script>
 
 <template>
@@ -41,7 +39,7 @@ const overlayStyle = computed(() =>
     data-slot="dialog-overlay"
     v-bind="delegatedProps"
     :class="[
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed grid place-items-center inset-0 z-50 bg-black/50 backdrop-blur-md',
+      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 grid place-items-center bg-black/50 backdrop-blur-md',
       props.class,
     ]"
     :style="overlayStyle"

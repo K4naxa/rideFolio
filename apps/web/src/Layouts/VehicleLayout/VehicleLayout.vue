@@ -51,7 +51,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
             :key="tab.id"
             :to="tab.to"
             exactActiveClass="text-primary border-primary"
-            class="border-background text-muted-foreground hover:text-primary flex gap-1 border-b-2 px-1 py-3 font-medium transition-colors duration-200 ease-in-out select-none lg:px-4"
+            class="border-background text-muted-foreground hover:text-primary flex gap-1 border-b-2 px-1 py-3 font-medium select-none lg:px-4"
             draggable="false"
           >
             {{ tab.label }}

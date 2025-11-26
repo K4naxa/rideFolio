@@ -74,7 +74,7 @@ const handleCleanup = async () => {
                   purchased: !item.isPurchased,
                 })
               "
-              class="border-foreground/50 text-foreground/40 flex size-5 items-center justify-center rounded-full border transition-colors duration-150 hover:cursor-pointer hover:border-blue-500 hover:text-blue-500"
+              class="border-foreground/50 text-foreground/40 flex size-5 items-center justify-center rounded-full border hover:cursor-pointer hover:border-blue-500 hover:text-blue-500"
             ></button>
             <button
               v-else
@@ -85,7 +85,7 @@ const handleCleanup = async () => {
                   purchased: !item.isPurchased,
                 })
               "
-              class="flex items-center justify-center rounded-full transition-colors duration-150 hover:cursor-pointer"
+              class="flex items-center justify-center rounded-full hover:cursor-pointer"
             >
               <Icon name="check" class="stroke-green-500" />
             </button>
