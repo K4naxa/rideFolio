@@ -81,8 +81,10 @@ const chartOptions = computed((): EChartsOption => {
       z: 0,
       zlevel: 0,
     },
+
     xAxis: {
       type: "category",
+
       boundaryGap: false,
       data: xAxisData,
       axisLabel: {
@@ -129,7 +131,7 @@ const chartOptions = computed((): EChartsOption => {
     series: {
       type: "line",
       smooth: true,
-      showSymbol: true,
+      showSymbol: false,
       symbol: "circle",
       symbolSize: 6,
 
