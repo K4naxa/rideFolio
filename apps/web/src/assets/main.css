@@ -155,8 +155,8 @@ html {
     --color-primary: var(--color-amber-600); /* indigo-500 */
     --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
 
-    --color-secondary: var(--color-neutral-700); /* slate-700 */
-    --color-secondary-foreground: var(--color-neutral-50); /* slate-50 */
+    --color-secondary: var(--color-neutral-300); /* slate-700 */
+    --color-secondary-foreground: black; /* slate-50 */
 
     --color-destructive: var(--color-red-700);
     --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */

@@ -5,6 +5,7 @@ import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProfileView from "@/views/Profile/ProfileView.vue";
+import SecurityView from "@/views/Profile/SecurityView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
 import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
@@ -47,6 +48,12 @@ const router = createRouter({
               name: "profile",
               meta: { requiresAuth: true },
               component: ProfileView,
+            },
+            {
+              path: "security",
+              name: "security",
+              meta: { requiresAuth: true },
+              component: SecurityView,
             },
           ],
         },

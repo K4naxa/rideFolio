@@ -58,7 +58,9 @@ const onSubmit = handleSubmit((values) => {
         <Input name="name" type="text" placeholder="Name" label="Username" />
         <Input name="email" type="email" placeholder="Email" class="mt-4" label="Email" />
       </CardContent>
-      <CardFooter> <Button type="submit" variant="secondary" class="w-full">Update Profile</Button> </CardFooter>
+      <CardFooter>
+        <Button type="submit" variant="secondary" class="w-full font-semibold">Update Profile</Button>
+      </CardFooter>
     </form>
   </Card>
 </template>

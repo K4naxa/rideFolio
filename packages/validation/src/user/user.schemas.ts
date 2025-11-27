@@ -26,3 +26,13 @@ export const profileUpdateSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
 });
 export type ProfileUpdateValues = z.infer<typeof profileUpdateSchema>;
+
+export const passwordUpdateSchema = z.object({
+  currentPassword: z.string().min(1, { message: "Current password is required" }),
+  newPassword: z.string().min(8, { message: "New password must be at least 8 characters" }),
+  revokeOtherSessions: z.preprocess(
+    (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
+    z.boolean("Invalid value")
+  ),
+});
+export type PasswordUpdateValues = z.infer<typeof passwordUpdateSchema>;
