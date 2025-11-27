@@ -1,8 +1,10 @@
 import AuthLayout from "@/Layouts/AuthLayout/AuthLayout.vue";
+import ProfileLayout from "@/Layouts/ProfileLayout.vue";
 import VehicleLayout from "@/Layouts/VehicleLayout/VehicleLayout.vue";
 import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/LoginView.vue";
+import ProfileView from "@/views/Profile/ProfileView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
 import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
@@ -33,6 +35,20 @@ const router = createRouter({
           name: "dashboard",
           component: DashboardView,
           meta: { requiresAuth: true },
+        },
+        {
+          path: "/profile",
+          name: "profile layout",
+          component: ProfileLayout,
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: "",
+              name: "profile",
+              meta: { requiresAuth: true },
+              component: ProfileView,
+            },
+          ],
         },
         {
           path: "/vehicles/:vehicleId",

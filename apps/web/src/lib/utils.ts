@@ -11,6 +11,9 @@ export function capitalize(val: string) {
   return lowercased.charAt(0).toUpperCase() + lowercased.slice(1);
 }
 
-export function isMobile() {
-  return typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+export function getInitials(name?: string | null) {
+  if (!name) return "U";
+  const names = name.split(" ");
+  const initials = names.map((n) => n[0]).join("");
+  return initials.toUpperCase().slice(0, 2);
 }

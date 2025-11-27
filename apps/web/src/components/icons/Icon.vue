@@ -30,6 +30,7 @@ import {
   TrendingUp,
   TrendingDown,
   Sun,
+  KeyIcon,
   Moon,
   Camera,
   Files,
@@ -51,6 +52,8 @@ import {
   Pin,
   PinOff,
   CheckIcon,
+  ShieldIcon,
+  LinkIcon,
   type LucideIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
@@ -61,8 +64,10 @@ type IconName =
   | "car"
   | "carFront"
   | "check"
+  | "shield"
   | "motorcycle"
   | "boat"
+  | "key"
   | "otherVehicle"
   | "hash"
   | "vehicleMake"
@@ -106,7 +111,8 @@ type IconName =
   | "camera"
   | "subscription"
   | "billing"
-  | "stats";
+  | "stats"
+  | "link";
 
 export interface IconProps {
   name: IconName;
@@ -132,9 +138,11 @@ const iconMap: Record<IconName, LucideIcon> = {
   check: CheckIcon,
   motorcycle: Bike,
   boat: Ship,
+  shield: ShieldIcon,
   otherVehicle: Cog,
   hash: Hash,
   vehicleMake: Building,
+  key: KeyIcon,
   otherInfo: NotebookPen,
   filter: FilterIcon,
   odoHours: Clock,
@@ -176,6 +184,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   subscription: Sparkle,
   billing: CreditCard,
   stats: ChartNoAxesCombined,
+  link: LinkIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);

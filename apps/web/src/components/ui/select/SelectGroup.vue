@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import type { SelectGroupProps } from "reka-ui"
-import { SelectGroup } from "reka-ui"
+import type { SelectGroupProps } from "reka-ui";
+import ButtonGroup from "../button-group/ButtonGroup.vue";
 
-const props = defineProps<SelectGroupProps>()
+const props = defineProps<SelectGroupProps>();
 </script>
 
 <template>
-  <SelectGroup
-    data-slot="select-group"
-    v-bind="props"
-  >
+  <ButtonGroup data-slot="select-group" v-bind="props">
     <slot />
-  </SelectGroup>
+  </ButtonGroup>
 </template>

@@ -1,20 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { UsersService } from 'src/user/user.service';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { profileUpdateSchema, ProfileUpdateValues } from '@repo/validation';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodType } from 'zod';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Get('basicProfile')
-  async getMyBasicProfile(@Session() userSession: UserSession) {
-    return await this.usersService.getBasicProfile(userSession.user.id);
-  }
-
   @Get('me')
   async getProfile(@Session() session: UserSession) {
     const value = await this.usersService.getBasicProfile(session.user.id);
-    console.log('User profile requested:', value);
     return value;
+  }
+
+  @Patch('profile')
+  async updateProfile(
+    @Session() session: UserSession,
+    @Body(new ZodValidationPipe(profileUpdateSchema as ZodType)) data: ProfileUpdateValues,
+  ) {
+    await this.usersService.updateProfile(session.user.id, data);
   }
 }

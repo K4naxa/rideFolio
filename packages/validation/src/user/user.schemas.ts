@@ -20,3 +20,9 @@ export const LoginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
+
+export const profileUpdateSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.email({ message: "Invalid email address" }),
+});
+export type ProfileUpdateValues = z.infer<typeof profileUpdateSchema>;

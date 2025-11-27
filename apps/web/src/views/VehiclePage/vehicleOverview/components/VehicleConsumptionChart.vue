@@ -2,10 +2,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { computed, ref, watch } from "vue";
-import { useQuery } from "@tanstack/vue-query";
 import { fetchApi } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import type { TRefillDatesForChart } from "@repo/validation";
 import VChart from "vue-echarts";
 import { graphic, use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -14,8 +12,9 @@ import { TooltipComponent, GridComponent } from "echarts/components";
 import { type EChartsOption } from "echarts";
 import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import { useQuery } from "@tanstack/vue-query";
+import type { TRefillForClient } from "@repo/validation";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
@@ -30,13 +29,15 @@ const {
   isLoading,
   isPlaceholderData,
   isError,
-} = useQuery<TRefillDatesForChart[]>({
+} = useQuery({
   queryKey: ["vehicle-consumption-chart-data", activeVehicleId, timeRange],
   queryFn: async () => {
     const limitDate = new Date();
     limitDate.setDate(limitDate.getDate() - timeRange.value);
 
-    return await fetchApi(`/logs/refills/chart/${activeVehicleId.value}/${limitDate.toISOString()}`);
+    return await fetchApi<TRefillForClient[]>(
+      `/logs/refills/chart/${activeVehicleId.value}/${limitDate.toISOString()}`,
+    );
   },
   enabled: computed(() => !!activeVehicleId.value),
   placeholderData: (prev) => prev,
@@ -67,7 +68,7 @@ const chartOptions = computed((): EChartsOption => {
     .filter((item) => typeof item.consumption?.value === "number")
 
     .map((item) => ({
-      value: item.consumption.value,
+      value: item.consumption?.value,
       itemData: item,
     }));
 

@@ -1,18 +1,19 @@
 import { api, fetchApi } from "@/lib/api";
-import { authClient } from "@/lib/authClient";
+import { useAuth } from "@/lib/authClient";
 import type { TAccessibleVehicle, VehicleSchemaType } from "@repo/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import { computed } from "vue";
 import { toast } from "vue-sonner";
 
 export function useVehicleQueries() {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   // All users accessible vehicles
   const vehicles = useQuery({
     queryKey: ["vehicles"],
     queryFn: async () => fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
     staleTime: 1000 * 60 * 30,
+    enabled: isAuthenticated,
   });
 
   // Creation of a new vehicle

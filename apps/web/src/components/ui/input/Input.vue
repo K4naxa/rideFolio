@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "vue";
 import { useField } from "vee-validate";
 import { twMerge } from "tailwind-merge";
+import Label from "../label/Label.vue";
 
 defineOptions({
   inheritAttrs: false,
@@ -58,7 +59,7 @@ async function handleBlur() {
 
 <template>
   <div :aria-invalid="!!errorMessage" :class="['group', props.class]">
-    <label v-if="label" class="group-aria-invalid:text-destructive text-sm font-semibold">{{ label }}</label>
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-1.5 text-sm font-semibold">{{ label }}</Label>
     <div class="relative flex-1">
       <input
         v-bind="$attrs"
