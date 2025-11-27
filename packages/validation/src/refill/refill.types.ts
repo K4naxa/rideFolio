@@ -18,9 +18,3 @@ export interface TRefillForClient {
   notes: string | null;
   consumption: TConversionResult | null;
 }
-
-export interface TRefillDatesForChart {
-  date: string;
-  consumption: TConversionResult;
-  refills: TRefillForClient[];
-}

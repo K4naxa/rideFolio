@@ -1,7 +1,7 @@
 import { UnitConversionService } from './../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, Refill, User, Vehicle } from '@prisma/client';
-import { RefillSchemaOutput, TConversionResult, TRefillDatesForChart, TRefillForClient } from '@repo/validation';
+import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -145,11 +145,7 @@ export class RefillsService {
     });
   }
 
-  async getRefillsForChart(
-    UserSession: UserSession,
-    vehicleId: string,
-    dateLimit: Date,
-  ): Promise<TRefillDatesForChart[]> {
+  async getRefillsForChart(UserSession: UserSession, vehicleId: string, dateLimit: Date): Promise<TRefillForClient[]> {
     await this.authValidation.hasAccessToVehicle(UserSession.user.id, vehicleId);
 
     const [vehicle, user, refills] = (await Promise.all([
@@ -192,48 +188,36 @@ export class RefillsService {
     const userUnit = isVehicleHourly ? user!.consumptionUnit_hour : user!.consumptionUnit_distance;
 
     // Single-pass grouping with running average
-    const groupedByDate = refills.reduce(
-      (map, refill) => {
-        const dateKey = refill.date.toISOString().split('T')[0];
+    return refills.map((refill) => {
+      const rawConsumption = isVehicleHourly ? refill.consumption_L_per_hour : refill.consumption_L_per_100km;
 
-        const rawConsumption = isVehicleHourly ? refill.consumption_L_per_hour : refill.consumption_L_per_100km;
-
-        const convertedConsumption = this.unitConversion.getConsumptionData(
-          rawConsumption,
-          userUnit,
-          isVehicleHourly ? 'HOUR' : 'DISTANCE',
-        );
-
-        if (!map.has(dateKey)) {
-          map.set(dateKey, {
-            date: dateKey,
-            consumption: { ...convertedConsumption }, // Clone to avoid reference issues
-            refills: [this.formatRefillForClient(refill, vehicle!, user!)],
-            sumConsumption: convertedConsumption.value, // Track sum for easier avg calculation
-          });
-        } else {
-          const group = map.get(dateKey)!;
-          group.sumConsumption += convertedConsumption.value;
-          group.refills.push(this.formatRefillForClient(refill, vehicle!, user!));
-          group.consumption.value = Number((group.sumConsumption / group.refills.length).toFixed(2));
-        }
-
-        return map;
-      },
-      new Map<
-        string,
-        {
-          date: string;
-          consumption: TConversionResult;
-          refills: TRefillForClient[];
-          sumConsumption: number;
-        }
-      >(),
-    );
-
-    // Convert to array and remove the helper sumConsumption property
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return Array.from(groupedByDate.values()).map(({ sumConsumption, ...rest }) => rest);
+      const convertedConsumption = this.unitConversion.getConsumptionData(
+        rawConsumption,
+        userUnit,
+        isVehicleHourly ? 'HOUR' : 'DISTANCE',
+      );
+      return {
+        id: refill.id,
+        vehicleId: refill.vehicleId,
+        creator: {
+          id: refill.user.id,
+          name: refill.user.name,
+          image: refill.user.image,
+        },
+        date: refill.date,
+        consumption: convertedConsumption,
+        odometer: this.unitConversion.getOdometerDataByType(
+          isVehicleHourly ? refill.odometer_hour : refill.odometer_km,
+          vehicle!.odometerType,
+        ),
+        fullRefill: refill.fullRefill,
+        skippedRefill: refill.skippedRefill,
+        fuelVolume: this.unitConversion.getVolumeDataByUnitType(refill.fuelAmount_L, user!.volumeUnit),
+        pricePerUnit: refill.pricePerUnit,
+        costTotal: refill.costTotal,
+        notes: refill.notes,
+      };
+    });
   }
 
   /* ===== HELPER METHODS ===== */

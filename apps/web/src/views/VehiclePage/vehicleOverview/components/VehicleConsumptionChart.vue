@@ -182,37 +182,19 @@ const chartOptions = computed((): EChartsOption => {
         <template #tooltip="params: any">
           <div class="bg-background/90 text-foreground z-0 rounded p-2 text-sm shadow-lg">
             <div v-for="({ data }, i) in params" :key="i" class="flex flex-col gap-2">
-              <h4 class="font-semibold">
+              <Label class="text-muted-foreground">
                 {{
                   new Date(data.itemData?.date).toLocaleDateString(undefined, {
                     year: "numeric",
-                    month: "long",
+                    month: "numeric",
                     day: "numeric",
                   })
                 }}
-              </h4>
-              <p class="text-muted-foreground text-sm">
-                Consumption: <span>{{ data.itemData?.consumption?.value }} </span>
-                <span class="ml-1 text-xs">{{ data.itemData?.consumption?.unit }}</span>
+              </Label>
+              <p>
+                <span class="text-base font-semibold">{{ data.itemData?.consumption?.value }} </span>
+                <span class="text-md text-muted-foreground ml-1">{{ data.itemData?.consumption?.unit }}</span>
               </p>
-
-              <div>
-                <Label>Refills:</Label>
-                <ul v-if="data.itemData?.refills && data.itemData?.refills.length > 0" class="flex flex-col gap-1">
-                  <li v-for="(refill, index) in data.itemData?.refills" :key="index" class="flex gap-2">
-                    <Badge variant="outline"
-                      >{{ Number(refill.odometer.value).toLocaleString() }} {{ refill.odometer.unit }}</Badge
-                    >
-                    :
-                    <Badge variant="secondary">
-                      <span>{{ refill.fuelVolume.value }} </span>
-                      <span class="text-muted-foreground ml-1 text-xs">{{ refill.fuelVolume.unit }}</span></Badge
-                    >
-                    @
-                    <Badge variant="secondary">{{ refill.pricePerUnit }} € </Badge>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
         </template>
