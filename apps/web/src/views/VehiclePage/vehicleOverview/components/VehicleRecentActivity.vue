@@ -49,7 +49,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
       <CardDescription> Latest activity for {{ activeVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
     </CardHeader>
     <CardContent class="min-h-0 flex-1 rounded px-0">
-      <ScrollArea ref="scrollAreaRef" class="h-full w-full px-2.5">
+      <ScrollArea ref="scrollAreaRef" class="h-full w-full">
         <div class="flex flex-col gap-4" v-auto-animate>
           <div v-if="isLoading" class="flex flex-col gap-8">
             <VehicleRecentActivitySkeleton />

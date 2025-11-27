@@ -171,7 +171,7 @@ const chartOptions = computed((): EChartsOption => {
     </CardHeader>
 
     <!-- Chart -->
-    <CardContent class="relative flex h-full min-h-64 w-full flex-1 pb-2">
+    <CardContent class="relative flex h-full w-full flex-1 pb-2">
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"

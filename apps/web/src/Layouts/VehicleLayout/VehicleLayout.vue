@@ -60,7 +60,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
       </nav>
 
       <!-- Vehicle pages -->
-      <main class="flex flex-1 flex-col p-4 lg:p-8">
+      <main class="flex flex-1 flex-col p-2 pt-6 lg:p-8">
         <!-- Vehicle RouterView -->
         <RouterView />
       </main>

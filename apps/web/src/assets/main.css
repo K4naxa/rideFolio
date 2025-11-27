@@ -237,6 +237,9 @@ html {
   ---break---
 */
 @layer utilities {
+  .gap {
+    @apply gap-6 lg:gap-8;
+  }
   .animate-collapsible-down {
     animation: collapsible-down 0.2s ease-out;
   }

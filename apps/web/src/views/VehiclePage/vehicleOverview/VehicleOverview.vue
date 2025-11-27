@@ -16,19 +16,20 @@ import Icon from "@/components/icons/Icon.vue";
 const activeTable = ref<"todos" | "shoppinglist">("todos");
 </script>
 <template>
-  <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+  <div class="gap flex flex-col">
     <!-- First row -->
-    <div class="flex h-100 min-h-0 w-full lg:col-span-2">
-      <VehicleConsumptionChart />
-    </div>
+    <div class="gap grid grid-cols-1 lg:h-120 lg:grid-cols-3">
+      <div class="flex h-80 min-h-0 w-full lg:col-span-2 lg:h-full">
+        <VehicleConsumptionChart />
+      </div>
 
-    <div class="h-100 min-h-0 w-full lg:col-span-1">
-      <VehicleRecentActivity />
+      <div class="h-100 min-h-0 w-full lg:col-span-1 lg:h-full">
+        <VehicleRecentActivity />
+      </div>
     </div>
 
     <!-- second row -->
-    <div class="col-span-3 grid min-h-0 w-full grid-cols-2 gap-6">
-      <!-- Todos -->
+    <!-- <div class="grid min-h-0 w-full grid-cols-1 gap-8 lg:grid-cols-2">
       <div class="flex h-100 min-h-0 w-full flex-col gap-4">
         <ButtonGroup aria-label="Button group">
           <Button
@@ -52,12 +53,12 @@ const activeTable = ref<"todos" | "shoppinglist">("todos");
           <ShoppingTable v-else :hide-purchased="true" size="sm" />
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- second row -->
-    <div class="col-span-3 grid w-full grid-cols-2 gap-6">
+    <div class="gap grid min-h-0 w-full grid-cols-1 lg:grid-cols-2">
       <!-- Todos -->
-      <Card class="flex h-100 w-full flex-col gap-4">
+      <Card class="flex h-100 w-full flex-col">
         <CardHeader>
           <CardTitle> <Icon name="todo" class="stroke-toDo" /> Todos </CardTitle>
           <CardDescription> Overview of your vehicles todos </CardDescription>
@@ -66,7 +67,7 @@ const activeTable = ref<"todos" | "shoppinglist">("todos");
           <TodoTable class="flex-1" size="sm" />
         </CardContent>
       </Card>
-      <Card class="flex h-100 w-full flex-col gap-4">
+      <Card class="flex h-100 w-full flex-col">
         <CardHeader>
           <CardTitle> <Icon name="shoppingCart" class="stroke-blue-400" /> Shopping List </CardTitle>
           <CardDescription> Overview of your vehicles todos </CardDescription>

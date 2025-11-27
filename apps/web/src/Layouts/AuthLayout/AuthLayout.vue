@@ -9,9 +9,9 @@ import MobileBottomNav from "../VehicleLayout/MobileBottomNav.vue";
     <SidebarProvider>
       <AppSidebar />
 
-      <main class="flex-1 flex flex-col min-w-0 mb-20 lg:mb-0" id="authMainSection">
+      <main class="mb-24 flex min-w-0 flex-1 flex-col lg:mb-0" id="authMainSection">
         <AppHeader />
-        <div class="flex-1 flex">
+        <div class="flex flex-1">
           <RouterView />
         </div>
       </main>

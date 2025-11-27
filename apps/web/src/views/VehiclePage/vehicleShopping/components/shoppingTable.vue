@@ -17,6 +17,7 @@ const props = defineProps<ShoppingTableProps>();
 
 const { activeVehicleId } = useActiveVehicle();
 const { vehicleShoppingList, toggleItem, deleteItem } = useShoppingQueries(activeVehicleId);
+const isMobile = useMediaQuery("(max-width: 768px)");
 
 const filteredItems = computed(() => {
   if (!vehicleShoppingList.value) return [];
@@ -33,35 +34,65 @@ const handleCleanup = async () => {
     await deleteItem({ itemId: item.id, vehicleId: item.vehicleId });
   }
 };
+
+import { ref, onMounted, nextTick, watch } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+
+const longestPriceWidth = ref(0);
+const gridColStyle = computed(() => {
+  let cappedWidth = Math.max(longestPriceWidth.value, 48);
+  cappedWidth = Math.min(cappedWidth, isMobile.value ? 60 : 190);
+  console.log("Comparing widths:", longestPriceWidth.value, cappedWidth);
+  console.log("isMobile:", isMobile.value);
+  return `grid-template-columns: 3rem auto ${cappedWidth}px 3rem;`;
+});
+
+const updateLongestPriceWidth = () => {
+  nextTick(() => {
+    const priceElements = document.querySelectorAll(".ShoppingItemPriceContainer");
+
+    let maxWidth = 0;
+    priceElements.forEach((el) => {
+      const width = (el as HTMLElement).scrollWidth;
+      if (width > maxWidth) maxWidth = width;
+    });
+    longestPriceWidth.value = maxWidth;
+  });
+};
+
+onMounted(updateLongestPriceWidth);
+watch(filteredItems, updateLongestPriceWidth, { deep: true });
 </script>
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
     <!-- Table Header -->
-    <div
-      class="text-accent-foreground bg-accent/50 grid grid-cols-[3rem_1fr_6rem_3rem] items-center gap-x-3 rounded-t border-b px-2"
-      :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
-    >
-      <Label class="flex justify-center">State</Label>
-      <Label class="min-w-60">Name</Label>
-      <Label>Price</Label>
-      <Button
-        variant="outline"
-        class="hover:stroke-muted-foreground stroke-accent-foreground"
-        size="icon-sm"
-        @click="handleCleanup()"
+    <ScrollArea v-if="filteredItems.length" as-child class="min-h-0 w-full min-w-0 flex-1">
+      <div
+        class="text-accent-foreground bg-table-header-background sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t border-b px-2 lg:gap-6"
+        :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
+        :style="gridColStyle"
       >
-        <BrushCleaningIcon class="stroke-inherit" />
-      </Button>
-    </div>
+        <Label class="flex justify-center">State</Label>
+        <Label class="">Name</Label>
+        <Label>Price</Label>
+        <Button
+          variant="outline"
+          class="hover:stroke-muted-foreground stroke-accent-foreground"
+          size="icon-sm"
+          @click="handleCleanup()"
+        >
+          <BrushCleaningIcon class="stroke-inherit" />
+        </Button>
+      </div>
 
-    <ScrollArea v-if="filteredItems.length" class="min-h-0 flex-1">
       <!-- Table Body -->
-      <ul v-auto-animate class="divide-border min-w-max divide-y overflow-hidden">
+      <ul v-auto-animate class="divide-border divide-y">
         <div
           v-for="item in filteredItems"
           :key="item.id"
-          class="listHover grid grid-cols-[3rem_1fr_6rem_3rem] gap-x-3 px-2"
+          class="listHover grid gap-4 px-2 lg:gap-6"
           :class="[props.size ? (props.size === 'sm' ? 'py-2' : 'py-4') : 'py-4']"
+          :style="gridColStyle"
         >
           <!-- Checkbox -->
           <div class="flex w-12 items-center justify-center">
@@ -92,16 +123,17 @@ const handleCleanup = async () => {
           </div>
 
           <!-- Item Content -->
-          <div class="flex min-w-60 flex-col justify-center gap-1">
+          <div class="flex w-full flex-col justify-center gap-1">
             <span :class="{ 'text-muted-foreground line-through': item.isPurchased }">
               {{ item.name }}
             </span>
           </div>
 
           <!-- Price -->
-          <span>
-            {{ item.price ? `$${item.price.toFixed(2)}` : "-" }}
+          <span v-if="item.price" class="ShoppingItemPriceContainer my-auto truncate overflow-hidden">
+            {{ item.price }}
           </span>
+          <span v-else />
 
           <Button variant="outline" size="icon" @click="deleteItem({ itemId: item.id, vehicleId: item.vehicleId })">
             <Icon name="trash" className="stroke-inherit" />
