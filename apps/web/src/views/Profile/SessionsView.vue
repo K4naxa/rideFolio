@@ -63,11 +63,19 @@ function handleSessionRevoke(sessionToken: string) {
 <template>
   <Card>
     <CardHeader>
-      <CardTitle class="flex justify-between"
+      <CardTitle class="relative flex justify-between"
         >Active Sessions
-        <Button @click="refreshSessions" :disabled="isRefreshing" size="icon-sm" variant="ghost">
-          <RefreshCwIcon :class="[isRefreshing ? 'animate-spin' : '']" /> </Button
-      ></CardTitle>
+        <Button
+          @click="refreshSessions"
+          :disabled="isRefreshing"
+          size="icon-sm"
+          variant="ghost"
+          class="absolute -top-1 -right-1"
+          aria-label="Refresh Sessions"
+        >
+          <RefreshCwIcon :class="[isRefreshing ? 'animate-spin' : '']" />
+        </Button>
+      </CardTitle>
       <CardDescription> Manage and log out your active sessions on other browsers and devices. </CardDescription>
     </CardHeader>
 
