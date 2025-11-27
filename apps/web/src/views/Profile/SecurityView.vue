@@ -12,11 +12,10 @@ import Label from "@/components/ui/label/Label.vue";
 import { passwordUpdateSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { Field, useForm } from "vee-validate";
-import { authClient, useAuth } from "@/lib/authClient";
+import { authClient } from "@/lib/authClient";
 import { toast } from "vue-sonner";
 
-const { changePassword } = useAuth();
-const { handleSubmit, setFieldValue, setFieldError, resetForm } = useForm({
+const { handleSubmit, setFieldError, resetForm } = useForm({
   validationSchema: toTypedSchema(passwordUpdateSchema),
   initialValues: {
     currentPassword: "",

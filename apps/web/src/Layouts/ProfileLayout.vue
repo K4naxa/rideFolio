@@ -13,7 +13,7 @@ import { useRoute } from "vue-router";
 const profileTabs: { value: string; icon: IconProps["name"]; url: string }[] = [
   { value: "profile", icon: "user", url: "/profile" },
   { value: "security", icon: "shield", url: "/profile/security" },
-  { value: "session", icon: "key", url: "/profile/session" },
+  { value: "sessions", icon: "key", url: "/profile/sessions" },
   { value: "accounts", icon: "link", url: "/profile/accounts" },
   { value: "danger", icon: "trash", url: "/profile/danger" },
 ];
