@@ -58,6 +58,23 @@ function handleSessionRevoke(sessionToken: string) {
     },
   );
 }
+
+function handleRevokeOtherSessions() {
+  authClient.revokeOtherSessions(
+    {},
+    {
+      onSuccess: async () => {
+        toast.success("All other sessions logged out successfully");
+
+        // Update the sessions list
+        refreshSessions();
+      },
+      onError: () => {
+        toast.error("Failed to log out other sessions. Please try again.");
+      },
+    },
+  );
+}
 </script>
 
 <template>
@@ -80,10 +97,14 @@ function handleSessionRevoke(sessionToken: string) {
     </CardHeader>
 
     <CardContent>
-      <Label class="mt-6 mb-2 font-semibold">Current Session</Label>
       <SessionCard v-if="currentSession" :session="currentSession" :isCurrent="true" />
 
-      <Label class="mt-6 mb-2 font-semibold">Other Sessions</Label>
+      <Label class="mt-6 mb-2 flex justify-between text-lg font-semibold"
+        >Other Sessions
+        <Button v-if="otherSessions.length > 0" variant="destructive" size="sm" @click="handleRevokeOtherSessions"
+          >Revoke all</Button
+        >
+      </Label>
       <ul v-auto-animate>
         <p v-if="otherSessions.length === 0" class="text-muted-foreground">No other active sessions found.</p>
 

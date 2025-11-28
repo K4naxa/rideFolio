@@ -58,7 +58,7 @@ function formatDate(date: Date) {
 
 <template>
   <div class="hover:bg-accent/50 space-y-2 rounded-md p-3">
-    <div class="flex justify-between">
+    <div class="flex justify-between gap-3">
       <h3 class="text-base">{{ browserInformation }}</h3>
       <Badge v-if="props.isCurrent" variant="secondary">Current Session</Badge>
     </div>

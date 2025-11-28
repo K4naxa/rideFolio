@@ -60,6 +60,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.91.2",
     "@tsconfig/node22": "^22.0.2",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^22.18.11",
