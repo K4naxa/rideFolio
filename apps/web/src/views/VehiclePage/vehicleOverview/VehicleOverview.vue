@@ -59,7 +59,7 @@ const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
 
     <!-- second row -->
     <div class="w-full">
-      <Tabs v-model="activeTab" class="flex h-full w-full flex-1 lg:hidden">
+      <Tabs v-model="activeTab" class="3xl:hidden flex h-full w-full flex-1">
         <div class="flex justify-between">
           <TabsList
             class="**:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1"
@@ -100,7 +100,7 @@ const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
       </Tabs>
 
       <!-- Desktop view -->
-      <div class="gap hidden min-h-0 w-full grid-cols-1 lg:grid lg:grid-cols-2">
+      <div class="gap 3xl:grid hidden min-h-0 w-full grid-cols-1 lg:grid-cols-2">
         <Card class="flex h-100 w-full flex-col">
           <CardHeader>
             <CardTitle> <Icon name="todo" class="stroke-toDo" /> Todos </CardTitle>

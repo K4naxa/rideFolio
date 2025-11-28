@@ -16,7 +16,12 @@ interface ShoppingTableProps {
 const props = defineProps<ShoppingTableProps>();
 
 const { activeVehicleId } = useActiveVehicle();
-const { vehicleShoppingList, toggleItem, deleteItem } = useShoppingQueries(activeVehicleId);
+const {
+  vehicleShoppingList,
+  toggleItem,
+  deleteItem,
+  vehicleShoppingListLoading: isLoading,
+} = useShoppingQueries(activeVehicleId);
 const isMobile = useMediaQuery("(max-width: 768px)");
 
 const filteredItems = computed(() => {
@@ -37,6 +42,11 @@ const handleCleanup = async () => {
 
 import { ref, onMounted, nextTick, watch } from "vue";
 import { useMediaQuery } from "@vueuse/core";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 
 const longestPriceWidth = ref(0);
 const gridColStyle = computed(() => {
@@ -66,7 +76,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
     <!-- Table Header -->
-    <ScrollArea v-if="filteredItems.length" as-child class="min-h-0 w-full min-w-0 flex-1">
+    <ScrollArea v-if="filteredItems.length && !isLoading" as-child class="min-h-0 w-full min-w-0 flex-1">
       <div
         class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t border-b px-2 shadow-sm lg:gap-6"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
@@ -145,8 +155,15 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
     </ScrollArea>
 
     <!-- Empty State -->
-    <div v-else class="flex flex-1 flex-col items-center justify-center py-12 text-center">
-      <p class="text-muted-foreground">Your shopping list is empty.</p>
+    <div v-else class="grid flex-1 place-content-center">
+      <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
+
+      <Empty v-else-if="!vehicleShoppingList?.length">
+        <EmptyHeader>
+          <EmptyTitle class="text-foreground"> You have no items in your shopping list</EmptyTitle>
+          <EmptyDescription> Add new items to your shopping list to get started! </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     </div>
   </div>
 </template>

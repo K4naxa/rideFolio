@@ -14,6 +14,11 @@ import { useModalStore } from "@/stores/modal";
 import { type Note } from "@repo/validation";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Icon from "@/components/icons/Icon.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
 
 const searchQuery = ref("");
 
@@ -118,20 +123,15 @@ const handleNewClick = () => {
             </div>
           </li>
         </ul>
-        <div v-else class="flex flex-1 items-center justify-center">
-          <div class="flex flex-col justify-center p-6 text-center">
-            <h3>No notes found</h3>
-            <p class="text-muted-foreground mt-2 text-sm">You don't have any notes for this vehicle yet.</p>
-            <Button
-              variant="default"
-              class="mt-4 flex content-center items-center justify-center"
-              @click="handleNewClick"
-            >
-              <Icon name="plus" class="stroke-white" />
-              Create Note
-            </Button>
-          </div>
-        </div>
+        <Empty v-else-if="!vehicleNotes?.length">
+          <EmptyHeader>
+            <EmptyTitle class="text-foreground"> You have no notes yet</EmptyTitle>
+            <EmptyDescription> Get started by creating a new note! </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button @click="handleNewClick"> Create Note </Button>
+          </EmptyContent>
+        </Empty>
       </div>
     </div>
 
