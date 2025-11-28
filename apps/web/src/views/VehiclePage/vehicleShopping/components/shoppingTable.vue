@@ -140,6 +140,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
           </Button>
         </div>
       </ul>
+      <ScrollBar orientation="vertical" />
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
 
