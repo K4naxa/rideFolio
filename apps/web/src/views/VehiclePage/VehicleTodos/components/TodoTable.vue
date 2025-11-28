@@ -91,9 +91,9 @@ const formatDate = (dateString: string) => {
 </script>
 <template>
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
-    <ScrollArea v-if="!vehicleTodosLoading && filteredTodos.length" class="min-h-0 flex-1" key="scrollArea">
+    <ScrollArea v-if="!vehicleTodosLoading && filteredTodos.length" class="h-full min-h-0 flex-1" key="scrollArea">
       <div
-        class="text-accent-foreground bg-table-header-background sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t border-b px-2 shadow-md"
+        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t border-b px-2 shadow-sm"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
         :style="{ gridTemplateColumns: tableColumns }"
       >
@@ -181,7 +181,7 @@ const formatDate = (dateString: string) => {
           </div>
         </div>
       </ul>
-      <ScrollBar orientation="horizontal" />
+      <ScrollBar orientation="vertical" />
     </ScrollArea>
 
     <div v-else class="grid flex-1 place-content-center">

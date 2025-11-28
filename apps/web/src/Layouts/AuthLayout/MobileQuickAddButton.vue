@@ -9,7 +9,7 @@
     <Motion
       :initial="{ opacity: 0 }"
       :animate="actionContainerAnimation"
-      class="absolute left-1/2 bottom-full mb-4 flex gap-3"
+      class="absolute bottom-full left-1/2 mb-4 flex gap-3"
       :style="{
         pointerEvents: isOpen ? 'auto' : 'none',
         transform: 'translateX(-50%)',
@@ -25,7 +25,7 @@
         <button
           :class="
             twMerge(
-              'h-14 w-14 rounded-full shadow-lg inline-flex items-center justify-center border bg-background',
+              'bg-background inline-flex h-14 w-14 items-center justify-center rounded-full border shadow-lg',
               action.class,
             )
           "
@@ -40,13 +40,13 @@
     <!-- Main trigger button -->
     <button
       :class="[
-        'relative z-10 mb-2 h-10 w-10 rounded-full shadow-lg transition-transform duration-300 ease-in-out inline-flex items-center justify-center',
+        'relative z-10 mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform duration-300 ease-in-out',
         isOpen ? 'bg-secondary text-destructive-foreground' : 'bg-primary text-primary-foreground',
       ]"
       @click="toggleOpen"
     >
       <Motion :animate="{ rotate: isOpen ? 45 : 0 }">
-        <Icon name="plus" class="h-6 w-6" />
+        <Icon name="plus" class="size-6" />
       </Motion>
     </button>
   </div>
@@ -110,13 +110,12 @@ const actions: QuickAddAction[] = [
   {
     id: "vehicle",
     icon: "carFront",
-    class: "border-primary stroke-primary-foreground",
+    class: "stroke-foreground",
     label: "Add Vehicle",
     modal: "createVehicle",
   },
 ];
 
-// Click outside handler
 onClickOutside(containerRef, () => {
   isOpen.value = false;
 });
@@ -159,7 +158,3 @@ const onBackdropLeave = (el: Element, done: () => void) => {
   setTimeout(done, 300);
 };
 </script>
-
-<style scoped>
-/* Add any additional styles if needed */
-</style>

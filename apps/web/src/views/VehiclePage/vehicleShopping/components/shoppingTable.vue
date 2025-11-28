@@ -68,7 +68,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
     <!-- Table Header -->
     <ScrollArea v-if="filteredItems.length" as-child class="min-h-0 w-full min-w-0 flex-1">
       <div
-        class="text-accent-foreground bg-table-header-background sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t border-b px-2 lg:gap-6"
+        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t border-b px-2 shadow-sm lg:gap-6"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
         :style="gridColStyle"
       >

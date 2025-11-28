@@ -33,28 +33,28 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
     label: "Refill",
     icon: "refill",
     onClick: () => modalStore.onOpen("createRefill"),
-    class: "hover:shadow-refill/50 hover:shadow-sm",
+    class: "hover:shadow-refill/50 ",
     cypressDataAttr: "create-refill-button",
   },
   {
     label: "Maintenance",
     icon: "maintenance",
     onClick: () => modalStore.onOpen("createMaintenance"),
-    class: "hover:shadow-maintenance/50 hover:shadow-sm",
+    class: "hover:shadow-maintenance/50 ",
     cypressDataAttr: "create-maintenance-button",
   },
   {
     label: "Note",
     icon: "notes",
     onClick: () => modalStore.onOpen("createNote"),
-    class: "hover:shadow-notes/50 hover:shadow-sm",
+    class: "hover:shadow-notes/50 ",
     cypressDataAttr: "create-note-button",
   },
   {
     label: "Todo",
     icon: "todo",
     onClick: () => modalStore.onOpen("createTodo"),
-    class: "hover:shadow-todo/50 hover:shadow-sm",
+    class: "hover:shadow-todo/50 ",
     cypressDataAttr: "create-todo-button",
   },
 ]);
@@ -75,7 +75,7 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
         v-for="button in headerButtons"
         :key="button.label"
         @click="button.onClick"
-        :class="twMerge('hover:shadow-refill/50 hover:shadow-sm', button.class)"
+        :class="twMerge('hover:bg-background hover:shadow-md', button.class)"
         :data-cy="button.cypressDataAttr"
       >
         <Icons :name="button.icon" />

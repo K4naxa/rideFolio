@@ -3,7 +3,7 @@ import type { TabsListProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
 import { TabsList } from "reka-ui";
-import { cn } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
 
 const props = defineProps<TabsListProps & { class?: HTMLAttributes["class"] }>();
 
@@ -15,8 +15,8 @@ const delegatedProps = reactiveOmit(props, "class");
     data-slot="tabs-list"
     v-bind="delegatedProps"
     :class="
-      cn(
-        'bg-muted/70 text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]',
+      twMerge(
+        'bg-muted text-muted-foreground inline-flex w-fit items-center justify-center rounded-lg p-1',
         props.class,
       )
     "

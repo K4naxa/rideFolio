@@ -188,7 +188,7 @@ const iconMap: Record<IconName, LucideIcon> = {
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
-const iconClass = computed(() => twMerge(iconSizes[props.size], props.class));
+const iconClass = computed(() => twMerge(iconSizes[props.size], "stroke-current text-current", props.class));
 </script>
 
 <template>

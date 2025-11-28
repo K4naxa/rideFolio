@@ -49,7 +49,7 @@ html {
 
   --color-background-light: hsl(0, 0%, 100%); /* white */
 
-  --color-muted: var(--color-neutral-300); /* slate-300 */
+  --color-muted: oklch(95.2% 0 0); /* slate-300 */
   --color-muted-foreground: var(--color-neutral-500); /* slate-500 */
 
   --color-popover: var(--color-card);
@@ -68,8 +68,8 @@ html {
   --color-primary: var(--color-amber-600); /* indigo-500 */
   --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
 
-  --color-secondary: hsl(253, 84%, 90%); /* slate-100 */
-  --color-secondary-foreground: hsl(217, 33%, 17%); /* slate-800 */
+  --color-secondary: var(--color-neutral-800);
+  --color-secondary-foreground: var(--color-neutral-100);
 
   --color-destructive: hsl(0, 72%, 51%); /* red-600 */
   --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
@@ -94,24 +94,20 @@ html {
   --color-scrollbar-track: var(--color-neutral-100);
 
   /* Log - Refill */
-  --color-refill: hsl(173, 80%, 40%); /* teal-500 */
-  --color-refill-foreground: hsl(210, 40%, 98%); /* slate-50 */
+  --color-refill: var(--color-teal-500); /* teal-500 */
+  --color-refill-foreground: var(--color-slate-50); /* slate-50 */
 
   /* Log - Maintenance */
-  --color-maintenance: var(--color-amber-600);
+  --color-maintenance: var(--color-amber-500);
   --color-maintenance-foreground: var(--color-white);
 
   /* Log - Notes */
-  --color-notes: hsl(199, 89%, 48%); /* sky-500 */
-  --color-notes-foreground: hsl(210, 40%, 98%); /* slate-50 */
+  --color-notes: var(--color-slate-500); /* sky-500 */
+  --color-notes-foreground: var(--color-slate-50); /* slate-50 */
 
-  /* Log - ToDo */
-  --color-toDo: hsl(258, 90%, 66%); /* violet-500 */
-  --color-toDo-foreground: hsl(210, 40%, 98%); /* slate-50 */
-
-  /* Log - Reminder */
-  --color-reminder: hsl(350, 89%, 60%); /* rose-500 */
-  --color-reminder-foreground: hsl(210, 40%, 98%); /* slate-50 */
+  /* Log - Todo */
+  --color-todo: var(--color-violet-500); /* violet-500 */
+  --color-todo-foreground: var(--color-violet-50); /* slate-50 */
 }
 
 /*
@@ -139,24 +135,20 @@ html {
 
     --color-background-light: oklch(17.5% 0 0); /* slate-900 */
 
-    --color-muted: var(--color-neutral-800); /* slate-800 */
-    --color-muted-foreground: var(--color-neutral-500); /* slate-400 */
+    --color-muted: oklch(24.9% 0 0);
+    --color-muted-foreground: var(--color-neutral-400);
 
-    --color-accent: var(--color-neutral-800); /* slate-800 */
-    --color-accent-foreground: var(--color-foreground);
-
-    --color-table-header-background: var(--color-neutral-900);
-    --color-table-row-hover: var(--color-neutral-900);
+    --color-accent: oklch(30.1% 0 0);
+    --color-accent-foreground: var(--color-neutral-50);
 
     --color-border: var(--color-neutral-800); /* slate-700 */
     --color-input: var(--color-neutral-900); /* slate-700 */
     --color-ring: var(--color-primary); /* indigo-500 */
 
     --color-primary: var(--color-amber-600); /* indigo-500 */
-    --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
 
-    --color-secondary: var(--color-neutral-300); /* slate-700 */
-    --color-secondary-foreground: black; /* slate-50 */
+    --color-secondary: oklch(0.269 0 0);
+    --color-secondary-foreground: oklch(0.985 0 0);
 
     --color-destructive: var(--color-red-700);
     --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */
@@ -173,26 +165,6 @@ html {
     /* Scrollbar */
     --color-scrollbar-thumb: var(--color-neutral-600);
     --color-scrollbar-track: var(--color-neutral-900);
-
-    /* Log - Refill */
-    --color-refill: hsl(176, 69%, 22%); /* teal-800 */
-    --color-refill-foreground: hsl(171, 77%, 64%); /* teal-300 */
-
-    /* Log - Maintenance */
-    --color-maintenance: var(--color-amber-700);
-    --color-maintenance-foreground: var(--color-amber-50);
-
-    /* Log - Notes */
-    --color-notes: hsl(224, 64%, 33%); /* sky-800 */
-    --color-notes-foreground: hsl(199, 95%, 74%); /* sky-300 */
-
-    /* Log - Todo */
-    --color-todo: hsl(263, 69%, 42%); /* violet-800 */
-    --color-todo-foreground: hsl(252, 95%, 85%); /* violet-300 */
-
-    /* Log - Reminder */
-    --color-reminder: hsl(343, 80%, 35%); /* rose-800 */
-    --color-reminder-foreground: hsl(353, 96%, 82%); /* rose-300 */
   }
 
   body {
@@ -202,7 +174,7 @@ html {
     -moz-osx-font-smoothing: grayscale;
   }
   * {
-    @apply border-border text-foreground;
+    @apply border-border;
   }
   .ProseMirror:focus {
     outline: none;
@@ -215,7 +187,7 @@ html {
   }
 
   .listHover {
-    @apply hover:border-border hover:bg-table-row-hover;
+    @apply hover:border-border hover:bg-accent/50;
   }
 
   .cardBackground {

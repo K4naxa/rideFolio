@@ -24,7 +24,7 @@ const { signOut } = useAuth();
 <template>
   <DropdownMenu :modal="false">
     <DropdownMenuTrigger
-      class="hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-lg p-2"
+      class="hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5"
     >
       <Avatar class="h-8 w-8 rounded-lg">
         <AvatarImage :src="currentUser?.image ?? ''" :alt="currentUser?.name ?? 'User'" />

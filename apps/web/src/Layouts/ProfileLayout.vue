@@ -48,10 +48,14 @@ const activeTab = computed(() => {
 
     <Tabs :model-value="activeTab" class="w-full">
       <TabsList class="w-full">
-        <TabsTrigger v-for="tab in profileTabs" :key="tab.value" :value="tab.value">
-          <RouterLink :to="tab.url" class="flex w-full items-center justify-center gap-2">
-            <Icon :name="tab.icon" class="size-4" aria-hidden="true" />
-            <span class="items-center text-lg max-lg:hidden">{{ tab.value }}</span>
+        <TabsTrigger v-for="tab in profileTabs" :key="tab.value" :value="tab.value" as-child>
+          <RouterLink
+            :to="tab.url"
+            class="text-muted-foreground stroke-muted-foreground flex h-full w-full items-center justify-center gap-2"
+            active-class="text-foreground stroke-foreground"
+          >
+            <Icon :name="tab.icon" class="size-4 stroke-current text-current" aria-hidden="true" />
+            <p class="flex items-center text-base font-semibold text-current max-lg:hidden">{{ tab.value }}</p>
           </RouterLink>
         </TabsTrigger>
       </TabsList>
