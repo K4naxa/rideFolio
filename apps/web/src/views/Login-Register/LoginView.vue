@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useForm } from "vee-validate";
+import { ErrorMessage, Field, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRoute, useRouter } from "vue-router";
 import { LoginSchema } from "@repo/validation";
@@ -10,6 +10,9 @@ import Input from "@/components/ui/input/Input.vue";
 import Card from "@/components/ui/card/Card.vue";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+
+import LoginTabs from "./components/LoginTabs.vue";
+import Label from "@/components/ui/label/Label.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -67,12 +70,13 @@ const quickLogin = async (email: string, password: string) => {
 </script>
 
 <template>
-  <main class="grid min-h-screen place-items-center p-4">
+  <main class="grid min-h-screen place-items-center p-2">
     <div class="w-full max-w-sm md:max-w-xl">
-      <div class="flex flex-col gap-6">
-        <Card class="overflow-hidden p-0">
-          <CardContent>
-            <form @submit="onSubmit" class="flex flex-col gap-6 p-4 md:p-8" data-cy="login-form">
+      <div class="flex flex-col gap-4">
+        <LoginTabs />
+        <form @submit="onSubmit" class="" data-cy="login-form">
+          <Card>
+            <CardContent class="space-y-6">
               <div class="flex flex-col items-center text-center">
                 <h1 class="text-2xl font-bold">Welcome back</h1>
                 <p class="text-muted-foreground text-balance">Log in to your account to continue</p>
@@ -90,7 +94,24 @@ const quickLogin = async (email: string, password: string) => {
                 data-cy="email-input"
               />
 
-              <Input label="Password" type="password" name="password" placeholder="******" data-cy="password-input" />
+              <Field name="password" v-slot="{ value, handleChange }">
+                <div class="flex flex-col gap-1">
+                  <div class="flex w-full items-center justify-between">
+                    <Label> Password </Label>
+                    <a href="#" class="ml-auto inline-block text-sm underline"> Forgot your password? </a>
+                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="******"
+                    class="inputField"
+                    :value="value"
+                    @input="handleChange"
+                    data-cy="password-input"
+                  />
+                  <ErrorMessage name="password" />
+                </div>
+              </Field>
 
               <Button type="submit" class="w-full" :disabled="form.isSubmitting.value" data-cy="submit">
                 {{ form.isSubmitting.value ? "Logging in..." : "Log in" }}
@@ -147,12 +168,12 @@ const quickLogin = async (email: string, password: string) => {
                   <router-link to="/register">Sign up</router-link>
                 </Button>
               </p>
-            </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </form>
 
         <div
-          class="text-muted-foreground [&_a:hover]:text-primary text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4"
+          class="text-muted-foreground [&_a:hover]:text-primary mt-6 text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4"
         >
           By using this service, you agree to our
           <router-link to="#">Terms of Service</router-link> and <router-link to="#">Privacy Policy</router-link>.

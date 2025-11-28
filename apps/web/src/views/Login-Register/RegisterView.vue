@@ -4,6 +4,7 @@ import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import Input from "@/components/ui/input/Input.vue";
+
 import { authClient } from "@/lib/authClient";
 import { RegisterSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -12,6 +13,7 @@ import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { z } from "zod";
+import LoginTabs from "./components/LoginTabs.vue";
 
 const clientSchema = toTypedSchema(
   RegisterSchema.safeExtend({
@@ -22,6 +24,7 @@ const clientSchema = toTypedSchema(
   }),
 );
 const router = useRouter();
+
 const registrationError = ref<string | null>(null);
 
 const { handleSubmit, setFieldError } = useForm({
@@ -63,15 +66,15 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <main class="grid min-h-screen place-items-center p-4">
     <div class="w-full max-w-sm md:max-w-xl">
-      <div class="flex flex-col gap-6">
-        <Card class="overflow-hidden p-0">
-          <CardContent>
-            <form @submit="onSubmit" class="flex flex-col gap-6 p-4 md:p-8">
-              <CardHeader class="flex flex-col items-center text-center">
-                <h1>Create your account</h1>
-                <p class="text-muted-foreground">Fill the following fields to create a new account</p>
-              </CardHeader>
-
+      <div class="flex flex-col gap-4">
+        <LoginTabs />
+        <Card class="">
+          <CardHeader class="flex flex-col items-center text-center">
+            <h1>Create your account</h1>
+            <p class="text-muted-foreground">Fill the following fields to create a new account</p>
+          </CardHeader>
+          <form @submit="onSubmit" data-cy="register-form">
+            <CardContent class="flex flex-col gap-6 px-6">
               <span v-if="registrationError" class="text-destructive text-center text-sm">
                 {{ registrationError }}</span
               >
@@ -134,8 +137,8 @@ const onSubmit = handleSubmit(async (values) => {
                   <RouterLink to="/login">Login</RouterLink>
                 </Button>
               </p>
-            </form>
-          </CardContent>
+            </CardContent>
+          </form>
         </Card>
         <div
           class="text-muted-foreground [&_a:hover]:text-primary text-center text-xs [&_a]:underline [&_a]:underline-offset-4"

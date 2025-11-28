@@ -59,7 +59,7 @@ async function handleBlur() {
 
 <template>
   <div :aria-invalid="!!errorMessage" :class="['group', props.class]">
-    <Label v-if="label" class="group-aria-invalid:text-destructive mb-1.5 text-sm font-semibold">{{ label }}</Label>
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
     <div class="relative flex-1">
       <input
         v-bind="$attrs"
