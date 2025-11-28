@@ -7,12 +7,18 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useTodoQueries } from "@/lib/queries/useTodoQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
@@ -27,6 +33,7 @@ interface TodoTableProps {
   hideCompleted?: boolean;
 }
 const props = defineProps<TodoTableProps>();
+const { onOpen } = useModalStore();
 
 const PRIORITY_CONFIG = {
   CRITICAL: { color: "bg-purple-700 text-white", label: "Critical" },
@@ -193,12 +200,28 @@ const formatDate = (dateString: string) => {
       <p v-if="vehicleTodosLoading" class="text-muted-foreground"><Spinner /> Loading</p>
       <p v-else-if="vehicleTodosError" class="text-destructive">Error loading todos.</p>
       <p v-else-if="searchQuery" class="text-muted-foreground">No todos found matching your search</p>
-      <p v-else-if="!showCompleted || hideCompleted" class="text-muted-foreground">
-        All todos Completed
-        <br />
-        Create new todos to see them here!
-      </p>
-      <p v-else class="text-muted-foreground">No todos yet. Create one to get started!</p>
+
+      <Empty v-else-if="!vehicleTodos?.length">
+        <EmptyHeader>
+          <EmptyTitle class="text-foreground"> You have no todos</EmptyTitle>
+          <EmptyDescription> Create new todos to get started! </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button @click="onOpen('createTodo')"> Create To-do </Button>
+        </EmptyContent>
+      </Empty>
+
+      <Empty v-else-if="!showCompleted || hideCompleted">
+        <EmptyHeader>
+          <EmptyTitle class="text-foreground"> All todos Completed </EmptyTitle>
+          <EmptyDescription>
+            You have not pending todos to show here. Create new todos to get started!
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button @click="onOpen('createTodo')"> Create To-do </Button>
+        </EmptyContent>
+      </Empty>
     </div>
   </div>
 </template>
