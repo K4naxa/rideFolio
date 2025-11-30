@@ -7,7 +7,7 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import NumberFlow from "@number-flow/vue";
-import { api } from "@/lib/api";
+import { fetchApi } from "@/lib/api";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { type TStatCardData } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
@@ -30,7 +30,9 @@ const { data: statCardData, isLoading } = useQuery({
     if (!activeVehicle.value?.vehicleData.id) {
       throw new Error("No active vehicle");
     }
-    return (await api.get<TStatCardData>(`/vehicles/${activeVehicle.value.vehicleData.id}/stat-card`)).data;
+    const result = await fetchApi<TStatCardData>(`/vehicles/${activeVehicle.value.vehicleData.id}/stat-card`);
+    console.log("Fetched stat card data:", result);
+    return result;
   },
   queryKey: computed(() => [activeVehicle.value?.vehicleData.id, "stat-card"]),
   enabled: computed(() => !!activeVehicle.value?.vehicleData.id),
@@ -208,7 +210,7 @@ const statsOpen = ref(false);
                   <VehicleHeroStatCard
                     :icon="RouteIcon"
                     label="Total Distance"
-                    :value="`${statCardData?.trackedUnits.value.toLocaleString()}`"
+                    :value="`${Number(statCardData?.trackedUnits.value).toLocaleString()}`"
                     :suffix="`${statCardData?.trackedUnits.unit}`"
                     :is-loading="isLoading"
                   />

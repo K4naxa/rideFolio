@@ -19,35 +19,39 @@ export class RefillsService {
     // 1. Check if the user has permission to create logs for the vehicle
     await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
 
-    // 2. Fetch user and vehicle details
-    const user = await this.prisma.user.findUnique({
-      where: { id: UserSession.user.id },
-    });
-    if (!user) {
+    // 2. Fetch user, vehicle and previous log data
+    const [user, vehicle, previousLog] = (await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: UserSession.user.id },
+        select: {
+          volumeUnit: true,
+        },
+      }),
+      this.prisma.vehicle.findUnique({
+        where: { id: refillData.vehicleId },
+        select: { odometerType: true, initialOdometer_km: true, initialOdometer_hour: true, id: true },
+      }),
+      this.prisma.refill.findFirst({
+        where: { vehicleId: refillData.vehicleId },
+        orderBy: { date: 'desc' },
+      }),
+    ])) as [
+      { volumeUnit: User['volumeUnit'] } | null,
+      {
+        odometerType: Vehicle['odometerType'];
+        initialOdometer_km: Vehicle['initialOdometer_km'];
+        initialOdometer_hour: Vehicle['initialOdometer_hour'];
+        id: Vehicle['id'];
+      } | null,
+      Refill | null,
+    ];
+    if (!user || !vehicle) {
       // Should never happen, but just to satisfy TypeScript
-      throw new Error('User not found.');
+      throw new Error('User or Vehicle not found');
     }
-
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: refillData.vehicleId },
-    });
-    if (!vehicle) {
-      // Should never happen, but just to satisfy TypeScript
-      throw new Error('Vehicle not found.');
-    }
-
-    // 3. Fetch previousLog for validating odometer input (will be validated in validateOdometerIncrease)
-    const previousLog = await this.prisma.refill.findFirst({
-      where: { vehicleId: refillData.vehicleId },
-      orderBy: { date: 'desc' },
-    });
 
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
     const normalizedOdometer = this.unitConversion.normalizeOdometer(refillData.odometer, vehicle.odometerType);
-
-    console.log('Refill Creation odometer', refillData.odometer);
-    console.log('Normalized Odometer: ', normalizedOdometer);
-
     const fuelLiters = this.unitConversion.normalizeFuelAmount(refillData.fuelAmount, user.volumeUnit);
 
     // validate odometer increase
@@ -55,89 +59,53 @@ export class RefillsService {
 
     // 4. Start prisma transaction
     await this.prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
-      // Get last full refill
-      const lastFullRefill = await prisma.refill.findFirst({
-        where: {
-          vehicleId: refillData.vehicleId,
-          fullRefill: true,
-          date: { lte: refillData.date },
-        },
-      });
+      let consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null } = {
+        consumption: null,
+        validFuel: null,
+        validUnits: null,
+      };
 
-      const legDistance = previousLog
-        ? normalizedOdometer - (isOdometerHourly ? (previousLog.odometer_hour ?? 0) : (previousLog.odometer_km ?? 0))
-        : 0;
-
-      let consumptionValue: number | null = null;
-      let isValidConsumptionPeriod = false;
-
-      // Check if current period is valid for consumption calculations
-      if (refillData.fullRefill && lastFullRefill) {
-        isValidConsumptionPeriod = await this.isConsumptionPeriodValid(prisma, refillData, lastFullRefill);
-      }
-
-      // Calculate consumption if the period is valid
-      if (isValidConsumptionPeriod) {
-        consumptionValue = await this.calculateConsumption(
+      if (refillData.fullRefill) {
+        consumptionResult = await this.calculateConsumption(
           prisma,
           refillData,
-          lastFullRefill as Refill,
           normalizedOdometer,
           fuelLiters,
           isOdometerHourly,
         );
       }
 
-      const refillCreateData = {
-        vehicleId: refillData.vehicleId,
-        userId: UserSession.user.id,
-        date: refillData.date,
-        odometer_hour: isOdometerHourly ? normalizedOdometer : null,
-        odometer_km: isOdometerHourly ? null : normalizedOdometer,
-        fullRefill: refillData.fullRefill,
-        skippedRefill: refillData.skippedRefill,
-        fuelAmount_L: fuelLiters,
-        pricePerUnit: refillData.pricePerUnit,
-        costTotal: refillData.costTotal,
-        notes: refillData.notes,
-        consumption_L_per_100km: isOdometerHourly ? null : consumptionValue,
-        consumption_L_per_hour: isOdometerHourly ? consumptionValue : null,
-        unitsSinceLastRefill_km: isOdometerHourly ? null : legDistance,
-        unitsSinceLastRefill_hour: isOdometerHourly ? legDistance : null,
-      };
-
-      // 6. Create refill
+      // Create refill
       await prisma.refill.create({
-        data: refillCreateData,
+        data: {
+          vehicleId: refillData.vehicleId,
+          userId: UserSession.user.id,
+          date: refillData.date,
+          odometer_hour: isOdometerHourly ? normalizedOdometer : null,
+          odometer_km: isOdometerHourly ? null : normalizedOdometer,
+          fullRefill: refillData.fullRefill,
+          skippedRefill: refillData.skippedRefill,
+          fuelAmount_L: fuelLiters,
+          pricePerUnit: refillData.pricePerUnit,
+          costTotal: refillData.costTotal,
+          notes: refillData.notes,
+          consumption_L_per_100km: isOdometerHourly ? null : consumptionResult.consumption,
+          consumption_L_per_hour: isOdometerHourly ? consumptionResult.consumption : null,
+        },
       });
 
-      // 7. Update monthly stats
-      await this.updateMonthlyStats(
-        prisma,
-        refillData.vehicleId,
-        fuelLiters,
-        refillData.costTotal || 0,
-        refillData.date,
-        legDistance,
-        isOdometerHourly,
-        isValidConsumptionPeriod ? fuelLiters : null,
-        isValidConsumptionPeriod ? legDistance : null,
-      );
-
-      // 8. Update vehicles odometer units (vehicle odometer & tracked units)
+      // Update vehicle odometer
       await prisma.vehicle.update({
         where: { id: vehicle.id },
         data: {
           odometer_hour: isOdometerHourly ? normalizedOdometer : null,
           odometer_km: isOdometerHourly ? null : normalizedOdometer,
-
           lifetimeTotalTrackedUnits_km: isOdometerHourly
             ? null
             : (normalizedOdometer || 0) - (vehicle.initialOdometer_km || 0),
           lifetimeTotalTrackedUnits_hour: isOdometerHourly
             ? (normalizedOdometer || 0) - (vehicle.initialOdometer_hour || 0)
             : null,
-
           lastRefillOdometer_hour: isOdometerHourly ? normalizedOdometer : null,
           lastRefillOdometer_km: isOdometerHourly ? null : normalizedOdometer,
         },
@@ -236,118 +204,90 @@ export class RefillsService {
     }
   }
 
-  private async isConsumptionPeriodValid(
-    prisma: Prisma.TransactionClient,
-    refillData: RefillSchemaOutput,
-    lastFullrefill: Refill | null,
-  ) {
-    // Returns a boolean indicating if the consumption period is valid
-    const skippedRefill = await prisma.refill.count({
-      where: {
-        vehicleId: refillData.vehicleId,
-        skippedRefill: true,
-        date: {
-          gte: lastFullrefill?.date,
-          lte: refillData.date,
-        },
-      },
-    });
-
-    return skippedRefill === 0;
-  }
-
   private async calculateConsumption(
     prisma: Prisma.TransactionClient,
-    refillData: RefillSchemaOutput,
-    lastFullRefill: Refill,
+    currentRefill: RefillSchemaOutput,
     currentOdometer: number,
-    fuelLiters: number,
+    currentFuelLiters: number,
     isOdometerHourly: boolean,
-  ): Promise<number | null> {
-    const logsInPeriod = await prisma.refill.findMany({
+  ): Promise<{ consumption: number | null; validFuel: number | null; validUnits: number | null }> {
+    // Find the previous full refill
+    const previousFullRefill = await prisma.refill.findFirst({
       where: {
-        vehicleId: refillData.vehicleId,
-        date: { gte: lastFullRefill.date, lte: refillData.date },
+        vehicleId: currentRefill.vehicleId,
+        date: { lt: currentRefill.date },
+        fullRefill: true,
+      },
+      orderBy: { date: 'desc' },
+    });
+    if (!previousFullRefill) return { consumption: null, validFuel: null, validUnits: null };
+
+    const refillsBackwards = await prisma.refill.findMany({
+      where: {
+        vehicleId: currentRefill.vehicleId,
+        date: { lt: currentRefill.date, gt: previousFullRefill.date },
+      },
+      orderBy: { date: 'desc' },
+      select: {
+        date: true,
+        odometer_km: true,
+        odometer_hour: true,
+        fullRefill: true,
+        skippedRefill: true,
+        fuelAmount_L: true,
       },
     });
 
-    const totalFuel = logsInPeriod.reduce((sum, log) => sum + log.fuelAmount_L, 0) + fuelLiters;
+    console.log('previous full refill:', previousFullRefill);
+    console.log('refills backwards:', refillsBackwards);
+    console.log('currentOdometer:', currentOdometer);
 
-    if (isOdometerHourly) {
-      // Return hourly consumption (Liters per hour)
-      const hours = currentOdometer - (lastFullRefill.odometer_hour ?? 0);
-      return hours > 0 ? totalFuel / hours : null;
-    } else {
-      // Return distance-based consumption (Liters per 100 km)
-      const distance = currentOdometer - (lastFullRefill.odometer_km ?? 0);
-      return distance > 0 ? (totalFuel / distance) * 100 : null;
-    }
-  }
+    // find the last full refill and check for skipped refills in between
+    const refillsInPeriod: Array<{
+      date: Date;
+      odometer_km: number | null;
+      odometer_hour: number | null;
+      fullRefill: boolean;
+      skippedRefill: boolean;
+      fuelAmount_L: number;
+    }> = [];
 
-  private async updateMonthlyStats(
-    prisma: Prisma.TransactionClient,
-    vehicleId: string,
-    fuelLiters: number,
-    totalCost: number,
-    date: Date,
-    legDistance: number,
-    isOdometerHourly: boolean,
-    validFuel: number | null,
-    validUnits: number | null,
-  ) {
-    const refillDate = new Date(date);
-    const month = refillDate.getMonth() + 1; // Months are zero-based
-    const year = refillDate.getFullYear();
-
-    let monthlyStats = await prisma.vehicleMonthlyStatistics.findUnique({
-      where: { vehicleId_year_month: { vehicleId, year, month } },
-    });
-
-    // Create new montly stats if one doesnt already exist
-    if (!monthlyStats) {
-      monthlyStats = await prisma.vehicleMonthlyStatistics.create({
-        data: { vehicleId, year, month },
-      });
-    }
-
-    // add basic stats (are always added, even when consumption calculation is not valid)
-    const updateData: Prisma.VehicleMonthlyStatisticsUpdateInput = {
-      totalFuelCost: (monthlyStats.totalFuelCost || 0) + totalCost,
-      monthlyRunningCost: (monthlyStats.monthlyRunningCost || 0) + totalCost,
-      totalFuelConsumed_L: (monthlyStats.totalFuelConsumed_L || 0) + fuelLiters,
-      monthlyOdometerUnits_hour: (monthlyStats.monthlyOdometerUnits_hour || 0) + (isOdometerHourly ? legDistance : 0),
-      monthlyOdometerUnits_km: (monthlyStats.monthlyOdometerUnits_km || 0) + (isOdometerHourly ? 0 : legDistance),
-    };
-
-    // add validated leg data
-    if (validFuel !== null && validUnits !== null && validUnits > 0) {
-      if (isOdometerHourly) {
-        // Calculate hourly consumption
-        updateData.monthlyValidUnitsForConsumption_hour =
-          (monthlyStats.monthlyValidUnitsForConsumption_hour || 0) + validUnits;
-
-        updateData.monthlyValidFuelForConsumption_L = (monthlyStats.monthlyValidFuelForConsumption_L || 0) + validFuel;
-
-        updateData.consumption_L_per_hour =
-          updateData.monthlyValidFuelForConsumption_L / updateData.monthlyValidUnitsForConsumption_hour;
-      } else {
-        // Calculate distance-based consumption
-        updateData.monthlyValidFuelForConsumption_L = (monthlyStats.monthlyValidFuelForConsumption_L || 0) + validFuel;
-
-        updateData.monthlyValidUnitsForConsumption_km =
-          (monthlyStats.monthlyValidUnitsForConsumption_km || 0) + validUnits;
-
-        updateData.consumption_L_per_100km =
-          (updateData.monthlyValidFuelForConsumption_L / (updateData.monthlyValidUnitsForConsumption_km || 1)) * 100;
+    for (const refill of refillsBackwards) {
+      // if we find a skipped refill before finding a full refill, period is invalid
+      if (refill.skippedRefill) {
+        return { consumption: null, validFuel: null, validUnits: null };
       }
+
+      refillsInPeriod.push(refill);
     }
 
-    // Update the monthly statistics in the database
-    await prisma.vehicleMonthlyStatistics.update({
-      where: { id: monthlyStats.id },
-      data: updateData,
-    });
+    // Calculate total fuel in the period
+    const totalFuel =
+      refillsInPeriod.reduce(
+        (sum: number, refill: { fuelAmount_L: number | null }) => sum + (refill.fuelAmount_L ?? 0),
+        0,
+      ) + currentFuelLiters;
+
+    // calculate distance/hours traveled
+    const lastOdometer = isOdometerHourly
+      ? (previousFullRefill.odometer_hour ?? 0)
+      : (previousFullRefill.odometer_km ?? 0);
+    const units = currentOdometer - lastOdometer;
+
+    if (units <= 0) {
+      return { consumption: null, validFuel: null, validUnits: null };
+    }
+
+    // Calculate consumption
+    const consumption = isOdometerHourly ? totalFuel / units : (totalFuel / units) * 100;
+
+    return {
+      consumption,
+      validFuel: totalFuel,
+      validUnits: units,
+    };
   }
+
   private formatRefillForClient(
     refill: Extend<Refill, { user: { id: string; name: string; image: string | null } }>,
     vehicle: Pick<Vehicle, 'odometerType'>,

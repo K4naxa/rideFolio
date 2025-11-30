@@ -175,7 +175,7 @@ watch(isModalOpen, (open) => {
                 class="text flex items-center gap-4 rounded border px-4 py-3 leading-none font-semibold select-none"
                 data-cy="full-refill-switch"
               >
-                <Switch :model-value="value" @update:checked="handleChange" />
+                <Switch :model-value="value" @update:model-value="handleChange" />
                 <p>Full refill</p>
               </Label>
             </Field>

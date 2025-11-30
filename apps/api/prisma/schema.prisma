@@ -494,10 +494,6 @@ model Refill {
   costTotal     Float?
   notes         String?
 
-  // Since last refill
-  unitsSinceLastRefill_km    Float?
-  unitsSinceLastRefill_hour  Float?
-
   // Consumption
   consumption_L_per_100km  Float?
   consumption_L_per_hour     Float?
