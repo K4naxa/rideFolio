@@ -13,8 +13,10 @@ import { TodosModule } from './todos/todos.module';
 import { NoteModule } from './note/note.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { AuthGuard, AuthModule } from '@thallesp/nestjs-better-auth';
-import { auth } from './auth/auth'; // Your Better Auth instance
+import { createAuth } from './auth/auth'; // Your Better Auth instance
 import { APP_GUARD } from '@nestjs/core';
+import { EmailService } from 'src/email/email.service';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
@@ -22,7 +24,13 @@ import { APP_GUARD } from '@nestjs/core';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule.forRoot({ auth }),
+    AuthModule.forRootAsync({
+      useFactory: (emailService: EmailService) => ({
+        auth: createAuth(emailService), // Create auth instance with injected EmailService
+      }),
+      imports: [EmailModule],
+      inject: [EmailService],
+    }),
     UsersModule,
     VehiclesModule,
     PoolsModule,
@@ -31,6 +39,7 @@ import { APP_GUARD } from '@nestjs/core';
     TodosModule,
     NoteModule,
     ShoppingListModule,
+    EmailModule,
   ],
   controllers: [AppController, PoolsController, StatisticsController],
   providers: [

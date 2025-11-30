@@ -1,38 +1,58 @@
 import { PrismaClient } from '@prisma/client';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { EmailService } from 'src/email/email.service';
 
 const prisma = new PrismaClient();
-
-export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: 'postgresql',
-  }),
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: true,
-    requireEmailVerification: false,
-  },
-  session: {
-    cookieCache: {
-      enabled: false,
+export const createAuth = (emailService: EmailService) =>
+  betterAuth({
+    database: prismaAdapter(prisma, {
+      provider: 'postgresql',
+    }),
+    emailAndPassword: {
+      enabled: true,
+      autoSignIn: true,
+      requireEmailVerification: true,
+      minPasswordLength: 8,
+      revokeSessionsOnPasswordReset: true,
     },
-  },
-  logger: {
-    level: 'info',
-    disabled: false,
-  },
-  onAPIError: {
-    throw: true,
-    onError: (error) => {
-      // Custom error handling
-      console.error('Auth error:', error);
+    user: {
+      deleteUser: {
+        enabled: true,
+      },
     },
-    errorURL: '/auth/error',
-  },
+    emailVerification: {
+      sendOnSignUp: true,
+      autoSignInAfterVerification: true,
+      sendVerificationEmail: async ({ user, token }) => {
+        await emailService.sendEmailVerification({
+          userEmail: user.email,
+          token: token,
+        });
+      },
+    },
 
-  // TODO: change these to configService for production use
-  baseURL: process.env.BACKEND_URL || 'http://localhost:3001',
-  trustedOrigins: process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL || 'http://localhost:5173'] : ['*'], // Allow all origins in development
-  basePath: '/api/auth',
-});
+    session: {
+      cookieCache: {
+        enabled: false,
+      },
+    },
+    logger: {
+      level: 'info',
+      disabled: false,
+    },
+    onAPIError: {
+      throw: true,
+      onError: (error) => {
+        // Custom error handling
+        console.error('Auth error:', error);
+      },
+      errorURL: '/auth/error',
+    },
+
+    // TODO: change these to configService for production use
+    baseURL: process.env.BACKEND_URL || 'http://localhost:3001',
+    trustedOrigins:
+      process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL || 'http://localhost:5173'] : ['*'], // Allow all origins in development
+    basePath: '/api/auth',
+  });

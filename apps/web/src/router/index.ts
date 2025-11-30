@@ -13,6 +13,8 @@ import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview
 import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
 import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
 import { createRouter, createWebHistory } from "vue-router";
+import DangerView from "@/views/Profile/DangerView.vue";
+import VerifyEmailView from "@/views/Login-Register/verifyEmailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,11 +23,20 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      meta: { guestOnly: true },
     },
     {
       path: "/register",
       name: "register",
       component: RegisterView,
+      meta: { guestOnly: true },
+    },
+
+    {
+      path: "/verify-email",
+      name: "verify-email",
+      component: VerifyEmailView,
+      meta: { guestOnly: true },
     },
     {
       path: "/",
@@ -51,16 +62,22 @@ const router = createRouter({
               component: ProfileView,
             },
             {
-              path: "security",
-              name: "security",
+              path: "profile",
+              name: "profile-security",
               meta: { requiresAuth: true },
               component: SecurityView,
             },
             {
               path: "sessions",
-              name: "sessions",
+              name: "profile-sessions",
               meta: { requiresAuth: true },
               component: SessionsView,
+            },
+            {
+              path: "danger",
+              name: "profile-danger",
+              meta: { requiresAuth: true },
+              component: DangerView,
             },
           ],
         },
@@ -102,13 +119,20 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (!to.meta.requiresAuth) return next();
+  if (!to.meta) return next();
 
   try {
     const sessionResult = await authClient.getSession();
-    const user = sessionResult.data?.user;
-    if (user) return next();
-    else return next({ name: "login" });
+    const isAuthenticated = sessionResult.data?.user !== undefined;
+    if (to.meta.guestOnly) {
+      if (!isAuthenticated) return next();
+      else return next({ name: "dashboard" });
+    }
+
+    if (to.meta.requiresAuth) {
+      if (isAuthenticated) return next();
+      else return next({ name: "login" });
+    }
   } catch (e) {
     return next({ name: "login" });
   }

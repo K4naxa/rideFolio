@@ -56,7 +56,10 @@ const onSubmit = handleSubmit(async (values) => {
         } else toast.error(`Registration failed, please try again.`);
       },
       onSuccess() {
-        router.push("/dashboard");
+        toast.success("Registration successful!", {
+          description: "Please check your email to verify your account.",
+        });
+        router.push("/login");
       },
     },
   );
@@ -64,7 +67,7 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <main class="grid min-h-screen place-items-center p-4">
+  <main class="grid min-h-screen place-items-center p-2">
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-4">
         <LoginTabs />
