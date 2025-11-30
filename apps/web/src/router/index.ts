@@ -15,6 +15,7 @@ import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.
 import { createRouter, createWebHistory } from "vue-router";
 import DangerView from "@/views/Profile/DangerView.vue";
 import VerifyEmailView from "@/views/Login-Register/verifyEmailView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,7 +63,7 @@ const router = createRouter({
               component: ProfileView,
             },
             {
-              path: "profile",
+              path: "security",
               name: "profile-security",
               meta: { requiresAuth: true },
               component: SecurityView,
@@ -115,12 +116,15 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundView,
+    },
   ],
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (!to.meta) return next();
-
   try {
     const sessionResult = await authClient.getSession();
     const isAuthenticated = sessionResult.data?.user !== undefined;
@@ -133,6 +137,9 @@ router.beforeEach(async (to, from, next) => {
       if (isAuthenticated) return next();
       else return next({ name: "login" });
     }
+
+    // If no meta properties match, allow navigation
+    return next();
   } catch (e) {
     return next({ name: "login" });
   }
