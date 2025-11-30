@@ -1,3 +1,11 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
 // ** VEHICLE ENUMS
 enum FuelTypes {
   GASOLINE
@@ -98,14 +106,7 @@ enum TodoPriority {
 }
 
 
-generator client {
-  provider = "prisma-client-js"
-}
 
-datasource db {
-  provider = "postgresql"
-  url = env("DATABASE_URL")
-}
 
 model User {
   id        String   @id @default(cuid())

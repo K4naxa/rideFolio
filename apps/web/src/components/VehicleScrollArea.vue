@@ -3,14 +3,20 @@ import { ScrollArea } from "./ui/scroll-area";
 import ScrollBar from "./ui/scroll-area/ScrollBar.vue";
 import VehicleTypeIcon from "./icons/VehicleTypeIcon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import Button from "./ui/button/Button.vue";
+import { useModalStore } from "@/stores/modal";
 
 const { vehicles } = useVehicleQueries();
+const modalStore = useModalStore();
+const openCreateVehicleModal = () => {
+  modalStore.onOpen("createVehicle");
+};
 </script>
 
 <template>
   <div class="relative w-full">
     <ScrollArea class="w-full pb-2" orientation="horizontal">
-      <ul class="flex gap-4 pb-2">
+      <ul v-if="vehicles && vehicles.length > 0" class="flex gap-4 pb-2">
         <RouterLink
           :to="'/vehicles/' + vehicle.vehicleData.id"
           v-for="vehicle in vehicles"
@@ -53,6 +59,11 @@ const { vehicles } = useVehicleQueries();
           </div>
         </RouterLink>
       </ul>
+      <div v-else class="text-muted-foreground text-center">
+        <h3>No Vehicles available</h3>
+        <p>Create your first vehicle to get started!</p>
+        <Button @click="openCreateVehicleModal" class="mt-3">Create Vehicle</Button>
+      </div>
 
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
