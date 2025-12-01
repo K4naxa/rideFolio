@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User, Vehicle } from '@prisma/client';
+import { User, Vehicle } from 'prisma/generated/prisma/client';
 import { TConversionResult } from '@repo/validation';
 
 @Injectable()

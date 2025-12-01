@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ProfileUpdateValues, TBasicProfile } from '@repo/validation';
+import { CurrencyCode, ProfileUpdateValues, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
 
 @Injectable()
 export class UsersService {
@@ -45,7 +45,7 @@ export class UsersService {
         volumeUnit: user.volumeUnit,
         consumptionUnit_distance: user.consumptionUnit_distance,
         consumptionUnit_Hour: user.consumptionUnit_hour,
-        currency: user.currency,
+        currency: user.currency as CurrencyCode,
       },
     };
 
@@ -66,5 +66,15 @@ export class UsersService {
       where: { id },
     });
     console.log('Updated user profile:', updatedUser);
+  }
+  async updatePreferences(userId: string, data: UpdatePreferenceValues): Promise<TBasicProfile> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        [data.key]: data.value,
+      },
+    });
+
+    return this.getBasicProfile(userId);
   }
 }

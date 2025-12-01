@@ -1,4 +1,11 @@
 import { z } from "zod";
+import {
+  consumptionTypeValues_distance,
+  consumptionTypeValues_hour,
+  currencyCodes,
+  volumeUnitCodes,
+} from "./user.types";
+import { odometerTypeCodes } from "../vehicle";
 
 export const RegisterSchema = z
   .object({
@@ -36,3 +43,46 @@ export const passwordUpdateSchema = z.object({
   ),
 });
 export type PasswordUpdateValues = z.infer<typeof passwordUpdateSchema>;
+
+export const UpdatePreferenceSchema = z.discriminatedUnion("key", [
+  z.object({
+    key: z.literal("odometerType"),
+    value: z.enum(odometerTypeCodes, {
+      message: "Invalid odometer type",
+    }),
+  }),
+  z.object({
+    key: z.literal("volumeUnit"),
+    value: z.enum(volumeUnitCodes, {
+      message: "Invalid volume unit",
+    }),
+  }),
+  z.object({
+    key: z.literal("currency"),
+    value: z.enum(
+      currencyCodes.map((v) => v),
+      {
+        message: "Invalid currency type",
+      }
+    ),
+  }),
+  z.object({
+    key: z.literal("consumptionUnit_distance"),
+    value: z.enum(
+      consumptionTypeValues_distance.map((v) => v.value),
+      {
+        message: "Invalid consumption unit",
+      }
+    ),
+  }),
+  z.object({
+    key: z.literal("consumptionUnit_Hour"),
+    value: z.enum(
+      consumptionTypeValues_hour.map((v) => v.value),
+      {
+        message: "Invalid consumption unit",
+      }
+    ),
+  }),
+]);
+export type UpdatePreferenceValues = z.infer<typeof UpdatePreferenceSchema>;

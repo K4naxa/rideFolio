@@ -1,11 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import {
-  MaintenanceSchema,
-  RefillSchema,
-  RefillSchemaOutput,
-  TMaintenanceSchema,
-  TVehicleTypeCode,
-} from '@repo/validation';
+import { MaintenanceSchema, RefillSchema, RefillSchemaOutput, TMaintenanceSchema } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ZodType } from 'zod';
 
@@ -13,6 +7,7 @@ import { LogsService } from './logs.service';
 import { RefillsService } from './refills.service';
 import { MaintenanceService } from 'src/logs/maintenance/maintenance.service';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { VehicleType } from 'prisma/generated/prisma/client';
 
 @Controller('logs')
 export class LogsController {
@@ -45,7 +40,7 @@ export class LogsController {
   // ** MAINTENANCE **
   @AllowAnonymous() // Allow anonymous access
   @Get('maintenance/categories/:vehicleTypeCode')
-  async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: TVehicleTypeCode) {
+  async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: VehicleType['code']) {
     console.log('fetching maintenance categories and parts for vehicle type:', vehicleType);
     return await this.maintenanceService.getCategoriesAndParts(vehicleType);
   }

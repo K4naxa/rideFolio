@@ -1,28 +1,35 @@
-export const FuelTypes = ["GASOLINE", "DIESEL", "HYBRID"] as const;
-export type FuelTypes = (typeof FuelTypes)[number];
-export type FuelTypeOption = { value: FuelTypes; label: string };
+// Vehicle Fuel Types
+export const FUEL_TYPES = {
+  GASOLINE: { code: "GASOLINE", label: "Gasoline", nameKey: "vehicle.fuelTypes.gasoline" },
+  DIESEL: { code: "DIESEL", label: "Diesel", nameKey: "vehicle.fuelTypes.diesel" },
+  HYBRID: { code: "HYBRID", label: "Hybrid", nameKey: "vehicle.fuelTypes.hybrid" },
+} as const;
+export type FuelTypeCode = keyof typeof FUEL_TYPES;
+export const fuelTypeCodes = Object.keys(FUEL_TYPES) as FuelTypeCode[];
 
-// !Todo: change to use translated labels
-export const fuelTypeValues: FuelTypeOption[] = [
-  { value: "GASOLINE", label: "Gasoline" },
-  { value: "DIESEL", label: "Diesel" },
-  { value: "HYBRID", label: "Hybrid" },
-];
+// Vehicle Odometer Types
+export const ODOMETER_TYPES = {
+  KILOMETER: { code: "KILOMETER", unit: "km", label: "Kilometer", nameKey: "vehicle.odometerTypes.kilometer" },
+  MILE: { code: "MILE", unit: "mi", label: "Mile", nameKey: "vehicle.odometerTypes.mile" },
+  HOUR: { code: "HOUR", unit: "h", label: "Hour", nameKey: "vehicle.odometerTypes.hour" },
+} as const;
+export type OdometerTypeCode = keyof typeof ODOMETER_TYPES;
+export type TOdometerTypeShort = (typeof ODOMETER_TYPES)[OdometerTypeCode]["unit"];
+export const odometerTypeCodes = Object.keys(ODOMETER_TYPES) as OdometerTypeCode[];
+export const odometerTypeShortCodes = Object.values(ODOMETER_TYPES).map((value) => value.unit);
+export function getOdometerNamekey(code: string): string {
+  return ODOMETER_TYPES[code as OdometerTypeCode]?.label;
+}
+export function getOdometerUnit(code: string | undefined): string {
+  if (!code) return "";
+  return ODOMETER_TYPES[code as OdometerTypeCode]?.unit;
+}
 
-export type OdometerTypes = "KILOMETER" | "MILE" | "HOUR";
-type TOdometerTypeShort = "km" | "mi" | "h";
-export type OdometerTypeOption = { value: OdometerTypes; label: string };
-export const OdometerTypeValues: OdometerTypeOption[] = [
-  { value: "KILOMETER", label: "Kilometri" },
-  { value: "MILE", label: "Maili" },
-  { value: "HOUR", label: "Tunti" },
-];
-
-export const OdometerTypeValuesShort: OdometerTypeOption[] = [
-  { value: "KILOMETER", label: "km" },
-  { value: "MILE", label: "mi" },
-  { value: "HOUR", label: "h" },
-];
+export type VehicleType = {
+  code: string;
+  nameKey: string;
+  icon: string | null;
+};
 export type TConversionResult = {
   value: number;
   unit: string;
@@ -33,7 +40,7 @@ export type TOdometerData = {
   lifeTimeTracked: number | null;
   lastRefillValue: number | null;
   unit: TOdometerTypeShort;
-  type: OdometerTypes;
+  type: OdometerTypeCode;
 };
 
 export type TLogVehicle = {
@@ -45,18 +52,11 @@ export type TLogVehicle = {
   image: string | null;
 };
 
-export const VehicleTypeCodes = ["car", "motorcycle", "boat", "other"] as const;
-export type TVehicleTypeCode = (typeof VehicleTypeCodes)[number];
-// Function to check if a string is a valid vehicle type code
-export function isVehicleTypeCode(code: string): code is TVehicleTypeCode {
-  return (VehicleTypeCodes as readonly string[]).includes(code);
-}
-
 export interface TBasicVehicle {
   id: string;
   name: string;
 
-  type: TVehicleTypeCode;
+  type: VehicleType;
   image: string | null;
 
   make: string | null;
@@ -65,7 +65,7 @@ export interface TBasicVehicle {
   vin: string | null;
   year: number | null;
 
-  fuelType: FuelTypes;
+  fuelType: FuelTypeCode;
   odometerData: TOdometerData;
 }
 
@@ -98,8 +98,8 @@ export type TVehicleInfo = {
   image: string | null;
   notes: string | null;
   ownerId: string;
-  type: TVehicleTypeCode;
-  fuelType: FuelTypes;
+  type: VehicleType;
+  fuelType: FuelTypeCode;
   odometerData: TOdometerData;
   lifetimeStats: {
     totalTrackedUnits: TConversionResult;

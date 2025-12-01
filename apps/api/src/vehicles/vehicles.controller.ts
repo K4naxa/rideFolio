@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { TAccessibleVehicle, TBasicVehicle, VehicleSchema, VehicleSchemaType } from '@repo/validation';
+import { TAccessibleVehicle, TBasicVehicle, VehicleSchema, VehicleSchemaType, VehicleType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
 
@@ -13,7 +13,7 @@ export class VehiclesController {
 
   @AllowAnonymous()
   @Get('types')
-  async getVehicleTypes(): Promise<string[]> {
+  async getVehicleTypes(): Promise<VehicleType[]> {
     return await this.vehiclesService.getVehicleTypes();
   }
 

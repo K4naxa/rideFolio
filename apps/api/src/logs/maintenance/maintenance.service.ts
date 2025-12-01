@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { isVehicleTypeCode, TMaintenanceSchema, TVehicleTypeCode } from '@repo/validation';
+import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
+import { TMaintenanceSchema } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -14,11 +14,7 @@ export class MaintenanceService {
     private unitConversion: UnitConversionService,
   ) {}
 
-  async getCategoriesAndParts(vehicleType: TVehicleTypeCode) {
-    if (!isVehicleTypeCode(vehicleType)) {
-      throw new BadRequestException(`Invalid vehicle type code: ${String(vehicleType)}`);
-    }
-
+  async getCategoriesAndParts(vehicleType: VehicleType['code']) {
     const vehicleType_id = await this.prisma.vehicleType.findUnique({
       where: { code: vehicleType },
       select: { id: true },
@@ -101,7 +97,7 @@ export class MaintenanceService {
           date: maintenanceData.date,
           odometer_km: isOdometerHourly ? null : normalizedOdometer,
           odometer_hour: isOdometerHourly ? normalizedOdometer : null,
-          maintenanceType: maintenanceData.maintenanceType,
+          typeId: maintenanceData.typeId,
           serviceProvider: maintenanceData.serviceProvider,
           costTotal: maintenanceData.totalCost,
           notes: maintenanceData.notes,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
@@ -19,7 +19,7 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import { useModalStore } from "@/stores/modal";
-import { fuelTypeValues, OdometerTypeValues, VehicleSchema, VehicleTypeCodes } from "@repo/validation";
+import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed } from "vue";
@@ -27,8 +27,14 @@ import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import z from "zod";
 
+const selectedVehicleIcon = computed(() => {
+  const selectedType = values.type;
+  const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
+  return vehicleType?.icon as IconProps["name"];
+});
+
 const { createVehicleAsync, createPending } = useVehicleQueries();
-const { vehicles } = useVehicleQueries();
+const { vehicles, vehicleTypes } = useVehicleQueries();
 const clientSchema = VehicleSchema.extend({
   licensePlate: z
     .string()
@@ -113,7 +119,7 @@ const onSubmit = handleSubmit(async (data) => {
                 <Select :model-value="value" @update:model-value="handleChange">
                   <SelectTrigger class="w-full" data-cy="type-trigger">
                     <div class="flex items-center gap-3">
-                      <VehicleTypeIcon v-if="value" :type="value" class="stroke-muted-foreground h-4 w-4" />
+                      <Icon v-if="selectedVehicleIcon" :name="selectedVehicleIcon" class="h-4 w-4" />
                       <SelectValue placeholder="Select vehicle type *" />
                     </div>
                   </SelectTrigger>
@@ -121,13 +127,18 @@ const onSubmit = handleSubmit(async (data) => {
                     <SelectLabel>Vehicle type</SelectLabel>
                     <Separator class="mb-1" />
                     <SelectItem
-                      v-for="type in VehicleTypeCodes"
-                      :key="type"
-                      :value="type"
-                      :data-cy="`type-${type}-select`"
+                      v-for="type in vehicleTypes"
+                      :key="type.code"
+                      :value="type.code"
+                      :data-cy="`type-${type.code}-select`"
                     >
                       <span class="flex items-center gap-2">
-                        <VehicleTypeIcon :type="type" class="h-4 w-4" /> {{ type }}
+                        <Icon
+                          :name="type.icon ? (type.icon as IconProps['name']) : 'otherVehicle'"
+                          :type="type"
+                          class="h-4 w-4"
+                        />
+                        {{ type.code }}
                       </span>
                     </SelectItem>
                   </SelectContent>
@@ -166,10 +177,10 @@ const onSubmit = handleSubmit(async (data) => {
                     <Separator class="mb-1" />
 
                     <SelectItem
-                      v-for="type in OdometerTypeValues"
-                      :key="type.value"
-                      :value="type.value"
-                      :data-cy="`odometer-type-${type.value}-select`"
+                      v-for="type in ODOMETER_TYPES"
+                      :key="type.code"
+                      :value="type.code"
+                      :data-cy="`odometer-type-${type.code}-select`"
                     >
                       {{ type.label }}
                     </SelectItem>
@@ -226,7 +237,7 @@ const onSubmit = handleSubmit(async (data) => {
               type="number"
               :min="0"
               input-mode="numeric"
-              :suffix="values.odometerType === 'HOUR' ? 'h' : values.odometerType === 'MILE' ? 'miles' : 'km'"
+              :suffix="getOdometerUnit(values.odometerType)"
               data-cy="odometer"
             />
 
@@ -242,10 +253,10 @@ const onSubmit = handleSubmit(async (data) => {
                     <Separator class="mb-1" />
 
                     <SelectItem
-                      v-for="type in fuelTypeValues"
-                      :key="type.value"
-                      :value="type.value"
-                      :data-cy="`fuel-type-${type.value}-select`"
+                      v-for="type in FUEL_TYPES"
+                      :key="type.code"
+                      :value="type.code"
+                      :data-cy="`fuel-type-${type.code}-select`"
                     >
                       {{ type.label }}
                     </SelectItem>

@@ -1,15 +1,10 @@
 import { api, fetchApi } from "@/lib/api";
-import {
-  type TMaintenanceCategory,
-  type TBasicVehicle,
-  type TVehicleTypeCode,
-  type TMaintenanceSchema,
-} from "@repo/validation";
+import { type TMaintenanceCategory, type TMaintenanceSchema } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { unref, type MaybeRef } from "vue";
 import { toast } from "vue-sonner";
 
-export function useMaintenanceQueries(typeCode?: MaybeRef<TVehicleTypeCode | undefined>) {
+export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
 
   const partCategories = useQuery({

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { Pool } from '@prisma/client';
+
 import {
   TPoolMember,
   AccessiblePool,
@@ -9,6 +9,7 @@ import {
   TNewPoolServerOutput,
 } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { Pool } from 'prisma/generated/prisma/client';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { PoolsService } from 'src/pools/pools.service';
 import { ZodType } from 'zod';

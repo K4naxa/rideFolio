@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { TMaintenanceTypes } from "./maintenance.types";
 
 export const MaintenanceSchema = z.object({
   vehicleId: z.cuid("Select a vehicle"),
@@ -15,7 +14,7 @@ export const MaintenanceSchema = z.object({
     })
     .nullable(),
   odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
-  maintenanceType: z.enum(TMaintenanceTypes, { message: "Select maintenance reason" }),
+  typeId: z.string().min(1, "Select maintenance type"),
   serviceProvider: z.string().max(255, "Max length 255 characters").nullable(),
   parts: z.array(
     z.object({

@@ -10,6 +10,7 @@ import CreateNoteModal from "./modals/createNoteModal.vue";
 import CreateTodoModal from "./modals/CreateTodoModal.vue";
 import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
 import AlertModal from "./modals/alertModal.vue";
+import UserSettingsModal from "./modals/userSettingsModal.vue";
 
 configure({});
 
@@ -28,6 +29,7 @@ const themeStore = useThemeStore();
   <CreateTodoModal />
   <CreateNoteModal />
   <CreateMaintenanceModal />
+  <UserSettingsModal />
 </template>
 
 <style scoped></style>

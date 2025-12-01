@@ -38,7 +38,7 @@ const emits = defineEmits<{
   (e: "update:values", value: TMaintenanceFormPart[]): void;
 }>();
 
-const selectedVehicleType = computed(() => props.selectedVehicle?.vehicleData.type || undefined);
+const selectedVehicleType = computed(() => props.selectedVehicle?.vehicleData.type.code || undefined);
 
 const selectedCategory = ref<TMaintenanceCategory | null>(null);
 const selectedPart = ref<TMaintenanceCategoryPart | null>(null);

@@ -1,6 +1,6 @@
 import { UnitConversionService } from './../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, Refill, User, Vehicle } from '@prisma/client';
+import { Prisma, Refill, User, Vehicle } from 'prisma/generated/prisma/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';

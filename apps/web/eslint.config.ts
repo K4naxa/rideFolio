@@ -15,6 +15,16 @@ export default defineConfigWithVueTs(
     files: ["**/*.{ts,mts,tsx,vue}"],
   },
 
+  {
+    name: "typescript-parser-options",
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ["./tsconfig.app.json", "./tsconfig.node.json", "./tsconfig.vitest.json"],
+      },
+    },
+  },
+
   globalIgnores(["**/dist/**", "**/dist-ssr/**", "**/coverage/**"]),
 
   pluginVue.configs["flat/essential"],

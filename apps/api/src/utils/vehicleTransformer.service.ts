@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Vehicle } from '@prisma/client';
-import { isVehicleTypeCode, TAccessibleVehicle, TBasicVehicle, TPoolVehicle } from '@repo/validation';
+import { Vehicle } from 'prisma/generated/prisma/client';
+import { TAccessibleVehicle, TBasicVehicle, TPoolVehicle } from '@repo/validation';
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
 interface RawVehicleWithPools extends Vehicle {
+  vehicleType: {
+    code: string;
+    nameKey: string;
+    icon: string | null;
+  };
   pools?: {
     allowMembersToAddLogs: boolean;
     allowMembersToEditLogs: boolean;
@@ -19,12 +24,25 @@ interface RawVehicleWithPools extends Vehicle {
 interface RawPoolVehicle {
   addedAt: Date;
   vehicle: Vehicle & {
+    vehicleType: {
+      code: string;
+      nameKey: string;
+      icon: string | null;
+    };
     owner: {
       id: string;
       name: string;
       email: string;
       image: string | null; // Handle nullable image
     };
+  };
+}
+
+interface RawBasicVehicle extends Vehicle {
+  vehicleType: {
+    code: string;
+    nameKey: string;
+    icon: string | null;
   };
 }
 
@@ -36,28 +54,15 @@ export class VehicleTransformerService {
   ) {}
 
   // Transform raw vehicle to TBasicVehicle
-  toBasicVehicle(rawVehicle: Vehicle): TBasicVehicle {
-    const typeCodeFromDb = rawVehicle.type;
-    if (!isVehicleTypeCode(typeCodeFromDb)) {
-      console.error('Invalid vehicle type code found in database: ', typeCodeFromDb);
-      return {
-        id: rawVehicle.id,
-        name: rawVehicle.name,
-        type: 'other',
-        image: rawVehicle.image,
-        make: rawVehicle.make,
-        model: rawVehicle.model,
-        vin: rawVehicle.vin,
-        year: rawVehicle.year,
-        licensePlate: rawVehicle.licensePlate,
-        fuelType: rawVehicle.fuelType,
-        odometerData: this.odometerService.getOdometerValues(rawVehicle),
-      };
-    }
+  toBasicVehicle(rawVehicle: RawBasicVehicle): TBasicVehicle {
     return {
       id: rawVehicle.id,
       name: rawVehicle.name,
-      type: typeCodeFromDb,
+      type: {
+        code: rawVehicle.vehicleType.code,
+        nameKey: rawVehicle.vehicleType.nameKey,
+        icon: rawVehicle.vehicleType.icon,
+      },
       image: rawVehicle.image,
       vin: rawVehicle.vin,
       make: rawVehicle.make,

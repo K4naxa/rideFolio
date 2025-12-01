@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { fuelTypeValues, OdometerTypeValues, VehicleTypeCodes } from "./vehicle.types";
+import { fuelTypeCodes, odometerTypeCodes } from "./vehicle.types";
 
 export const VehicleSchema = z.object({
   // Mandatory Name
@@ -12,9 +12,7 @@ export const VehicleSchema = z.object({
   model: z.string().max(20, "Model name can be at most 20 characters long").nullable().optional(),
 
   // Mandatory Vehicle Type
-  type: z.enum(VehicleTypeCodes, {
-    message: "Vehicle type is required",
-  }),
+  type: z.string().min(1, "Vehicle type is required").trim(),
 
   // Optional Year
   year: z.coerce.number().nullable().optional(),
@@ -23,12 +21,9 @@ export const VehicleSchema = z.object({
   odometer: z.coerce.number().nullable().optional(),
 
   // Mandatory odometer type
-  odometerType: z.enum(
-    OdometerTypeValues.map((v) => v.value),
-    {
-      message: "Odometer type is required",
-    }
-  ),
+  odometerType: z.enum(odometerTypeCodes, {
+    message: "Odometer type is required",
+  }),
 
   // Optional VIN
   vin: z.string().trim().length(17, "VIN must be exactly 17 characters long").nullable().optional().or(z.literal("")),
@@ -43,12 +38,9 @@ export const VehicleSchema = z.object({
     .or(z.literal("")),
 
   // Mandatory Fuel Type
-  fuelType: z.enum(
-    fuelTypeValues.map((v) => v.value),
-    {
-      message: "Fuel type is required",
-    }
-  ),
+  fuelType: z.enum(fuelTypeCodes, {
+    message: "Fuel type is required",
+  }),
   image: z
     .instanceof(File)
     .refine((file) => ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(file.type), {

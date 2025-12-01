@@ -1,6 +1,6 @@
 import { api, fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
-import type { TAccessibleVehicle, VehicleSchemaType } from "@repo/validation";
+import type { TAccessibleVehicle, VehicleSchemaType, VehicleType } from "@repo/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
@@ -13,6 +13,13 @@ export function useVehicleQueries() {
     queryKey: ["vehicles"],
     queryFn: async () => fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
     staleTime: 1000 * 60 * 30,
+    enabled: isAuthenticated,
+  });
+
+  const vehicleTypes = useQuery({
+    queryKey: ["vehicleTypes"],
+    queryFn: async () => fetchApi<VehicleType[]>("vehicles/types"),
+    staleTime: 1000 * 60 * 60,
     enabled: isAuthenticated,
   });
 
@@ -62,5 +69,9 @@ export function useVehicleQueries() {
     deleteVehicleAsync: deleteVehicle.mutateAsync,
     deletePending: deleteVehicle.isPending,
     deleteError: deleteVehicle.error,
+
+    vehicleTypes: vehicleTypes.data,
+    vehicleTypesLoading: vehicleTypes.isLoading,
+    vehicleTypesError: vehicleTypes.error,
   };
 }

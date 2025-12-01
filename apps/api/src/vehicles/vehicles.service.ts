@@ -10,7 +10,7 @@ import {
   Vehicle,
   VehiclePart,
   VehiclePartLocation,
-} from '@prisma/client';
+} from 'prisma/generated/prisma/client';
 import {
   MaintenanceActivityData,
   RecentActivityInfiniteResponse,
@@ -19,6 +19,7 @@ import {
   TBasicVehicle,
   TStatCardData,
   VehicleSchemaType,
+  VehicleType,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -39,6 +40,16 @@ export class VehiclesService {
 
   async create(userSession: UserSession, vehicleData: VehicleSchemaType): Promise<{ newVehicleId: string }> {
     try {
+      // Validate that the vehicle type exists
+      const vehicleType = await this.prisma.vehicleType.findUnique({
+        where: { code: vehicleData.type, isActive: true },
+      });
+      if (!vehicleType) {
+        throw new BadRequestException({
+          message: 'Invalid vehicle type provided',
+          field: 'type',
+        });
+      }
       // ** 1. Create the vehicle
 
       const odometer_is_distance_type = vehicleData.odometerType !== 'HOUR';
@@ -58,6 +69,7 @@ export class VehiclesService {
       const vehicle = await this.prisma.vehicle.create({
         data: {
           ...formattedVehicleData,
+
           ownerId: userSession.user.id,
 
           initialOdometer_km: odometer_is_distance_type ? formattedDistanceOdometer : null,
@@ -107,14 +119,18 @@ export class VehiclesService {
     }
   }
   // ***       FETCH       ***
-  async getVehicleTypes(): Promise<string[]> {
+  async getVehicleTypes(): Promise<VehicleType[]> {
     try {
-      const vehicleTypes = await this.prisma.vehicleType.findMany({
+      return await this.prisma.vehicleType.findMany({
+        where: { isActive: true },
         select: {
           code: true,
+          nameKey: true,
+          icon: true,
         },
+
+        orderBy: { sortOrder: 'asc' },
       });
-      return vehicleTypes.map((v) => v.code);
     } catch (error) {
       console.error('Error fetching vehicle types:', error);
       throw new BadRequestException({ message: 'Failed to fetch vehicle types.' });
@@ -258,6 +274,7 @@ export class VehiclesService {
       type MaintenanceDBSelect = Extend<
         Maintenance,
         {
+          type: { code: string; nameKey: string };
           vehicle: DBVehicleSelect;
           parts: {
             part: { code: VehiclePart['code']; id: VehiclePart['id'] };
@@ -289,6 +306,7 @@ export class VehiclesService {
           date: { lt: cursorDate },
         },
         include: {
+          type: { select: { code: true, nameKey: true } },
           vehicle: { select: { name: true, type: true, image: true, vehicleType: true } },
           parts: {
             select: {
@@ -359,7 +377,10 @@ export class VehiclesService {
         const data: MaintenanceActivityData = {
           id: m.id,
           date: m.date,
-          maintenanceType: m.maintenanceType,
+          type: {
+            code: m.type.code,
+            nameKey: m.type.nameKey,
+          },
           costTotal: m.costTotal,
           notes: m.notes,
           parts: partGroupArray,

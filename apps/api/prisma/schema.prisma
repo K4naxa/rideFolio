@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client"
+  output   = "../prisma/generated/prisma"
 }
 
 datasource db {
@@ -41,19 +42,6 @@ enum TimeConsumptionTypes {
   HOURS_PER_GALLON
 }
 
-enum CurrencyTypes {
-  EUR
-  USD
-  GBP
-  JPY
-  CNY
-  INR
-  RUB
-  AUD
-  CAD
-  CHF
-}
-
 // ** POOL INFORMATION
 enum PoolType {
   PRIVATE // A user's personal default pool
@@ -72,18 +60,6 @@ enum PoolInviteStatus {
   PENDING // Invite has been sent but not accepted
   ACCEPTED // Invite has been accepted
   DECLINED // Invite has been declined
-}
-
-
-enum MaintenanceType {
-  PREVENTIVE
-  MAINTENANCE
-  REPAIR
-  WARRANTY
-  INSPECTION
-  DOCUMENTATION
-  UPGRADE
-  OTHER
 }
 
 
@@ -123,7 +99,7 @@ model User {
 
   consumptionUnit_distance  DistanceConsumptionTypes @default(LITERS_PER_100KM)
   consumptionUnit_hour      TimeConsumptionTypes @default(LITERS_PER_HOUR)
-  currency                  CurrencyTypes @default(EUR) // Default to Euro
+  currency                  String @default("EUR") // Default to Euro
 
   // A user can be a member of many pools.
   poolMemberships PoolMember[]
@@ -153,18 +129,25 @@ model User {
 model VehicleType {
   id String @id @default(cuid())
   code String @unique
+  nameKey String
+
+  icon String?
+  isActive Boolean @default(true)
+  sortOrder Int @default(0)
 
   partLocations VehiclePartLocation[]
   vehicleParts VehiclePart[]
 
   vehicles Vehicle[]
   @@index([code])
+  @@index([isActive])
 }
 
 //  VEHICLE PARTS AND LOCATIONS
-  model VehiclePartLocation {
+model VehiclePartLocation {
   id String @id @default(cuid())
   code String
+  nameKey String
 
   // What vehicle type uses this part location
   vehicleType VehicleType @relation(fields: [vehicleTypeId], references: [id])
@@ -172,8 +155,6 @@ model VehicleType {
 
   // Parts that can be installed at this location
   validForParts VehiclePart[]
-
-  // Every log that used this specific location
   maintenanceParts MaintenancePart[]
 
   @@unique([vehicleTypeId, code])
@@ -181,9 +162,10 @@ model VehicleType {
 
   }
 
-  model VehiclePart {
+model VehiclePart {
   id         String @id @default(cuid())
   code       String 
+  nameKey    String
   
   categoryId String
   category   MaintenanceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -257,11 +239,11 @@ model Vehicle {
   shoppingListItems ShoppingListItem[]
 
   @@index([ownerId])
-}
+ }
 
 
 
-  model Maintenance {
+model Maintenance {
   id              String   @id @default(cuid())
   vehicleId       String
   userId          String?  
@@ -270,13 +252,13 @@ model Vehicle {
   odometer_km   Float? 
   odometer_hour Float? 
   
-  maintenanceType MaintenanceType @default(PREVENTIVE)
+  typeId       String
+  type         MaintenanceType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
   costTotal       Float?    
-  
-  serviceProvider String?  // Optional: garage name, dealership, "DIY", etc.
-  notes           String?  // Additional notes
-  
-  image String?  // Optional receipt/invoice upload
+  serviceProvider String? 
+  notes           String?  
+  image String?  
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -293,10 +275,23 @@ model Vehicle {
   @@index([date])
 }
 
-// ** MAINTENANCE MODELS **
-  model MaintenanceCategory {
+model MaintenanceType {
+  id String @id @default(cuid())
+  code String @unique // 'preventive', 'repair', etc.
+  nameKey String
+  icon String?
+
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+
+  maintenances Maintenance[]
+  @@index([isActive])
+  @@index([code])
+}
+model MaintenanceCategory {
   id          String @id @default(cuid())
   code        String @unique // 'engine', 'brakes', etc.
+  nameKey     String
   sortOrder   Int    @default(0)
   isActive    Boolean @default(true)
   
@@ -304,9 +299,10 @@ model Vehicle {
   updatedAt DateTime @updatedAt
   
   parts VehiclePart[]
-}
+  @@index([isActive])
+  @@index([code])
+ }
 
-// Junction table for maintenance logs and parts (many-to-many)
 model MaintenancePart {
   id              String   @id @default(cuid())
   maintenanceId   String
@@ -326,7 +322,7 @@ model MaintenancePart {
 
   @@index([maintenanceId])
   @@index([partId])
-}
+ }
 
 model Todo {
   id String @id @default(cuid())
@@ -351,7 +347,7 @@ model Todo {
   @@index([vehicleId])
   @@index([isCompleted])
 
-}
+ }
 
 model Note{
   id String @id @default(cuid())
@@ -367,7 +363,7 @@ model Note{
   createdByUser User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedAt DateTime @updatedAt
 
-}
+ }
 
 model ShoppingListItem {
   id String @id @default(cuid())
@@ -387,9 +383,9 @@ model ShoppingListItem {
   
   @@index([vehicleId])
   @@index([isPurchased])
-}
+ }
 
-// ** POOL MODELS **
+
 model Pool {
   id          String   @id @default(cuid())
   name        String
@@ -412,7 +408,7 @@ model Pool {
   allowMembersToEditLogs  Boolean @default(false)
   allowMembersToDeleteLogs Boolean @default(false)
   allowMembersToAddVehicles Boolean @default(false)
-}
+ }
 
 model PoolMember {
   id     String         @id @default(cuid())
@@ -427,7 +423,7 @@ model PoolMember {
   @@unique([poolId, userId]) 
   @@index([poolId])
   @@index([userId])
-}
+ }
 
 model PoolVehicle {
   id String @id @default(cuid())
@@ -450,7 +446,7 @@ model PoolVehicle {
   @@unique([poolId, vehicleId])
   @@index([poolId])
   @@index([vehicleId])
-}
+ }
 
 model PoolInvite {
   id String @id @default(cuid())
@@ -475,7 +471,7 @@ model PoolInvite {
  // The invite can only be sent once to a specific user for a specific pool.
   @@unique([poolId, receiverId])
   @@index([receiverId])
-}
+ }
 
 model Refill {
   id          String   @id @default(cuid())
@@ -507,7 +503,7 @@ model Refill {
   @@index([vehicleId])
   @@index([userId])
   @@index([vehicleId, date])
-}
+ }
 
 model VehicleMonthlyStatistics {
   id String @id @default(cuid())
@@ -542,7 +538,7 @@ model VehicleMonthlyStatistics {
   updatedAt DateTime @updatedAt
 
   @@unique([vehicleId, year, month])
-}
+ }
 
 // ** Authentication and Authorization **
 model Account {
@@ -574,7 +570,7 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
-}
+ }
 
 model Session {
   id           String   @id @default(cuid())

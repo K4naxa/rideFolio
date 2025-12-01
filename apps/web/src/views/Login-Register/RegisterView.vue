@@ -38,7 +38,17 @@ const { handleSubmit, setFieldError } = useForm({
 });
 
 async function quickRegister(name: string, email: string, password: string) {
-  await authClient.signUp.email({ email, password, name });
+  await authClient.signUp.email(
+    { email, password, name },
+    {
+      onSuccess() {
+        toast.success(`Quick registration successful for ${name}!`, {
+          description: "Please check your email to verify your account.",
+        });
+        router.push("/login");
+      },
+    },
+  );
 }
 
 const onSubmit = handleSubmit(async (values) => {

@@ -20,6 +20,7 @@ import { useSidebar } from "@/components/ui/sidebar/utils";
 import AppLogo from "../icons/AppLogo.vue";
 import Icon, { type IconProps } from "../icons/Icon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import Button from "./button/Button.vue";
 
 interface MainSideBarLinks {
   label: string;
@@ -138,16 +139,16 @@ const handleCreateVehicleClick = () => {
       <SidebarGroup class="mt-auto">
         <SidebarGroupContent class="space-y-4">
           <SidebarMenu class="gap-0">
-            <SidebarMenuButton asChild>
-              <RouterLink to="" class="flex items-center gap-3">
-                <Icon name="settings" size="sm" /> Settings
-              </RouterLink>
+            <SidebarMenuButton asChild @click="modalStore.onOpen('userSettings')">
+              <Button variant="ghost" class="w-full justify-start">
+                <p class="flex items-center gap-3"><Icon name="settings" size="sm" /> Settings</p>
+              </Button>
             </SidebarMenuButton>
-            <SidebarMenuButton asChild>
+            <!-- <SidebarMenuButton asChild>
               <RouterLink to="" class="flex items-center gap-3">
                 <Icon name="subscription" size="sm" /> Upgrade to Pro
               </RouterLink>
-            </SidebarMenuButton>
+            </SidebarMenuButton> -->
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

@@ -1,7 +1,14 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export type ModalType = "createVehicle" | "createRefill" | "createMaintenance" | "createNote" | "createTodo" | "alert";
+export type ModalType =
+  | "createVehicle"
+  | "createRefill"
+  | "createMaintenance"
+  | "createNote"
+  | "createTodo"
+  | "alert"
+  | "userSettings";
 
 export const useModalStore = defineStore("modal", () => {
   const type = ref<ModalType | null>(null);

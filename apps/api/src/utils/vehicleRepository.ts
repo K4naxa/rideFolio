@@ -6,34 +6,6 @@ export class VehicleRepository {
   constructor(private prisma: PrismaService) {}
 
   // Base vehicle query - reusable across all methods
-  private getBaseVehicleQuery() {
-    return {
-      id: true,
-      name: true,
-      ownerId: true,
-      type: true,
-      fuelType: true,
-      odometerType: true,
-      make: true,
-      model: true,
-      year: true,
-      vin: true,
-      licensePlate: true,
-      image: true,
-      notes: true,
-      initialOdometer_km: true,
-      initialOdometer_hour: true,
-      odometer_km: true,
-      odometer_hour: true,
-      lastRefillOdometer_km: true,
-      lastRefillOdometer_hour: true,
-      lifetimeTotalTrackedUnits_km: true,
-      lifetimeTotalTrackedUnits_hour: true,
-
-      createdAt: true,
-      updatedAt: true,
-    };
-  }
 
   // Complex query builder for vehicles with pool data
   private getVehicleWithPoolsQuery(userId: string) {
@@ -48,8 +20,14 @@ export class VehicleRepository {
           },
         ],
       },
-      select: {
-        ...this.getBaseVehicleQuery(),
+      include: {
+        vehicleType: {
+          select: {
+            code: true,
+            nameKey: true,
+            icon: true,
+          },
+        },
         owner: {
           select: {
             id: true,
@@ -89,8 +67,14 @@ export class VehicleRepository {
       select: {
         addedAt: true,
         vehicle: {
-          select: {
-            ...this.getBaseVehicleQuery(),
+          include: {
+            vehicleType: {
+              select: {
+                code: true,
+                nameKey: true,
+                icon: true,
+              },
+            },
             owner: {
               select: {
                 id: true,
@@ -116,15 +100,29 @@ export class VehicleRepository {
   async findOwnVehicles(userId: string) {
     return await this.prisma.vehicle.findMany({
       where: { ownerId: userId },
-      select: this.getBaseVehicleQuery(),
+      include: {
+        vehicleType: {
+          select: {
+            code: true,
+            nameKey: true,
+            icon: true,
+          },
+        },
+      },
     });
   }
 
   async findVehicleById(vehicleId: string) {
     return await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
-      select: {
-        ...this.getBaseVehicleQuery(),
+      include: {
+        vehicleType: {
+          select: {
+            code: true,
+            nameKey: true,
+            icon: true,
+          },
+        },
         owner: {
           select: {
             id: true,

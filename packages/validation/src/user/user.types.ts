@@ -1,10 +1,17 @@
-export type volumeUnitTypes = "LITER" | "GALLON";
-export type VolumeUnitOption = { value: volumeUnitTypes; label: string };
-export const volumeUnitValues: VolumeUnitOption[] = [
-  { value: "LITER", label: "Litra" },
-  { value: "GALLON", label: "Gallona" },
-];
+import { OdometerTypeCode } from "../vehicle";
 
+// Volume units
+export const VOLUME_UNITS = {
+  LITER: { code: "LITER", label: "Liter", nameKey: "user.volumeUnits.liter" },
+  GALLON: { code: "GALLON", label: "Gallon", nameKey: "user.volumeUnits.gallon" },
+} as const;
+export type VolumeUnitCode = keyof typeof VOLUME_UNITS;
+export const volumeUnitCodes = Object.keys(VOLUME_UNITS) as VolumeUnitCode[];
+export function getVolumeUnitNamekey(code: string): string {
+  return VOLUME_UNITS[code as VolumeUnitCode]?.label;
+}
+
+// Consumption types
 export type TConsumption_distance =
   | "KILOMETERS_PER_LITER"
   | "LITERS_PER_100KM"
@@ -33,21 +40,27 @@ export const consumptionTypeValues_hour: TConsumptionOption_hour[] = [
   { value: "HOURS_PER_GALLON", label: "Hours / Gallon" },
 ];
 
-import { OdometerTypes } from "../vehicle";
+export const CURRENCIES = {
+  USD: { code: "USD", symbol: "$", name: "US Dollar" },
+  EUR: { code: "EUR", symbol: "€", name: "Euro" },
+  GBP: { code: "GBP", symbol: "£", name: "British Pound" },
+  JPY: { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  CNY: { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+  INR: { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  RUB: { code: "RUB", symbol: "₽", name: "Russian Ruble" },
+  AUD: { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+  CAD: { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+} as const;
+export type CurrencyCode = keyof typeof CURRENCIES;
+export const currencyCodes = Object.keys(CURRENCIES) as CurrencyCode[];
 
-export type currencyTypes = "EUR" | "USD" | "GBP" | "JPY" | "CNY" | "INR" | "RUB" | "AUD" | "CAD" | "CHF";
-export const currencyTypeValues: currencyTypes[] = [
-  "EUR",
-  "USD",
-  "GBP",
-  "JPY",
-  "CNY",
-  "INR",
-  "RUB",
-  "AUD",
-  "CAD",
-  "CHF",
-];
+export function getCurrencySymbol(code: string): string {
+  return CURRENCIES[code as CurrencyCode]?.symbol || code;
+}
+
+export function getCurrencyName(code: string): string {
+  return CURRENCIES[code as CurrencyCode]?.name || code;
+}
 
 export type TSessionUser = {
   id: string;
@@ -63,10 +76,10 @@ export type TBasicProfile = {
   image: string | null;
   createdAt: Date;
   preferences: {
-    odometerType: OdometerTypes;
-    volumeUnit: volumeUnitTypes;
+    odometerType: OdometerTypeCode;
+    volumeUnit: VolumeUnitCode;
     consumptionUnit_distance: string;
     consumptionUnit_Hour: string;
-    currency: currencyTypes;
+    currency: CurrencyCode;
   };
 };

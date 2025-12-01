@@ -1,25 +1,13 @@
-export const TMaintenanceTypes = [
-  "PREVENTIVE",
-  "MAINTENANCE",
-  "REPAIR",
-  "WARRANTY",
-  "INSPECTION",
-  "DOCUMENTATION",
-  "UPGRADE",
-  "OTHER",
-] as const;
-export type TMaintenanceType = (typeof TMaintenanceTypes)[number];
-export type TMaintenanceTypeOption = { value: TMaintenanceType; label: string };
-
 export type TValidPartLocation = {
   id: string;
   code: string;
+  nameKey: string;
 };
 export type TMaintenanceCategoryPart = {
   categoryId: string;
   code: string;
   id: string;
-  isActive: boolean;
+  nameKey: string;
   sortOrder: number;
   validLocations?: TValidPartLocation[];
 };
@@ -27,6 +15,7 @@ export type TMaintenanceCategoryPart = {
 export type TMaintenanceFormPart = {
   partId: string;
   groupId: string;
+  nameKey: string;
   code: string;
   locationId?: string | null;
   label?: string | null;
@@ -39,6 +28,7 @@ export type TMaintenanceFormPart = {
 export type TMaintenanceCategory = {
   id: string;
   code: string;
+  nameKey: string;
   sortOrder: number;
   parts: TMaintenanceCategoryPart[];
 };
