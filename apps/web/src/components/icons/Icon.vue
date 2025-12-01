@@ -25,6 +25,11 @@ import {
   Minus,
   X,
   Sparkle,
+  ShieldCheckIcon,
+  ToolCaseIcon,
+  FileText,
+  ArrowUpIcon,
+  WrenchIcon,
   CarFront,
   ChevronDown,
   TrendingUp,
@@ -75,6 +80,11 @@ type IconName =
   | "filter"
   | "odoHours"
   | "odoDistance"
+  | "toolcase"
+  | "arrowUp"
+  | "shieldCheck"
+  | "fileText"
+  | "wrench"
   | "pin"
   | "pinOff"
   | "refill"
@@ -185,6 +195,11 @@ const iconMap: Record<IconName, LucideIcon> = {
   billing: CreditCard,
   stats: ChartNoAxesCombined,
   link: LinkIcon,
+  toolcase: ToolCaseIcon,
+  arrowUp: ArrowUpIcon,
+  shieldCheck: ShieldCheckIcon,
+  fileText: FileText,
+  wrench: WrenchIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
@@ -192,5 +207,5 @@ const iconClass = computed(() => twMerge(iconSizes[props.size], "stroke-current 
 </script>
 
 <template>
-  <component :is="iconComponent" :class="iconClass" />
+  <component v-if="props.name" :is="iconComponent" :class="iconClass" />
 </template>

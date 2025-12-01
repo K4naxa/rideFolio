@@ -48,6 +48,7 @@ export interface MaintenanceActivityData {
   type: {
     code: string;
     nameKey: string;
+    icon: string | null;
   };
   costTotal: number | null;
   notes: string | null;

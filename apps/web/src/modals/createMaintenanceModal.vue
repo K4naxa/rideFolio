@@ -20,14 +20,14 @@ import UploadImage from "@/components/ui/UploadImage.vue";
 import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useModalStore } from "@/stores/modal";
-import { MaintenanceSchema, TMaintenanceTypes, type TMaintenanceFormPart } from "@repo/validation";
+import { MaintenanceSchema, type TMaintenanceFormPart } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { toast } from "vue-sonner";
-import Icon from "@/components/icons/Icon.vue";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 
 // Modal store
@@ -39,7 +39,11 @@ const { vehicles } = useVehicleQueries();
 const selectedVehicle = computed(() => vehicles.value?.find(({ vehicleData }) => vehicleData.id === values.vehicleId));
 
 // Maintenance queries
-const { createMaintenanceAsync } = useMaintenanceQueries();
+const { createMaintenanceAsync, maintenanceTypes } = useMaintenanceQueries();
+
+const selectedType = computed(() => {
+  return maintenanceTypes.value?.find((type) => type.id === values.typeId) || null;
+});
 
 const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm({
   validationSchema: toTypedSchema(MaintenanceSchema),
@@ -129,17 +133,27 @@ watch(isModalOpen, (open) => {
             </div>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <Field v-slot="{ value, handleChange }" name="maintenanceType">
+              <Field v-slot="{ value, handleChange }" name="typeId">
                 <div>
                   <Select :model-value="value" @update:model-value="handleChange">
                     <SelectTrigger class="w-full">
-                      <SelectValue placeholder="Maintenance type" />
+                      <div class="flex items-center gap-3">
+                        <Icon
+                          v-if="selectedType?.icon"
+                          :name="selectedType.icon as IconProps['name']"
+                          class="stroke-muted-foreground"
+                        />
+                        <SelectValue placeholder="Select vehicle type *" />
+                      </div>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem v-for="type in TMaintenanceTypes" :key="type" :value="type">{{ type }}</SelectItem>
+                      <SelectItem v-for="type in maintenanceTypes" :key="type.code" :value="type.id" class="flex gap-2">
+                        <Icon v-if="type.icon" :name="type.icon as IconProps['name']" class="stroke-muted-foreground" />
+                        <p class="capitalize">{{ type.code }}</p>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
-                  <ErrorMessage name="maintenanceType" class="text-destructive mt-1 ml-1 text-sm" />
+                  <ErrorMessage name="typeId" class="text-destructive mt-1 ml-1 text-sm" />
                 </div>
               </Field>
 

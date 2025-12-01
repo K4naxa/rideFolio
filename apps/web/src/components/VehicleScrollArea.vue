@@ -36,7 +36,7 @@ const openCreateVehicleModal = () => {
             <div v-else class="grid h-full place-items-center rounded-t">
               <span class="text-muted-foreground"
                 ><VehicleTypeIcon
-                  :type="vehicle.vehicleData.type"
+                  :type="vehicle.vehicleData.type.code"
                   class="text-muted-foreground stroke-muted-foreground size-14"
                 />
               </span>

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
-import { TMaintenanceSchema } from '@repo/validation';
+import { MaintenanceType, TMaintenanceSchema } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -32,6 +32,7 @@ export class MaintenanceService {
       select: {
         id: true,
         code: true,
+        nameKey: true,
         sortOrder: true,
         parts: {
           where: {
@@ -41,8 +42,7 @@ export class MaintenanceService {
           select: {
             id: true,
             code: true,
-            sortOrder: true,
-            isActive: true,
+            nameKey: true,
             categoryId: true,
             validLocations: {
               where: {
@@ -51,15 +51,30 @@ export class MaintenanceService {
               select: {
                 id: true,
                 code: true,
+                nameKey: true,
               },
             },
           },
+          orderBy: { sortOrder: 'asc' },
         },
       },
     });
 
     console.log('found categories for vehicle type', vehicleType, categories);
     return categories;
+  }
+
+  async getMaintenanceTypes(): Promise<MaintenanceType[]> {
+    return await this.prisma.maintenanceType.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+      select: {
+        code: true,
+        nameKey: true,
+        icon: true,
+        id: true,
+      },
+    });
   }
 
   async createMaintenance(userSession: UserSession, maintenanceData: TMaintenanceSchema) {

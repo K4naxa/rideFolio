@@ -100,7 +100,7 @@ async function main() {
       data: {
         code: 'preventive',
         nameKey: 'maintenance.types.preventive',
-        icon: 'shield-check',
+        icon: 'shieldCheck',
         sortOrder: 1,
       },
     });
@@ -118,7 +118,7 @@ async function main() {
       data: {
         code: 'repair',
         nameKey: 'maintenance.types.repair',
-        icon: 'tool',
+        icon: 'toolcase',
         sortOrder: 3,
       },
     });
@@ -145,7 +145,7 @@ async function main() {
       data: {
         code: 'documentation',
         nameKey: 'maintenance.types.documentation',
-        icon: 'file-text',
+        icon: 'fileText',
         sortOrder: 6,
       },
     });
@@ -154,7 +154,7 @@ async function main() {
       data: {
         code: 'upgrade',
         nameKey: 'maintenance.types.upgrade',
-        icon: 'arrow-up',
+        icon: 'arrowUp',
         sortOrder: 7,
       },
     });
@@ -163,7 +163,7 @@ async function main() {
       data: {
         code: 'other',
         nameKey: 'maintenance.types.other',
-        icon: 'more-horizontal',
+        icon: 'dotsHorizontal',
         sortOrder: 8,
       },
     });

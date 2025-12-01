@@ -1,5 +1,11 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { MaintenanceSchema, RefillSchema, RefillSchemaOutput, TMaintenanceSchema } from '@repo/validation';
+import {
+  MaintenanceSchema,
+  MaintenanceType,
+  RefillSchema,
+  RefillSchemaOutput,
+  TMaintenanceSchema,
+} from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ZodType } from 'zod';
 
@@ -41,10 +47,13 @@ export class LogsController {
   @AllowAnonymous() // Allow anonymous access
   @Get('maintenance/categories/:vehicleTypeCode')
   async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: VehicleType['code']) {
-    console.log('fetching maintenance categories and parts for vehicle type:', vehicleType);
     return await this.maintenanceService.getCategoriesAndParts(vehicleType);
   }
 
+  @Get('maintenance/types')
+  async getMaintenanceTypes(): Promise<MaintenanceType[]> {
+    return await this.maintenanceService.getMaintenanceTypes();
+  }
   @Post('maintenance')
   async createMaintenance(
     @Session() SessionUser: UserSession,

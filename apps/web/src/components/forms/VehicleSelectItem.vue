@@ -8,12 +8,7 @@ interface SelectItemProps {
 const props = defineProps<SelectItemProps>();
 </script>
 <template>
-  <div
-    :class="[
-      'flex items-center space-x-3 w-full p-1 cursor-pointer select-none',
-      props.customClass,
-    ]"
-  >
+  <div :class="['flex w-full cursor-pointer items-center space-x-3 p-1 select-none', props.customClass]">
     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-accent">
       <img
         v-if="props.vehicle.image"
@@ -24,7 +19,7 @@ const props = defineProps<SelectItemProps>();
       />
 
       <div v-else className="grid h-full w-full place-items-center">
-        <VehicleTypeIcon :type="props.vehicle.type" className="h-5 w-5 text-muted-foreground" />
+        <VehicleTypeIcon :type="props.vehicle.type.code" className="h-5 w-5 text-muted-foreground" />
       </div>
     </div>
 

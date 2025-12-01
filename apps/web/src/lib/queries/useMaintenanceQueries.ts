@@ -1,22 +1,26 @@
 import { api, fetchApi } from "@/lib/api";
-import { type TMaintenanceCategory, type TMaintenanceSchema } from "@repo/validation";
+import { type MaintenanceType, type TMaintenanceCategory, type TMaintenanceSchema } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { unref, type MaybeRef } from "vue";
+import { computed, unref, type MaybeRef } from "vue";
 import { toast } from "vue-sonner";
 
 export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
 
   const partCategories = useQuery({
-    queryKey: ["maintenance", "part-categories", typeCode],
+    queryKey: computed(() => ["maintenance", "part-categories", unref(typeCode)]),
     queryFn: async () => {
-      if (!typeCode || !unref(typeCode)) {
-        throw new Error("Vehicle type code is required to fetch maintenance categories");
-      }
       return await fetchApi<TMaintenanceCategory[]>(`/logs/maintenance/categories/${unref(typeCode)}`);
     },
+    enabled: computed(() => !!unref(typeCode)),
   });
 
+  const maintenanceTypes = useQuery({
+    queryKey: ["maintenance", "types"],
+    queryFn: async () => {
+      return await fetchApi<MaintenanceType[]>(`/logs/maintenance/types`);
+    },
+  });
   const createMaintenanceMutation = useMutation({
     mutationFn: async (data: TMaintenanceSchema) => {
       return await api.post("/logs/maintenance", data);
@@ -38,5 +42,8 @@ export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
 
     partCategories: partCategories.data,
     partCategoriesLoading: partCategories.isLoading,
+
+    maintenanceTypes: maintenanceTypes.data,
+    maintenanceTypesLoading: maintenanceTypes.isLoading,
   };
 }

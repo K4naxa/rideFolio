@@ -274,7 +274,7 @@ export class VehiclesService {
       type MaintenanceDBSelect = Extend<
         Maintenance,
         {
-          type: { code: string; nameKey: string };
+          type: { code: string; nameKey: string; icon: string | null };
           vehicle: DBVehicleSelect;
           parts: {
             part: { code: VehiclePart['code']; id: VehiclePart['id'] };
@@ -306,7 +306,7 @@ export class VehiclesService {
           date: { lt: cursorDate },
         },
         include: {
-          type: { select: { code: true, nameKey: true } },
+          type: { select: { code: true, nameKey: true, icon: true } },
           vehicle: { select: { name: true, type: true, image: true, vehicleType: true } },
           parts: {
             select: {
@@ -380,6 +380,7 @@ export class VehiclesService {
           type: {
             code: m.type.code,
             nameKey: m.type.nameKey,
+            icon: m.type.icon,
           },
           costTotal: m.costTotal,
           notes: m.notes,

@@ -25,6 +25,7 @@ import { computed, ref } from "vue";
 interface PartDisplay {
   groupId: string;
   code: TMaintenanceFormPart["code"];
+  nameKey: TMaintenanceCategoryPart["nameKey"];
   label: TMaintenanceFormPart["label"];
   locations: TMaintenanceFormPart["validLocations"];
   instances: TMaintenanceFormPart[];
@@ -44,7 +45,7 @@ const selectedCategory = ref<TMaintenanceCategory | null>(null);
 const selectedPart = ref<TMaintenanceCategoryPart | null>(null);
 const customTypeInput = ref<string>("");
 
-const { partCategories, partCategoriesLoading } = useMaintenanceQueries(selectedVehicleType.value);
+const { partCategories, partCategoriesLoading } = useMaintenanceQueries(selectedVehicleType);
 
 const displayParts = computed<PartDisplay[]>(() => {
   const parts = props.values || [];
@@ -56,6 +57,7 @@ const displayParts = computed<PartDisplay[]>(() => {
       partMap.set(part.groupId, {
         groupId: part.groupId,
         code: part.code,
+        nameKey: part.nameKey,
         label: part.label,
         locations: part.validLocations,
         instances: [part],
@@ -68,26 +70,27 @@ const displayParts = computed<PartDisplay[]>(() => {
 });
 
 function handleAddPart() {
-  if (selectedPart.value) {
-    const newPart: TMaintenanceFormPart = {
-      groupId: Date.now().toString(),
-      partId: selectedPart.value.id,
-      locationId: null,
-      code: selectedPart.value.code,
-      label: null,
-      description: null,
-      validLocations: selectedPart.value.validLocations,
-      customPartLabel: customTypeInput.value || null,
-    };
+  if (!selectedPart.value) return;
 
-    const currentParts = props.values || [];
+  const newPart: TMaintenanceFormPart = {
+    groupId: Date.now().toString(),
+    partId: selectedPart.value.id,
+    nameKey: selectedPart.value.nameKey,
+    locationId: null,
+    code: selectedPart.value.code,
+    label: null,
+    description: null,
+    validLocations: selectedPart.value.validLocations,
+    customPartLabel: customTypeInput.value || null,
+  };
 
-    emits("update:values", [...currentParts, newPart]);
-    // Reset selections
+  const currentParts = props.values || [];
 
-    selectedPart.value = null;
-    customTypeInput.value = "";
-  }
+  emits("update:values", [...currentParts, newPart]);
+  // Reset selections
+
+  selectedPart.value = null;
+  customTypeInput.value = "";
 }
 
 function handleLocationToggle(locationId: string, groupId: string) {
@@ -183,7 +186,7 @@ function handleDeletePart(groupId: string) {
                 :value="category"
                 :class="selectedCategory?.id === category.id && 'bg-accent/50'"
               >
-                {{ category.code }}
+                <p class="capitalize">{{ category.code }}</p>
               </ComboboxItem>
             </ComboboxGroup>
           </ComboboxList>

@@ -113,7 +113,11 @@ function handleCurrencyChange(currency: string) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild class="w-36">
                 <Button variant="outline" size="sm" class="flex items-center gap-4">
-                  {{ getVolumeUnitNamekey(currentUser?.preferences.volumeUnit) }}
+                  {{
+                    currentUser?.preferences.volumeUnit
+                      ? getVolumeUnitNamekey(currentUser.preferences.volumeUnit)
+                      : "Select Volume Unit"
+                  }}
                 </Button>
               </DropdownMenuTrigger>
 

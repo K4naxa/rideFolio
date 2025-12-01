@@ -8,8 +8,14 @@ export type TMaintenanceCategoryPart = {
   code: string;
   id: string;
   nameKey: string;
-  sortOrder: number;
   validLocations?: TValidPartLocation[];
+};
+
+export type MaintenanceType = {
+  code: string;
+  nameKey: string;
+  icon: string | null;
+  id: string;
 };
 
 export type TMaintenanceFormPart = {

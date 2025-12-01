@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -95,8 +95,11 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                 </div>
                 <div class="space-y-1">
                   <Label>Maintenance</Label>
-                  <div class="text-muted-foreground">
-                    {{ capitalize(activity.data.maintenanceType) }}
+                  <div class="text-muted-foreground flex items-center gap-4">
+                    <p class="flex items-center">
+                      <Icon :name="activity.data.type.icon as IconProps['name']" class="mr-1 inline-block size-4" />
+                      {{ capitalize(activity.data.type.code) }}
+                    </p>
                     <Badge v-if="activity.data.costTotal" variant="outline" class="px-2 py-1">
                       {{ activity.data.costTotal }} €
                     </Badge>
