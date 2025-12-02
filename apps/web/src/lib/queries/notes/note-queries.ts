@@ -1,0 +1,42 @@
+import { useQuery } from "@tanstack/vue-query";
+import { computed, unref, type MaybeRef } from "vue";
+import type { Note, NoteSchemaType } from "@repo/validation";
+import { api, fetchApi } from "@/lib/api";
+import { queryKeys } from "@/lib/queries/queryKeys";
+import { handleEmpty } from "@/lib/queries/util";
+
+export const useAllNotes = () => {
+  return useQuery({
+    queryKey: queryKeys.notes.all,
+    queryFn: async () => {
+      const response = await api.get<Note[]>("/notes");
+      return response.data;
+    },
+    enabled: false, // Manual fetching required
+  });
+};
+
+export const useVehicleNotes = (vehicleId: MaybeRef<string | undefined>) => {
+  return useQuery({
+    queryKey: computed(() => {
+      return queryKeys.notes.byVehicle(handleEmpty(vehicleId));
+    }),
+    queryFn: async () => {
+      const response = await api.get<Note[]>(`/notes/vehicle/${unref(vehicleId)}`);
+      return response.data;
+    },
+    enabled: computed(() => !!unref(vehicleId)),
+  });
+};
+
+export const useEditableNote = (noteId: MaybeRef<string | undefined>) => {
+  return useQuery({
+    queryKey: computed(() => {
+      return queryKeys.notes.editable(handleEmpty(noteId));
+    }),
+    queryFn: async (): Promise<NoteSchemaType | undefined> => {
+      return await fetchApi<Required<NoteSchemaType>>(`/notes/${unref(noteId)}/editable`);
+    },
+    enabled: computed(() => !!unref(noteId)),
+  });
+};

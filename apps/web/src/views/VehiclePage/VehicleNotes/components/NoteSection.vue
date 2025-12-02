@@ -11,11 +11,12 @@ import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { useNoteAutoSave } from "../composables/useNoteAutoSave";
+import { useEditableNote } from "@/lib/queries/notes/note-queries";
+import { useCreateNote, useDeleteNote, useTogglePinNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
 
 interface NoteSectionProps {
   noteId: Note["id"];
@@ -26,16 +27,12 @@ const props = defineProps<NoteSectionProps>();
 const router = useRouter();
 
 // Queries and mutations
-const {
-  getEditableNote,
-  createNoteAsync,
-  updateNoteAsync,
-  isCreating,
-  isUpdating,
-  isDeleting,
-  deleteNoteAsync,
-  togglePinAsync,
-} = useNoteQueries();
+const { mutateAsync: createNote, isPending: isCreating } = useCreateNote();
+const { mutateAsync: togglePinNote } = useTogglePinNote();
+const { mutateAsync: deleteNote, isPending: isDeleting } = useDeleteNote();
+const { mutateAsync: updateNote, isPending: isUpdating } = useUpdateNote();
+
+const { data: editableNote, isLoading } = useEditableNote(computed(() => props.noteId));
 
 // Component state
 const currentNoteId = ref(props.noteId);
@@ -44,8 +41,7 @@ const tagInput = ref("");
 const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
 
 // Query for existing note
-const noteQuery = getEditableNote(computed(() => props.noteId));
-const isPinned = computed(() => noteQuery.data.value?.pinned || false);
+const isPinned = computed(() => editableNote.value?.pinned || false);
 
 // Form setup
 const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
@@ -63,16 +59,16 @@ function initializeForm() {
   }
 
   // Wait for data to be available
-  if (noteQuery.isLoading.value || !noteQuery.data.value) return;
+  if (isLoading.value || !editableNote.value) return;
 
-  lastServerState.value = noteQuery.data.value as NoteSchemaType;
-  resetForm({ values: noteQuery.data.value });
+  lastServerState.value = editableNote.value as NoteSchemaType;
+  resetForm({ values: editableNote.value });
 }
 
 // Save handler for auto-save
 async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
   if (noteId === "new") {
-    const response = await createNoteAsync(data);
+    const response = await createNote(data);
     currentNoteId.value = response.id;
 
     // Update URL with new note ID
@@ -82,7 +78,7 @@ async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
 
     return response;
   } else {
-    await updateNoteAsync({ noteId, data });
+    await updateNote({ noteId, data });
     return;
   }
 }
@@ -116,7 +112,7 @@ const saveStatus = computed(() => {
 // Delete handler
 async function handleDelete() {
   try {
-    await deleteNoteAsync({
+    await deleteNote({
       noteId: currentNoteId.value,
       vehicleId: values.vehicleId,
     });
@@ -160,7 +156,7 @@ onMounted(() => {
 
 // Watch for prop changes
 watch(
-  () => [props.noteId, noteQuery.isLoading.value, noteQuery.data.value],
+  () => [props.noteId, isLoading.value, editableNote.value],
   () => {
     currentNoteId.value = props.noteId;
     initializeForm();
@@ -215,7 +211,7 @@ onUnmounted(() => {
                 variant="outline"
                 size="icon"
                 class="group"
-                @click="togglePinAsync({ noteId: currentNoteId, pinned: !isPinned })"
+                @click="togglePinNote({ noteId: currentNoteId, pinned: !isPinned })"
               >
                 <Icon v-if="!isPinned" name="pin" class="group-hover:stroke-primary" />
                 <Icon v-if="isPinned" name="pin" class="stroke-primary group-hover:hidden" />

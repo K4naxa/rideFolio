@@ -30,7 +30,7 @@ const { activeVehicle } = useActiveVehicle();
 const { vehicles } = useVehicleQueries();
 const selectedVehicle = computed(() => vehicles.value?.find((vehicle) => vehicle.vehicleData.id === values.vehicleId));
 const lastOdometer = computed(() => {
-  return selectedVehicle.value?.vehicleData.odometerData.value || null;
+  return selectedVehicle.value?.vehicleData.odometerData.lastRefillValue || null;
 });
 
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({

@@ -34,7 +34,7 @@ const { data: statCardData, isLoading } = useQuery({
     console.log("Fetched stat card data:", result);
     return result;
   },
-  queryKey: computed(() => [activeVehicle.value?.vehicleData.id, "stat-card"]),
+  queryKey: computed(() => ["vehicles", { id: activeVehicle.value?.vehicleData.id }, "stat-card"]),
   enabled: computed(() => !!activeVehicle.value?.vehicleData.id),
 });
 

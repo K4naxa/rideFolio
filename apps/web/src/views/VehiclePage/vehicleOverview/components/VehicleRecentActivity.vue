@@ -19,7 +19,7 @@ const { activeVehicleId, activeVehicle } = useActiveVehicle();
 const LIMIT = 10;
 
 const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-  queryKey: ["vehicle-recent-activity", activeVehicleId],
+  queryKey: ["vehicles", { id: activeVehicleId.value }, "recent-activity"],
   queryFn: async ({ pageParam }) => {
     const cursor = pageParam;
     const response = await api.get(`/vehicles/${activeVehicleId.value}/infiniteActivities/${cursor}/${LIMIT}`);

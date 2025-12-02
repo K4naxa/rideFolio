@@ -4,7 +4,6 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -19,6 +18,7 @@ import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
+import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
 
 const searchQuery = ref("");
 
@@ -28,7 +28,7 @@ const { onOpen } = useModalStore();
 const isMobile = useMediaQuery("(max-width: 1024px)");
 
 const { activeVehicleId } = useActiveVehicle();
-const { vehicleNotes, vehicleNotesLoading } = useNoteQueries(activeVehicleId);
+const { data: vehicleNotes, isLoading: vehicleNotesLoading } = useVehicleNotes(activeVehicleId);
 
 const selectedNoteId = computed({
   get: () => route.query.note as string | null,

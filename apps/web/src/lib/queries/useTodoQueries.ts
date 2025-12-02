@@ -19,7 +19,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Fetch vehicle-specific todos
   const vehicleTodosQuery = useQuery({
-    queryKey: computed(() => ["todos", "vehicle", unref(vehicleId)]),
+    queryKey: computed(() => ["todos", { vehicleId: unref(vehicleId) }]),
     queryFn: async () => {
       const id = unref(vehicleId);
       if (!id) throw new Error("Vehicle ID is required");
@@ -38,7 +38,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["todos"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["todos", "vehicle", variables.vehicleId],
+        queryKey: ["todos", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -57,7 +57,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["todos"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["todos", "vehicle", variables.vehicleId],
+        queryKey: ["todos", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -76,7 +76,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["todos"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["todos", "vehicle", variables.vehicleId],
+        queryKey: ["todos", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -95,7 +95,7 @@ export function useTodoQueries(vehicleId?: MaybeRef<string | undefined>) {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["todos"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["todos", "vehicle", variables.vehicleId],
+        queryKey: ["todos", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },

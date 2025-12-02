@@ -30,7 +30,7 @@ const {
   isPlaceholderData,
   isError,
 } = useQuery({
-  queryKey: ["vehicle-consumption-chart-data", activeVehicleId, timeRange],
+  queryKey: ["vehicles", { id: activeVehicleId.value }, "consumption-chart-data", { timeRange: timeRange.value }],
   queryFn: async () => {
     const limitDate = new Date();
     limitDate.setDate(limitDate.getDate() - timeRange.value);

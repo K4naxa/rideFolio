@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { TConsumption_distance, TConsumption_hour, TVehicleMontlyStats } from '@repo/validation';
+import { ConsumptionUnitCode, TVehicleMontlyStats } from '@repo/validation';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 
@@ -33,8 +33,8 @@ export class StatisticsService {
     const user = await this.prisma.user.findUnique({
       where: { id: userSession.user.id },
       select: {
-        consumptionUnit_distance: true,
-        consumptionUnit_hour: true,
+        consumptionUnitCode_distance: true,
+        consumptionUnitCode_hour: true,
         volumeUnit: true,
       },
     });
@@ -60,9 +60,9 @@ export class StatisticsService {
 
     // Format the average consumption based on the user's preferred consumption unit & vehicle's odometer type
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
-    const usersPreferredConsumptionUnit: TConsumption_hour | TConsumption_distance = isOdometerHourly
-      ? user.consumptionUnit_hour
-      : user.consumptionUnit_distance;
+    const usersPreferredConsumptionUnit: ConsumptionUnitCode = isOdometerHourly
+      ? user.consumptionUnitCode_hour
+      : user.consumptionUnitCode_distance;
 
     // Format the stats based on the user's preferred consumption unit
     const formattedStats: TVehicleMontlyStats = {

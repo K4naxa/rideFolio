@@ -1,0 +1,51 @@
+export const queryKeys = {
+  // ============ VEHICLES DOMAIN ============
+  vehicles: {
+    all: ["vehicles"] as const,
+    lists: () => ["vehicles", "list"] as const,
+    details: () => ["vehicles", "detail"] as const,
+    detailsForVehicle: (vehicleId: string) => ["vehicles", "detail", vehicleId] as const,
+
+    // Vehicle sub-resources (nested under vehicle entity)
+    refills: (vehicleId: string) => ["vehicles", "detail", vehicleId, "refills"] as const,
+    maintenances: (vehicleId: string) => ["vehicles", "detail", vehicleId, "maintenances"] as const,
+    consumptionCharts: (vehicleId: string) => ["vehicles", "detail", vehicleId, "consumption-charts"] as const,
+    consumptionChart: (vehicleId: string, timeRange: number) =>
+      ["vehicles", "detail", vehicleId, "consumption-chart", { timeRange }] as const,
+  },
+
+  // ============ POOLS DOMAIN ============
+  pools: {
+    all: ["pools"] as const,
+    lists: () => ["pools", "list"] as const,
+    detail: (poolId: string) => ["pools", "detail", poolId] as const,
+  },
+
+  // ============ TIMELINES DOMAIN (Cross-cutting) ============
+  timelines: {
+    all: ["timelines"] as const,
+    byVehicle: (vehicleId: string) => ["timelines", "vehicle", vehicleId] as const,
+    byPool: (poolId: string) => ["timelines", "pool", poolId] as const,
+    byUser: (userId: string) => ["timelines", "user", userId] as const,
+  },
+
+  // ============ NOTES DOMAIN ============
+  notes: {
+    all: ["notes"] as const,
+    byVehicle: (vehicleId: string) => ["notes", "vehicle", vehicleId] as const,
+    detail: (noteId: string) => ["notes", "detail", noteId] as const,
+    editable: (noteId: string) => ["notes", "detail", noteId, "editable"] as const,
+  },
+
+  // ============ MAINTENANCE DOMAIN ============
+  maintenances: {
+    partCategories: (vehicleType?: string) => ["maintenances", "part-categories", { vehicleType }] as const,
+    types: () => ["maintenances", "types"] as const,
+  },
+
+  // ============ SHOPPING LIST DOMAIN ============
+  shoppingList: {
+    all: ["shopping-list"] as const,
+    byVehicle: (vehicleId: string) => ["shopping-list", "vehicle", vehicleId] as const,
+  },
+};

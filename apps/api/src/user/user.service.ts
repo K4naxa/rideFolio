@@ -23,8 +23,8 @@ export class UsersService {
 
         odometerType: true,
         volumeUnit: true,
-        consumptionUnit_distance: true,
-        consumptionUnit_hour: true,
+        consumptionUnitCode_distance: true,
+        consumptionUnitCode_hour: true,
         currency: true,
       },
     });
@@ -43,8 +43,8 @@ export class UsersService {
       preferences: {
         odometerType: user.odometerType,
         volumeUnit: user.volumeUnit,
-        consumptionUnit_distance: user.consumptionUnit_distance,
-        consumptionUnit_Hour: user.consumptionUnit_hour,
+        consumptionUnitCode_distance: user.consumptionUnitCode_distance,
+        consumptionUnitCode_hour: user.consumptionUnitCode_hour,
         currency: user.currency as CurrencyCode,
       },
     };

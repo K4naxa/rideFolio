@@ -11,35 +11,92 @@ export function getVolumeUnitNamekey(code: string): string {
   return VOLUME_UNITS[code as VolumeUnitCode]?.label;
 }
 
-// Consumption types
-export type TConsumption_distance =
-  | "KILOMETERS_PER_LITER"
-  | "LITERS_PER_100KM"
-  | "MILES_PER_LITER"
-  | "GALLONS_PER_100_MILES"
-  | "MILES_PER_GALLON"
-  | "KILOMETERS_PER_GALLON"
-  | "GALLONS_PER_LITER";
-export type TConsumptionOption_distance = { value: TConsumption_distance; label: string };
-export const consumptionTypeValues_distance: TConsumptionOption_distance[] = [
-  { value: "KILOMETERS_PER_LITER", label: "Km / L" },
-  { value: "LITERS_PER_100KM", label: "L / 100 km" },
-  { value: "MILES_PER_LITER", label: "Miles / L" },
-  { value: "GALLONS_PER_100_MILES", label: "Gallons / 100 Miles" },
-  { value: "MILES_PER_GALLON", label: "MPG" },
-  { value: "KILOMETERS_PER_GALLON", label: "Km / Gallon" },
-  { value: "GALLONS_PER_LITER", label: "Gallons / L" },
-];
+// Consumption units
+export const CONSUMPTION_UNITS = {
+  KILOMETERS_PER_LITER: {
+    code: "KILOMETERS_PER_LITER",
+    odometerType: "distance",
+    unit: "Km / L",
+    nameKey: "user.consumptionUnits.kmPerL",
+  },
+  LITERS_PER_100KM: {
+    code: "LITERS_PER_100KM",
+    odometerType: "distance",
+    unit: "L / 100 km",
+    nameKey: "user.consumptionUnits.lPer100km",
+  },
+  MILES_PER_LITER: {
+    code: "MILES_PER_LITER",
+    odometerType: "distance",
+    unit: "Miles / L",
+    nameKey: "user.consumptionUnits.milesPerL",
+  },
 
-export type TConsumption_hour = "LITERS_PER_HOUR" | "HOURS_PER_LITER" | "GALLONS_PER_HOUR" | "HOURS_PER_GALLON";
-export type TConsumptionOption_hour = { value: TConsumption_hour; label: string };
-export const consumptionTypeValues_hour: TConsumptionOption_hour[] = [
-  { value: "LITERS_PER_HOUR", label: "L / Hour" },
-  { value: "HOURS_PER_LITER", label: "Hours / L" },
-  { value: "GALLONS_PER_HOUR", label: "Gallons / Hour" },
-  { value: "HOURS_PER_GALLON", label: "Hours / Gallon" },
-];
+  GALLONS_PER_100_MILES: {
+    code: "GALLONS_PER_100_MILES",
+    odometerType: "distance",
+    unit: "Gallons / 100 Miles",
+    nameKey: "user.consumptionUnits.gallonsPer100miles",
+  },
+  MILES_PER_GALLON: {
+    code: "MILES_PER_GALLON",
+    odometerType: "distance",
+    unit: "MPG",
+    nameKey: "user.consumptionUnits.mpg",
+  },
+  KILOMETERS_PER_GALLON: {
+    code: "KILOMETERS_PER_GALLON",
+    odometerType: "distance",
+    unit: "Km / Gallon",
+    nameKey: "user.consumptionUnits.kmPerGallon",
+  },
+  GALLONS_PER_LITER: {
+    code: "GALLONS_PER_LITER",
+    odometerType: "distance",
+    unit: "Gallons / L",
+    nameKey: "user.consumptionUnits.gallonsPerL",
+  },
 
+  LITERS_PER_HOUR: {
+    code: "LITERS_PER_HOUR",
+    odometerType: "hour",
+    unit: "L / Hour",
+    nameKey: "user.consumptionUnits.lPerHour",
+  },
+  HOURS_PER_LITER: {
+    code: "HOURS_PER_LITER",
+    odometerType: "hour",
+    unit: "Hours / L",
+    nameKey: "user.consumptionUnits.hoursPerL",
+  },
+
+  GALLONS_PER_HOUR: {
+    code: "GALLONS_PER_HOUR",
+    odometerType: "hour",
+    unit: "Gallons / Hour",
+    nameKey: "user.consumptionUnits.gallonsPerHour",
+  },
+  HOURS_PER_GALLON: {
+    code: "HOURS_PER_GALLON",
+    odometerType: "hour",
+    unit: "Hours / Gallon",
+    nameKey: "user.consumptionUnits.hoursPerGallon",
+  },
+};
+export const consumptionUnits_distance = Object.values(CONSUMPTION_UNITS).filter(
+  (unit) => unit.odometerType === "distance"
+);
+export const consumptionUnitCodes_distance = consumptionUnits_distance.map((v) => v.code);
+
+export const consumptionUnits_hour = Object.values(CONSUMPTION_UNITS).filter((unit) => unit.odometerType === "hour");
+export const consumptionUnitCodes_hour = consumptionUnits_hour.map((v) => v.code);
+
+export type ConsumptionUnitCode = keyof typeof CONSUMPTION_UNITS;
+export function getConsumptionUnitNamekey(code: string): string {
+  return CONSUMPTION_UNITS[code as ConsumptionUnitCode]?.unit;
+}
+
+// Currency codes
 export const CURRENCIES = {
   USD: { code: "USD", symbol: "$", name: "US Dollar" },
   EUR: { code: "EUR", symbol: "€", name: "Euro" },
@@ -78,8 +135,8 @@ export type TBasicProfile = {
   preferences: {
     odometerType: OdometerTypeCode;
     volumeUnit: VolumeUnitCode;
-    consumptionUnit_distance: string;
-    consumptionUnit_Hour: string;
+    consumptionUnitCode_distance: string;
+    consumptionUnitCode_hour: string;
     currency: CurrencyCode;
   };
 };

@@ -1,4 +1,5 @@
 import { api, fetchApi } from "@/lib/api";
+import { queryKeys } from "@/lib/queries/queryKeys";
 import { type MaintenanceType, type TMaintenanceCategory, type TMaintenanceSchema } from "@repo/validation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
@@ -8,7 +9,7 @@ export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
 
   const partCategories = useQuery({
-    queryKey: computed(() => ["maintenance", "part-categories", unref(typeCode)]),
+    queryKey: computed(() => queryKeys.maintenances.partCategories(unref(typeCode))),
     queryFn: async () => {
       return await fetchApi<TMaintenanceCategory[]>(`/logs/maintenance/categories/${unref(typeCode)}`);
     },
@@ -16,7 +17,7 @@ export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
   });
 
   const maintenanceTypes = useQuery({
-    queryKey: ["maintenance", "types"],
+    queryKey: queryKeys.maintenances.types(),
     queryFn: async () => {
       return await fetchApi<MaintenanceType[]>(`/logs/maintenance/types`);
     },
@@ -26,7 +27,7 @@ export function useMaintenanceQueries(typeCode?: MaybeRef<string | undefined>) {
       return await api.post("/logs/maintenance", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
     },
     onError: (error) => {
       console.error("MAINTENANCE CREATION API ERROR: ", error);

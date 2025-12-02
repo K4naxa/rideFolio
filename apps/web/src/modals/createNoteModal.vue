@@ -18,10 +18,10 @@ import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import Input from "@/components/ui/input/Input.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { watchDebounced } from "@vueuse/core";
-import { useNoteQueries } from "@/lib/queries/useNoteQueries";
-import { XIcon } from "lucide-vue-next";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
+import Icon from "@/components/icons/Icon.vue";
 
 // Computed properties
 const modalStore = useModalStore();
@@ -47,7 +47,9 @@ const selectedVehicle = computed(() => {
 const { activeVehicleId } = useActiveVehicle();
 const { vehicles } = useVehicleQueries();
 
-const { createNoteAsync, updateNoteAsync, deleteNote } = useNoteQueries(selectedVehicle.value?.vehicleData.id);
+const { mutateAsync: createNoteAsync } = useCreateNote();
+const { mutateAsync: updateNoteAsync } = useUpdateNote();
+const { mutate: deleteNote } = useDeleteNote();
 
 // State
 const createdNoteId = ref<string | null>(null);
@@ -233,7 +235,7 @@ watch(isModalOpen, (isOpen) => {
                   @click="handleRemoveTag(tag)"
                   class="hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
                 >
-                  <XIcon class="h-3 w-3" />
+                  <Icon name="close" class="h-3 w-3" />
                 </button>
               </Badge>
             </div>

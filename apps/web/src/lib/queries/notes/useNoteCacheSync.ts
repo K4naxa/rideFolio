@@ -7,7 +7,7 @@ export function useNoteCacheSync() {
   // Update cache after successful save (not on every keystroke)
   function syncNoteToCache(noteId: Note["id"], noteData: EditableNote) {
     // update specific editable note
-    queryClient.setQueryData<NoteSchemaType>(["notes", "editable", noteId], (old) => {
+    queryClient.setQueryData<NoteSchemaType>(["notes", { id: noteId }, "editable"], (old) => {
       if (!old) return old;
       return { ...old, ...noteData };
     });
@@ -31,7 +31,7 @@ export function useNoteCacheSync() {
 
     // Update vehicle-specific cache if vehicleId exists
     if (noteData.vehicleId) {
-      queryClient.setQueryData<Note[]>(["notes", "vehicle", noteData.vehicleId], (old) => {
+      queryClient.setQueryData<Note[]>(["notes", { vehicleId: noteData.vehicleId }], (old) => {
         if (!old) return old;
         return old.map((n) =>
           n.id === noteId
@@ -56,12 +56,12 @@ export function useNoteCacheSync() {
       return [newNote, ...old];
     });
     // Add to vehicle-specific cache
-    queryClient.setQueryData<Note[]>(["notes", "vehicle", newNote.vehicle.id], (old) => {
+    queryClient.setQueryData<Note[]>(["notes", { vehicleId: newNote.vehicle.id }], (old) => {
       if (!old) return old;
       return [newNote, ...old];
     });
 
-    queryClient.setQueryData<NoteSchemaType>(["notes", "editable", newNote.id], () => ({
+    queryClient.setQueryData<NoteSchemaType>(["notes", { id: newNote.id }, "editable"], () => ({
       vehicleId: newNote.vehicle.id,
       title: newNote.title,
       content: newNote.content,
@@ -71,7 +71,7 @@ export function useNoteCacheSync() {
     }));
 
     // Set the query as fresh for 3 seconds to prevent immediate refetch
-    queryClient.setQueryDefaults(["notes", "editable", newNote.id], {
+    queryClient.setQueryDefaults(["notes", { id: newNote.id }, "editable"], {
       staleTime: 3000,
     });
   }
@@ -82,15 +82,15 @@ export function useNoteCacheSync() {
       if (Array.isArray(old)) return old.filter((n) => n.id !== deletedNoteId);
       return old;
     });
-    queryClient.removeQueries({ queryKey: ["notes", "editable", deletedNoteId] });
+    queryClient.removeQueries({ queryKey: ["notes", { id: deletedNoteId }, "editable"] });
   }
 
   // Invalidate caches after mutations
   function invalidateNoteCaches(noteId: Note["id"], vehicleId?: string) {
-    queryClient.invalidateQueries({ queryKey: ["notes", "editable", noteId] });
+    queryClient.invalidateQueries({ queryKey: ["notes", { id: noteId }, "editable"] });
     queryClient.invalidateQueries({ queryKey: ["notes"] });
     if (vehicleId) {
-      queryClient.invalidateQueries({ queryKey: ["notes", "vehicle", vehicleId] });
+      queryClient.invalidateQueries({ queryKey: ["notes", { vehicleId }] });
     }
   }
 

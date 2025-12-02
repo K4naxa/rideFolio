@@ -9,7 +9,7 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Fetch all todos (all vehicles)
   const allShoppingQuery = useQuery({
-    queryKey: ["shopping-list"],
+    queryKey: ["shoppingList"],
     queryFn: async () => {
       return await fetchApi<ShoppingListItem[]>(`/shopping-list`);
     },
@@ -18,7 +18,7 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
 
   // Fetch vehicle-specific shopping list
   const vehicleShoppingListQuery = useQuery({
-    queryKey: computed(() => ["shopping-list", "vehicle", unref(vehicleId)]),
+    queryKey: computed(() => ["shoppingList", { vehicleId: unref(vehicleId) }]),
     queryFn: async () => {
       const id = unref(vehicleId);
       if (!id) throw new Error("Vehicle ID is required");
@@ -35,9 +35,9 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["shopping-list"], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["shoppingList"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["shopping-list", "vehicle", variables.vehicleId],
+        queryKey: ["shoppingList", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -54,9 +54,9 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["shopping-list"], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["shoppingList"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["shopping-list", "vehicle", variables.vehicleId],
+        queryKey: ["shoppingList", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -76,9 +76,9 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["shopping-list"], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["shoppingList"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["shopping-list", "vehicle", variables.vehicleId],
+        queryKey: ["shoppingList", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },
@@ -95,9 +95,9 @@ export function useShoppingQueries(vehicleId?: MaybeRef<string | undefined>) {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["shopping-list"], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["shoppingList"], exact: true });
       queryClient.invalidateQueries({
-        queryKey: ["shopping-list", "vehicle", variables.vehicleId],
+        queryKey: ["shoppingList", { vehicleId: variables.vehicleId }],
         exact: true,
       });
     },

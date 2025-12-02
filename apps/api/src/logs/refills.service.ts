@@ -123,7 +123,7 @@ export class RefillsService {
       }),
       this.prisma.user.findUnique({
         where: { id: UserSession.user.id },
-        select: { consumptionUnit_hour: true, consumptionUnit_distance: true, volumeUnit: true },
+        select: { consumptionUnitCode_hour: true, consumptionUnitCode_distance: true, volumeUnit: true },
       }),
       this.prisma.refill.findMany({
         where: {
@@ -145,15 +145,15 @@ export class RefillsService {
     ])) as [
       { odometerType: Vehicle['odometerType'] } | null,
       {
-        consumptionUnit_hour: User['consumptionUnit_hour'];
-        consumptionUnit_distance: User['consumptionUnit_distance'];
+        consumptionUnitCode_hour: User['consumptionUnitCode_hour'];
+        consumptionUnitCode_distance: User['consumptionUnitCode_distance'];
         volumeUnit: User['volumeUnit'];
       } | null,
       Array<Extend<Refill, { user: { id: string; name: string; image: string | null } }>>,
     ];
 
     const isVehicleHourly = vehicle?.odometerType === 'HOUR';
-    const userUnit = isVehicleHourly ? user!.consumptionUnit_hour : user!.consumptionUnit_distance;
+    const userUnit = isVehicleHourly ? user!.consumptionUnitCode_hour : user!.consumptionUnitCode_distance;
 
     // Single-pass grouping with running average
     return refills.map((refill) => {
@@ -291,7 +291,7 @@ export class RefillsService {
   private formatRefillForClient(
     refill: Extend<Refill, { user: { id: string; name: string; image: string | null } }>,
     vehicle: Pick<Vehicle, 'odometerType'>,
-    user: Pick<User, 'consumptionUnit_hour' | 'consumptionUnit_distance' | 'volumeUnit'>,
+    user: Pick<User, 'consumptionUnitCode_hour' | 'consumptionUnitCode_distance' | 'volumeUnit'>,
   ): TRefillForClient {
     return {
       id: refill.id,
@@ -314,7 +314,7 @@ export class RefillsService {
       notes: refill.notes,
       consumption: this.unitConversion.getConsumptionData(
         vehicle.odometerType === 'HOUR' ? refill.consumption_L_per_hour : refill.consumption_L_per_100km,
-        vehicle.odometerType === 'HOUR' ? user.consumptionUnit_hour : user.consumptionUnit_distance,
+        vehicle.odometerType === 'HOUR' ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
         vehicle.odometerType === 'HOUR' ? 'HOUR' : 'DISTANCE',
       ),
     };

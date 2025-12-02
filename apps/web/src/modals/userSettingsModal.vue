@@ -15,7 +15,10 @@ import { api } from "@/lib/api";
 import { useUser } from "@/lib/queries/useUserQueries";
 import { useModalStore } from "@/stores/modal";
 import {
+  consumptionUnits_distance,
+  consumptionUnits_hour,
   CURRENCIES,
+  getConsumptionUnitNamekey,
   getCurrencyName,
   getCurrencySymbol,
   getOdometerNamekey,
@@ -67,6 +70,26 @@ function handleVolumeUnitChange(unit: string) {
 }
 function handleCurrencyChange(currency: string) {
   updatePreference.mutate({ key: "currency", value: currency });
+}
+function handleConsumptionUnitDistanceChange(unit: string) {
+  updatePreference.mutate(
+    { key: "consumptionUnitCode_distance", value: unit },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      },
+    },
+  );
+}
+function handleConsumptionUnitHourChange(unit: string) {
+  updatePreference.mutate(
+    { key: "consumptionUnitCode_hour", value: unit },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      },
+    },
+  );
 }
 </script>
 
@@ -169,46 +192,43 @@ function handleCurrencyChange(currency: string) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild class="w-36">
                 <Button variant="outline" size="sm" class="flex items-center gap-4">
-                  {{
-                    currentUser?.preferences.volumeUnit === "LITER"
-                      ? "Liters"
-                      : currentUser?.preferences.volumeUnit === "GALLON"
-                        ? "Gallons"
-                        : "Select Volume Unit"
-                  }}
+                  <p v-if="currentUser?.preferences.consumptionUnitCode_distance">
+                    {{ getConsumptionUnitNamekey(currentUser.preferences.consumptionUnitCode_distance) }}
+                  </p>
+                  <p v-else>Select Consumption Unit</p>
                 </Button>
               </DropdownMenuTrigger>
-
               <DropdownMenuContent>
-                <DropdownMenuItem @click="handleVolumeUnitChange('LITER')">Liters</DropdownMenuItem>
-                <DropdownMenuItem @click="handleVolumeUnitChange('GALLON')">Gallons</DropdownMenuItem>
+                <DropdownMenuItem
+                  v-for="option in consumptionUnits_distance"
+                  :key="option.code"
+                  @click="handleConsumptionUnitDistanceChange(option.code)"
+                >
+                  {{ option.unit }}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
           <div class="settingGrid">
             <p class="">Hourly odometer:</p>
             <DropdownMenu>
               <DropdownMenuTrigger asChild class="w-36">
                 <Button variant="outline" size="sm" class="flex items-center gap-4">
-                  <p v-if="currentUser?.preferences.currency">
-                    <span class="text-muted-foreground mr-2">{{
-                      getCurrencySymbol(currentUser.preferences.currency)
-                    }}</span>
-                    {{ getCurrencyName(currentUser.preferences.currency) }}
+                  <p v-if="currentUser?.preferences.consumptionUnitCode_hour">
+                    {{ getConsumptionUnitNamekey(currentUser.preferences.consumptionUnitCode_hour) }}
                   </p>
-                  <p v-else>Select Currency</p>
+                  <p v-else>Select Consumption Unit</p>
                 </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent>
                 <DropdownMenuItem
-                  v-for="option in CURRENCIES"
+                  v-for="option in consumptionUnits_hour"
                   :key="option.code"
-                  @click="handleCurrencyChange(option.code)"
+                  @click="handleConsumptionUnitHourChange(option.code)"
                 >
-                  <p class="text-muted-foreground mr-2">{{ option.symbol }}</p>
-
-                  {{ option.name }}
+                  {{ option.unit }}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

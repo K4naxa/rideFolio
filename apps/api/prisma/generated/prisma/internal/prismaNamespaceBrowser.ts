@@ -100,8 +100,8 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   odometerType: 'odometerType',
   volumeUnit: 'volumeUnit',
-  consumptionUnit_distance: 'consumptionUnit_distance',
-  consumptionUnit_hour: 'consumptionUnit_hour',
+  consumptionUnitCode_distance: 'consumptionUnitCode_distance',
+  consumptionUnitCode_hour: 'consumptionUnitCode_hour',
   currency: 'currency'
 } as const
 

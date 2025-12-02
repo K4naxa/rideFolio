@@ -178,7 +178,7 @@ export class VehiclesService {
 
     const user = await this.prisma.user.findUnique({
       where: { id: userSession.user.id },
-      select: { volumeUnit: true, consumptionUnit_distance: true, consumptionUnit_hour: true },
+      select: { volumeUnit: true, consumptionUnitCode_distance: true, consumptionUnitCode_hour: true },
     });
     if (!user) throw new NotFoundException('User not found');
 
@@ -222,7 +222,7 @@ export class VehiclesService {
 
     const currentMonthConsumptionData = this.unitConversion.getConsumptionData(
       monthlyData ? (isHourlyBased ? monthlyData.consumption_L_per_hour : monthlyData.consumption_L_per_100km) : null,
-      isHourlyBased ? user.consumptionUnit_hour : user.consumptionUnit_distance,
+      isHourlyBased ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
       isHourlyBased ? 'HOUR' : 'DISTANCE',
     );
 
@@ -255,7 +255,7 @@ export class VehiclesService {
     await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
     const user = await this.prisma.user.findUnique({
       where: { id: userSession.user.id },
-      select: { volumeUnit: true, consumptionUnit_distance: true, consumptionUnit_hour: true },
+      select: { volumeUnit: true, consumptionUnitCode_distance: true, consumptionUnitCode_hour: true },
     });
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
@@ -338,7 +338,7 @@ export class VehiclesService {
           notes: r.notes,
           consumption: this.unitConversion.getConsumptionData(
             isHourlyOdometer ? r.consumption_L_per_hour : r.consumption_L_per_100km,
-            isHourlyOdometer ? user.consumptionUnit_hour : user.consumptionUnit_distance,
+            isHourlyOdometer ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
             isHourlyOdometer ? 'HOUR' : 'DISTANCE',
           ),
           // convenience odometer field depending on vehicle odometerType

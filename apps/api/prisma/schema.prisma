@@ -97,8 +97,8 @@ model User {
   odometerType OdometerTypes @default(KILOMETER)
   volumeUnit   VolumeUnitTypes @default(LITER)
 
-  consumptionUnit_distance  DistanceConsumptionTypes @default(LITERS_PER_100KM)
-  consumptionUnit_hour      TimeConsumptionTypes @default(LITERS_PER_HOUR)
+  consumptionUnitCode_distance  DistanceConsumptionTypes @default(LITERS_PER_100KM)
+  consumptionUnitCode_hour      TimeConsumptionTypes @default(LITERS_PER_HOUR)
   currency                  String @default("EUR") // Default to Euro
 
   // A user can be a member of many pools.

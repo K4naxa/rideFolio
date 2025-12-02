@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User, Vehicle } from 'prisma/generated/prisma/client';
-import { TConversionResult } from '@repo/validation';
+import { ConsumptionUnitCode, TConversionResult } from '@repo/validation';
 
 @Injectable()
 export class UnitConversionService {
@@ -53,7 +53,7 @@ export class UnitConversionService {
 
   getConsumptionData(
     baseValue: number | null, // L/h OR L/100km depending on type
-    preferredUnit: User['consumptionUnit_hour'] | User['consumptionUnit_distance'],
+    preferredUnit: ConsumptionUnitCode,
     type: 'HOUR' | 'DISTANCE',
   ): TConversionResult {
     if (baseValue === null) {
