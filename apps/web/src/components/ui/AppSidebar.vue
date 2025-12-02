@@ -13,7 +13,6 @@ import SidebarMenuSub from "@/components/ui/sidebar/SidebarMenuSub.vue";
 import SidebarMenuSubItem from "@/components/ui/sidebar/SidebarMenuSubItem.vue";
 import SidebarMenuSubButton from "@/components/ui/sidebar/SidebarMenuSubButton.vue";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
 import { useActivePool } from "@/lib/useActivePool";
 import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
@@ -21,6 +20,7 @@ import AppLogo from "../icons/AppLogo.vue";
 import Icon, { type IconProps } from "../icons/Icon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import Button from "./button/Button.vue";
+import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
 
 interface MainSideBarLinks {
   label: string;
@@ -49,7 +49,7 @@ const mainSidebarLinks: MainSideBarLinks[] = [
 const { vehicles } = useVehicleQueries();
 const { activeVehicleId } = useActiveVehicle();
 
-const { data: pools } = useAccessiblePools();
+const { data: pools } = usePoolsAll();
 const { activePoolId } = useActivePool();
 
 const modalStore = useModalStore();
