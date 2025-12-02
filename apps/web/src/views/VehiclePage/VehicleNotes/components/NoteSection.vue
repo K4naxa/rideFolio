@@ -3,7 +3,6 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
@@ -40,7 +39,7 @@ const isNew = computed(() => props.noteId === "new");
 const noteQuery = getEditableNote(computed(() => props.noteId));
 const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
 
-const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
+const { values, errors, setFieldValue, resetForm } = useForm<NoteSchemaType>({
   validationSchema: toTypedSchema(NoteSchema),
   initialValues: newNote({ vehicleId: props.vehicleId }),
 });
@@ -59,7 +58,7 @@ watch(
     }
 
     // Skip while loading
-    if (noteQuery.isLoading.value) return;
+    if (noteQuery.isLoading.value || !noteQuery.data.value) return;
     lastServerState.value = noteQuery.data.value as NoteSchemaType;
     resetForm({
       values: noteQuery.data.value,
@@ -142,9 +141,9 @@ const debouncedSave = useDebounceFn(
   () => {
     handlePendingSaves();
   },
-  2500,
+  1000,
   {
-    maxWait: 10000,
+    maxWait: 5000,
   },
 );
 
@@ -161,46 +160,7 @@ watch(
     } else {
       pendingSaves.value.delete(currentNoteId.value);
     }
-
-    // Eye candy: Immediately update caches on field changes
-    if (currentNoteId.value) {
-      // Immediately update all relevant caches
-      queryClient.setQueryData<Note[]>(
-        ["notes"],
-        (old) =>
-          old?.map((n) =>
-            n.id === currentNoteId.value
-              ? {
-                  ...n,
-                  title: values.title ?? null,
-                  content: values.content ?? null,
-                  pinned: values.pinned ?? false,
-                  tags: values.tags ?? [],
-                }
-              : n,
-          ) || [],
-      );
-
-      if (values.vehicleId) {
-        queryClient.setQueryData<Note[]>(
-          ["notes", "vehicle", values.vehicleId],
-          (old) =>
-            old?.map((n) =>
-              n.id === currentNoteId.value
-                ? {
-                    ...n,
-                    title: values.title ?? null,
-                    content: values.content ?? null,
-                    pinned: values.pinned ?? false,
-                    tags: values.tags ?? [],
-                  }
-                : n,
-            ) || [],
-        );
-      }
-    }
   },
-  { deep: true, flush: "pre" },
 );
 
 // TODO: add logic to check outside updates (other users) and refresh form data
@@ -219,19 +179,19 @@ function shouldAutoSave(serverState: NoteSchemaType, current: NoteSchemaType): b
   if (!hasNoteChanged(serverState, current)) {
     return false;
   }
+  // Must have some content on either title or content
   if (
     (values.content === null || values.content === undefined || values.content.trim() === "") &&
     (values.title === null || values.title === undefined || values.title.trim() === "")
   ) {
     return false;
   }
-  return meta.value.dirty;
+  return true;
 }
 
-// Fallback for page unloads
-window.addEventListener("beforeunload", async () => {
+async function handleSavesBeforeUnload() {
   console.log("beforeunload triggered");
-  if (pendingSaves.value.size > 1) {
+  if (pendingSaves.value.size >= 1) {
     pendingSaves.value.forEach(async (save) => {
       const endpoint = save.noteId === "new" ? "/api/notes" : `/api/notes/${save.noteId}`;
       const method = save.noteId === "new" ? "POST" : "PATCH";
@@ -251,15 +211,17 @@ window.addEventListener("beforeunload", async () => {
     });
     queryClient.invalidateQueries({ queryKey: ["notes"] });
   }
-});
+}
+// Fallback for page unloads
+window.addEventListener("beforeunload", handleSavesBeforeUnload);
 onUnmounted(() => {
-  window.removeEventListener("beforeunload", () => {});
+  window.removeEventListener("beforeunload", handleSavesBeforeUnload);
 });
 
 const handleAddTag = () => {
   const trimmedTag = tagInput.value.trim();
-  const currentTags = values.tags || [];
-  if (trimmedTag !== "" && !currentTags.includes(trimmedTag)) {
+  const currentTags = values.tags?.map((tag) => tag.toLowerCase()) || [];
+  if (trimmedTag !== "" && !currentTags.includes(trimmedTag.toLowerCase())) {
     setFieldValue("tags", [...currentTags, trimmedTag]);
     tagInput.value = "";
   }
@@ -294,10 +256,13 @@ const handleRemoveTag = (tagToRemove: string) => {
           <!-- Status indicator -->
           <div class="grid aspect-square w-9 place-items-center rounded-sm border">
             <div v-if="isSubmitting"><Spinner class="size-4" /></div>
-            <div v-else-if="pendingSaves.has(currentNoteId)">
-              <SaveIcon class="stroke-warning size-4" />
+            <div v-else-if="noteQuery.isError.value">
+              <Icon name="error" class="stroke-destructive" tooltip="Error loading note" />
             </div>
-            <div v-else><CheckIcon class="stroke-success size-4" /></div>
+            <div v-else-if="pendingSaves.has(currentNoteId)">
+              <Icon name="save" tooltip="Unsaved changes" class="stroke-warning size-4" />
+            </div>
+            <div v-else><Icon name="check" tooltip="Note up to date" class="stroke-success size-4" /></div>
           </div>
 
           <!-- control buttons -->
@@ -306,6 +271,7 @@ const handleRemoveTag = (tagToRemove: string) => {
             <Button
               variant="outline"
               size="icon"
+              title="Delete current note"
               class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
               @click="handleDelete"
             >
@@ -363,7 +329,7 @@ const handleRemoveTag = (tagToRemove: string) => {
             <Badge v-for="(tag, index) in values.tags" :key="index" variant="outline" class="px-3 py-1.5 text-sm">
               {{ tag }}
               <Button variant="ghost" size="icon-sm" type="button" class="ml-2" @click="handleRemoveTag(tag)">
-                <XIcon class="h-3 w-3" />
+                <Icon name="close" class="h-3 w-3" />
               </Button>
             </Badge>
           </div>

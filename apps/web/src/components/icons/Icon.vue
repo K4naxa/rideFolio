@@ -24,6 +24,7 @@ import {
   Plus,
   Minus,
   X,
+  OctagonAlert,
   Sparkle,
   ShieldCheckIcon,
   ToolCaseIcon,
@@ -59,9 +60,13 @@ import {
   CheckIcon,
   ShieldIcon,
   LinkIcon,
+  SaveIcon,
   type LucideIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
+import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
+import Tooltip from "../ui/tooltip/Tooltip.vue";
+import TooltipContent from "../ui/tooltip/TooltipContent.vue";
 
 type IconSize = "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -108,6 +113,7 @@ type IconName =
   | "trendingDown"
   | "lightMode"
   | "darkMode"
+  | "error"
   | "chevronDown"
   | "chevronRight"
   | "chevronLeft"
@@ -122,12 +128,14 @@ type IconName =
   | "subscription"
   | "billing"
   | "stats"
-  | "link";
+  | "link"
+  | "save";
 
 export interface IconProps {
   name: IconName;
   size?: IconSize;
   class?: HTMLAttributes["class"];
+  tooltip?: string;
 }
 
 const props = withDefaults(defineProps<IconProps>(), {
@@ -200,6 +208,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   shieldCheck: ShieldCheckIcon,
   fileText: FileText,
   wrench: WrenchIcon,
+  error: OctagonAlert,
+  save: SaveIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
@@ -207,5 +217,11 @@ const iconClass = computed(() => twMerge(iconSizes[props.size], "stroke-current 
 </script>
 
 <template>
-  <component v-if="props.name" :is="iconComponent" :class="iconClass" />
+  <Tooltip v-if="props.tooltip && props.name" :delay-duration="300">
+    <TooltipTrigger>
+      <component :is="iconComponent" :class="iconClass" />
+    </TooltipTrigger>
+    <TooltipContent>{{ props.tooltip }}</TooltipContent>
+  </Tooltip>
+  <component v-else-if="props.name" :is="iconComponent" :class="iconClass" />
 </template>
