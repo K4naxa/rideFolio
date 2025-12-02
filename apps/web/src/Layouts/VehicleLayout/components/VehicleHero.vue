@@ -73,7 +73,11 @@ const statsOpen = ref(false);
         class="h-full w-full rounded object-cover"
       />
       <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border">
-        <VehicleTypeIcon :type="activeVehicle?.vehicleData.type.code" class="stroke-muted-foreground size-16 rounded" />
+        <VehicleTypeIcon
+          v-if="activeVehicle && activeVehicle.vehicleData.type.code"
+          :type="activeVehicle?.vehicleData.type.code"
+          class="stroke-muted-foreground size-16 rounded"
+        />
       </div>
     </div>
 

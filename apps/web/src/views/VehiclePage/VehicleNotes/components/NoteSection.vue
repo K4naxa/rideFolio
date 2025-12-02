@@ -26,7 +26,9 @@ interface NoteSectionProps {
   vehicleId: Note["vehicle"]["id"];
 }
 
-const props = defineProps<NoteSectionProps>();
+const props = withDefaults(defineProps<NoteSectionProps>(), {
+  noteId: "new",
+});
 
 const { getEditableNote, createNoteAsync, updateNoteAsync, isCreating, isUpdating, isDeleting, deleteNoteAsync } =
   useNoteQueries();
