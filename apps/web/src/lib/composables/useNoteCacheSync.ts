@@ -76,6 +76,15 @@ export function useNoteCacheSync() {
     });
   }
 
+  function syncDeletedNoteFromCache(deletedNoteId: Note["id"]) {
+    queryClient.setQueriesData({ queryKey: ["notes"] }, (old: Note[] | undefined) => {
+      if (!old) return old;
+      if (Array.isArray(old)) return old.filter((n) => n.id !== deletedNoteId);
+      return old;
+    });
+    queryClient.removeQueries({ queryKey: ["notes", "editable", deletedNoteId] });
+  }
+
   // Invalidate caches after mutations
   function invalidateNoteCaches(noteId: Note["id"], vehicleId?: string) {
     queryClient.invalidateQueries({ queryKey: ["notes", "editable", noteId] });
@@ -89,5 +98,6 @@ export function useNoteCacheSync() {
     syncNoteToCache,
     invalidateNoteCaches,
     syncNewNoteToCache,
+    syncDeletedNoteFromCache,
   };
 }

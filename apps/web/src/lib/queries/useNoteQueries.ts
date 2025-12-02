@@ -8,7 +8,7 @@ import { useNoteCacheSync } from "@/lib/composables/useNoteCacheSync";
 
 export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
-  const { syncNoteToCache, invalidateNoteCaches, syncNewNoteToCache } = useNoteCacheSync();
+  const { syncNoteToCache, syncNewNoteToCache, syncDeletedNoteFromCache } = useNoteCacheSync();
 
   // Fetch all accessible notes
   const allNotesQuery = useQuery({
@@ -99,12 +99,7 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      if (variables.vehicleId) {
-        queryClient.invalidateQueries({
-          queryKey: ["notes", "vehicle", variables.vehicleId],
-        });
-      }
+      syncDeletedNoteFromCache(variables.noteId);
     },
     onError: (error) => {
       toast.error("Error deleting the Note");
