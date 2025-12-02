@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import type { MaybeRef } from "vue";
 import { unref, computed } from "vue";
-import type { Note, NoteSchemaType } from "@repo/validation";
+import type { EditableNote, Note, NoteSchemaType } from "@repo/validation";
 import { api, fetchApi } from "@/lib/api";
 import { toast } from "vue-sonner";
+import { useNoteCacheSync } from "@/lib/composables/useNoteCacheSync";
 
 export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   const queryClient = useQueryClient();
+  const { syncNoteToCache, invalidateNoteCaches, syncNewNoteToCache } = useNoteCacheSync();
 
   // Fetch all accessible notes
   const allNotesQuery = useQuery({
@@ -31,14 +33,12 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   });
 
   // Fetch single note by ID
-  const getEditableNote = (noteId: MaybeRef<Note["id"]>) => {
+  const getEditableNote = (noteId: MaybeRef<Note["id"] | undefined>) => {
     return useQuery({
-      queryKey: computed(() => ["notes", unref(noteId)]),
-      queryFn: async () => {
+      queryKey: computed(() => ["notes", "editable", unref(noteId)]),
+      queryFn: async (): Promise<NoteSchemaType | undefined> => {
         const id = unref(noteId);
-
-        if (!id) throw new Error("Note ID is required");
-        if (id === "new") return {};
+        if (!id) return undefined;
         return await fetchApi<Required<NoteSchemaType>>(`/notes/${id}/editable`);
       },
       enabled: computed(() => !!unref(noteId)),
@@ -48,19 +48,12 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   // Create note
   const createNoteMutation = useMutation({
     mutationFn: async (data: NoteSchemaType) => {
-      const response = await api.post<{ success: boolean; id: Note["id"] }>("/notes", data);
+      const response = await api.post<Note>("/notes", data);
       console.log("Created note response:", response.data);
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      // Invalidate all notes list
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      // Invalidate specific vehicle notes if vehicleId exists in the data
-      if (variables.vehicleId) {
-        queryClient.invalidateQueries({
-          queryKey: ["notes", "vehicle", variables.vehicleId],
-        });
-      }
+    onSuccess: (data) => {
+      syncNewNoteToCache(data);
     },
     onError: (error) => {
       toast.error("Error creating the Note");
@@ -69,28 +62,14 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   });
 
   const togglePinNoteMutation = useMutation({
-    mutationFn: async ({
-      noteId,
-      pinned,
-      vehicleId,
-    }: {
-      noteId: Note["id"];
-      pinned: Note["pinned"];
-      vehicleId: Note["vehicle"]["id"];
-    }) => {
-      const response = await api.patch<{ success: boolean }>(`/notes/${noteId}/pin`, {
+    mutationFn: async ({ noteId, pinned }: { noteId: Note["id"]; pinned: Note["pinned"] }) => {
+      const response = await api.patch<EditableNote>(`/notes/${noteId}/pin`, {
         pinned,
       });
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-
-      if (variables.vehicleId) {
-        queryClient.invalidateQueries({
-          queryKey: ["notes", "vehicle", variables.vehicleId],
-        });
-      }
+    onSuccess: (data) => {
+      syncNoteToCache(data.id, data);
     },
     onError: (error) => {
       toast.error("Error toggling pin on the Note");
@@ -101,21 +80,11 @@ export function useNoteQueries(vehicleId?: MaybeRef<string | undefined>) {
   // Update note
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, data }: { noteId: Note["id"]; data: NoteSchemaType }) => {
-      const response = await api.patch<{ success: boolean }>(`/notes/${noteId}`, data);
+      const response = await api.patch<EditableNote>(`/notes/${noteId}`, data);
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      // Invalidate the specific note
-      queryClient.invalidateQueries({
-        queryKey: ["notes", variables.noteId],
-      });
-      // Invalidate vehicle notes if vehicleId exists
-      if (variables.data.vehicleId) {
-        queryClient.invalidateQueries({
-          queryKey: ["notes", "vehicle", variables.data.vehicleId],
-        });
-      }
+    onSuccess: (data) => {
+      syncNoteToCache(data.id, data);
     },
     onError: (error) => {
       toast.error("Error updating the Note");

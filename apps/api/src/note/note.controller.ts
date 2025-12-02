@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { NoteSchema, NoteSchemaType } from '@repo/validation';
+import { EditableNote, Note, NoteSchema, NoteSchemaType } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { NoteService } from 'src/note/note.service';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
@@ -13,18 +13,17 @@ export class NoteController {
   async createNote(
     @Session() session: UserSession,
     @Body(new ZodValidationPipe(NoteSchema as ZodType)) noteDto: NoteSchemaType,
-  ) {
-    const newNote = await this.noteService.createNote(session, noteDto);
-    return { status: 'success', id: newNote.id };
+  ): Promise<Note> {
+    return await this.noteService.createNote(session, noteDto);
   }
 
   @Get()
-  async getAccessibleNotes(@Session() session: UserSession) {
+  async getAccessibleNotes(@Session() session: UserSession): Promise<Note[]> {
     return this.noteService.getAccessibleNotes(session.user.id);
   }
 
   @Get(':noteId/editable')
-  async getEditableNote(@Session() session: UserSession, @Param('noteId') noteId: string) {
+  async getEditableNote(@Session() session: UserSession, @Param('noteId') noteId: string): Promise<EditableNote> {
     return this.noteService.getEditableNote(session.user.id, noteId);
   }
 
@@ -33,9 +32,8 @@ export class NoteController {
     @Session() session: UserSession,
     @Param('noteId') noteId: string,
     @Body('pinned') pinned: boolean,
-  ) {
-    await this.noteService.notePinnedToggle(session, noteId, pinned);
-    return { status: 'success' };
+  ): Promise<EditableNote> {
+    return await this.noteService.notePinnedToggle(session, noteId, pinned);
   }
 
   @Patch(':noteId')
@@ -43,9 +41,8 @@ export class NoteController {
     @Session() session: UserSession,
     @Param('noteId') noteId: string,
     @Body(new ZodValidationPipe(NoteSchema as ZodType)) noteDto: NoteSchemaType,
-  ) {
-    const updatedNote = await this.noteService.updateNote(session, noteId, noteDto);
-    return { status: 'success', data: { id: updatedNote.id } };
+  ): Promise<EditableNote> {
+    return await this.noteService.updateNote(session, noteId, noteDto);
   }
 
   @Delete(':noteId')

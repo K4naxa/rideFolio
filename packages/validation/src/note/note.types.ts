@@ -18,6 +18,16 @@ export type Note = {
   };
 };
 
+export type EditableNote = {
+  id: string;
+  title: string | null;
+  content: string | null;
+  tags: string[];
+  vehicleId: string;
+  pinned: boolean;
+  updatedAt: Date | null;
+};
+
 export function newNote({ vehicleId, title, content, tags }: Partial<NoteSchemaType> = {}): NoteSchemaType {
   return {
     vehicleId: vehicleId || "",

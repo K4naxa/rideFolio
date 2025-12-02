@@ -3,22 +3,19 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Input from "@/components/ui/input/Input.vue";
+import Button from "@/components/ui/button/Button.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
+import Icon from "@/components/icons/Icon.vue";
+import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { toTypedSchema } from "@vee-validate/zod";
-import Button from "@/components/ui/button/Button.vue";
-import { useDebounceFn } from "@vueuse/core";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
-import { useQueryClient } from "@tanstack/vue-query";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
-import Icon from "@/components/icons/Icon.vue";
-
-const queryClient = useQueryClient();
-const router = useRouter();
+import { useNoteAutoSave } from "../composables/useNoteAutoSave";
 
 interface NoteSectionProps {
   noteId: Note["id"];
@@ -26,63 +23,100 @@ interface NoteSectionProps {
 }
 
 const props = defineProps<NoteSectionProps>();
+const router = useRouter();
 
-const { getEditableNote, createNoteAsync, updateNoteAsync, isCreating, isUpdating, isDeleting, deleteNoteAsync } =
-  useNoteQueries();
+// Queries and mutations
+const {
+  getEditableNote,
+  createNoteAsync,
+  updateNoteAsync,
+  isCreating,
+  isUpdating,
+  isDeleting,
+  deleteNoteAsync,
+  togglePinAsync,
+} = useNoteQueries();
 
-const tagInput = ref("");
-const isSubmitting = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
-const pendingSaves = ref(new Map<string, { noteId: Note["id"]; data: NoteSchemaType }>());
-// If new, no query — otherwise fetch note
+// Component state
 const currentNoteId = ref(props.noteId);
 const isNew = computed(() => props.noteId === "new");
-const noteQuery = getEditableNote(computed(() => props.noteId));
+const tagInput = ref("");
 const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
 
-const { values, errors, setFieldValue, resetForm } = useForm<NoteSchemaType>({
+// Query for existing note
+const noteQuery = getEditableNote(computed(() => props.noteId));
+const isPinned = computed(() => noteQuery.data.value?.pinned || false);
+
+// Form setup
+const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
   validationSchema: toTypedSchema(NoteSchema),
   initialValues: newNote({ vehicleId: props.vehicleId }),
 });
 
-// Watcher to keep our form in sync with prop changes
-watch(
-  () => [props.noteId, noteQuery.isLoading.value],
-  () => {
-    currentNoteId.value = props.noteId;
-
-    if (props.noteId === "new") {
-      resetForm({
-        values: newNote({ vehicleId: props.vehicleId }),
-      });
-      return;
-    }
-
-    // Skip while loading
-    if (noteQuery.isLoading.value || !noteQuery.data.value) return;
-    lastServerState.value = noteQuery.data.value as NoteSchemaType;
-    resetForm({
-      values: noteQuery.data.value,
-    });
-  },
-);
-
-onMounted(() => {
-  // Seed form data when component mounts
+// Initialize form data
+function initializeForm() {
   if (props.noteId === "new") {
-    resetForm({
-      values: newNote({ vehicleId: props.vehicleId }),
-    });
-  } else if (noteQuery.data.value) {
-    lastServerState.value = noteQuery.data.value as NoteSchemaType;
-    resetForm({
-      values: noteQuery.data.value,
-    });
+    const initialData = newNote({ vehicleId: props.vehicleId });
+    lastServerState.value = initialData;
+    resetForm({ values: initialData });
+    return;
   }
+
+  // Wait for data to be available
+  if (noteQuery.isLoading.value || !noteQuery.data.value) return;
+
+  lastServerState.value = noteQuery.data.value as NoteSchemaType;
+  resetForm({ values: noteQuery.data.value });
+}
+
+// Save handler for auto-save
+async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
+  if (noteId === "new") {
+    const response = await createNoteAsync(data);
+    currentNoteId.value = response.id;
+
+    // Update URL with new note ID
+    router.replace({
+      query: { ...router.currentRoute.value.query, note: response.id },
+    });
+
+    return response;
+  } else {
+    await updateNoteAsync({ noteId, data });
+    return;
+  }
+}
+
+// Handle note ID changes from auto-save
+function handleNoteIdChange(newId: Note["id"]) {
+  currentNoteId.value = newId;
+}
+
+// Auto-save setup
+const { pendingSave, isSaving, handleBeforeUnload } = useNoteAutoSave({
+  noteId: currentNoteId,
+  formValues: computed(() => values),
+  serverState: lastServerState,
+  isFormDirty: computed(() => meta.value.dirty),
+  onSave: handleSave,
+  onNoteIdChange: handleNoteIdChange,
 });
 
-function handleDelete() {
+// Status indicator
+const saveStatus = computed(() => {
+  if (isCreating.value || isUpdating.value || isDeleting.value || isSaving.value) {
+    return "saving";
+  }
+  if (pendingSave.value) {
+    return "pending";
+  }
+  return "saved";
+});
+
+// Delete handler
+async function handleDelete() {
   try {
-    deleteNoteAsync({
+    await deleteNoteAsync({
       noteId: currentNoteId.value,
       vehicleId: values.vehicleId,
     });
@@ -96,144 +130,49 @@ function handleDelete() {
     });
   }
 }
-function handlePendingSaves() {
-  pendingSaves.value.forEach(async (save) => {
-    try {
-      await saveNote(save.noteId, save.data);
-      pendingSaves.value.delete(save.noteId);
-    } catch (error) {
-      console.error("Failed to save pending note:", error);
-    }
-  });
-}
-async function saveNote(noteId: Note["id"], saveData: NoteSchemaType) {
-  try {
-    if (noteId === "new") {
-      const response = await createNoteAsync(saveData);
-      currentNoteId.value = response.id;
-      router.replace({
-        query: { ...router.currentRoute.value.query, note: response.id },
-      });
-      // Update server state after successful save
-      lastServerState.value = { ...saveData };
-    } else {
-      await updateNoteAsync({
-        noteId: noteId,
-        data: saveData,
-      });
 
-      // Update server state after successful save
-      lastServerState.value = { ...saveData };
-    }
-  } catch (error) {
-    toast.error("Something went wrong", {
-      description: (error as Error)?.message || "Unknown error",
-      action: {
-        label: "Try again",
-        onClick: () => saveNote(noteId, saveData),
-      },
-    });
-    console.error("DeBounce: Failed to save note:", error);
-  }
-}
+// Tag management
+function handleAddTag() {
+  const trimmedTag = tagInput.value.trim().toLowerCase();
+  const currentTags = values.tags || [];
 
-const debouncedSave = useDebounceFn(
-  () => {
-    handlePendingSaves();
-  },
-  1000,
-  {
-    maxWait: 5000,
-  },
-);
+  // Case-insensitive duplicate check
+  const tagExists = currentTags.some((tag) => tag.toLowerCase() === trimmedTag);
 
-watch(
-  () => [values.title, values.content, values.tags, values.pinned, values.vehicleId],
-  () => {
-    // Check if we should auto-save (compare against last server state)
-    if (shouldAutoSave(lastServerState.value, values)) {
-      pendingSaves.value.set(currentNoteId.value, {
-        noteId: currentNoteId.value,
-        data: { ...values },
-      });
-      debouncedSave();
-    } else {
-      pendingSaves.value.delete(currentNoteId.value);
-    }
-  },
-);
-
-// TODO: add logic to check outside updates (other users) and refresh form data
-
-function hasNoteChanged(initial: NoteSchemaType, current: NoteSchemaType): boolean {
-  return (
-    current.title !== initial.title ||
-    current.content !== initial.content ||
-    current.pinned !== initial.pinned ||
-    JSON.stringify(current.tags) !== JSON.stringify(initial.tags)
-  );
-}
-
-function shouldAutoSave(serverState: NoteSchemaType, current: NoteSchemaType): boolean {
-  // Must have changes compared to last server state
-  if (!hasNoteChanged(serverState, current)) {
-    return false;
-  }
-  // Must have some content on either title or content
-  if (
-    (values.content === null || values.content === undefined || values.content.trim() === "") &&
-    (values.title === null || values.title === undefined || values.title.trim() === "")
-  ) {
-    return false;
-  }
-  return true;
-}
-
-async function handleSavesBeforeUnload() {
-  console.log("beforeunload triggered");
-  if (pendingSaves.value.size >= 1) {
-    pendingSaves.value.forEach(async (save) => {
-      const endpoint = save.noteId === "new" ? "/api/notes" : `/api/notes/${save.noteId}`;
-      const method = save.noteId === "new" ? "POST" : "PATCH";
-
-      fetch(endpoint, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(save.data),
-        keepalive: true, // keeps request alive after page unload
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["notes", "vehicle", save.data.vehicleId],
-      });
-    });
-    queryClient.invalidateQueries({ queryKey: ["notes"] });
-  }
-}
-// Fallback for page unloads
-window.addEventListener("beforeunload", handleSavesBeforeUnload);
-onUnmounted(() => {
-  window.removeEventListener("beforeunload", handleSavesBeforeUnload);
-});
-
-const handleAddTag = () => {
-  const trimmedTag = tagInput.value.trim();
-  const currentTags = values.tags?.map((tag) => tag.toLowerCase()) || [];
-  if (trimmedTag !== "" && !currentTags.includes(trimmedTag.toLowerCase())) {
-    setFieldValue("tags", [...currentTags, trimmedTag]);
+  if (trimmedTag && !tagExists) {
+    setFieldValue("tags", [...currentTags, tagInput.value.trim()]);
     tagInput.value = "";
   }
-};
+}
 
-const handleRemoveTag = (tagToRemove: string) => {
+function handleRemoveTag(tagToRemove: string) {
   const currentTags = values.tags || [];
   setFieldValue(
     "tags",
     currentTags.filter((tag) => tag !== tagToRemove),
   );
-};
+}
+
+// Lifecycle hooks
+onMounted(() => {
+  initializeForm();
+});
+
+// Watch for prop changes
+watch(
+  () => [props.noteId, noteQuery.isLoading.value, noteQuery.data.value],
+  () => {
+    currentNoteId.value = props.noteId;
+    initializeForm();
+  },
+);
+
+// Page unload handling
+window.addEventListener("beforeunload", handleBeforeUnload);
+
+onUnmounted(() => {
+  window.removeEventListener("beforeunload", handleBeforeUnload);
+});
 </script>
 
 <template>
@@ -241,8 +180,7 @@ const handleRemoveTag = (tagToRemove: string) => {
     class="bg-background absolute top-0 left-0 z-50 min-h-0 w-full flex-1 flex-col p-4 lg:relative lg:z-0 lg:flex lg:p-0"
   >
     <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
-      <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
-
+      <!-- Vehicle Selection -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
         <div v-if="isNew && !props.vehicleId">
           <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
@@ -255,40 +193,41 @@ const handleRemoveTag = (tagToRemove: string) => {
         <div class="flex items-center gap-4">
           <!-- Status indicator -->
           <div class="grid aspect-square w-9 place-items-center rounded-sm border">
-            <div v-if="isSubmitting"><Spinner class="size-4" /></div>
-            <div v-else-if="noteQuery.isError.value">
-              <Icon name="error" class="stroke-destructive" tooltip="Error loading note" />
-            </div>
-            <div v-else-if="pendingSaves.has(currentNoteId)">
-              <Icon name="save" tooltip="Unsaved changes" class="stroke-warning size-4" />
-            </div>
-            <div v-else><Icon name="check" tooltip="Note up to date" class="stroke-success size-4" /></div>
+            <Spinner v-if="saveStatus === 'saving'" class="size-4" />
+            <SaveIcon v-else-if="saveStatus === 'pending'" class="stroke-warning size-4" />
+            <CheckIcon v-else class="stroke-success size-4" />
           </div>
 
-          <!-- control buttons -->
-          <div v-if="!isNew" class="flex gap-2">
+          <!-- Control buttons -->
+          <template v-if="!isNew">
             <Separator orientation="vertical" class="mx-2 w-1" />
-            <Button
-              variant="outline"
-              size="icon"
-              title="Delete current note"
-              class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
-              @click="handleDelete"
-            >
-              <Icon name="trash" className="stroke-inherit" />
-            </Button>
-            <Button variant="outline" size="icon" class="group" @click="setFieldValue('pinned', !values.pinned)">
-              <Icon name="pin" v-if="!values.pinned" className="" />
-              <Icon name="pin" v-if="values.pinned" className="group-hover:hidden stroke-primary" />
-              <Icon name="pinOff" v-if="values.pinned" className="hidden group-hover:block stroke-primary" />
-            </Button>
-          </div>
+            <div class="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
+                @click="handleDelete"
+              >
+                <Icon name="trash" className="stroke-inherit" />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="icon"
+                class="group"
+                @click="togglePinAsync({ noteId: currentNoteId, pinned: !isPinned })"
+              >
+                <Icon v-if="!isPinned" name="pin" class="group-hover:stroke-primary" />
+                <Icon v-if="isPinned" name="pin" class="stroke-primary group-hover:hidden" />
+                <Icon v-if="isPinned" name="pinOff" class="stroke-primary hidden group-hover:block" />
+              </Button>
+            </div>
+          </template>
         </div>
       </header>
 
-      <!-- Make this container flex with full height -->
+      <!-- Editor -->
       <div class="flex min-h-0 flex-1 flex-col">
-        <!-- or min-h-[60vh] -->
         <TipTapEditor
           :value="values.content"
           @update:value="(value: string) => setFieldValue('content', value)"
@@ -296,7 +235,6 @@ const handleRemoveTag = (tagToRemove: string) => {
           :editable="true"
           :error="errors.content ?? undefined"
         >
-          <!-- Title Field -->
           <div>
             <Input
               name="title"
@@ -311,7 +249,7 @@ const handleRemoveTag = (tagToRemove: string) => {
         </TipTapEditor>
       </div>
 
-      <!-- Tags Field -->
+      <!-- Tags -->
       <div class="mt-auto">
         <div class="space-y-2">
           <div class="flex items-center gap-2">
@@ -325,11 +263,11 @@ const handleRemoveTag = (tagToRemove: string) => {
             <Button type="button" variant="outline" @click="handleAddTag" class="h-full"> Add </Button>
           </div>
 
-          <div v-if="values.tags && values.tags.length > 0" class="flex flex-wrap gap-2">
+          <div v-if="values.tags?.length" class="flex flex-wrap gap-2">
             <Badge v-for="(tag, index) in values.tags" :key="index" variant="outline" class="px-3 py-1.5 text-sm">
               {{ tag }}
               <Button variant="ghost" size="icon-sm" type="button" class="ml-2" @click="handleRemoveTag(tag)">
-                <Icon name="close" class="h-3 w-3" />
+                <XIcon class="h-3 w-3" />
               </Button>
             </Badge>
           </div>

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Note, NoteSchemaType } from '@repo/validation';
+import { EditableNote, Note, NoteSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -13,17 +13,48 @@ export class NoteService {
     private prisma: PrismaService,
   ) {}
 
-  async createNote(UserSession: UserSession, data: NoteSchemaType) {
+  async createNote(UserSession: UserSession, data: NoteSchemaType): Promise<Note> {
     await this.validation.canCreateLogs(UserSession.user.id, data.vehicleId);
-    return this.prisma.note.create({
+    const newNote = await this.prisma.note.create({
       data: {
         ...data,
         createdById: UserSession.user.id,
       },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        tags: true,
+        pinned: true,
+        createdAt: true,
+        updatedAt: true,
+        vehicleId: true,
+        createdById: true,
+        createdByUser: { select: { id: true, name: true, image: true } },
+        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
+      },
     });
+
+    return {
+      id: newNote.id,
+      title: newNote.title ?? '',
+      content: newNote.content ?? '',
+      tags: newNote.tags ?? [],
+      pinned: newNote.pinned ?? false,
+      createdAt: newNote.createdAt,
+      updatedAt: newNote.updatedAt,
+      vehicle: {
+        id: newNote.vehicle.id,
+        name: newNote.vehicle.name,
+        make: newNote.vehicle.make ?? '',
+        model: newNote.vehicle.model ?? '',
+        year: newNote.vehicle.year ?? 0,
+        type: newNote.vehicle.type,
+      },
+    };
   }
 
-  async updateNote(UserSession: UserSession, noteId: string, data: NoteSchemaType) {
+  async updateNote(UserSession: UserSession, noteId: string, data: NoteSchemaType): Promise<EditableNote> {
     const note = await this.prisma.note.findUnique({
       where: { id: noteId },
     });
@@ -38,7 +69,7 @@ export class NoteService {
     });
   }
 
-  async notePinnedToggle(UserSession: UserSession, noteId: string, pinned: boolean) {
+  async notePinnedToggle(UserSession: UserSession, noteId: string, pinned: boolean): Promise<EditableNote> {
     const note = await this.prisma.note.findUnique({ where: { id: noteId } });
     await this.validation.canEditLogs(UserSession.user.id, note?.vehicleId);
     return this.prisma.note.update({
@@ -60,7 +91,7 @@ export class NoteService {
     });
   }
 
-  async getEditableNote(userId: string, noteId: string): Promise<NoteSchemaType> {
+  async getEditableNote(userId: string, noteId: string): Promise<EditableNote> {
     const note = await this.prisma.note.findUnique({
       where: {
         id: noteId,
@@ -72,6 +103,7 @@ export class NoteService {
         tags: true,
         pinned: true,
         vehicleId: true,
+        updatedAt: true,
       },
     });
     if (!note) {
