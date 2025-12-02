@@ -6,7 +6,7 @@ import Input from "@/components/ui/input/Input.vue";
 import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
-import { computed, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useNoteQueries } from "@/lib/queries/useNoteQueries";
 import { toTypedSchema } from "@vee-validate/zod";
 import Button from "@/components/ui/button/Button.vue";
@@ -26,9 +26,7 @@ interface NoteSectionProps {
   vehicleId: Note["vehicle"]["id"];
 }
 
-const props = withDefaults(defineProps<NoteSectionProps>(), {
-  noteId: "new",
-});
+const props = defineProps<NoteSectionProps>();
 
 const { getEditableNote, createNoteAsync, updateNoteAsync, isCreating, isUpdating, isDeleting, deleteNoteAsync } =
   useNoteQueries();
@@ -52,7 +50,6 @@ watch(
   () => [props.noteId, noteQuery.isLoading.value],
   () => {
     currentNoteId.value = props.noteId;
-    debouncedSave;
 
     if (props.noteId === "new") {
       resetForm({
@@ -69,6 +66,20 @@ watch(
     });
   },
 );
+
+onMounted(() => {
+  // Seed form data when component mounts
+  if (props.noteId === "new") {
+    resetForm({
+      values: newNote({ vehicleId: props.vehicleId }),
+    });
+  } else if (noteQuery.data.value) {
+    lastServerState.value = noteQuery.data.value as NoteSchemaType;
+    resetForm({
+      values: noteQuery.data.value,
+    });
+  }
+});
 
 function handleDelete() {
   try {
