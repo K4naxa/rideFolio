@@ -23,8 +23,8 @@ import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import Icons from "@/components/icons/Icon.vue";
 import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
-import { useRefillQueries } from "@/lib/queries/useRefillQueries";
 import z from "zod";
+import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
 
 const { activeVehicle } = useActiveVehicle();
 const { vehicles } = useVehicleQueries();
@@ -95,7 +95,7 @@ const handleCostTotalChange = (value: string | number) => {
   }
 };
 
-const { createRefillAsync } = useRefillQueries();
+const { mutateAsync: createRefill } = useRefillCreate();
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createRefill");
 const handleClose = () => {
@@ -103,7 +103,7 @@ const handleClose = () => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  createRefillAsync(values, {
+  createRefill(values, {
     onSuccess: () => {
       toast.success("Refill created succesfully");
       handleClose();

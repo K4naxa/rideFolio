@@ -9,7 +9,7 @@ export const queryKeys = {
     // Vehicle sub-resources (nested under vehicle entity)
     refills: (vehicleId: string) => ["vehicles", "detail", vehicleId, "refills"] as const,
     maintenances: (vehicleId: string) => ["vehicles", "detail", vehicleId, "maintenances"] as const,
-    consumptionCharts: (vehicleId: string) => ["vehicles", "detail", vehicleId, "consumption-charts"] as const,
+    consumptionCharts: (vehicleId: string) => ["vehicles", "detail", vehicleId, "consumption-chart"] as const,
     consumptionChart: (vehicleId: string, timeRange: number) =>
       ["vehicles", "detail", vehicleId, "consumption-chart", { timeRange }] as const,
   },

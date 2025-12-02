@@ -1,6 +1,6 @@
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { useAccessiblePools } from "@/lib/queries/useAccessiblePools";
+import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
 
 export function useActivePool() {
   const route = useRoute();
@@ -14,7 +14,7 @@ export function useActivePool() {
   const hasActivePool = computed(() => !!activePoolId.value);
 
   // Get the full vehicle data from the accessible vehicles list
-  const { data: pools } = useAccessiblePools();
+  const { data: pools } = usePoolsAll();
 
   const activePool = computed(() => {
     if (!activePoolId.value || !pools.value) return null;

@@ -4,10 +4,9 @@ import type { RefillSchemaInput, TAccessibleVehicle } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
-export function useRefillQueries() {
+export function useRefillCreate() {
   const queryClient = useQueryClient();
-
-  const createRefill = useMutation({
+  return useMutation({
     mutationKey: ["create-refill"],
     mutationFn: async (data: RefillSchemaInput) => {
       const response = await api.post("/logs/refill", data);
@@ -33,20 +32,12 @@ export function useRefillQueries() {
         );
       });
 
-      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.refills(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.consumptionCharts(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
     },
     onError(error) {
-      console.error("REFILL CREATION API ERROR: ", error);
+      console.error("Refill API: Creation error ", error);
       toast.error("Error creating the Refill");
     },
   });
-
-  return {
-    createRefill: createRefill.mutate,
-    createRefillAsync: createRefill.mutateAsync,
-    createPending: createRefill.isPending,
-    createError: createRefill.isError,
-  };
 }

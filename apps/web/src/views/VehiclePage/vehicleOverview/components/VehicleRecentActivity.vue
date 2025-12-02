@@ -10,19 +10,21 @@ import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
 import { useInfiniteQuery } from "@tanstack/vue-query";
 import { useTimeAgo } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { computed, ref, unref } from "vue";
 import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
 import { capitalize } from "@/lib/utils";
+import { queryKeys } from "@/lib/queries/queryKeys";
+import { handleEmpty } from "@/lib/queries/util";
 
 const { activeVehicleId, activeVehicle } = useActiveVehicle();
 
 const LIMIT = 10;
 
 const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-  queryKey: ["vehicles", { id: activeVehicleId.value }, "recent-activity"],
+  queryKey: queryKeys.timelines.byVehicle(handleEmpty(activeVehicleId)),
   queryFn: async ({ pageParam }) => {
     const cursor = pageParam;
-    const response = await api.get(`/vehicles/${activeVehicleId.value}/infiniteActivities/${cursor}/${LIMIT}`);
+    const response = await api.get(`/vehicles/${unref(activeVehicleId)}/infiniteActivities/${cursor}/${LIMIT}`);
     return response.data;
   },
   getNextPageParam: (lastPage) => lastPage.nextCursor,

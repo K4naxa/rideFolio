@@ -38,9 +38,10 @@ export class LogsController {
   async getRefills(
     @Session() SessionUser: UserSession,
     @Param('vehicleId') vehicleId: string,
-    @Param('limit') limit: Date,
+    @Param('limit') limit: string,
   ) {
-    return await this.refillService.getRefillsForChart(SessionUser, vehicleId, limit);
+    const limitDate = new Date(limit);
+    return await this.refillService.getRefillsForChart(SessionUser, vehicleId, limitDate);
   }
 
   // ** MAINTENANCE **
