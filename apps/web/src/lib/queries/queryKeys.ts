@@ -29,12 +29,17 @@ export const queryKeys = {
     byUser: (userId: string) => ["timelines", "user", userId] as const,
   },
 
+  // ============ TODOS DOMAIN ============
+  todos: {
+    all: ["todos"] as const,
+    byVehicle: (vehicleId: string) => ["todos", "vehicle", vehicleId] as const,
+  },
+
   // ============ NOTES DOMAIN ============
   notes: {
     all: ["notes"] as const,
     byVehicle: (vehicleId: string) => ["notes", "vehicle", vehicleId] as const,
-    detail: (noteId: string) => ["notes", "detail", noteId] as const,
-    editable: (noteId: string) => ["notes", "detail", noteId, "editable"] as const,
+    editable: (noteId: string) => ["notes", "editable", noteId] as const,
   },
 
   // ============ MAINTENANCE DOMAIN ============

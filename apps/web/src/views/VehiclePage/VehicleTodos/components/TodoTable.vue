@@ -16,7 +16,8 @@ import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { useTodoQueries } from "@/lib/queries/useTodoQueries";
+import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
+import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
@@ -24,9 +25,9 @@ import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
 const { activeVehicleId } = useActiveVehicle();
-const { vehicleTodos, toggleTodo, deleteTodo, vehicleTodosLoading, vehicleTodosError } =
-  useTodoQueries(activeVehicleId);
-
+const { data: todos, isLoading, error } = useVehicleTodos(activeVehicleId);
+const { mutate: toggleTodo } = useTodoToggle();
+const { mutate: deleteTodo } = useTodoDelete();
 interface TodoTableProps {
   searchQuery?: string;
   size?: "sm" | "md";
@@ -64,9 +65,9 @@ const tableColumns = computed(() => {
 });
 
 const filteredTodos = computed(() => {
-  if (!vehicleTodos.value) return [];
+  if (!todos.value) return [];
 
-  let filtered = vehicleTodos.value;
+  let filtered = [...todos.value];
 
   // Apply search filter if query exists
   const query = props.searchQuery?.toLowerCase().trim();
@@ -81,7 +82,13 @@ const filteredTodos = computed(() => {
     filtered = filtered.filter((todo) => !todo.isCompleted);
   }
 
-  return filtered;
+  return filtered.sort((a, b) => {
+    // Incomplete todos first
+    if (a.isCompleted !== b.isCompleted) {
+      return a.isCompleted ? 1 : -1;
+    }
+    return 0;
+  });
 });
 
 const formatOdometer = (value: number, unit: string) => {
@@ -98,11 +105,7 @@ const formatDate = (dateString: string) => {
 </script>
 <template>
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
-    <ScrollArea
-      v-if="!vehicleTodosLoading && filteredTodos.length"
-      class="h-full min-h-0 w-full min-w-0 flex-1"
-      key="scrollArea"
-    >
+    <ScrollArea v-if="!isLoading && filteredTodos.length" class="h-full min-h-0 w-full min-w-0 flex-1" key="scrollArea">
       <div
         class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t border-b px-2 shadow-sm"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
@@ -134,7 +137,6 @@ const formatDate = (dateString: string) => {
               @update:model-value="
                 toggleTodo({
                   todoId: todo.id,
-                  vehicleId: todo.vehicleData.id,
                   complete: !todo.isCompleted,
                 })
               "
@@ -180,7 +182,7 @@ const formatDate = (dateString: string) => {
                 <Button size="icon" variant="ghost"> <Icon name="dotsHorizontal" /></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem> Edit </DropdownMenuItem>
+                <DropdownMenuItem @click="onOpen('createTodo', todo)"> Edit </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
                   @click="deleteTodo({ todoId: todo.id, vehicleId: todo.vehicleData.id })"
@@ -197,11 +199,16 @@ const formatDate = (dateString: string) => {
     </ScrollArea>
 
     <div v-else class="grid flex-1 place-content-center">
-      <p v-if="vehicleTodosLoading" class="text-muted-foreground"><Spinner /> Loading</p>
-      <p v-else-if="vehicleTodosError" class="text-destructive">Error loading todos.</p>
-      <p v-else-if="searchQuery" class="text-muted-foreground">No todos found matching your search</p>
+      <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
+      <p v-else-if="error" class="text-destructive">Error loading todos.</p>
+      <Empty v-else-if="searchQuery">
+        <EmptyHeader>
+          <EmptyTitle class="text-foreground"> No todos found </EmptyTitle>
+          <EmptyDescription> No todos match your search query. Try adjusting your search or filters. </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
 
-      <Empty v-else-if="!vehicleTodos?.length">
+      <Empty v-else-if="!todos?.length">
         <EmptyHeader>
           <EmptyTitle class="text-foreground"> You have no todos</EmptyTitle>
           <EmptyDescription> Create new todos to get started! </EmptyDescription>

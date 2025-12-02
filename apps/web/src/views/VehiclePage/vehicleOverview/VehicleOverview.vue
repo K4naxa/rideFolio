@@ -10,7 +10,6 @@ import Tabs from "@/components/ui/tabs/Tabs.vue";
 import TabsList from "@/components/ui/tabs/TabsList.vue";
 import TabsTrigger from "@/components/ui/tabs/TabsTrigger.vue";
 import TabsContent from "@/components/ui/tabs/TabsContent.vue";
-import { useTodoQueries } from "@/lib/queries/useTodoQueries";
 import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
 import Badge from "@/components/ui/badge/Badge.vue";
 import { useActiveVehicle } from "@/lib/useActiveVehicle";
@@ -28,12 +27,13 @@ import Button from "@/components/ui/button/Button.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
+import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
 
 const { activeVehicleId } = useActiveVehicle();
-const { vehicleTodos } = useTodoQueries(activeVehicleId);
+const { data: todos } = useVehicleTodos(activeVehicleId);
 const activeTab = ref<"todos" | "shoppinglist">("todos");
 const pendingTodosCount = computed(() => {
-  return vehicleTodos.value?.filter((todo) => !todo.isCompleted).length || 0;
+  return todos.value?.filter((todo) => !todo.isCompleted).length || 0;
 });
 
 const { vehicleShoppingList } = useShoppingQueries(activeVehicleId);

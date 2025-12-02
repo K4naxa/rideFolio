@@ -15,8 +15,7 @@ export class TodosController {
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(TodoSchema as ZodType)) todoDto: TodoSchemaType,
   ) {
-    await this.todoservice.createTodo(userSession, todoDto);
-    return { status: 'success' };
+    return await this.todoservice.createTodo(userSession, todoDto);
   }
 
   @Get()
@@ -34,9 +33,7 @@ export class TodosController {
     @Param('todoId') todoId: string,
     @Body() body: { complete: boolean },
   ) {
-    await this.todoservice.toggleTodoCompletion(userSession, todoId, body.complete);
-    console.log('Toggled todo completion status:', todoId, body.complete);
-    return { status: 'success' };
+    return await this.todoservice.toggleTodoCompletion(userSession, todoId, body.complete);
   }
   @Delete(':todoId')
   async deleteTodo(@Session() userSession: UserSession, @Param('todoId') todoId: string) {
@@ -50,7 +47,6 @@ export class TodosController {
     @Param('todoId') todoId: string,
     @Body(new ZodValidationPipe(TodoSchema as ZodType)) todoDto: TodoSchemaType,
   ) {
-    await this.todoservice.updateTodo(userSession, todoId, todoDto);
-    return { status: 'success' };
+    return await this.todoservice.updateTodo(userSession, todoId, todoDto);
   }
 }

@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Todo as PrismaTodo, Vehicle, User } from 'prisma/generated/prisma/client';
 import { Todo, TodoSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
+
+type TodoWithRelations = PrismaTodo & {
+  createdBy: Pick<User, 'name' | 'image'> | null;
+  vehicle: Vehicle;
+  completedBy: Pick<User, 'name' | 'image'> | null;
+};
 
 @Injectable()
 export class TodosService {
@@ -15,21 +22,16 @@ export class TodosService {
     private readonly authValidation: AuthValidationService,
   ) {}
 
-  async createTodo(userSession: UserSession, todoDto: TodoSchemaType) {
+  async createTodo(userSession: UserSession, todoDto: TodoSchemaType): Promise<Todo> {
     await this.authValidation.canCreateLogs(userSession.user.id, todoDto.vehicleId);
-    const vehicle = await this.vehicleRepo.findVehicleById(todoDto.vehicleId);
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: todoDto.vehicleId },
+    });
 
-    let dueOdometer_km: number | null = null;
-    let dueOdometer_hour: number | null = null;
-    if (todoDto.dueOdometer && vehicle?.odometerType) {
-      if (vehicle.odometerType === 'HOUR') {
-        dueOdometer_hour = todoDto.dueOdometer;
-      } else {
-        dueOdometer_km = this.unitConversion.normalizeOdometer(todoDto.dueOdometer, vehicle.odometerType);
-      }
-    }
+    if (!vehicle) throw new Error('Vehicle not found');
+    const { dueOdometer_km, dueOdometer_hour } = this.normalizeOdometerForStorage(todoDto.dueOdometer, vehicle);
 
-    await this.prisma.todo.create({
+    const createdTodo = await this.prisma.todo.create({
       data: {
         vehicleId: todoDto.vehicleId,
         title: todoDto.title,
@@ -41,12 +43,26 @@ export class TodosService {
         dueOdometer_hour,
         createdById: userSession.user.id,
       },
+      include: this.getTodoInclude(),
     });
+
+    return this.formatTodo(createdTodo);
   }
 
   async getAllTodosForUser(userSession: UserSession): Promise<Todo[]> {
     // Get all accessible vehicles for the user
-    const accessibleVehicles = await this.vehicleRepo.findAccessibleVehicles(userSession.user.id);
+    const accessibleVehicles = await this.prisma.vehicle.findMany({
+      where: {
+        OR: [
+          { ownerId: userSession.user.id },
+          {
+            pools: {
+              some: { pool: { members: { some: { userId: userSession.user.id } } } },
+            },
+          },
+        ],
+      },
+    });
     const vehicleIds = accessibleVehicles.map((v) => v.id);
 
     if (vehicleIds.length === 0) {
@@ -56,164 +72,31 @@ export class TodosService {
     // Fetch todos for all accessible vehicles
     const todos = await this.prisma.todo.findMany({
       where: { vehicleId: { in: vehicleIds } },
-      include: {
-        createdBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        vehicle: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            make: true,
-            model: true,
-            type: true,
-            odometer_km: true,
-            odometer_hour: true,
-            odometerType: true,
-          },
-        },
-        completedBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-      },
-      orderBy: [{ isCompleted: 'asc' }, { createdAt: 'desc' }],
+
+      include: this.getTodoInclude(),
+      orderBy: this.getTodoOrderBy(),
     });
 
     // Format todos with proper odometer calculations
-    const formattedTodos: Todo[] = todos.map((todo) => {
-      const vehicle = todo.vehicle;
-      const isHourly = vehicle.odometerType === 'HOUR';
-      const vehicleBaseOdometer = isHourly ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
-      const todoBaseOdometer: number = isHourly ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
-
-      return {
-        id: todo.id,
-        vehicleData: vehicle,
-        title: todo.title,
-        description: todo.description,
-        priority: todo.priority || null,
-        isCompleted: todo.isCompleted,
-        dueDate: todo.dueDate
-          ? {
-              date: todo.dueDate,
-              overdue: new Date() > todo.dueDate,
-            }
-          : null,
-        dueOdometer:
-          todo.dueOdometer_hour || todo.dueOdometer_km
-            ? {
-                ...this.unitConversion.getOdometerDataByType(todoBaseOdometer, vehicle.odometerType),
-                overdue: vehicleBaseOdometer >= todoBaseOdometer,
-              }
-            : null,
-        createdData: {
-          name: todo.createdBy?.name ?? 'Unknown User',
-          image: todo.createdBy?.image ?? null,
-          date: todo.createdAt,
-        },
-        completedData:
-          todo.isCompleted && todo.completedBy && todo.completedAt
-            ? {
-                name: todo.completedBy.name ?? '',
-                image: todo.completedBy.image ?? null,
-                date: todo.completedAt,
-              }
-            : null,
-      };
-    });
-
-    return formattedTodos;
+    return this.formatTodos(todos);
   }
 
   async getTodosForVehicle(userSession: UserSession, vehicleId: string): Promise<Todo[]> {
     await this.authValidation.hasAccessToVehicle(userSession.user.id, vehicleId);
     const vehicle = await this.vehicleRepo.findVehicleById(vehicleId);
-    if (!vehicle) {
-      throw new Error('Vehicle not found');
-    }
-    const isHourly = vehicle.odometerType === 'HOUR';
+    if (!vehicle) throw new Error('Vehicle not found');
 
     // fetch todos with related user data
     const todos = await this.prisma.todo.findMany({
       where: { vehicleId },
-      include: {
-        createdBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        vehicle: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            make: true,
-            model: true,
-            type: true,
-          },
-        },
-        completedBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-      },
-      orderBy: [{ isCompleted: 'asc' }, { createdAt: 'desc' }],
+      include: this.getTodoInclude(),
+      orderBy: this.getTodoOrderBy(),
     });
 
-    const vehicleBaseOdometer = isHourly ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
-
-    const formattedTodos: Todo[] = todos.map((todo) => {
-      const todoBaseOdometer: number = isHourly ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
-      return {
-        id: todo.id,
-        vehicleData: vehicle,
-        title: todo.title,
-        description: todo.description,
-        priority: todo.priority || null,
-        isCompleted: todo.isCompleted,
-        dueDate: todo.dueDate
-          ? {
-              date: todo.dueDate,
-              overdue: new Date() > todo.dueDate,
-            }
-          : null,
-        dueOdometer:
-          todo.dueOdometer_hour || todo.dueOdometer_km
-            ? {
-                ...this.unitConversion.getOdometerDataByType(todoBaseOdometer, vehicle.odometerType),
-                overdue: vehicleBaseOdometer >= todoBaseOdometer,
-              }
-            : null,
-        createdData: {
-          name: todo.createdBy?.name ?? 'Unknown User',
-          image: todo.createdBy?.image ?? null,
-          date: todo.createdAt,
-        },
-        completedData:
-          todo.isCompleted && todo.completedBy && todo.completedAt // Add completedAt check
-            ? {
-                name: todo.completedBy.name ?? '', // Handle potential null
-                image: todo.completedBy.image ?? null, // Handle potential null
-                date: todo.completedAt, // This field needs to exist in your Prisma model
-              }
-            : null,
-      };
-    });
-
-    return formattedTodos;
+    return this.formatTodos(todos);
   }
 
-  async toggleTodoCompletion(userSession: UserSession, todoId: string, complete: boolean) {
+  async toggleTodoCompletion(userSession: UserSession, todoId: string, complete: boolean): Promise<Todo> {
     const todo = await this.prisma.todo.findUnique({
       where: { id: todoId },
       include: { vehicle: { select: { id: true } } },
@@ -223,14 +106,16 @@ export class TodosService {
     }
 
     await this.authValidation.canCreateLogs(userSession.user.id, todo.vehicle.id);
-    await this.prisma.todo.update({
+    const updatedTodo = await this.prisma.todo.update({
       where: { id: todoId },
       data: {
         isCompleted: complete,
         completedById: complete ? userSession.user.id : null,
         completedAt: complete ? new Date() : null,
       },
+      include: this.getTodoInclude(),
     });
+    return this.formatTodo(updatedTodo);
   }
 
   async deleteTodo(userSession: UserSession, todoId: string) {
@@ -247,30 +132,14 @@ export class TodosService {
     });
   }
 
-  async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType) {
-    const todo = await this.prisma.todo.findUnique({ where: { id: todoId }, include: { vehicle: true } });
-    if (!todo) {
-      throw new Error('Todo not found');
-    }
+  async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType): Promise<Todo> {
+    await this.authValidation.canEditLogs(userSession.user.id, todoDto.vehicleId);
 
-    const vehicle = todo.vehicle ?? (await this.vehicleRepo.findVehicleById(todoDto.vehicleId));
-    if (!vehicle) {
-      throw new Error('Vehicle not found');
-    }
+    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: todoDto.vehicleId } });
+    if (!vehicle) throw new Error('Vehicle not found');
+    const { dueOdometer_km, dueOdometer_hour } = this.normalizeOdometerForStorage(todoDto.dueOdometer, vehicle);
 
-    await this.authValidation.canEditLogs(userSession.user.id, vehicle.id);
-
-    let dueOdometer_km: number | null = null;
-    let dueOdometer_hour: number | null = null;
-    if (todoDto.dueOdometer && vehicle?.odometerType) {
-      if (vehicle.odometerType === 'HOUR') {
-        dueOdometer_hour = todoDto.dueOdometer;
-      } else {
-        dueOdometer_km = this.unitConversion.normalizeOdometer(todoDto.dueOdometer, vehicle.odometerType);
-      }
-    }
-
-    await this.prisma.todo.update({
+    const updatedTodo = await this.prisma.todo.update({
       where: { id: todoId },
       data: {
         vehicleId: todoDto.vehicleId,
@@ -281,6 +150,125 @@ export class TodosService {
         dueOdometer_km,
         dueOdometer_hour,
       },
+      include: this.getTodoInclude(),
     });
+
+    return this.formatTodo(updatedTodo);
+  }
+
+  // HELPERS
+  //////////////////////////
+  private normalizeOdometerForStorage(
+    dueOdometer: number | undefined | null,
+    vehicle: Vehicle,
+  ): { dueOdometer_km: number | null; dueOdometer_hour: number | null } {
+    if (!dueOdometer || !vehicle?.odometerType) {
+      return { dueOdometer_km: null, dueOdometer_hour: null };
+    }
+
+    if (vehicle.odometerType === 'HOUR') {
+      return { dueOdometer_km: null, dueOdometer_hour: dueOdometer };
+    }
+
+    return {
+      dueOdometer_km: this.unitConversion.normalizeOdometer(dueOdometer, vehicle.odometerType),
+      dueOdometer_hour: null,
+    };
+  }
+
+  private getVehicleBaseOdometer(vehicle: Vehicle): number {
+    return vehicle.odometerType === 'HOUR' ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
+  }
+  private getTodoBaseOdometer(todo: PrismaTodo, vehicle: Vehicle): number {
+    return vehicle.odometerType === 'HOUR' ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
+  }
+  private formatDueDate(dueDate: Date | null): Todo['dueDate'] {
+    if (!dueDate) return null;
+
+    return {
+      date: dueDate,
+      overdue: new Date() > dueDate,
+    };
+  }
+
+  private formatDueOdometer(todo: PrismaTodo, vehicle: Vehicle): Todo['dueOdometer'] {
+    // Check if todo has any odometer value set
+    if (!todo.dueOdometer_hour && !todo.dueOdometer_km) {
+      return null;
+    }
+
+    const todoBaseOdometer = this.getTodoBaseOdometer(todo, vehicle);
+    const vehicleBaseOdometer = this.getVehicleBaseOdometer(vehicle);
+
+    return {
+      ...this.unitConversion.getOdometerDataByType(todoBaseOdometer, vehicle.odometerType),
+      overdue: vehicleBaseOdometer >= todoBaseOdometer,
+    };
+  }
+
+  private formatCreatedData(createdBy: Pick<User, 'name' | 'image'> | null, createdAt: Date): Todo['createdData'] {
+    return {
+      name: (createdBy?.name as string) ?? 'Unknown User',
+      image: (createdBy?.image as string) ?? null,
+      date: createdAt,
+    };
+  }
+  private formatCompletedData(
+    isCompleted: boolean,
+    completedBy: Pick<User, 'name' | 'image'> | null,
+    completedAt: Date | null,
+  ): Todo['completedData'] {
+    if (!isCompleted || !completedBy || !completedAt) {
+      return null;
+    }
+
+    return {
+      name: completedBy.name ?? '',
+      image: completedBy.image ?? null,
+      date: completedAt,
+    };
+  }
+
+  private formatTodo(todo: TodoWithRelations): Todo {
+    const vehicle = todo.vehicle;
+
+    return {
+      id: todo.id,
+      vehicleData: vehicle,
+      title: todo.title,
+      description: todo.description,
+      priority: todo.priority || null,
+      isCompleted: todo.isCompleted,
+      dueDate: this.formatDueDate(todo.dueDate),
+      dueOdometer: this.formatDueOdometer(todo, vehicle),
+      createdData: this.formatCreatedData(todo.createdBy, todo.createdAt),
+      completedData: this.formatCompletedData(todo.isCompleted, todo.completedBy, todo.completedAt),
+    };
+  }
+
+  private formatTodos(todos: TodoWithRelations[]): Todo[] {
+    return todos.map((todo) => this.formatTodo(todo));
+  }
+
+  private getTodoInclude() {
+    return {
+      createdBy: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      vehicle: true,
+      completedBy: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+    };
+  }
+
+  private getTodoOrderBy() {
+    return [{ isCompleted: 'asc' as const }, { createdAt: 'desc' as const }];
   }
 }
