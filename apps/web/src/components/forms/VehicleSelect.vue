@@ -7,7 +7,7 @@ import VehicleSelectItem from "@/components/forms/VehicleSelectItem.vue";
 import { ChevronsUpDown } from "lucide-vue-next";
 import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
 import Separator from "../ui/separator/Separator.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 
 interface VehicleSelectProps {
   value?: string;
@@ -46,7 +46,7 @@ const filteredVehicles = computed(() => {
   return filtered;
 });
 
-const { vehicles } = useVehicleQueries();
+const { data: vehicles } = useVehiclesAll();
 
 const selectedVehicle = computed(() => vehicles?.value?.find((vehicle) => vehicle.vehicleData.id === props.value));
 </script>

@@ -4,7 +4,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import NoteSection from "./components/NoteSection.vue";
@@ -27,8 +27,8 @@ const route = useRoute();
 const { onOpen } = useModalStore();
 const isMobile = useMediaQuery("(max-width: 1024px)");
 
-const { activeVehicleId } = useActiveVehicle();
-const { data: vehicleNotes, isLoading: vehicleNotesLoading } = useVehicleNotes(activeVehicleId);
+const { currentVehicleId } = useCurrentVehicle();
+const { data: vehicleNotes, isLoading: vehicleNotesLoading } = useVehicleNotes(currentVehicleId);
 
 const selectedNoteId = computed({
   get: () => route.query.note as string | null,
@@ -136,7 +136,7 @@ const handleNewClick = () => {
     </div>
 
     <div class="hidden flex-1 flex-col lg:flex">
-      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" :vehicle-id="activeVehicleId || ''" />
+      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" :vehicle-id="currentVehicleId || ''" />
       <div v-else class="text-muted-foreground flex flex-1 items-center justify-center">
         Select a note to view or edit
 

@@ -17,9 +17,9 @@ import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { TodoSchema, type Todo } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -27,8 +27,7 @@ import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
-const { activeVehicle } = useActiveVehicle();
-const { vehicles } = useVehicleQueries();
+const { currentVehicle } = useCurrentVehicle();
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createTodo");
@@ -43,13 +42,15 @@ const { mutateAsync: updateTodo } = useTodoUpdate();
 
 const showDueOptions = ref(false);
 
-const { handleSubmit, resetForm, isSubmitting } = useForm({
+const { handleSubmit, resetForm, isSubmitting, values } = useForm({
   validationSchema: toTypedSchema(TodoSchema),
   initialValues: {
     title: "",
-    vehicleId: activeVehicle.value?.vehicleData.id,
+    vehicleId: currentVehicle.value?.vehicleData.id,
   },
 });
+
+const { selectedVehicleOdometerUnit } = useSelectedVehicle(values.vehicleId);
 
 watch(isModalOpen, (open) => {
   if (open) {
@@ -72,11 +73,11 @@ watch(isModalOpen, (open) => {
       return;
     }
   }
-  if (open && activeVehicle.value) {
+  if (open && currentVehicle.value) {
     showDueOptions.value = false;
     resetForm({
       values: {
-        vehicleId: activeVehicle.value.vehicleData.id,
+        vehicleId: currentVehicle.value.vehicleData.id,
       },
     });
   } else {
@@ -131,7 +132,6 @@ const onSubmit = handleSubmit(async (values) => {
         <Field v-slot="{ value, handleChange }" name="vehicleId">
           <div>
             <VehicleSelect
-              :vehicles="vehicles"
               :value="value"
               @valueChange="handleChange"
               placeholder="Select a vehicle"
@@ -185,7 +185,13 @@ const onSubmit = handleSubmit(async (values) => {
           <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
             <div class="slide-content grid grid-cols-1 gap-6 md:grid-cols-2">
               <DateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
-              <Input name="dueOdometer" type="number" placeholder="Due Odometer" data-cy="due-odometer-input" />
+              <Input
+                name="dueOdometer"
+                type="number"
+                :suffix="selectedVehicleOdometerUnit"
+                placeholder="Due Odometer"
+                data-cy="due-odometer-input"
+              />
             </div>
           </div>
         </Transition>

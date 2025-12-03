@@ -17,8 +17,7 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { MaintenanceSchema, type TMaintenanceFormPart } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -28,18 +27,20 @@ import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { toast } from "vue-sonner";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import { useMaintenanceTypes } from "@/lib/queries/maintenances/maintenance-queries";
+import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mutations";
+import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 
 // Modal store
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createMaintenance");
 // Vehicle info
-const { activeVehicleId } = useActiveVehicle();
-const { vehicles } = useVehicleQueries();
-const selectedVehicle = computed(() => vehicles.value?.find(({ vehicleData }) => vehicleData.id === values.vehicleId));
+const { currentVehicleId } = useCurrentVehicle();
 
 // Maintenance queries
-const { createMaintenanceAsync, maintenanceTypes } = useMaintenanceQueries();
+const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
+
+const { data: maintenanceTypes, isLoading: isLoadingTypes, error: maintenanceTypesError } = useMaintenanceTypes();
 
 const selectedType = computed(() => {
   return maintenanceTypes.value?.find((type) => type.id === values.typeId) || null;
@@ -55,6 +56,8 @@ const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm
     notes: "",
   },
 });
+
+const { selectedVehicleOdometerUnit, selectedVehicle } = useSelectedVehicle(values.vehicleId);
 
 // Separate ref for form parts to pass to PartsFormField component
 const formParts = ref<TMaintenanceFormPart[]>([]);
@@ -91,11 +94,11 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 watch(isModalOpen, (open) => {
-  if (open && activeVehicleId) {
+  if (open && currentVehicleId) {
     resetForm({
       values: {
         ...values,
-        vehicleId: activeVehicleId.value,
+        vehicleId: currentVehicleId.value,
         date: new Date(),
       },
     });
@@ -124,12 +127,7 @@ watch(isModalOpen, (open) => {
 
             <div class="grid grid-cols-2 gap-6">
               <DateInput name="date" :initial-value="new Date()" disableFuture />
-              <Input
-                name="odometer"
-                type="number"
-                placeholder="Odometer"
-                :suffix="selectedVehicle?.vehicleData.odometerData.unit"
-              />
+              <Input name="odometer" type="number" placeholder="Odometer" :suffix="selectedVehicleOdometerUnit" />
             </div>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -147,6 +145,10 @@ watch(isModalOpen, (open) => {
                       </div>
                     </SelectTrigger>
                     <SelectContent>
+                      <span v-if="isLoadingTypes"> <Spinner /> </span>
+                      <span v-if="maintenanceTypesError" class="text-destructive">
+                        Failed to load maintenance types
+                      </span>
                       <SelectItem v-for="type in maintenanceTypes" :key="type.code" :value="type.id" class="flex gap-2">
                         <Icon v-if="type.icon" :name="type.icon as IconProps['name']" class="stroke-muted-foreground" />
                         <p class="capitalize">{{ type.code }}</p>

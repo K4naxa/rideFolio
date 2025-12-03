@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { RouterView } from "vue-router";
 import { computed } from "vue";
 import VehicleHero from "./components/VehicleHero.vue";
@@ -12,22 +12,22 @@ interface VehicleTab {
   isLoading?: boolean;
 }
 
-const { activeVehicleId } = useActiveVehicle();
+const { currentVehicleId } = useCurrentVehicle();
 
 const VEHICLE_TABS = computed<VehicleTab[]>(() => [
-  { to: `/vehicles/${activeVehicleId.value}`, label: "Overview", id: "overview" },
+  { to: `/vehicles/${currentVehicleId.value}`, label: "Overview", id: "overview" },
   {
-    to: `/vehicles/${activeVehicleId.value}/todos`,
+    to: `/vehicles/${currentVehicleId.value}/todos`,
     label: "To-dos",
     id: "todos",
   },
   {
-    to: `/vehicles/${activeVehicleId.value}/notes`,
+    to: `/vehicles/${currentVehicleId.value}/notes`,
     label: "Notes",
     id: "notes",
   },
   {
-    to: `/vehicles/${activeVehicleId.value}/shopping-list`,
+    to: `/vehicles/${currentVehicleId.value}/shopping-list`,
     label: "Shopping list",
     id: "shopping-list",
   },

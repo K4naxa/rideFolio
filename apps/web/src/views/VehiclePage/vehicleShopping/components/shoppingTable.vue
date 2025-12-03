@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { ref, onMounted, nextTick, watch } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
+import { useShoppingDelete, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import Button from "@/components/ui/button/Button.vue";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { BrushCleaningIcon } from "lucide-vue-next";
-import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { computed } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 
@@ -15,13 +23,11 @@ interface ShoppingTableProps {
 }
 const props = defineProps<ShoppingTableProps>();
 
-const { activeVehicleId } = useActiveVehicle();
-const {
-  vehicleShoppingList,
-  toggleItem,
-  deleteItem,
-  vehicleShoppingListLoading: isLoading,
-} = useShoppingQueries(activeVehicleId);
+const { currentVehicleId } = useCurrentVehicle();
+
+const { data: vehicleShoppingList, isLoading } = useShoppingVehicle(currentVehicleId);
+const { mutate: toggleItem } = useShoppingToggle();
+const { mutateAsync: deleteItem } = useShoppingDelete();
 const isMobile = useMediaQuery("(max-width: 768px)");
 
 const filteredItems = computed(() => {
@@ -39,14 +45,6 @@ const handleCleanup = async () => {
     await deleteItem({ itemId: item.id, vehicleId: item.vehicleId });
   }
 };
-
-import { ref, onMounted, nextTick, watch } from "vue";
-import { useMediaQuery } from "@vueuse/core";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 
 const longestPriceWidth = ref(0);
 const gridColStyle = computed(() => {
@@ -111,7 +109,6 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
               @click="
                 toggleItem({
                   itemId: item.id,
-                  vehicleId: item.vehicleId,
                   purchased: !item.isPurchased,
                 })
               "
@@ -122,7 +119,6 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
               @click="
                 toggleItem({
                   itemId: item.id,
-                  vehicleId: item.vehicleId,
                   purchased: !item.isPurchased,
                 })
               "

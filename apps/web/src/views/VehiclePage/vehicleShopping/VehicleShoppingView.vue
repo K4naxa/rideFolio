@@ -2,21 +2,21 @@
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 
-import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { ShoppingListItemSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 import ShoppingTable from "./components/shoppingTable.vue";
-const { activeVehicleId } = useActiveVehicle();
+import { useShoppingCreate } from "@/lib/queries/shopping/shopping-mutations";
+const { currentVehicleId } = useCurrentVehicle();
 
-const { createItem } = useShoppingQueries(activeVehicleId);
+const { mutateAsync: createItem } = useShoppingCreate();
 
 const { handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(ShoppingListItemSchema),
   initialValues: {
-    vehicleId: activeVehicleId.value,
+    vehicleId: currentVehicleId.value,
     name: "",
   },
 });

@@ -17,7 +17,8 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
+import { useVehicleCreate } from "@/lib/queries/vehicles/vehicle-mutations";
+import { useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
 import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -27,14 +28,12 @@ import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import z from "zod";
 
-const selectedVehicleIcon = computed(() => {
-  const selectedType = values.type;
-  const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
-  return vehicleType?.icon as IconProps["name"];
-});
+const router = useRouter();
 
-const { createVehicleAsync, createPending } = useVehicleQueries();
-const { vehicles, vehicleTypes } = useVehicleQueries();
+const { mutateAsync: createVehicleAsync, isPending: createPending } = useVehicleCreate();
+const { data: vehicles } = useVehiclesAll();
+const { data: vehicleTypes } = useVehicleTypes();
+
 const clientSchema = VehicleSchema.extend({
   licensePlate: z
     .string()
@@ -50,7 +49,6 @@ const clientSchema = VehicleSchema.extend({
     ),
 });
 
-const router = useRouter();
 // Modal logic
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
@@ -77,6 +75,12 @@ const onSubmit = handleSubmit(async (data) => {
       }, 100);
     },
   });
+});
+
+const selectedVehicleIcon = computed(() => {
+  const selectedType = values.type;
+  const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
+  return vehicleType?.icon as IconProps["name"];
 });
 </script>
 

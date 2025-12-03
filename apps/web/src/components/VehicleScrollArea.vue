@@ -2,11 +2,11 @@
 import { ScrollArea } from "./ui/scroll-area";
 import ScrollBar from "./ui/scroll-area/ScrollBar.vue";
 import VehicleTypeIcon from "./icons/VehicleTypeIcon.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import Button from "./ui/button/Button.vue";
 import { useModalStore } from "@/stores/modal";
+import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 
-const { vehicles } = useVehicleQueries();
+const { data: vehicles } = useVehiclesAll();
 const modalStore = useModalStore();
 const openCreateVehicleModal = () => {
   modalStore.onOpen("createVehicle");

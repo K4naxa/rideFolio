@@ -15,24 +15,19 @@ import Switch from "@/components/ui/switch/Switch.vue";
 import HelpTooltip from "@/components/ui/HelpTooltip.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import DateInput from "@/components/forms/DateInput.vue";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import Icons from "@/components/icons/Icon.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import z from "zod";
 import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
 
-const { activeVehicle } = useActiveVehicle();
-const { vehicles } = useVehicleQueries();
-const selectedVehicle = computed(() => vehicles.value?.find((vehicle) => vehicle.vehicleData.id === values.vehicleId));
-const lastOdometer = computed(() => {
-  return selectedVehicle.value?.vehicleData.odometerData.lastRefillValue || null;
-});
+import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 
+const { currentVehicleId } = useCurrentVehicle();
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
   validationSchema: toTypedSchema(
     RefillSchema.extend({
@@ -40,8 +35,8 @@ const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm
         async (value): Promise<boolean> => {
           if (!value) return true;
 
-          if (!lastOdometer.value) return true;
-          return lastOdometer.value < value;
+          if (!selectedVehicleLastRefillOdometer.value) return true;
+          return selectedVehicleLastRefillOdometer.value < value;
         },
         {
           message: "Must be greater than last refill ",
@@ -53,9 +48,13 @@ const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm
     fullRefill: true,
     skippedRefill: false,
     date: new Date(),
-    vehicleId: activeVehicle.value?.vehicleData.id,
+    vehicleId: currentVehicleId.value,
   },
 });
+
+const { selectedVehicle, selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSelectedVehicle(
+  values.vehicleId,
+);
 
 // FUNCTIONS FOR CALCULATION HANDLING
 const handleFuelAmountChange = (value: string | number) => {
@@ -112,11 +111,11 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 watch(isModalOpen, (open) => {
-  if (open && activeVehicle.value) {
+  if (open && currentVehicleId.value) {
     resetForm({
       values: {
         ...values,
-        vehicleId: activeVehicle.value.vehicleData.id,
+        vehicleId: currentVehicleId.value,
         date: new Date(),
         fullRefill: true,
         skippedRefill: false,
@@ -141,7 +140,6 @@ watch(isModalOpen, (open) => {
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect
-                :vehicles="vehicles"
                 :value="value"
                 @valueChange="handleChange"
                 placeholder="Select a vehicle"
@@ -162,8 +160,10 @@ watch(isModalOpen, (open) => {
                 :suffix="selectedVehicle?.vehicleData.odometerData.unit"
                 data-cy="odometer-input"
               />
-              <span v-if="lastOdometer" class="text-muted-foreground absolute -bottom-2 left-2 text-xs"
-                >Last: {{ lastOdometer }} {{ selectedVehicle?.vehicleData.odometerData.unit }}</span
+              <span
+                v-if="selectedVehicleLastRefillOdometer"
+                class="text-muted-foreground absolute -bottom-2 left-2 text-xs"
+                >Last: {{ selectedVehicleLastRefillOdometer }} {{ selectedVehicleOdometerUnit }}</span
               >
             </div>
           </div>

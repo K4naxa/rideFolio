@@ -3,15 +3,18 @@ export const queryKeys = {
   vehicles: {
     all: ["vehicles"] as const,
     lists: () => ["vehicles", "list"] as const,
-    details: () => ["vehicles", "detail"] as const,
-    detailsForVehicle: (vehicleId: string) => ["vehicles", "detail", vehicleId] as const,
+    details: () => ["vehicles", "details"] as const,
+    detailsForVehicle: (vehicleId: string) => ["vehicles", "details", vehicleId] as const,
 
     // Vehicle sub-resources (nested under vehicle entity)
-    refills: (vehicleId: string) => ["vehicles", "detail", vehicleId, "refills"] as const,
-    maintenances: (vehicleId: string) => ["vehicles", "detail", vehicleId, "maintenances"] as const,
-    consumptionCharts: (vehicleId: string) => ["vehicles", "detail", vehicleId, "consumption-chart"] as const,
+    refills: (vehicleId: string) => ["vehicles", "details", vehicleId, "refills"] as const,
+    maintenances: (vehicleId: string) => ["vehicles", "details", vehicleId, "maintenances"] as const,
+
+    consumptionCharts: (vehicleId: string) => ["vehicles", "details", vehicleId, "consumption-chart"] as const,
     consumptionChart: (vehicleId: string, timeRange: number) =>
-      ["vehicles", "detail", vehicleId, "consumption-chart", { timeRange }] as const,
+      ["vehicles", "details", vehicleId, "consumption-chart", { timeRange }] as const,
+
+    heroStatCards: (vehicleId: string) => ["vehicles", "details", vehicleId, "hero-stat-cards"] as const,
   },
 
   // ============ POOLS DOMAIN ============

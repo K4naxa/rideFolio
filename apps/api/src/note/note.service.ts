@@ -138,7 +138,7 @@ export class NoteService {
         createdByUser: { select: { id: true, name: true, image: true } },
         vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
       },
-      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
+      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
     });
 
     return notes.map((note) => ({
@@ -164,8 +164,6 @@ export class NoteService {
     await this.validation.hasAccessToVehicle(UserSession.user.id, vehicleId);
     const notes = await this.prisma.note.findMany({
       where: { vehicleId },
-      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
-
       select: {
         id: true,
         title: true,
@@ -179,6 +177,7 @@ export class NoteService {
         createdByUser: { select: { id: true, name: true, image: true } },
         vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
       },
+      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
     });
     return notes.map((note) => ({
       id: note.id,

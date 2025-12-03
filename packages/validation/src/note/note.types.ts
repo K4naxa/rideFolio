@@ -7,7 +7,7 @@ export type Note = {
   tags: string[];
   pinned: boolean;
   createdAt: Date;
-  updatedAt: Date | null;
+  updatedAt: Date;
   vehicle: {
     id: string;
     make: string | null;
@@ -25,7 +25,7 @@ export type EditableNote = {
   tags: string[];
   vehicleId: string;
   pinned: boolean;
-  updatedAt: Date | null;
+  updatedAt: Date;
 };
 
 export function newNote({ vehicleId, title, content, tags }: Partial<NoteSchemaType> = {}): NoteSchemaType {

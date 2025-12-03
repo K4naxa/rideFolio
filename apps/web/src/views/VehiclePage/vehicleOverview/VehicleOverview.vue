@@ -10,9 +10,8 @@ import Tabs from "@/components/ui/tabs/Tabs.vue";
 import TabsList from "@/components/ui/tabs/TabsList.vue";
 import TabsTrigger from "@/components/ui/tabs/TabsTrigger.vue";
 import TabsContent from "@/components/ui/tabs/TabsContent.vue";
-import { useShoppingQueries } from "@/lib/queries/useShoppingQueries";
 import Badge from "@/components/ui/badge/Badge.vue";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import Card from "@/components/ui/card/Card.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
@@ -28,15 +27,16 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
+import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
 
-const { activeVehicleId } = useActiveVehicle();
-const { data: todos } = useVehicleTodos(activeVehicleId);
+const { currentVehicleId } = useCurrentVehicle();
+const { data: todos } = useVehicleTodos(currentVehicleId);
 const activeTab = ref<"todos" | "shoppinglist">("todos");
 const pendingTodosCount = computed(() => {
   return todos.value?.filter((todo) => !todo.isCompleted).length || 0;
 });
 
-const { vehicleShoppingList } = useShoppingQueries(activeVehicleId);
+const { data: vehicleShoppingList } = useShoppingVehicle(currentVehicleId);
 const ShoppingListCount = computed(() => {
   return vehicleShoppingList.value?.length || 0;
 });

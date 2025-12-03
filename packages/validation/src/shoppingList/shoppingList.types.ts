@@ -1,11 +1,17 @@
-export interface ShoppingListItem {
+export interface ShoppingItem {
   id: string;
-  vehicleId: string;
   name: string;
+  vehicleId: string;
   price: number | null;
   isPurchased: boolean;
-  createdAt: Date;
   updatedAt: Date;
-  purchasedAt: Date | null;
-  createdById: string | null;
 }
+export const ShoppingListDB_Select = {
+  id: true,
+  vehicleId: true,
+  name: true,
+  price: true,
+  isPurchased: true,
+  updatedAt: true,
+};
+export const ShoppingListDB_OrderBy = [{ isPurchased: "asc" as const }, { updatedAt: "desc" as const }];

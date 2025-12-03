@@ -13,14 +13,16 @@ import {
 
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { useMaintenanceQueries } from "@/lib/queries/useMaintenanceQueries";
+import { useMaintenancePartCategories } from "@/lib/queries/maintenances/maintenance-queries";
 import type {
   TAccessibleVehicle,
   TMaintenanceCategory,
   TMaintenanceCategoryPart,
   TMaintenanceFormPart,
 } from "@repo/validation";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { usePartCleaner } from "../composables/usePartCleaner";
+import { toast } from "vue-sonner";
 
 interface PartDisplay {
   groupId: string;
@@ -45,7 +47,8 @@ const selectedCategory = ref<TMaintenanceCategory | null>(null);
 const selectedPart = ref<TMaintenanceCategoryPart | null>(null);
 const customTypeInput = ref<string>("");
 
-const { partCategories, partCategoriesLoading } = useMaintenanceQueries(selectedVehicleType);
+const { data: partCategories, isLoading: partCategoriesLoading } = useMaintenancePartCategories(selectedVehicleType);
+const { cleanupPartsForVehicleType } = usePartCleaner();
 
 const displayParts = computed<PartDisplay[]>(() => {
   const parts = props.values || [];
@@ -151,6 +154,34 @@ function handleDeletePart(groupId: string) {
   const updatedParts = props.values.filter((part) => part.groupId !== groupId);
   emits("update:values", updatedParts);
 }
+
+watch(
+  () => selectedCategory.value,
+  () => {
+    selectedPart.value = null;
+  },
+);
+watch(
+  () => partCategories.value,
+  (newCategories, oldCategories) => {
+    if (!newCategories) return;
+    if (oldCategories === undefined) return;
+
+    selectedCategory.value = null;
+    selectedPart.value = null;
+
+    const oldPartsCount = props.values.length;
+
+    const cleanedParts = cleanupPartsForVehicleType(props.values, newCategories);
+    const newPartsCount = cleanedParts.length;
+
+    if (oldPartsCount !== newPartsCount) {
+      toast.warning("Some parts were removed as they are not compatible with the newly selected vehicle type.");
+    }
+
+    emits("update:values", cleanedParts);
+  },
+);
 </script>
 
 <template>

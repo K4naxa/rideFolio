@@ -5,32 +5,18 @@ import Button from "@/components/ui/button/Button.vue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import { api } from "@/lib/api";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
-import { useInfiniteQuery } from "@tanstack/vue-query";
 import { useTimeAgo } from "@vueuse/core";
-import { computed, ref, unref } from "vue";
+import { computed, ref } from "vue";
 import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
 import { capitalize } from "@/lib/utils";
-import { queryKeys } from "@/lib/queries/queryKeys";
-import { handleEmpty } from "@/lib/queries/util";
+import { useVehicleTimelineInfinite } from "@/lib/queries/vehicles/vehicle-queries";
 
-const { activeVehicleId, activeVehicle } = useActiveVehicle();
+const { currentVehicleId, currentVehicle } = useCurrentVehicle();
 
-const LIMIT = 10;
-
-const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-  queryKey: queryKeys.timelines.byVehicle(handleEmpty(activeVehicleId)),
-  queryFn: async ({ pageParam }) => {
-    const cursor = pageParam;
-    const response = await api.get(`/vehicles/${unref(activeVehicleId)}/infiniteActivities/${cursor}/${LIMIT}`);
-    return response.data;
-  },
-  getNextPageParam: (lastPage) => lastPage.nextCursor,
-  initialPageParam: "initial",
-  enabled: computed(() => !!activeVehicleId.value),
-});
+const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  useVehicleTimelineInfinite(currentVehicleId);
 
 const allActivities = computed<RecentActivityInfiniteResponse["items"]>(() => {
   return data.value?.pages.flatMap((page) => page.items) ?? [];
@@ -48,7 +34,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
   <Card class="flex h-full flex-col">
     <CardHeader>
       <CardTitle> <Icon name="stats" class="stroke-primary" /> Recent activity</CardTitle>
-      <CardDescription> Latest activity for {{ activeVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
+      <CardDescription> Latest activity for {{ currentVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
     </CardHeader>
     <CardContent class="min-h-0 flex-1 rounded px-0">
       <ScrollArea ref="scrollAreaRef" class="h-full w-full">

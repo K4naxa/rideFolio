@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import { useActivePool } from "@/lib/useActivePool";
 import { useRoute } from "vue-router";
 import AppHeaderProfileButton from "./AppHeaderProfileButton.vue";
@@ -13,10 +13,10 @@ import Icons from "../icons/Icon.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();
-const { activeVehicleName } = useActiveVehicle();
+const { currentVehicleName } = useCurrentVehicle();
 const { activePoolName } = useActivePool();
 
-const title = computed(() => activeVehicleName.value || activePoolName.value || route.name?.toString());
+const title = computed(() => currentVehicleName.value || activePoolName.value || route.name?.toString());
 
 type IconName = "refill" | "maintenance" | "notes" | "todo" | "bell";
 

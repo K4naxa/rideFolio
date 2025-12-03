@@ -11,4 +11,4 @@ export const ShoppingListItemSchema = z.object({
     .optional(),
 });
 
-export type ShoppingListItemSchemaType = z.infer<typeof ShoppingListItemSchema>;
+export type ShoppingItemValues = z.infer<typeof ShoppingListItemSchema>;

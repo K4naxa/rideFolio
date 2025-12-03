@@ -37,6 +37,6 @@ export const useEditableNote = (noteId: MaybeRef<string | undefined>) => {
     queryFn: async (): Promise<NoteSchemaType | undefined> => {
       return await fetchApi<Required<NoteSchemaType>>(`/notes/${unref(noteId)}/editable`);
     },
-    enabled: computed(() => !!unref(noteId)),
+    enabled: computed(() => !!unref(noteId) && unref(noteId) !== "new"),
   });
 };

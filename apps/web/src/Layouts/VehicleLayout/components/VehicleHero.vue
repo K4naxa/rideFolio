@@ -7,42 +7,31 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import NumberFlow from "@number-flow/vue";
-import { fetchApi } from "@/lib/api";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
-import { type TStatCardData } from "@repo/validation";
-import { useQuery } from "@tanstack/vue-query";
+
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+
 import { ChevronDownIcon, DollarSignIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { useModalStore } from "@/stores/modal";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import type { AlertModalData } from "@/modals/alertModal.vue";
 import { useRouter } from "vue-router";
 import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
+import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries";
+import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 
 const router = useRouter();
 const modalStore = useModalStore();
-const { deleteVehicleAsync } = useVehicleQueries();
-const { activeVehicle, activeVehicleId } = useActiveVehicle();
-const { data: statCardData, isLoading } = useQuery({
-  queryFn: async () => {
-    if (!activeVehicle.value?.vehicleData.id) {
-      throw new Error("No active vehicle");
-    }
-    const result = await fetchApi<TStatCardData>(`/vehicles/${activeVehicle.value.vehicleData.id}/stat-card`);
-    console.log("Fetched stat card data:", result);
-    return result;
-  },
-  queryKey: computed(() => ["vehicles", { id: activeVehicle.value?.vehicleData.id }, "stat-card"]),
-  enabled: computed(() => !!activeVehicle.value?.vehicleData.id),
-});
+const { mutateAsync: deleteVehicle } = useVehicleDelete();
+const { currentVehicle, currentVehicleId } = useCurrentVehicle();
+const { data: statCardData, isLoading } = useVehicleHeroStatCards(currentVehicleId);
 
 function handleDeleteClick() {
   modalStore.onOpen("alert", {
     title: "Delete Vehicle",
-    description: activeVehicle.value?.vehicleData.name
-      ? `Are you sure you want to delete <b>${activeVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
+    description: currentVehicle.value?.vehicleData.name
+      ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
       : "Are you sure you want to delete this vehicle? This action cannot be undone.",
     actionButton: {
       label: "Delete",
@@ -53,8 +42,8 @@ function handleDeleteClick() {
     },
     onAction: async () => {
       console.log("Deleting vehicle...");
-      if (!activeVehicleId.value) return;
-      await deleteVehicleAsync(activeVehicleId.value);
+      if (!currentVehicleId.value) return;
+      await deleteVehicle(currentVehicleId.value);
       router.push("/dashboard");
     },
   } as AlertModalData);
@@ -68,14 +57,14 @@ const statsOpen = ref(false);
     <!-- Vehicle image & placeholder -->
     <div class="flex h-52 w-full shrink-0 justify-center lg:aspect-video lg:w-auto">
       <img
-        v-if="activeVehicle?.vehicleData.image"
-        :src="activeVehicle.vehicleData.image"
+        v-if="currentVehicle?.vehicleData.image"
+        :src="currentVehicle.vehicleData.image"
         class="h-full w-full rounded object-cover"
       />
       <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border">
         <VehicleTypeIcon
-          v-if="activeVehicle && activeVehicle.vehicleData.type.code"
-          :type="activeVehicle?.vehicleData.type.code"
+          v-if="currentVehicle && currentVehicle.vehicleData.type.code"
+          :type="currentVehicle?.vehicleData.type.code"
           class="stroke-muted-foreground size-16 rounded"
         />
       </div>
@@ -87,23 +76,23 @@ const statsOpen = ref(false);
       <div class="flex w-full flex-1 justify-between gap-3 lg:flex-col lg:justify-normal lg:gap-6 lg:px-6">
         <div class="space-y-1 lg:pr-10">
           <h1 class="text-foreground text-2xl leading-tight font-bold text-balance sm:text-3xl">
-            {{ activeVehicle?.vehicleData.name }}
+            {{ currentVehicle?.vehicleData.name }}
           </h1>
           <p class="text-muted-foreground text-sm">
-            {{ activeVehicle?.vehicleData.make && `${activeVehicle?.vehicleData.make} •` }}
-            {{ activeVehicle?.vehicleData.model && `${activeVehicle?.vehicleData.model} •` }}
-            {{ activeVehicle?.vehicleData.year }}
+            {{ currentVehicle?.vehicleData.make && `${currentVehicle?.vehicleData.make} •` }}
+            {{ currentVehicle?.vehicleData.model && `${currentVehicle?.vehicleData.model} •` }}
+            {{ currentVehicle?.vehicleData.year }}
           </p>
         </div>
 
         <div class="flex flex-col gap-2">
           <div class="hidden flex-wrap items-center gap-2 text-sm lg:flex">
             <Badge
-              v-if="activeVehicle?.vehicleData.licensePlate"
+              v-if="currentVehicle?.vehicleData.licensePlate"
               variant="outline"
               class="rounded-full border px-2.5 py-1 text-xs font-medium"
             >
-              {{ activeVehicle?.vehicleData.licensePlate }}
+              {{ currentVehicle?.vehicleData.licensePlate }}
             </Badge>
 
             <Badge
@@ -111,16 +100,16 @@ const statsOpen = ref(false);
               class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
             >
               <GaugeIcon class="size-3.5" />
-              <NumberFlow :value="activeVehicle?.vehicleData.odometerData.value || 0" :animated="true" />
-              {{ activeVehicle?.vehicleData.odometerData.unit || "N/A" }}
+              <NumberFlow :value="currentVehicle?.vehicleData.odometerData.value || 0" :animated="true" />
+              {{ currentVehicle?.vehicleData.odometerData.unit || "N/A" }}
             </Badge>
           </div>
           <Badge
-            v-if="activeVehicle?.vehicleData.vin"
+            v-if="currentVehicle?.vehicleData.vin"
             variant="outline"
             class="hidden rounded-full px-2.5 py-1 text-xs font-medium lg:block"
           >
-            VIN: {{ activeVehicle.vehicleData.vin }}
+            VIN: {{ currentVehicle.vehicleData.vin }}
           </Badge>
         </div>
 
@@ -164,11 +153,11 @@ const statsOpen = ref(false);
             <div class="space-y-3">
               <div class="flex flex-wrap gap-2">
                 <Badge
-                  v-if="activeVehicle?.vehicleData.licensePlate"
+                  v-if="currentVehicle?.vehicleData.licensePlate"
                   variant="outline"
                   class="rounded-full border px-2.5 py-1 text-xs font-medium"
                 >
-                  {{ activeVehicle?.vehicleData.licensePlate }}
+                  {{ currentVehicle?.vehicleData.licensePlate }}
                 </Badge>
 
                 <Badge
@@ -176,16 +165,16 @@ const statsOpen = ref(false);
                   class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
                 >
                   <GaugeIcon class="size-3.5" />
-                  {{ activeVehicle?.vehicleData.odometerData.value }}
-                  {{ activeVehicle?.vehicleData.odometerData.unit || "N/A" }}
+                  {{ currentVehicle?.vehicleData.odometerData.value }}
+                  {{ currentVehicle?.vehicleData.odometerData.unit || "N/A" }}
                 </Badge>
 
                 <Badge
-                  v-if="activeVehicle?.vehicleData.vin"
+                  v-if="currentVehicle?.vehicleData.vin"
                   variant="outline"
                   class="rounded-full px-2.5 py-1 text-xs font-medium"
                 >
-                  VIN: {{ activeVehicle.vehicleData.vin }}
+                  VIN: {{ currentVehicle.vehicleData.vin }}
                 </Badge>
               </div>
             </div>

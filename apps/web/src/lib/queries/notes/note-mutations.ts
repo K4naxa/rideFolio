@@ -10,7 +10,6 @@ export function useCreateNote() {
     mutationKey: ["create-note"],
     mutationFn: async (data: NoteSchemaType) => {
       const response = await api.post<Note>("/notes", data);
-      console.log("Created note response:", response.data);
       return response.data;
     },
     onSuccess: (data) => {

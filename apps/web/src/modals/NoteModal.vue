@@ -14,14 +14,14 @@ import { useModalStore } from "@/stores/modal";
 
 // Types
 import type { Note, NoteSchemaType } from "@repo/validation";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import Input from "@/components/ui/input/Input.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { watchDebounced } from "@vueuse/core";
 import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
-import { useVehicleQueries } from "@/lib/queries/useVehicleQueries";
 import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
 import Icon from "@/components/icons/Icon.vue";
+import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 
 // Computed properties
 const modalStore = useModalStore();
@@ -38,14 +38,8 @@ const { values, errors, setFieldValue, resetForm, meta } = useForm<NoteSchemaTyp
   },
 });
 
-const selectedVehicle = computed(() => {
-  if (values.vehicleId) {
-    return vehicles.value?.find((v) => v.vehicleData.id === values.vehicleId) || null;
-  }
-  return null;
-});
-const { activeVehicleId } = useActiveVehicle();
-const { vehicles } = useVehicleQueries();
+const { selectedVehicle } = useSelectedVehicle(values.vehicleId);
+const { currentVehicleId } = useCurrentVehicle();
 
 const { mutateAsync: createNoteAsync } = useCreateNote();
 const { mutateAsync: updateNoteAsync } = useUpdateNote();
@@ -138,11 +132,11 @@ watch(isModalOpen, (isOpen) => {
       },
     });
     createdNoteId.value = initialNote.value.id;
-  } else if (activeVehicleId.value) {
+  } else if (currentVehicleId.value) {
     // Creating new note with active vehicle
     resetForm({
       values: {
-        vehicleId: activeVehicleId.value,
+        vehicleId: currentVehicleId.value,
         title: "",
         content: "",
         tags: [],
@@ -176,8 +170,8 @@ watch(isModalOpen, (isOpen) => {
       </DialogHeader>
 
       <form class="flex min-h-0 flex-col space-y-4" @submit.prevent>
-        <!-- Vehicle Selection - Only show when creating new note without activeVehicleId -->
-        <div v-if="!activeVehicleId" class="flex flex-col">
+        <!-- Vehicle Selection - Only show when creating new note without vehicleId -->
+        <div v-if="!currentVehicleId" class="flex flex-col">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />

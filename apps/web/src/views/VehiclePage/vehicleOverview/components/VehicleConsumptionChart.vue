@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { computed, ref, unref, watch } from "vue";
-import { fetchApi } from "@/lib/api";
-import { useActiveVehicle } from "@/lib/useActiveVehicle";
+import { computed, ref, watch } from "vue";
+
+import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
 import VChart from "vue-echarts";
 import { graphic, use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -13,17 +13,14 @@ import { type EChartsOption } from "echarts";
 import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { useQuery } from "@tanstack/vue-query";
-import type { TRefillForClient } from "@repo/validation";
-import { queryKeys } from "@/lib/queries/queryKeys";
-import { handleEmpty } from "@/lib/queries/util";
+import { useVehicleConsumptionChart } from "@/lib/queries/vehicles/vehicle-queries";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
 
 const themeStore = useThemeStore();
 
-const { activeVehicleId } = useActiveVehicle();
+const { currentVehicleId } = useCurrentVehicle();
 const timeRange = ref(30);
 
 const {
@@ -31,19 +28,7 @@ const {
   isLoading,
   isPlaceholderData,
   isError,
-} = useQuery({
-  queryKey: computed(() => queryKeys.vehicles.consumptionChart(handleEmpty(activeVehicleId), unref(timeRange))),
-  queryFn: async () => {
-    const limitDate = new Date();
-    limitDate.setDate(limitDate.getDate() - unref(timeRange));
-
-    return await fetchApi<TRefillForClient[]>(
-      `/logs/refills/chart/${unref(activeVehicleId)}/${limitDate.toISOString()}`,
-    );
-  },
-  enabled: computed(() => !!activeVehicleId.value),
-  placeholderData: (prev) => prev,
-});
+} = useVehicleConsumptionChart(currentVehicleId, timeRange);
 
 watch(chartData, (newData) => {
   console.log("Chart data updated:", newData);
