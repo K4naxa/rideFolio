@@ -15,7 +15,7 @@ export class UnitConversionService {
 
       case 'GALLON':
         return {
-          value: this.litersToGallons(volume_L),
+          value: Number(this.litersToGallons(volume_L).toFixed(1)),
           unit: 'gal',
           type: 'GALLON',
         };
@@ -44,7 +44,7 @@ export class UnitConversionService {
         };
       case 'MILE':
         return {
-          value: this.kmToMiles(baseValue),
+          value: Number(this.kmToMiles(baseValue).toFixed(1)),
           unit: 'mi',
           type: 'MILE',
         };
@@ -117,15 +117,18 @@ export class UnitConversionService {
           };
 
         case 'GALLONS_PER_100_MILES':
+          // Formula: (L/100km) × (gal/L) × (100km/100mi)
           return {
-            value: Number((baseValue > 0 ? this.litersToGallons(baseValue) / this.kmToMiles(100) : 0).toFixed(1)),
+            value: Number((baseValue > 0 ? (baseValue / 3.78541) * (100 / this.kmToMiles(100)) : 0).toFixed(1)),
             unit: 'gal/100mi',
             type: 'GALLONS_PER_100_MILES',
           };
 
         case 'MILES_PER_GALLON':
+          // Formula: 235.214 / (L/100km)
+          // Derivation: (100km → mi) / (L → gal) = 62.1371 / 0.264172 = 235.214
           return {
-            value: Number((baseValue > 0 ? this.kmToMiles(100) / this.litersToGallons(baseValue) : 0).toFixed(1)),
+            value: Number((baseValue > 0 ? 235.214 / baseValue : 0).toFixed(1)),
             unit: 'mi/gal',
             type: 'MILES_PER_GALLON',
           };
@@ -154,21 +157,21 @@ export class UnitConversionService {
 
   // ** Helper functions for unit conversions
   milesToKm(miles: number | null | undefined): number {
-    return Number((miles ? miles * 1.60934 : 0).toFixed(1));
+    return Number(miles ? miles * 1.60934 : 0);
   }
   kmToMiles(km: number | null): number {
-    return Number((km ? km / 1.60934 : 0).toFixed(1));
+    return Number(km ? km / 1.60934 : 0);
   }
 
   gallonsToLiters(GALLON: number | null): number {
-    return Number((GALLON ? GALLON * 3.78541 : 0).toFixed(1));
+    return Number(GALLON ? GALLON * 3.78541 : 0);
   }
 
   litersToGallons(LITER: number | null): number {
-    return Number((LITER ? LITER / 3.78541 : 0).toFixed(1));
+    return Number(LITER ? LITER / 3.78541 : 0);
   }
   normalizeFuelAmount(fuelAmount: number, type: User['volumeUnit']): number {
-    return type === 'GALLON' ? this.litersToGallons(fuelAmount) : fuelAmount;
+    return type === 'GALLON' ? this.gallonsToLiters(fuelAmount) : fuelAmount;
   }
   normalizeOdometer(odometer: number, type: Vehicle['odometerType']): number {
     return type === 'MILE' ? this.milesToKm(odometer) : odometer;
