@@ -41,12 +41,13 @@ export function useVehiclesAll() {
   });
 }
 
-export function useVehicleTypes() {
+export function useVehicleTypes(options?: { enabled?: MaybeRef<boolean> }) {
   return useQuery({
     queryKey: ["vehicleTypes"],
     queryFn: async () => fetchApi<VehicleType[]>("vehicles/types"),
     staleTime: 1000 * 60 * 60,
-    enabled: false,
+    enabled: options?.enabled ?? true,
+    refetchOnMount: true,
   });
 }
 

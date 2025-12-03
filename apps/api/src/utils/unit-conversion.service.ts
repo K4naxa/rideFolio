@@ -51,6 +51,13 @@ export class UnitConversionService {
     }
   }
 
+  getBaseConsumptionFromBaseUnits(volume_L: number, units: number, isOdometerHourly: boolean): number {
+    if (isOdometerHourly) {
+      return units > 0 ? volume_L / units : 0; // L/h
+    } else {
+      return units > 0 ? (volume_L / units) * 100 : 0; // L/100km
+    }
+  }
   getConsumptionData(
     baseValue: number | null, // L/h OR L/100km depending on type
     preferredUnit: ConsumptionUnitCode,

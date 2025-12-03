@@ -50,7 +50,7 @@ const { handleSubmit, resetForm, isSubmitting, values } = useForm({
   },
 });
 
-const { selectedVehicleOdometerUnit } = useSelectedVehicle(values.vehicleId);
+const { selectedVehicleOdometerUnit } = useSelectedVehicle(computed(() => values.vehicleId));
 
 watch(isModalOpen, (open) => {
   if (open) {

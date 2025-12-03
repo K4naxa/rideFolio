@@ -185,16 +185,15 @@ const statsOpen = ref(false);
                 <VehicleHeroStatCard
                   :icon="GaugeIcon"
                   label="Avg. Consumption"
-                  :value="`${statCardData?.monthlyAverageConsumption.value} `"
-                  :suffix="`${statCardData?.monthlyAverageConsumption.unit}`"
-                  :trend="statCardData?.monthlyAverageConsumption.trend"
+                  :value="`${statCardData?.averageConsumption.value} `"
+                  :suffix="`${statCardData?.averageConsumption.unit}`"
                   :is-loading="isLoading"
                 />
                 <div class="grid grid-cols-2 gap-3">
                   <VehicleHeroStatCard
                     :icon="DollarSignIcon"
                     label="Montly Cost"
-                    :value="`${statCardData?.monthlyRunningCost.value}`"
+                    :value="`${statCardData?.monthlyRunningCost}`"
                     :is-loading="isLoading"
                   />
                   <VehicleHeroStatCard
@@ -245,21 +244,20 @@ const statsOpen = ref(false);
         <VehicleHeroStatCard
           :icon="GaugeIcon"
           label="Avg. Consumption"
-          :value="`${statCardData?.monthlyAverageConsumption.value} `"
-          :suffix="`${statCardData?.monthlyAverageConsumption.unit}`"
-          :trend="statCardData?.monthlyAverageConsumption.trend"
+          :value="`${statCardData?.averageConsumption.value} `"
+          :suffix="`${statCardData?.averageConsumption.unit}`"
           :is-loading="isLoading"
         />
         <VehicleHeroStatCard
           :icon="DollarSignIcon"
           label="Montly Cost"
-          :value="`${statCardData?.monthlyRunningCost.value}`"
+          :value="`${statCardData?.monthlyRunningCost}`"
           :is-loading="isLoading"
         />
         <VehicleHeroStatCard
           :icon="RouteIcon"
           label="Total Distance"
-          :value="`${statCardData?.trackedUnits.value.toLocaleString()}`"
+          :value="`${String(statCardData?.trackedUnits.value).toLocaleString()}`"
           :suffix="`${statCardData?.trackedUnits.unit}`"
           :is-loading="isLoading"
         />

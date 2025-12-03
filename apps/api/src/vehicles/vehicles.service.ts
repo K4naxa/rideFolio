@@ -171,10 +171,10 @@ export class VehiclesService {
   async getStatCardData(userSession: UserSession, vehicleId: string): Promise<TStatCardData> {
     await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
 
-    const rawVehicle = await this.vehicleRepository.findVehicleById(vehicleId);
-    if (!rawVehicle) throw new NotFoundException('Vehicle not found');
+    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: vehicleId } });
+    if (!vehicle) throw new NotFoundException('Vehicle not found');
 
-    const isHourlyBased = rawVehicle.odometerType === 'HOUR';
+    const isHourlyBased = vehicle.odometerType === 'HOUR';
 
     const user = await this.prisma.user.findUnique({
       where: { id: userSession.user.id },
@@ -187,58 +187,30 @@ export class VehiclesService {
 
     const monthlyData = await this.prisma.vehicleMonthlyStatistics.findUnique({
       where: { vehicleId_year_month: { vehicleId, year, month } },
+      select: {
+        monthlyRunningCost: true,
+      },
     });
 
-    const previousYear = month === 1 ? year - 1 : year;
-    const previousMonth = month === 1 ? 12 : month - 1;
-
-    const previousMonthData = await this.prisma.vehicleMonthlyStatistics.findUnique({
-      where: { vehicleId_year_month: { vehicleId, year: previousYear, month: previousMonth } },
-    });
-
-    let consumptionTrendPrecentage: number | null = null;
-
-    if (monthlyData && previousMonthData) {
-      if (isHourlyBased) {
-        if (previousMonthData.consumption_L_per_hour && previousMonthData.consumption_L_per_hour > 0) {
-          consumptionTrendPrecentage =
-            ((monthlyData.consumption_L_per_hour - previousMonthData.consumption_L_per_hour) /
-              previousMonthData.consumption_L_per_hour) *
-            100;
-        } else {
-          consumptionTrendPrecentage = null;
-        }
-      } else {
-        if (previousMonthData.consumption_L_per_100km && previousMonthData.consumption_L_per_100km > 0) {
-          consumptionTrendPrecentage =
-            ((monthlyData.consumption_L_per_100km - previousMonthData.consumption_L_per_100km) /
-              previousMonthData.consumption_L_per_100km) *
-            100;
-        } else {
-          consumptionTrendPrecentage = null;
-        }
-      }
-    }
-
-    const currentMonthConsumptionData = this.unitConversion.getConsumptionData(
-      monthlyData ? (isHourlyBased ? monthlyData.consumption_L_per_hour : monthlyData.consumption_L_per_100km) : null,
-      isHourlyBased ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
-      isHourlyBased ? 'HOUR' : 'DISTANCE',
+    const averageConsumptionValue = this.unitConversion.getBaseConsumptionFromBaseUnits(
+      vehicle.lifetimeTotalValidFuelForConsumption_L || 0,
+      isHourlyBased
+        ? vehicle.lifetimeTotalValidUnitsForConsumption_hour || 0
+        : vehicle.lifetimeTotalValidUnitsForConsumption_km || 0,
+      isHourlyBased,
     );
 
     const resData: TStatCardData = {
       trackedUnits: this.unitConversion.getOdometerDataByType(
-        isHourlyBased ? rawVehicle.lifetimeTotalTrackedUnits_hour : rawVehicle.lifetimeTotalTrackedUnits_km,
-        rawVehicle.odometerType,
+        isHourlyBased ? vehicle.lifetimeTotalTrackedUnits_hour : vehicle.lifetimeTotalTrackedUnits_km,
+        vehicle.odometerType,
       ),
-      monthlyAverageConsumption: {
-        ...currentMonthConsumptionData,
-        trend: consumptionTrendPrecentage !== null ? (consumptionTrendPrecentage < 0 ? 'down' : 'up') : undefined,
-        trendValue: consumptionTrendPrecentage,
-      },
-      monthlyRunningCost: {
-        value: monthlyData?.monthlyRunningCost || 0,
-      },
+      averageConsumption: this.unitConversion.getConsumptionData(
+        averageConsumptionValue,
+        isHourlyBased ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
+        isHourlyBased ? 'HOUR' : 'DISTANCE',
+      ),
+      monthlyRunningCost: monthlyData?.monthlyRunningCost || 0,
     };
 
     return resData;

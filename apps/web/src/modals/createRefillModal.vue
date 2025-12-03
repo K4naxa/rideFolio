@@ -53,7 +53,7 @@ const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm
 });
 
 const { selectedVehicle, selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSelectedVehicle(
-  values.vehicleId,
+  computed(() => values.vehicleId),
 );
 
 // FUNCTIONS FOR CALCULATION HANDLING

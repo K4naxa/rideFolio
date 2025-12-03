@@ -226,6 +226,13 @@ model Vehicle {
   lifetimeTotalTrackedUnits_km    Float?
   lifetimeTotalTrackedUnits_hour  Float?
 
+  lifetimeTotalFuelConsumed_L   Float? @default(0)
+  lifetimeTotalCost         Float? @default(0)
+
+  lifetimeTotalValidFuelForConsumption_L  Float? @default(0)
+  lifetimeTotalValidUnitsForConsumption_km   Float? @default(0)
+  lifetimeTotalValidUnitsForConsumption_hour Float? @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

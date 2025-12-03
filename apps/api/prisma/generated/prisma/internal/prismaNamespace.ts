@@ -2093,6 +2093,11 @@ export const VehicleScalarFieldEnum = {
   lastRefillOdometer_hour: 'lastRefillOdometer_hour',
   lifetimeTotalTrackedUnits_km: 'lifetimeTotalTrackedUnits_km',
   lifetimeTotalTrackedUnits_hour: 'lifetimeTotalTrackedUnits_hour',
+  lifetimeTotalFuelConsumed_L: 'lifetimeTotalFuelConsumed_L',
+  lifetimeTotalCost: 'lifetimeTotalCost',
+  lifetimeTotalValidFuelForConsumption_L: 'lifetimeTotalValidFuelForConsumption_L',
+  lifetimeTotalValidUnitsForConsumption_km: 'lifetimeTotalValidUnitsForConsumption_km',
+  lifetimeTotalValidUnitsForConsumption_hour: 'lifetimeTotalValidUnitsForConsumption_hour',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

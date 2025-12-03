@@ -36,6 +36,11 @@ export type VehicleAvgAggregateOutputType = {
   lastRefillOdometer_hour: number | null
   lifetimeTotalTrackedUnits_km: number | null
   lifetimeTotalTrackedUnits_hour: number | null
+  lifetimeTotalFuelConsumed_L: number | null
+  lifetimeTotalCost: number | null
+  lifetimeTotalValidFuelForConsumption_L: number | null
+  lifetimeTotalValidUnitsForConsumption_km: number | null
+  lifetimeTotalValidUnitsForConsumption_hour: number | null
 }
 
 export type VehicleSumAggregateOutputType = {
@@ -48,6 +53,11 @@ export type VehicleSumAggregateOutputType = {
   lastRefillOdometer_hour: number | null
   lifetimeTotalTrackedUnits_km: number | null
   lifetimeTotalTrackedUnits_hour: number | null
+  lifetimeTotalFuelConsumed_L: number | null
+  lifetimeTotalCost: number | null
+  lifetimeTotalValidFuelForConsumption_L: number | null
+  lifetimeTotalValidUnitsForConsumption_km: number | null
+  lifetimeTotalValidUnitsForConsumption_hour: number | null
 }
 
 export type VehicleMinAggregateOutputType = {
@@ -71,6 +81,11 @@ export type VehicleMinAggregateOutputType = {
   lastRefillOdometer_hour: number | null
   lifetimeTotalTrackedUnits_km: number | null
   lifetimeTotalTrackedUnits_hour: number | null
+  lifetimeTotalFuelConsumed_L: number | null
+  lifetimeTotalCost: number | null
+  lifetimeTotalValidFuelForConsumption_L: number | null
+  lifetimeTotalValidUnitsForConsumption_km: number | null
+  lifetimeTotalValidUnitsForConsumption_hour: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -96,6 +111,11 @@ export type VehicleMaxAggregateOutputType = {
   lastRefillOdometer_hour: number | null
   lifetimeTotalTrackedUnits_km: number | null
   lifetimeTotalTrackedUnits_hour: number | null
+  lifetimeTotalFuelConsumed_L: number | null
+  lifetimeTotalCost: number | null
+  lifetimeTotalValidFuelForConsumption_L: number | null
+  lifetimeTotalValidUnitsForConsumption_km: number | null
+  lifetimeTotalValidUnitsForConsumption_hour: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -121,6 +141,11 @@ export type VehicleCountAggregateOutputType = {
   lastRefillOdometer_hour: number
   lifetimeTotalTrackedUnits_km: number
   lifetimeTotalTrackedUnits_hour: number
+  lifetimeTotalFuelConsumed_L: number
+  lifetimeTotalCost: number
+  lifetimeTotalValidFuelForConsumption_L: number
+  lifetimeTotalValidUnitsForConsumption_km: number
+  lifetimeTotalValidUnitsForConsumption_hour: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -137,6 +162,11 @@ export type VehicleAvgAggregateInputType = {
   lastRefillOdometer_hour?: true
   lifetimeTotalTrackedUnits_km?: true
   lifetimeTotalTrackedUnits_hour?: true
+  lifetimeTotalFuelConsumed_L?: true
+  lifetimeTotalCost?: true
+  lifetimeTotalValidFuelForConsumption_L?: true
+  lifetimeTotalValidUnitsForConsumption_km?: true
+  lifetimeTotalValidUnitsForConsumption_hour?: true
 }
 
 export type VehicleSumAggregateInputType = {
@@ -149,6 +179,11 @@ export type VehicleSumAggregateInputType = {
   lastRefillOdometer_hour?: true
   lifetimeTotalTrackedUnits_km?: true
   lifetimeTotalTrackedUnits_hour?: true
+  lifetimeTotalFuelConsumed_L?: true
+  lifetimeTotalCost?: true
+  lifetimeTotalValidFuelForConsumption_L?: true
+  lifetimeTotalValidUnitsForConsumption_km?: true
+  lifetimeTotalValidUnitsForConsumption_hour?: true
 }
 
 export type VehicleMinAggregateInputType = {
@@ -172,6 +207,11 @@ export type VehicleMinAggregateInputType = {
   lastRefillOdometer_hour?: true
   lifetimeTotalTrackedUnits_km?: true
   lifetimeTotalTrackedUnits_hour?: true
+  lifetimeTotalFuelConsumed_L?: true
+  lifetimeTotalCost?: true
+  lifetimeTotalValidFuelForConsumption_L?: true
+  lifetimeTotalValidUnitsForConsumption_km?: true
+  lifetimeTotalValidUnitsForConsumption_hour?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -197,6 +237,11 @@ export type VehicleMaxAggregateInputType = {
   lastRefillOdometer_hour?: true
   lifetimeTotalTrackedUnits_km?: true
   lifetimeTotalTrackedUnits_hour?: true
+  lifetimeTotalFuelConsumed_L?: true
+  lifetimeTotalCost?: true
+  lifetimeTotalValidFuelForConsumption_L?: true
+  lifetimeTotalValidUnitsForConsumption_km?: true
+  lifetimeTotalValidUnitsForConsumption_hour?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -222,6 +267,11 @@ export type VehicleCountAggregateInputType = {
   lastRefillOdometer_hour?: true
   lifetimeTotalTrackedUnits_km?: true
   lifetimeTotalTrackedUnits_hour?: true
+  lifetimeTotalFuelConsumed_L?: true
+  lifetimeTotalCost?: true
+  lifetimeTotalValidFuelForConsumption_L?: true
+  lifetimeTotalValidUnitsForConsumption_km?: true
+  lifetimeTotalValidUnitsForConsumption_hour?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -334,6 +384,11 @@ export type VehicleGroupByOutputType = {
   lastRefillOdometer_hour: number | null
   lifetimeTotalTrackedUnits_km: number | null
   lifetimeTotalTrackedUnits_hour: number | null
+  lifetimeTotalFuelConsumed_L: number | null
+  lifetimeTotalCost: number | null
+  lifetimeTotalValidFuelForConsumption_L: number | null
+  lifetimeTotalValidUnitsForConsumption_km: number | null
+  lifetimeTotalValidUnitsForConsumption_hour: number | null
   createdAt: Date
   updatedAt: Date
   _count: VehicleCountAggregateOutputType | null
@@ -382,6 +437,11 @@ export type VehicleWhereInput = {
   lastRefillOdometer_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalCost?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -416,6 +476,11 @@ export type VehicleOrderByWithRelationInput = {
   lastRefillOdometer_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
@@ -453,6 +518,11 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   lastRefillOdometer_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalCost?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -487,6 +557,11 @@ export type VehicleOrderByWithAggregationInput = {
   lastRefillOdometer_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VehicleCountOrderByAggregateInput
@@ -520,6 +595,11 @@ export type VehicleScalarWhereWithAggregatesInput = {
   lastRefillOdometer_hour?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  lifetimeTotalCost?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
 }
@@ -543,6 +623,11 @@ export type VehicleCreateInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -577,6 +662,11 @@ export type VehicleUncheckedCreateInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -607,6 +697,11 @@ export type VehicleUpdateInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -641,6 +736,11 @@ export type VehicleUncheckedUpdateInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -673,6 +773,11 @@ export type VehicleCreateManyInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -696,6 +801,11 @@ export type VehicleUpdateManyMutationInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -721,6 +831,11 @@ export type VehicleUncheckedUpdateManyInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -756,6 +871,11 @@ export type VehicleCountOrderByAggregateInput = {
   lastRefillOdometer_hour?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -770,6 +890,11 @@ export type VehicleAvgOrderByAggregateInput = {
   lastRefillOdometer_hour?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
 }
 
 export type VehicleMaxOrderByAggregateInput = {
@@ -793,6 +918,11 @@ export type VehicleMaxOrderByAggregateInput = {
   lastRefillOdometer_hour?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -818,6 +948,11 @@ export type VehicleMinOrderByAggregateInput = {
   lastRefillOdometer_hour?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -832,6 +967,11 @@ export type VehicleSumOrderByAggregateInput = {
   lastRefillOdometer_hour?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_km?: Prisma.SortOrder
   lifetimeTotalTrackedUnits_hour?: Prisma.SortOrder
+  lifetimeTotalFuelConsumed_L?: Prisma.SortOrder
+  lifetimeTotalCost?: Prisma.SortOrder
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
 }
 
 export type VehicleScalarRelationFilter = {
@@ -1060,6 +1200,11 @@ export type VehicleCreateWithoutOwnerInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
@@ -1092,6 +1237,11 @@ export type VehicleUncheckedCreateWithoutOwnerInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1153,6 +1303,11 @@ export type VehicleScalarWhereInput = {
   lastRefillOdometer_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalCost?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
 }
@@ -1176,6 +1331,11 @@ export type VehicleCreateWithoutVehicleTypeInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1208,6 +1368,11 @@ export type VehicleUncheckedCreateWithoutVehicleTypeInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1264,6 +1429,11 @@ export type VehicleCreateWithoutMaintenancesInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1297,6 +1467,11 @@ export type VehicleUncheckedCreateWithoutMaintenancesInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1342,6 +1517,11 @@ export type VehicleUpdateWithoutMaintenancesInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -1375,6 +1555,11 @@ export type VehicleUncheckedUpdateWithoutMaintenancesInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -1404,6 +1589,11 @@ export type VehicleCreateWithoutTodosInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1437,6 +1627,11 @@ export type VehicleUncheckedCreateWithoutTodosInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1482,6 +1677,11 @@ export type VehicleUpdateWithoutTodosInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -1515,6 +1715,11 @@ export type VehicleUncheckedUpdateWithoutTodosInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -1544,6 +1749,11 @@ export type VehicleCreateWithoutNotesInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1577,6 +1787,11 @@ export type VehicleUncheckedCreateWithoutNotesInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1622,6 +1837,11 @@ export type VehicleUpdateWithoutNotesInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -1655,6 +1875,11 @@ export type VehicleUncheckedUpdateWithoutNotesInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -1684,6 +1909,11 @@ export type VehicleCreateWithoutShoppingListItemsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1717,6 +1947,11 @@ export type VehicleUncheckedCreateWithoutShoppingListItemsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1762,6 +1997,11 @@ export type VehicleUpdateWithoutShoppingListItemsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -1795,6 +2035,11 @@ export type VehicleUncheckedUpdateWithoutShoppingListItemsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -1824,6 +2069,11 @@ export type VehicleCreateWithoutPoolsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1857,6 +2107,11 @@ export type VehicleUncheckedCreateWithoutPoolsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
@@ -1902,6 +2157,11 @@ export type VehicleUpdateWithoutPoolsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -1935,6 +2195,11 @@ export type VehicleUncheckedUpdateWithoutPoolsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
@@ -1964,6 +2229,11 @@ export type VehicleCreateWithoutRefillsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1997,6 +2267,11 @@ export type VehicleUncheckedCreateWithoutRefillsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -2042,6 +2317,11 @@ export type VehicleUpdateWithoutRefillsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2075,6 +2355,11 @@ export type VehicleUncheckedUpdateWithoutRefillsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2104,6 +2389,11 @@ export type VehicleCreateWithoutMonthlyStatisticsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -2137,6 +2427,11 @@ export type VehicleUncheckedCreateWithoutMonthlyStatisticsInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -2182,6 +2477,11 @@ export type VehicleUpdateWithoutMonthlyStatisticsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2215,6 +2515,11 @@ export type VehicleUncheckedUpdateWithoutMonthlyStatisticsInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2245,6 +2550,11 @@ export type VehicleCreateManyOwnerInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2268,6 +2578,11 @@ export type VehicleUpdateWithoutOwnerInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
@@ -2300,6 +2615,11 @@ export type VehicleUncheckedUpdateWithoutOwnerInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2331,6 +2651,11 @@ export type VehicleUncheckedUpdateManyWithoutOwnerInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2355,6 +2680,11 @@ export type VehicleCreateManyVehicleTypeInput = {
   lastRefillOdometer_hour?: number | null
   lifetimeTotalTrackedUnits_km?: number | null
   lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2378,6 +2708,11 @@ export type VehicleUpdateWithoutVehicleTypeInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2410,6 +2745,11 @@ export type VehicleUncheckedUpdateWithoutVehicleTypeInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2441,6 +2781,11 @@ export type VehicleUncheckedUpdateManyWithoutVehicleTypeInput = {
   lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2551,6 +2896,11 @@ export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   lastRefillOdometer_hour?: boolean
   lifetimeTotalTrackedUnits_km?: boolean
   lifetimeTotalTrackedUnits_hour?: boolean
+  lifetimeTotalFuelConsumed_L?: boolean
+  lifetimeTotalCost?: boolean
+  lifetimeTotalValidFuelForConsumption_L?: boolean
+  lifetimeTotalValidUnitsForConsumption_km?: boolean
+  lifetimeTotalValidUnitsForConsumption_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2586,6 +2936,11 @@ export type VehicleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lastRefillOdometer_hour?: boolean
   lifetimeTotalTrackedUnits_km?: boolean
   lifetimeTotalTrackedUnits_hour?: boolean
+  lifetimeTotalFuelConsumed_L?: boolean
+  lifetimeTotalCost?: boolean
+  lifetimeTotalValidFuelForConsumption_L?: boolean
+  lifetimeTotalValidUnitsForConsumption_km?: boolean
+  lifetimeTotalValidUnitsForConsumption_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2613,6 +2968,11 @@ export type VehicleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lastRefillOdometer_hour?: boolean
   lifetimeTotalTrackedUnits_km?: boolean
   lifetimeTotalTrackedUnits_hour?: boolean
+  lifetimeTotalFuelConsumed_L?: boolean
+  lifetimeTotalCost?: boolean
+  lifetimeTotalValidFuelForConsumption_L?: boolean
+  lifetimeTotalValidUnitsForConsumption_km?: boolean
+  lifetimeTotalValidUnitsForConsumption_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2640,11 +3000,16 @@ export type VehicleSelectScalar = {
   lastRefillOdometer_hour?: boolean
   lifetimeTotalTrackedUnits_km?: boolean
   lifetimeTotalTrackedUnits_hour?: boolean
+  lifetimeTotalFuelConsumed_L?: boolean
+  lifetimeTotalCost?: boolean
+  lifetimeTotalValidFuelForConsumption_L?: boolean
+  lifetimeTotalValidUnitsForConsumption_km?: boolean
+  lifetimeTotalValidUnitsForConsumption_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "type" | "fuelType" | "odometerType" | "make" | "model" | "year" | "vin" | "licensePlate" | "image" | "initialOdometer_km" | "initialOdometer_hour" | "odometer_km" | "odometer_hour" | "lastRefillOdometer_km" | "lastRefillOdometer_hour" | "lifetimeTotalTrackedUnits_km" | "lifetimeTotalTrackedUnits_hour" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
+export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "type" | "fuelType" | "odometerType" | "make" | "model" | "year" | "vin" | "licensePlate" | "image" | "initialOdometer_km" | "initialOdometer_hour" | "odometer_km" | "odometer_hour" | "lastRefillOdometer_km" | "lastRefillOdometer_hour" | "lifetimeTotalTrackedUnits_km" | "lifetimeTotalTrackedUnits_hour" | "lifetimeTotalFuelConsumed_L" | "lifetimeTotalCost" | "lifetimeTotalValidFuelForConsumption_L" | "lifetimeTotalValidUnitsForConsumption_km" | "lifetimeTotalValidUnitsForConsumption_hour" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
 export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
@@ -2700,6 +3065,11 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     lastRefillOdometer_hour: number | null
     lifetimeTotalTrackedUnits_km: number | null
     lifetimeTotalTrackedUnits_hour: number | null
+    lifetimeTotalFuelConsumed_L: number | null
+    lifetimeTotalCost: number | null
+    lifetimeTotalValidFuelForConsumption_L: number | null
+    lifetimeTotalValidUnitsForConsumption_km: number | null
+    lifetimeTotalValidUnitsForConsumption_hour: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vehicle"]>
@@ -3154,6 +3524,11 @@ export interface VehicleFieldRefs {
   readonly lastRefillOdometer_hour: Prisma.FieldRef<"Vehicle", 'Float'>
   readonly lifetimeTotalTrackedUnits_km: Prisma.FieldRef<"Vehicle", 'Float'>
   readonly lifetimeTotalTrackedUnits_hour: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly lifetimeTotalFuelConsumed_L: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly lifetimeTotalCost: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly lifetimeTotalValidFuelForConsumption_L: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly lifetimeTotalValidUnitsForConsumption_km: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly lifetimeTotalValidUnitsForConsumption_hour: Prisma.FieldRef<"Vehicle", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Vehicle", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Vehicle", 'DateTime'>
 }

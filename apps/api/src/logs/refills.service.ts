@@ -29,7 +29,17 @@ export class RefillsService {
       }),
       this.prisma.vehicle.findUnique({
         where: { id: refillData.vehicleId },
-        select: { odometerType: true, initialOdometer_km: true, initialOdometer_hour: true, id: true },
+        select: {
+          odometerType: true,
+          initialOdometer_km: true,
+          initialOdometer_hour: true,
+          id: true,
+          lifetimeTotalFuelConsumed_L: true,
+          lifetimeTotalCost: true,
+          lifetimeTotalValidFuelForConsumption_L: true,
+          lifetimeTotalValidUnitsForConsumption_km: true,
+          lifetimeTotalValidUnitsForConsumption_hour: true,
+        },
       }),
       this.prisma.refill.findFirst({
         where: { vehicleId: refillData.vehicleId },
@@ -42,6 +52,11 @@ export class RefillsService {
         initialOdometer_km: Vehicle['initialOdometer_km'];
         initialOdometer_hour: Vehicle['initialOdometer_hour'];
         id: Vehicle['id'];
+        lifetimeTotalFuelConsumed_L: Vehicle['lifetimeTotalFuelConsumed_L'];
+        lifetimeTotalCost: Vehicle['lifetimeTotalCost'];
+        lifetimeTotalValidFuelForConsumption_L: Vehicle['lifetimeTotalValidFuelForConsumption_L'];
+        lifetimeTotalValidUnitsForConsumption_km: Vehicle['lifetimeTotalValidUnitsForConsumption_km'];
+        lifetimeTotalValidUnitsForConsumption_hour: Vehicle['lifetimeTotalValidUnitsForConsumption_hour'];
       } | null,
       Refill | null,
     ];
@@ -56,7 +71,7 @@ export class RefillsService {
 
     // validate odometer increase
     this.validateOdometerIncrease(previousLog, normalizedOdometer, isOdometerHourly);
-
+    const odometerDelta = this.calculateOdometerDelta(previousLog, normalizedOdometer, isOdometerHourly);
     // 4. Start prisma transaction
     await this.prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
       let consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null } = {
@@ -65,6 +80,7 @@ export class RefillsService {
         validUnits: null,
       };
 
+      // Calculate consumption only if full refill
       if (refillData.fullRefill) {
         consumptionResult = await this.calculateConsumption(
           prisma,
@@ -94,22 +110,58 @@ export class RefillsService {
         },
       });
 
-      // Update vehicle odometer
+      // Calculate incremental lifetime stats
+      const newLifetimeFuel = (vehicle.lifetimeTotalFuelConsumed_L ?? 0) + fuelLiters;
+      const newLifetimeCost = (vehicle.lifetimeTotalCost ?? 0) + (refillData.costTotal ?? 0);
+      const newLifetimeValidFuel =
+        (vehicle.lifetimeTotalValidFuelForConsumption_L ?? 0) + (consumptionResult.validFuel ?? 0);
+      const newLifetimeValidUnits_km =
+        (vehicle.lifetimeTotalValidUnitsForConsumption_km ?? 0) +
+        (isOdometerHourly ? 0 : (consumptionResult.validUnits ?? 0));
+      const newLifetimeValidUnits_hour =
+        (vehicle.lifetimeTotalValidUnitsForConsumption_hour ?? 0) +
+        (isOdometerHourly ? (consumptionResult.validUnits ?? 0) : 0);
+
+      // Update vehicle with new odometer + lifetime stats
       await prisma.vehicle.update({
         where: { id: vehicle.id },
         data: {
+          // Current odometer
           odometer_hour: isOdometerHourly ? normalizedOdometer : null,
           odometer_km: isOdometerHourly ? null : normalizedOdometer,
+
+          // Tracked units (distance from initial odometer)
           lifetimeTotalTrackedUnits_km: isOdometerHourly
             ? null
             : (normalizedOdometer || 0) - (vehicle.initialOdometer_km || 0),
           lifetimeTotalTrackedUnits_hour: isOdometerHourly
             ? (normalizedOdometer || 0) - (vehicle.initialOdometer_hour || 0)
             : null,
+
+          // Last refill odometer (for validation)
           lastRefillOdometer_hour: isOdometerHourly ? normalizedOdometer : null,
           lastRefillOdometer_km: isOdometerHourly ? null : normalizedOdometer,
+
+          // Update lifetime totals
+          lifetimeTotalFuelConsumed_L: newLifetimeFuel,
+          lifetimeTotalCost: newLifetimeCost,
+          lifetimeTotalValidFuelForConsumption_L: newLifetimeValidFuel,
+          lifetimeTotalValidUnitsForConsumption_km: newLifetimeValidUnits_km,
+          lifetimeTotalValidUnitsForConsumption_hour: newLifetimeValidUnits_hour,
         },
       });
+
+      //  Update monthly statistics
+      await this.updateMonthlyStatistics(
+        prisma,
+        refillData.vehicleId,
+        refillData.date,
+        fuelLiters,
+        refillData.costTotal ?? 0,
+        consumptionResult,
+        odometerDelta,
+        isOdometerHourly,
+      );
     });
   }
 
@@ -288,35 +340,114 @@ export class RefillsService {
     };
   }
 
-  private formatRefillForClient(
-    refill: Extend<Refill, { user: { id: string; name: string; image: string | null } }>,
-    vehicle: Pick<Vehicle, 'odometerType'>,
-    user: Pick<User, 'consumptionUnitCode_hour' | 'consumptionUnitCode_distance' | 'volumeUnit'>,
-  ): TRefillForClient {
+  private calculateOdometerDelta(
+    previousLog: Refill | null,
+    currentOdometer: number,
+    isOdometerHourly: boolean,
+  ): { deltaKm: number; deltaHour: number } {
+    if (!previousLog) {
+      // First refill - no delta to calculate
+      return { deltaKm: 0, deltaHour: 0 };
+    }
+
+    const previousOdometer = isOdometerHourly ? (previousLog.odometer_hour ?? 0) : (previousLog.odometer_km ?? 0);
+
+    const delta = currentOdometer - previousOdometer;
+
+    // Ensure delta is positive (should be guaranteed by validation, but safety check)
+    const safeDelta = Math.max(0, delta);
+
     return {
-      id: refill.id,
-      vehicleId: refill.vehicleId,
-      creator: {
-        id: refill.user.id,
-        name: refill.user.name,
-        image: refill.user.image,
-      },
-      date: refill.date,
-      odometer: this.unitConversion.getOdometerDataByType(
-        vehicle.odometerType === 'HOUR' ? refill.odometer_hour : refill.odometer_km,
-        vehicle.odometerType,
-      ),
-      fullRefill: refill.fullRefill,
-      skippedRefill: refill.skippedRefill,
-      fuelVolume: this.unitConversion.getVolumeDataByUnitType(refill.fuelAmount_L, user.volumeUnit),
-      pricePerUnit: refill.pricePerUnit,
-      costTotal: refill.costTotal,
-      notes: refill.notes,
-      consumption: this.unitConversion.getConsumptionData(
-        vehicle.odometerType === 'HOUR' ? refill.consumption_L_per_hour : refill.consumption_L_per_100km,
-        vehicle.odometerType === 'HOUR' ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
-        vehicle.odometerType === 'HOUR' ? 'HOUR' : 'DISTANCE',
-      ),
+      deltaKm: isOdometerHourly ? 0 : safeDelta,
+      deltaHour: isOdometerHourly ? safeDelta : 0,
     };
+  }
+
+  private async updateMonthlyStatistics(
+    prisma: Prisma.TransactionClient,
+    vehicleId: string,
+    refillDate: Date,
+    fuelLiters: number,
+    costTotal: number,
+    consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null },
+    odometerDelta: { deltaKm: number; deltaHour: number },
+    isOdometerHourly: boolean,
+  ): Promise<void> {
+    const year = refillDate.getFullYear();
+    const month = refillDate.getMonth() + 1; // Months are zero-based
+
+    // Fetch existing monthly record
+    const existingRecord = await prisma.vehicleMonthlyStatistics.findUnique({
+      where: {
+        vehicleId_year_month: {
+          vehicleId,
+          year,
+          month,
+        },
+      },
+    });
+
+    // Calculate new values
+    const newTotalFuel = (existingRecord?.totalFuelConsumed_L ?? 0) + fuelLiters;
+    const newTotalCost = (existingRecord?.totalFuelCost ?? 0) + costTotal;
+    const newValidFuel = (existingRecord?.monthlyValidFuelForConsumption_L ?? 0) + (consumptionResult.validFuel ?? 0);
+    const newValidUnits_km =
+      (existingRecord?.monthlyValidUnitsForConsumption_km ?? 0) +
+      (isOdometerHourly ? 0 : (consumptionResult.validUnits ?? 0));
+    const newValidUnits_hour =
+      (existingRecord?.monthlyValidUnitsForConsumption_hour ?? 0) +
+      (isOdometerHourly ? (consumptionResult.validUnits ?? 0) : 0);
+
+    const newMonthlyOdometerUnits_km = (existingRecord?.monthlyOdometerUnits_km ?? 0) + odometerDelta.deltaKm;
+    const newMonthlyOdometerUnits_hour = (existingRecord?.monthlyOdometerUnits_hour ?? 0) + odometerDelta.deltaHour;
+
+    // Calculate monthly consumption (L/100km or L/h)
+    const monthlyConsumption = this.unitConversion.getBaseConsumptionFromBaseUnits(
+      isOdometerHourly ? newValidFuel : newValidFuel,
+      isOdometerHourly ? newValidUnits_hour : newValidUnits_km,
+      isOdometerHourly,
+    );
+
+    // Calculate monthly running cost (fuel + maintenance)
+    const monthlyRunningCost = newTotalCost + (existingRecord?.totalMaintenanceCost ?? 0);
+
+    // Upsert monthly statistics
+    await prisma.vehicleMonthlyStatistics.upsert({
+      where: {
+        vehicleId_year_month: {
+          vehicleId,
+          year,
+          month,
+        },
+      },
+      create: {
+        vehicleId,
+        year,
+        month,
+        totalFuelConsumed_L: newTotalFuel,
+        totalFuelCost: newTotalCost,
+        monthlyValidFuelForConsumption_L: newValidFuel,
+        monthlyValidUnitsForConsumption_km: newValidUnits_km,
+        monthlyValidUnitsForConsumption_hour: newValidUnits_hour,
+        monthlyOdometerUnits_km: newMonthlyOdometerUnits_km,
+        monthlyOdometerUnits_hour: newMonthlyOdometerUnits_hour,
+        consumption_L_per_hour: isOdometerHourly ? monthlyConsumption : 0,
+        consumption_L_per_100km: isOdometerHourly ? 0 : monthlyConsumption,
+        monthlyRunningCost,
+      },
+      update: {
+        totalFuelConsumed_L: newTotalFuel,
+        totalFuelCost: newTotalCost,
+        monthlyValidFuelForConsumption_L: newValidFuel,
+        monthlyValidUnitsForConsumption_km: newValidUnits_km,
+        monthlyValidUnitsForConsumption_hour: newValidUnits_hour,
+        monthlyOdometerUnits_km: newMonthlyOdometerUnits_km,
+        monthlyOdometerUnits_hour: newMonthlyOdometerUnits_hour,
+        consumption_L_per_hour: isOdometerHourly ? monthlyConsumption : 0,
+        consumption_L_per_100km: isOdometerHourly ? 0 : monthlyConsumption,
+        monthlyRunningCost,
+        updatedAt: new Date(),
+      },
+    });
   }
 }

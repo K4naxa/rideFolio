@@ -33,6 +33,7 @@ export function useRefillCreate() {
       });
 
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.consumptionCharts(variables.vehicleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.heroStatCards(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
     },
     onError(error) {

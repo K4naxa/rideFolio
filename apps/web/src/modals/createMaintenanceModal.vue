@@ -40,7 +40,13 @@ const { currentVehicleId } = useCurrentVehicle();
 // Maintenance queries
 const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
 
-const { data: maintenanceTypes, isLoading: isLoadingTypes, error: maintenanceTypesError } = useMaintenanceTypes();
+const {
+  data: maintenanceTypes,
+  isLoading: isLoadingTypes,
+  error: maintenanceTypesError,
+} = useMaintenanceTypes({
+  enabled: isModalOpen,
+});
 
 const selectedType = computed(() => {
   return maintenanceTypes.value?.find((type) => type.id === values.typeId) || null;
@@ -57,7 +63,7 @@ const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm
   },
 });
 
-const { selectedVehicleOdometerUnit, selectedVehicle } = useSelectedVehicle(values.vehicleId);
+const { selectedVehicleOdometerUnit, selectedVehicle } = useSelectedVehicle(computed(() => values.vehicleId));
 
 // Separate ref for form parts to pass to PartsFormField component
 const formParts = ref<TMaintenanceFormPart[]>([]);
@@ -141,7 +147,7 @@ watch(isModalOpen, (open) => {
                           :name="selectedType.icon as IconProps['name']"
                           class="stroke-muted-foreground"
                         />
-                        <SelectValue placeholder="Select vehicle type *" />
+                        <SelectValue placeholder="Select maintenance type *" />
                       </div>
                     </SelectTrigger>
                     <SelectContent>

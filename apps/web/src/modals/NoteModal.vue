@@ -38,7 +38,7 @@ const { values, errors, setFieldValue, resetForm, meta } = useForm<NoteSchemaTyp
   },
 });
 
-const { selectedVehicle } = useSelectedVehicle(values.vehicleId);
+const { selectedVehicle } = useSelectedVehicle(computed(() => values.vehicleId));
 const { currentVehicleId } = useCurrentVehicle();
 
 const { mutateAsync: createNoteAsync } = useCreateNote();

@@ -16,13 +16,13 @@ export function useMaintenancePartCategories(typeCode: MaybeRef<string | undefin
   });
 }
 
-export function useMaintenanceTypes() {
+export function useMaintenanceTypes(options?: { enabled?: MaybeRef<boolean> }) {
   return useQuery({
     queryKey: queryKeys.maintenances.types(),
     queryFn: async () => {
       return await fetchApi<MaintenanceType[]>(`/logs/maintenance/types`);
     },
-    enabled: false,
+    enabled: options?.enabled ?? true,
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 }

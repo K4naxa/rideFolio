@@ -30,9 +30,20 @@ import z from "zod";
 
 const router = useRouter();
 
+// Modal logic
+const modalStore = useModalStore();
+const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
+function handleClose() {
+  modalStore.onClose();
+  // Reset form after modal closes to ensure proper state
+  setTimeout(() => {
+    resetForm({});
+  }, 100);
+}
+
 const { mutateAsync: createVehicleAsync, isPending: createPending } = useVehicleCreate();
 const { data: vehicles } = useVehiclesAll();
-const { data: vehicleTypes } = useVehicleTypes();
+const { data: vehicleTypes } = useVehicleTypes({ enabled: isModalOpen });
 
 const clientSchema = VehicleSchema.extend({
   licensePlate: z
@@ -48,17 +59,6 @@ const clientSchema = VehicleSchema.extend({
       { message: "License plate already exists" },
     ),
 });
-
-// Modal logic
-const modalStore = useModalStore();
-const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
-function handleClose() {
-  modalStore.onClose();
-  // Reset form after modal closes to ensure proper state
-  setTimeout(() => {
-    resetForm({});
-  }, 100);
-}
 
 // Form logic
 const { handleSubmit, resetForm, values } = useForm({
