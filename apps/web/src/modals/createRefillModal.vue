@@ -15,7 +15,7 @@ import Switch from "@/components/ui/switch/Switch.vue";
 import HelpTooltip from "@/components/ui/HelpTooltip.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import DateInput from "@/components/forms/DateInput.vue";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";

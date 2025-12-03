@@ -19,7 +19,7 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { TodoSchema, type Todo } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";

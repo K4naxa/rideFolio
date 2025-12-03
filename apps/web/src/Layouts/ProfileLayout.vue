@@ -6,7 +6,7 @@ import AvatarImage from "@/components/ui/avatar/AvatarImage.vue";
 import Tabs from "@/components/ui/tabs/Tabs.vue";
 import TabsList from "@/components/ui/tabs/TabsList.vue";
 import TabsTrigger from "@/components/ui/tabs/TabsTrigger.vue";
-import { useUser } from "@/lib/queries/useUserQueries";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
@@ -18,7 +18,7 @@ const profileTabs: { value: string; icon: IconProps["name"]; url: string }[] = [
   { value: "danger", icon: "trash", url: "/profile/danger" },
 ];
 
-const { currentUser: user } = useUser();
+const { currentUser } = useCurrentUser();
 
 const route = useRoute();
 const activeTab = computed(() => {
@@ -30,18 +30,18 @@ const activeTab = computed(() => {
   <div class="gap mx-auto flex w-full flex-col px-4 py-4 lg:max-w-7xl lg:px-8 lg:py-8">
     <header class="flex w-full items-center gap-4">
       <Avatar class="size-16 lg:size-20">
-        <AvatarImage v-if="user?.image" :src="user?.image" :alt="user?.name || 'User Avatar'" />
+        <AvatarImage v-if="currentUser?.image" :src="currentUser?.image" :alt="currentUser?.name || 'User Avatar'" />
         <AvatarFallback>
           <Icon name="user" class="stroke-muted-foreground size-8" aria-hidden="true" />
         </AvatarFallback>
       </Avatar>
       <div>
         <h1 class="text-3xl font-semibold lg:text-3xl">
-          {{ user?.name }}
+          {{ currentUser?.name }}
         </h1>
 
         <p class="text-muted-foreground">
-          {{ user?.email }}
+          {{ currentUser?.email }}
         </p>
       </div>
     </header>

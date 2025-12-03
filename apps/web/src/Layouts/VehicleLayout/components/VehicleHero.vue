@@ -8,7 +8,7 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import Separator from "@/components/ui/separator/Separator.vue";
 import NumberFlow from "@number-flow/vue";
 
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
 import { ChevronDownIcon, DollarSignIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
 import { ref } from "vue";

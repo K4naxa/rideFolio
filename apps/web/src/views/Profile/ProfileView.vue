@@ -7,14 +7,16 @@ import CardFooter from "@/components/ui/card/CardFooter.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { useUser } from "@/lib/queries/useUserQueries";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { useUserUpdate } from "@/lib/queries/user/user-mutations";
 import { profileUpdateSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { watch } from "vue";
 import { toast } from "vue-sonner";
 
-const { currentUser, updateProfile } = useUser();
+const { currentUser } = useCurrentUser();
+const { mutateAsync: updateProfile } = useUserUpdate();
 
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: toTypedSchema(profileUpdateSchema),

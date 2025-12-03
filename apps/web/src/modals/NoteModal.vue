@@ -14,7 +14,7 @@ import { useModalStore } from "@/stores/modal";
 
 // Types
 import type { Note, NoteSchemaType } from "@repo/validation";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import Input from "@/components/ui/input/Input.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { watchDebounced } from "@vueuse/core";

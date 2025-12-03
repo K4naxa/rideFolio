@@ -13,10 +13,10 @@ import DropdownMenuSeparator from "./dropdown-menu/DropdownMenuSeparator.vue";
 import { useThemeStore } from "@/stores/theme";
 import Icon from "../icons/Icon.vue";
 import { getInitials } from "@/lib/utils";
-import { useUser } from "@/lib/queries/useUserQueries";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 const themeStore = useThemeStore();
-const { currentUser } = useUser();
+const { currentUser } = useCurrentUser();
 const { signOut } = useAuth();
 </script>
 

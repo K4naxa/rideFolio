@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { computed, ref, watch } from "vue";
 
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import VChart from "vue-echarts";
 import { graphic, use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";

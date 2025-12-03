@@ -2,7 +2,7 @@
 import type { DialogRootEmits, DialogRootProps } from "reka-ui";
 import { DialogRoot, useForwardPropsEmits } from "reka-ui";
 import { toRef } from "vue";
-import { useHistory } from "@/lib/useHistory";
+import { useHistory } from "@/lib/composables/useHistory";
 
 const props = defineProps<DialogRootProps>();
 const emits = defineEmits<DialogRootEmits>();

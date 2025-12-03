@@ -3,20 +3,20 @@ import { computed } from "vue";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
-import { useActivePool } from "@/lib/useActivePool";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
 import AppHeaderProfileButton from "./AppHeaderProfileButton.vue";
 import { useModalStore } from "@/stores/modal";
 import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
+import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 
 const route = useRoute();
 const modalStore = useModalStore();
 const { currentVehicleName } = useCurrentVehicle();
-const { activePoolName } = useActivePool();
+const { currentPoolName } = useCurrentPool();
 
-const title = computed(() => currentVehicleName.value || activePoolName.value || route.name?.toString());
+const title = computed(() => currentVehicleName.value || currentPoolName.value || route.name?.toString());
 
 type IconName = "refill" | "maintenance" | "notes" | "todo" | "bell";
 

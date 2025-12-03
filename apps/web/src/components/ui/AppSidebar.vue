@@ -12,8 +12,7 @@ import SidebarGroupContent from "@/components/ui/sidebar/SidebarGroupContent.vue
 import SidebarMenuSub from "@/components/ui/sidebar/SidebarMenuSub.vue";
 import SidebarMenuSubItem from "@/components/ui/sidebar/SidebarMenuSubItem.vue";
 import SidebarMenuSubButton from "@/components/ui/sidebar/SidebarMenuSubButton.vue";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
-import { useActivePool } from "@/lib/useActivePool";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
 import AppLogo from "../icons/AppLogo.vue";
@@ -21,6 +20,7 @@ import Icon, { type IconProps } from "../icons/Icon.vue";
 import Button from "./button/Button.vue";
 import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
+import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 
 interface MainSideBarLinks {
   label: string;
@@ -50,7 +50,7 @@ const { data: vehicles } = useVehiclesAll();
 const { currentVehicleId } = useCurrentVehicle();
 
 const { data: pools } = usePoolsAll();
-const { activePoolId } = useActivePool();
+const { currentPoolId } = useCurrentPool();
 
 const modalStore = useModalStore();
 const { setOpenMobile } = useSidebar();
@@ -128,7 +128,7 @@ const handleCreateVehicleClick = () => {
         <SidebarGroupContent v-if="pools && pools.length > 0">
           <SidebarMenuSub class="gap-0">
             <SidebarMenuSubItem v-for="pool in pools" :key="pool.id">
-              <SidebarMenuSubButton asChild :is-active="activePoolId === pool.id">
+              <SidebarMenuSubButton asChild :is-active="currentPoolId === pool.id">
                 <RouterLink :to="`/pools/${pool.id}`">{{ pool.name }}</RouterLink>
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>

@@ -13,7 +13,7 @@ import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { BrushCleaningIcon } from "lucide-vue-next";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { computed } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 

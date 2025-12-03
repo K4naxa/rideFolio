@@ -11,8 +11,6 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
-import { api } from "@/lib/api";
-import { useUser } from "@/lib/queries/useUserQueries";
 import { useModalStore } from "@/stores/modal";
 import {
   consumptionUnits_distance,
@@ -26,71 +24,20 @@ import {
   ODOMETER_TYPES,
   VOLUME_UNITS,
 } from "@repo/validation";
-import { useMutation } from "@tanstack/vue-query";
 import { computed } from "vue";
-import { useQueryClient } from "@tanstack/vue-query";
+import { useUserPreferenceUpdate } from "@/lib/queries/user/user-mutations";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
-const queryClient = useQueryClient();
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "userSettings");
 const handleClose = () => {
   modalStore.onClose();
 };
 
-const { currentUser } = useUser();
+const { currentUser } = useCurrentUser();
 console.log("Current User Preferences:", currentUser.value?.preferences);
 
-const updatePreference = useMutation({
-  mutationFn: async (preference: { key: string; value: string }) => {
-    const res = await api.patch("/users/preferences", {
-      key: preference.key,
-      value: preference.value,
-    });
-    return res.data;
-  },
-  mutationKey: ["updateUserPreference"],
-  onSuccess: (data) => {
-    console.log("Preference updated successfully:", data);
-    queryClient.setQueryData(["currentUser"], data);
-  },
-});
-
-function handleOdometerTypeChange(type: string) {
-  updatePreference.mutate({ key: "odometerType", value: type });
-}
-function handleVolumeUnitChange(unit: string) {
-  updatePreference.mutate(
-    { key: "volumeUnit", value: unit },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      },
-    },
-  );
-}
-function handleCurrencyChange(currency: string) {
-  updatePreference.mutate({ key: "currency", value: currency });
-}
-function handleConsumptionUnitDistanceChange(unit: string) {
-  updatePreference.mutate(
-    { key: "consumptionUnitCode_distance", value: unit },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      },
-    },
-  );
-}
-function handleConsumptionUnitHourChange(unit: string) {
-  updatePreference.mutate(
-    { key: "consumptionUnitCode_hour", value: unit },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      },
-    },
-  );
-}
+const { mutateAsync: updatePreference } = useUserPreferenceUpdate();
 </script>
 
 <template>
@@ -119,7 +66,7 @@ function handleConsumptionUnitHourChange(unit: string) {
                 <DropdownMenuItem
                   v-for="type in ODOMETER_TYPES"
                   :key="type.code"
-                  @click="handleOdometerTypeChange(type.code)"
+                  @click="updatePreference({ key: 'odometerType', value: type.code })"
                 >
                   {{ type.label }}
                 </DropdownMenuItem>
@@ -148,7 +95,7 @@ function handleConsumptionUnitHourChange(unit: string) {
                 <DropdownMenuItem
                   v-for="volume in VOLUME_UNITS"
                   :key="volume.code"
-                  @click="handleVolumeUnitChange(volume.code)"
+                  @click="updatePreference({ key: 'volumeUnit', value: volume.code })"
                   >{{ volume.label }}</DropdownMenuItem
                 >
               </DropdownMenuContent>
@@ -173,7 +120,7 @@ function handleConsumptionUnitHourChange(unit: string) {
                 <DropdownMenuItem
                   v-for="option in CURRENCIES"
                   :key="option.code"
-                  @click="handleCurrencyChange(option.code)"
+                  @click="updatePreference({ key: 'currency', value: option.code })"
                 >
                   <p class="text-muted-foreground mr-2">{{ option.symbol }}</p>
 
@@ -202,7 +149,7 @@ function handleConsumptionUnitHourChange(unit: string) {
                 <DropdownMenuItem
                   v-for="option in consumptionUnits_distance"
                   :key="option.code"
-                  @click="handleConsumptionUnitDistanceChange(option.code)"
+                  @click="updatePreference({ key: 'consumptionUnitCode_distance', value: option.code })"
                 >
                   {{ option.unit }}
                 </DropdownMenuItem>
@@ -226,7 +173,7 @@ function handleConsumptionUnitHourChange(unit: string) {
                 <DropdownMenuItem
                   v-for="option in consumptionUnits_hour"
                   :key="option.code"
-                  @click="handleConsumptionUnitHourChange(option.code)"
+                  @click="updatePreference({ key: 'consumptionUnitCode_hour', value: option.code })"
                 >
                   {{ option.unit }}
                 </DropdownMenuItem>

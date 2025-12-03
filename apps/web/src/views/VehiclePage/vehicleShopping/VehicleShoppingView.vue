@@ -2,7 +2,7 @@
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { ShoppingListItemSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";

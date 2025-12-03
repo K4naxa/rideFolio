@@ -17,7 +17,7 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { MaintenanceSchema, type TMaintenanceFormPart } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";

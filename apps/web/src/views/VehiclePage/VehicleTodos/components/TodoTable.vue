@@ -18,7 +18,7 @@ import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
 import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";

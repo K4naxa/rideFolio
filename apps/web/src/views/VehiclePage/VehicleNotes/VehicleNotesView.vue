@@ -4,7 +4,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import NoteSection from "./components/NoteSection.vue";

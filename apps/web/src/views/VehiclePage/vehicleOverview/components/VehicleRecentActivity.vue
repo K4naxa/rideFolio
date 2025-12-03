@@ -5,7 +5,7 @@ import Button from "@/components/ui/button/Button.vue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
 import { useTimeAgo } from "@vueuse/core";
 import { computed, ref } from "vue";

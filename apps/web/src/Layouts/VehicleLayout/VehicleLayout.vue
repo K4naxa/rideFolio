@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCurrentVehicle } from "@/lib/useCurrentVehicle";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { RouterView } from "vue-router";
 import { computed } from "vue";
 import VehicleHero from "./components/VehicleHero.vue";
