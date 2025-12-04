@@ -51,8 +51,8 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
             <div v-for="activity in allActivities" :key="activity.data.id">
               <!-- Refill activity -->
               <div v-if="activity.type === 'refill'" class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5">
-                <div class="bg-refill/30 grid size-11 place-content-center rounded">
-                  <Icon name="refill" class="stroke-refill" />
+                <div class="bg-refill/30 grid size-10 place-content-center rounded">
+                  <Icon name="refill" class="stroke-refill" size="sm" />
                 </div>
                 <div class="space-y-1">
                   <div class="flex gap-3">
@@ -78,8 +78,8 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                 v-if="activity.type === 'maintenance'"
                 class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5"
               >
-                <div class="bg-maintenance/30 grid size-11 place-content-center rounded">
-                  <Icon name="maintenance" class="stroke-maintenance" />
+                <div class="bg-maintenance/30 grid size-10 place-content-center rounded">
+                  <Icon name="maintenance" class="stroke-maintenance" size="sm" />
                 </div>
                 <div class="space-y-1">
                   <Label>Maintenance</Label>

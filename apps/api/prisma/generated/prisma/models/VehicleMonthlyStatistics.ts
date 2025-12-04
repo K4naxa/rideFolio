@@ -38,8 +38,6 @@ export type VehicleMonthlyStatisticsAvgAggregateOutputType = {
   monthlyRunningCost: number | null
   monthlyOdometerUnits_km: number | null
   monthlyOdometerUnits_hour: number | null
-  consumption_L_per_hour: number | null
-  consumption_L_per_100km: number | null
 }
 
 export type VehicleMonthlyStatisticsSumAggregateOutputType = {
@@ -54,8 +52,6 @@ export type VehicleMonthlyStatisticsSumAggregateOutputType = {
   monthlyRunningCost: number | null
   monthlyOdometerUnits_km: number | null
   monthlyOdometerUnits_hour: number | null
-  consumption_L_per_hour: number | null
-  consumption_L_per_100km: number | null
 }
 
 export type VehicleMonthlyStatisticsMinAggregateOutputType = {
@@ -72,8 +68,6 @@ export type VehicleMonthlyStatisticsMinAggregateOutputType = {
   monthlyRunningCost: number | null
   monthlyOdometerUnits_km: number | null
   monthlyOdometerUnits_hour: number | null
-  consumption_L_per_hour: number | null
-  consumption_L_per_100km: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,8 +86,6 @@ export type VehicleMonthlyStatisticsMaxAggregateOutputType = {
   monthlyRunningCost: number | null
   monthlyOdometerUnits_km: number | null
   monthlyOdometerUnits_hour: number | null
-  consumption_L_per_hour: number | null
-  consumption_L_per_100km: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -112,8 +104,6 @@ export type VehicleMonthlyStatisticsCountAggregateOutputType = {
   monthlyRunningCost: number
   monthlyOdometerUnits_km: number
   monthlyOdometerUnits_hour: number
-  consumption_L_per_hour: number
-  consumption_L_per_100km: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -132,8 +122,6 @@ export type VehicleMonthlyStatisticsAvgAggregateInputType = {
   monthlyRunningCost?: true
   monthlyOdometerUnits_km?: true
   monthlyOdometerUnits_hour?: true
-  consumption_L_per_hour?: true
-  consumption_L_per_100km?: true
 }
 
 export type VehicleMonthlyStatisticsSumAggregateInputType = {
@@ -148,8 +136,6 @@ export type VehicleMonthlyStatisticsSumAggregateInputType = {
   monthlyRunningCost?: true
   monthlyOdometerUnits_km?: true
   monthlyOdometerUnits_hour?: true
-  consumption_L_per_hour?: true
-  consumption_L_per_100km?: true
 }
 
 export type VehicleMonthlyStatisticsMinAggregateInputType = {
@@ -166,8 +152,6 @@ export type VehicleMonthlyStatisticsMinAggregateInputType = {
   monthlyRunningCost?: true
   monthlyOdometerUnits_km?: true
   monthlyOdometerUnits_hour?: true
-  consumption_L_per_hour?: true
-  consumption_L_per_100km?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -186,8 +170,6 @@ export type VehicleMonthlyStatisticsMaxAggregateInputType = {
   monthlyRunningCost?: true
   monthlyOdometerUnits_km?: true
   monthlyOdometerUnits_hour?: true
-  consumption_L_per_hour?: true
-  consumption_L_per_100km?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -206,8 +188,6 @@ export type VehicleMonthlyStatisticsCountAggregateInputType = {
   monthlyRunningCost?: true
   monthlyOdometerUnits_km?: true
   monthlyOdometerUnits_hour?: true
-  consumption_L_per_hour?: true
-  consumption_L_per_100km?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -313,8 +293,6 @@ export type VehicleMonthlyStatisticsGroupByOutputType = {
   monthlyRunningCost: number
   monthlyOdometerUnits_km: number
   monthlyOdometerUnits_hour: number
-  consumption_L_per_hour: number
-  consumption_L_per_100km: number
   createdAt: Date
   updatedAt: Date
   _count: VehicleMonthlyStatisticsCountAggregateOutputType | null
@@ -356,8 +334,6 @@ export type VehicleMonthlyStatisticsWhereInput = {
   monthlyRunningCost?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_100km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   createdAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -377,8 +353,6 @@ export type VehicleMonthlyStatisticsOrderByWithRelationInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
@@ -402,8 +376,6 @@ export type VehicleMonthlyStatisticsWhereUniqueInput = Prisma.AtLeast<{
   monthlyRunningCost?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_100km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   createdAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -423,8 +395,6 @@ export type VehicleMonthlyStatisticsOrderByWithAggregationInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VehicleMonthlyStatisticsCountOrderByAggregateInput
@@ -451,8 +421,6 @@ export type VehicleMonthlyStatisticsScalarWhereWithAggregatesInput = {
   monthlyRunningCost?: Prisma.FloatWithAggregatesFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_km?: Prisma.FloatWithAggregatesFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_hour?: Prisma.FloatWithAggregatesFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_hour?: Prisma.FloatWithAggregatesFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_100km?: Prisma.FloatWithAggregatesFilter<"VehicleMonthlyStatistics"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VehicleMonthlyStatistics"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VehicleMonthlyStatistics"> | Date | string
 }
@@ -470,8 +438,6 @@ export type VehicleMonthlyStatisticsCreateInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutMonthlyStatisticsInput
@@ -491,8 +457,6 @@ export type VehicleMonthlyStatisticsUncheckedCreateInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -510,8 +474,6 @@ export type VehicleMonthlyStatisticsUpdateInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutMonthlyStatisticsNestedInput
@@ -531,8 +493,6 @@ export type VehicleMonthlyStatisticsUncheckedUpdateInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,8 +511,6 @@ export type VehicleMonthlyStatisticsCreateManyInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -570,8 +528,6 @@ export type VehicleMonthlyStatisticsUpdateManyMutationInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -590,8 +546,6 @@ export type VehicleMonthlyStatisticsUncheckedUpdateManyInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -626,8 +580,6 @@ export type VehicleMonthlyStatisticsCountOrderByAggregateInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -644,8 +596,6 @@ export type VehicleMonthlyStatisticsAvgOrderByAggregateInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
 }
 
 export type VehicleMonthlyStatisticsMaxOrderByAggregateInput = {
@@ -662,8 +612,6 @@ export type VehicleMonthlyStatisticsMaxOrderByAggregateInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -682,8 +630,6 @@ export type VehicleMonthlyStatisticsMinOrderByAggregateInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -700,8 +646,6 @@ export type VehicleMonthlyStatisticsSumOrderByAggregateInput = {
   monthlyRunningCost?: Prisma.SortOrder
   monthlyOdometerUnits_km?: Prisma.SortOrder
   monthlyOdometerUnits_hour?: Prisma.SortOrder
-  consumption_L_per_hour?: Prisma.SortOrder
-  consumption_L_per_100km?: Prisma.SortOrder
 }
 
 export type VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput = {
@@ -759,8 +703,6 @@ export type VehicleMonthlyStatisticsCreateWithoutVehicleInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -778,8 +720,6 @@ export type VehicleMonthlyStatisticsUncheckedCreateWithoutVehicleInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -827,8 +767,6 @@ export type VehicleMonthlyStatisticsScalarWhereInput = {
   monthlyRunningCost?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   monthlyOdometerUnits_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_hour?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
-  consumption_L_per_100km?: Prisma.FloatFilter<"VehicleMonthlyStatistics"> | number
   createdAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VehicleMonthlyStatistics"> | Date | string
 }
@@ -846,8 +784,6 @@ export type VehicleMonthlyStatisticsCreateManyVehicleInput = {
   monthlyRunningCost?: number
   monthlyOdometerUnits_km?: number
   monthlyOdometerUnits_hour?: number
-  consumption_L_per_hour?: number
-  consumption_L_per_100km?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -865,8 +801,6 @@ export type VehicleMonthlyStatisticsUpdateWithoutVehicleInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -884,8 +818,6 @@ export type VehicleMonthlyStatisticsUncheckedUpdateWithoutVehicleInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -903,8 +835,6 @@ export type VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleInput = {
   monthlyRunningCost?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_km?: Prisma.FloatFieldUpdateOperationsInput | number
   monthlyOdometerUnits_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_hour?: Prisma.FloatFieldUpdateOperationsInput | number
-  consumption_L_per_100km?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -925,8 +855,6 @@ export type VehicleMonthlyStatisticsSelect<ExtArgs extends runtime.Types.Extensi
   monthlyRunningCost?: boolean
   monthlyOdometerUnits_km?: boolean
   monthlyOdometerUnits_hour?: boolean
-  consumption_L_per_hour?: boolean
-  consumption_L_per_100km?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -946,8 +874,6 @@ export type VehicleMonthlyStatisticsSelectCreateManyAndReturn<ExtArgs extends ru
   monthlyRunningCost?: boolean
   monthlyOdometerUnits_km?: boolean
   monthlyOdometerUnits_hour?: boolean
-  consumption_L_per_hour?: boolean
-  consumption_L_per_100km?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -967,8 +893,6 @@ export type VehicleMonthlyStatisticsSelectUpdateManyAndReturn<ExtArgs extends ru
   monthlyRunningCost?: boolean
   monthlyOdometerUnits_km?: boolean
   monthlyOdometerUnits_hour?: boolean
-  consumption_L_per_hour?: boolean
-  consumption_L_per_100km?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -988,13 +912,11 @@ export type VehicleMonthlyStatisticsSelectScalar = {
   monthlyRunningCost?: boolean
   monthlyOdometerUnits_km?: boolean
   monthlyOdometerUnits_hour?: boolean
-  consumption_L_per_hour?: boolean
-  consumption_L_per_100km?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VehicleMonthlyStatisticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "year" | "month" | "monthlyValidUnitsForConsumption_km" | "monthlyValidUnitsForConsumption_hour" | "monthlyValidFuelForConsumption_L" | "totalFuelConsumed_L" | "totalFuelCost" | "totalMaintenanceCost" | "monthlyRunningCost" | "monthlyOdometerUnits_km" | "monthlyOdometerUnits_hour" | "consumption_L_per_hour" | "consumption_L_per_100km" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicleMonthlyStatistics"]>
+export type VehicleMonthlyStatisticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "year" | "month" | "monthlyValidUnitsForConsumption_km" | "monthlyValidUnitsForConsumption_hour" | "monthlyValidFuelForConsumption_L" | "totalFuelConsumed_L" | "totalFuelCost" | "totalMaintenanceCost" | "monthlyRunningCost" | "monthlyOdometerUnits_km" | "monthlyOdometerUnits_hour" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicleMonthlyStatistics"]>
 export type VehicleMonthlyStatisticsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
 }
@@ -1024,8 +946,6 @@ export type $VehicleMonthlyStatisticsPayload<ExtArgs extends runtime.Types.Exten
     monthlyRunningCost: number
     monthlyOdometerUnits_km: number
     monthlyOdometerUnits_hour: number
-    consumption_L_per_hour: number
-    consumption_L_per_100km: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vehicleMonthlyStatistics"]>
@@ -1465,8 +1385,6 @@ export interface VehicleMonthlyStatisticsFieldRefs {
   readonly monthlyRunningCost: Prisma.FieldRef<"VehicleMonthlyStatistics", 'Float'>
   readonly monthlyOdometerUnits_km: Prisma.FieldRef<"VehicleMonthlyStatistics", 'Float'>
   readonly monthlyOdometerUnits_hour: Prisma.FieldRef<"VehicleMonthlyStatistics", 'Float'>
-  readonly consumption_L_per_hour: Prisma.FieldRef<"VehicleMonthlyStatistics", 'Float'>
-  readonly consumption_L_per_100km: Prisma.FieldRef<"VehicleMonthlyStatistics", 'Float'>
   readonly createdAt: Prisma.FieldRef<"VehicleMonthlyStatistics", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VehicleMonthlyStatistics", 'DateTime'>
 }

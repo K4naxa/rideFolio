@@ -537,9 +537,6 @@ model VehicleMonthlyStatistics {
   monthlyOdometerUnits_km     Float @default(0)
   monthlyOdometerUnits_hour   Float @default(0)
 
-  // Consumption
-  consumption_L_per_hour         Float @default(0)
-  consumption_L_per_100km  Float @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

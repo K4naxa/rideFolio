@@ -133,6 +133,55 @@ export class MaintenanceService {
           },
         });
       }
+
+      // Update monthly statistics
+      if (maintenanceData.totalCost && maintenanceData.totalCost > 0) {
+        await this.updateMonthlyStatistics({
+          prisma,
+          vehicleId: maintenanceData.vehicleId,
+          date: maintenanceData.date,
+          costTotal: maintenanceData.totalCost,
+        });
+
+        // Update vehicle lifetime total cost
+        await this.prisma.vehicle.update({
+          where: { id: maintenanceData.vehicleId },
+          data: { lifetimeTotalCost: { increment: maintenanceData.totalCost } },
+        });
+      }
+    });
+  }
+
+  // Helpers
+  private async updateMonthlyStatistics({
+    prisma,
+    vehicleId,
+    date,
+    costTotal,
+  }: {
+    prisma: Prisma.TransactionClient;
+    vehicleId: string;
+    date: Date;
+    costTotal: number;
+  }) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+
+    await prisma.vehicleMonthlyStatistics.upsert({
+      where: {
+        vehicleId_year_month: { vehicleId, year, month },
+      },
+      update: {
+        totalMaintenanceCost: { increment: costTotal },
+        monthlyRunningCost: { increment: costTotal },
+      },
+      create: {
+        vehicleId,
+        year,
+        month,
+        monthlyRunningCost: costTotal,
+        totalMaintenanceCost: costTotal,
+      },
     });
   }
 }

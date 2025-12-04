@@ -376,8 +376,6 @@ export const VehicleMonthlyStatisticsScalarFieldEnum = {
   monthlyRunningCost: 'monthlyRunningCost',
   monthlyOdometerUnits_km: 'monthlyOdometerUnits_km',
   monthlyOdometerUnits_hour: 'monthlyOdometerUnits_hour',
-  consumption_L_per_hour: 'consumption_L_per_hour',
-  consumption_L_per_100km: 'consumption_L_per_100km',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
