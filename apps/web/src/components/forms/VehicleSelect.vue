@@ -54,7 +54,7 @@ const selectedVehicle = computed(() => vehicles?.value?.find((vehicle) => vehicl
 <template>
   <Popover :open="open" @update:open="(value) => (open = value)" key="VehicleSelect">
     <PopoverTrigger asChild>
-      <Button variant="outline" role="combobox" class="h-fit w-full active:scale-100" :aria-expanded="open">
+      <Button variant="outline" role="combobox" class="h-fit w-full p-1!" :aria-expanded="open">
         <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
         <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
         <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />

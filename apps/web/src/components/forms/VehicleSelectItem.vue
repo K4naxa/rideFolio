@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { type TAccessibleVehicle } from "@repo/validation";
 import VehicleTypeIcon from "../icons/VehicleTypeIcon.vue";
+import type { IconProps } from "../icons/Icon.vue";
+import Icon from "../icons/Icon.vue";
 interface SelectItemProps {
   vehicle: TAccessibleVehicle["vehicleData"];
   customClass?: string;
@@ -8,19 +10,14 @@ interface SelectItemProps {
 const props = defineProps<SelectItemProps>();
 </script>
 <template>
-  <div :class="['flex w-full cursor-pointer items-center space-x-3 p-1 select-none', props.customClass]">
-    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-accent">
-      <img
-        v-if="props.vehicle.image"
-        :src="props.vehicle.image"
-        :alt="props.vehicle.name"
-        fill
-        className="object-cover"
+  <div :class="['flex h-14 w-full cursor-pointer items-center space-x-3 p-1 select-none', props.customClass]">
+    <div class="bg-muted grid aspect-video h-full place-items-center overflow-hidden rounded-md">
+      <img v-if="vehicle.image" :src="vehicle.image" :alt="'Image of ' + vehicle.name" class="object-cover" />
+      <Icon
+        :name="vehicle.type.icon as IconProps['name']"
+        v-else-if="vehicle.type.icon"
+        class="stroke-muted-foreground"
       />
-
-      <div v-else className="grid h-full w-full place-items-center">
-        <VehicleTypeIcon :type="props.vehicle.type.code" className="h-5 w-5 text-muted-foreground" />
-      </div>
     </div>
 
     <!-- Vehicle info -->
