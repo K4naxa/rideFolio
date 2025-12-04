@@ -30,6 +30,7 @@ import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { useMaintenanceTypes } from "@/lib/queries/maintenances/maintenance-queries";
 import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mutations";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 // Modal store
 const modalStore = useModalStore();
@@ -37,6 +38,7 @@ const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "cre
 // Vehicle info
 const { currentVehicleId } = useCurrentVehicle();
 
+const { preferredCurrencySymbol } = useCurrentUser();
 // Maintenance queries
 const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
 
@@ -165,7 +167,7 @@ watch(isModalOpen, (open) => {
                 </div>
               </Field>
 
-              <Input name="totalCost" type="number" suffix="€" placeholder="Total cost" />
+              <Input name="totalCost" type="number" :suffix="preferredCurrencySymbol" placeholder="Total cost" />
             </div>
 
             <Input name="serviceProvider" type="text" placeholder="Service Provider" :validate-on-blur="false" />

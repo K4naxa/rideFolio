@@ -1067,6 +1067,10 @@ export type EnumFuelTypesFieldUpdateOperationsInput = {
   set?: $Enums.FuelTypes
 }
 
+export type EnumOdometerTypesFieldUpdateOperationsInput = {
+  set?: $Enums.OdometerTypes
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number

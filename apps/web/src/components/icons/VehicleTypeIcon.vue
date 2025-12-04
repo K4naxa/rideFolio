@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue";
+import { type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
 import Icons, { type IconProps } from "./Icon.vue";
 
@@ -8,6 +8,7 @@ const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
 </script>
+
 <template>
   <Icons
     :name="type === 'other' ? 'otherVehicle' : (type as IconProps['name'])"

@@ -60,8 +60,7 @@ export type TimeConsumptionTypes = (typeof TimeConsumptionTypes)[keyof typeof Ti
 
 export const PoolType = {
   PRIVATE: 'PRIVATE',
-  SHARED: 'SHARED',
-  ASSIGNED: 'ASSIGNED'
+  SHARED: 'SHARED'
 } as const
 
 export type PoolType = (typeof PoolType)[keyof typeof PoolType]

@@ -10,7 +10,7 @@ import NumberFlow from "@number-flow/vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { ChevronDownIcon, DollarSignIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
+import { ChevronDownIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
 import Icon from "@/components/icons/Icon.vue";
@@ -20,12 +20,14 @@ import { useRouter } from "vue-router";
 import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
 import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries";
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 const router = useRouter();
 const modalStore = useModalStore();
 const { mutateAsync: deleteVehicle } = useVehicleDelete();
 const { currentVehicle, currentVehicleId } = useCurrentVehicle();
 const { data: statCardData, isLoading } = useVehicleHeroStatCards(currentVehicleId);
+const { preferredCurrencySymbol } = useCurrentUser();
 
 function handleDeleteClick() {
   modalStore.onOpen("alert", {
@@ -191,7 +193,7 @@ const statsOpen = ref(false);
                 />
                 <div class="grid grid-cols-2 gap-3">
                   <VehicleHeroStatCard
-                    :icon="DollarSignIcon"
+                    :iconSymbol="preferredCurrencySymbol"
                     label="Montly Cost"
                     :value="`${statCardData?.monthlyRunningCost}`"
                     :is-loading="isLoading"
@@ -249,7 +251,7 @@ const statsOpen = ref(false);
           :is-loading="isLoading"
         />
         <VehicleHeroStatCard
-          :icon="DollarSignIcon"
+          :iconSymbol="preferredCurrencySymbol"
           label="Montly Cost"
           :value="`${statCardData?.monthlyRunningCost}`"
           :is-loading="isLoading"

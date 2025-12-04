@@ -1,0 +1,262 @@
+<script setup lang="ts">
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Button from "@/components/ui/button/Button.vue";
+import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
+import Dialog from "@/components/ui/dialog/Dialog.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
+import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
+import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
+import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
+import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
+import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
+import Select from "@/components/ui/select/Select.vue";
+import SelectContent from "@/components/ui/select/SelectContent.vue";
+import SelectItem from "@/components/ui/select/SelectItem.vue";
+import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
+import SelectValue from "@/components/ui/select/SelectValue.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Textarea from "@/components/ui/textarea/Textarea.vue";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { useModalStore } from "@/stores/modal";
+import { getPoolTypeIcon, NewPoolFormSchema, POOL_TYPES } from "@repo/validation";
+import { toTypedSchema } from "@vee-validate/zod";
+import { AnimatePresence, Motion } from "motion-v";
+import { ErrorMessage, Field, useForm } from "vee-validate";
+import { computed, watch } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const { handleSubmit, values, setValues, isSubmitting, resetForm } = useForm({
+  validationSchema: toTypedSchema(NewPoolFormSchema),
+  initialValues: {
+    name: "",
+    description: "",
+    type: "PRIVATE",
+    vehicleIds: [] as string[],
+    allowMembersToAddLogs: true,
+    allowMembersToAddVehicles: true,
+    allowMembersToDeleteLogs: true,
+    allowMembersToEditLogs: true,
+  },
+});
+
+const modalStore = useModalStore();
+const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "pool");
+const handleClose = () => {
+  modalStore.onClose();
+};
+
+const showMemberSettings = computed(() => values.type !== "PRIVATE");
+const { usersOwnVehicles } = useCurrentUser();
+
+watch(isModalOpen, (open) => {
+  if (open) {
+    resetForm({
+      values: {
+        name: "",
+        description: "",
+        type: "PRIVATE",
+        vehicleIds: [] as string[],
+        allowMembersToAddLogs: true,
+        allowMembersToAddVehicles: true,
+        allowMembersToDeleteLogs: true,
+        allowMembersToEditLogs: true,
+      },
+    });
+  }
+});
+</script>
+
+<template>
+  <Dialog :open="isModalOpen" @update:open="handleClose">
+    <form>
+      <DialogScrollContent class="text-foreground max-w-4xl">
+        <DialogHeader class="">
+          <DialogTitle>Create a New Group</DialogTitle>
+          <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
+        </DialogHeader>
+        <div>
+          <div class="mb-4 space-y-2 px-0">
+            <Label class="text-muted-foreground">Group info</Label>
+            <Separator />
+          </div>
+
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 place-content-end items-end gap-8 md:grid-cols-2">
+              <Input name="name" type="text" label="Name" placeholder="Family Group" maxlength="50" required />
+              <Field v-slot="{ value, handleChange }" name="type">
+                <Select :model-value="value" @update:model-value="handleChange">
+                  <SelectTrigger class="w-full">
+                    <div class="flex items-center gap-3">
+                      <Icon
+                        v-if="value"
+                        :name="getPoolTypeIcon(value) as IconProps['name']"
+                        class="stroke-muted-foreground"
+                      />
+                      <SelectValue placeholder="Select maintenance type *" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="type in POOL_TYPES" :key="type.code" :value="type.code" class="flex gap-2">
+                      <Icon v-if="type.icon" :name="type.icon as IconProps['name']" class="stroke-muted-foreground" />
+                      <p class="capitalize">{{ type.label }}</p>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <ErrorMessage name="typeId" class="text-destructive mt-1 ml-1 text-sm" />
+              </Field>
+            </div>
+            <Textarea name="description" placeholder="Describe your pool" maxlength="200" label="Description" />
+          </div>
+        </div>
+
+        <AnimatePresence>
+          <Motion
+            v-if="showMemberSettings"
+            :initial="{ opacity: 0, height: 0 }"
+            :animate="{ opacity: 1, height: 'auto' }"
+            :exit="{ opacity: 0, height: 0 }"
+            :transition="{ duration: 0.25, ease: 'easeOut' }"
+            class="overflow-hidden"
+          >
+            <div class="mb-4 space-y-2">
+              <Label class="text-muted-foreground mb-4">Member Permissions</Label>
+              <Separator />
+            </div>
+
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <Field v-slot="{ value, handleChange }" name="allowMembersToAddLogs">
+                <label class="flex items-center gap-4" data-cy="allowMembersToAddLogs-checkbox">
+                  <Checkbox :model-value="value" @update:model-value="handleChange" />
+                  <div>
+                    <h4>Allow members to create logs</h4>
+                    <p class="text-muted-foreground text-sm">Members can create new logs for the groups vehicles</p>
+                  </div>
+                  <ErrorMessage name="allowMembersToAddLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                </label>
+              </Field>
+
+              <Field v-slot="{ value, handleChange }" name="allowMembersToEditLogs">
+                <label class="flex items-center gap-4" data-cy="allowMembersToEditLogs-checkbox">
+                  <Checkbox :model-value="value" @update:model-value="handleChange" />
+                  <div>
+                    <h4>Allow members to edit logs</h4>
+                    <p class="text-muted-foreground text-sm">Members can edit existing logs for the groups vehicles</p>
+                  </div>
+                  <ErrorMessage name="allowMembersToEditLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                </label>
+              </Field>
+
+              <Field v-slot="{ value, handleChange }" name="allowMembersToDeleteLogs">
+                <label class="flex items-center gap-4" data-cy="allowMembersToDeleteLogs-checkbox">
+                  <Checkbox :model-value="value" @update:model-value="handleChange" />
+                  <div>
+                    <h4>Allow members to delete logs</h4>
+                    <p class="text-muted-foreground text-sm">
+                      Members can delete existing logs for the groups vehicles
+                    </p>
+                  </div>
+                  <ErrorMessage name="allowMembersToDeleteLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                </label>
+              </Field>
+
+              <Field v-slot="{ value, handleChange }" name="allowMembersToAddVehicles">
+                <label class="flex items-center gap-4" data-cy="allowMembersToAddVehicles-checkbox">
+                  <Checkbox :model-value="value" @update:model-value="handleChange" />
+                  <div>
+                    <h4>Allow members to add vehicles</h4>
+                    <p class="text-muted-foreground text-sm">
+                      Members can add their own vehicles to the group. Only group admins can remove vehicles
+                    </p>
+                  </div>
+                  <ErrorMessage name="allowMembersToAddVehicles" class="text-destructive mt-1 ml-2 text-sm" />
+                </label>
+              </Field>
+            </div>
+          </Motion>
+        </AnimatePresence>
+
+        <div class="">
+          <div class="mb-4 space-y-2 px-0">
+            <Label class="text-muted-foreground">Add vehicles</Label>
+            <Separator />
+          </div>
+
+          <div class="min-h-36">
+            <Empty v-if="usersOwnVehicles.length < 1" class="h-36">
+              <EmptyTitle>No vehicles available</EmptyTitle>
+              <EmptyDescription>
+                You don't have any vehicles to add to this group. Create a vehicle first to add it to the group.
+              </EmptyDescription>
+            </Empty>
+            <ScrollArea v-else class="max-h-72 w-full overflow-hidden">
+              <ul class="space-y-3 pb-3">
+                <label
+                  v-for="{ vehicleData: vehicle } in usersOwnVehicles"
+                  :key="vehicle.id"
+                  class="listHover grid min-w-xl grid-cols-[auto_auto_1fr_1fr_1fr_1fr] items-center gap-6 rounded px-3 py-2 hover:cursor-pointer"
+                >
+                  <Checkbox class="size-6" />
+                  <div class="bg-muted grid aspect-video h-12 place-items-center overflow-hidden rounded">
+                    <img
+                      v-if="vehicle.image"
+                      :src="vehicle.image"
+                      :alt="'Image of ' + vehicle.name"
+                      class="object-cover"
+                    />
+                    <Icon
+                      :name="vehicle.type.icon as IconProps['name']"
+                      v-else-if="vehicle.type.icon"
+                      class="stroke-muted-foreground"
+                    />
+                  </div>
+
+                  <div>
+                    <p class="font-semibold">{{ vehicle.name }}</p>
+                    <p class="text-muted-foreground text-sm">{{ vehicle.make }} {{ vehicle.model }}</p>
+                  </div>
+                  <div v-if="vehicle.licensePlate">
+                    <h4 class="text-muted-foreground">License Plate</h4>
+                    <p class="text-sm">{{ vehicle.licensePlate }}</p>
+                  </div>
+                  <div v-else />
+                  <div>
+                    <h4 class="text-muted-foreground">Odometer</h4>
+                    <p class="text-sm">
+                      {{ vehicle.odometerData.value }}
+                      <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
+                    </p>
+                  </div>
+                  <div>
+                    <h4 class="text-muted-foreground">Lifetime travel</h4>
+                    <p class="text-sm">
+                      {{ vehicle.odometerData.lifeTimeTracked }}
+                      <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
+                    </p>
+                  </div>
+                </label>
+              </ul>
+              <ScrollBar orientation="horizontal" class="" />
+            </ScrollArea>
+          </div>
+
+          <DialogFooter class="pt-8">
+            <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
+              <span v-if="!isSubmitting">Create</span>
+              <span v-else> <Spinner /> Creating.. </span>
+            </Button>
+            <Button type="button" variant="outline" @click="router.back()" data-cy="cancel-refill-btn">Cancel</Button>
+          </DialogFooter>
+        </div>
+      </DialogScrollContent>
+    </form>
+  </Dialog>
+</template>

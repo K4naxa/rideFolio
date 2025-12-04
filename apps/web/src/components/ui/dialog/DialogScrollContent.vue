@@ -21,7 +21,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       <DialogContent
         :class="
           twMerge(
-            'bg-background relative z-50 flex w-full flex-col gap-6 border-0 p-4 shadow-lg duration-200 sm:rounded-lg md:my-8 md:w-full lg:border lg:p-6',
+            'bg-background relative z-50 flex w-full min-w-0 flex-col gap-6 border-0 p-4 shadow-lg duration-200 sm:rounded-lg md:my-8 md:w-full lg:border lg:p-6',
             props.class,
           )
         "

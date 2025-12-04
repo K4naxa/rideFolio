@@ -46,7 +46,7 @@ enum TimeConsumptionTypes {
 enum PoolType {
   PRIVATE // A user's personal default pool
   SHARED  // A standard shared pool
-  ASSIGNED // A pool assigned to a user, typically for a specific vehicle or purpose
+  // ASSIGNED // A pool assigned to a user, typically for a specific vehicle or purpose
 }
 
 enum PoolMemberRole {
@@ -93,8 +93,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Units
-  odometerType OdometerTypes @default(KILOMETER)
   volumeUnit   VolumeUnitTypes @default(LITER)
 
   consumptionUnitCode_distance  DistanceConsumptionTypes @default(LITERS_PER_100KM)

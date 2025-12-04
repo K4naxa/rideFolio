@@ -1,20 +1,71 @@
 import { TBasicVehicle, TVehicleOwner } from "../vehicle";
 
-export type PoolTypes = "PRIVATE" | "SHARED" | "ASSIGNED";
-export type PoolTypeOption = { value: PoolTypes; label: string };
-export const PoolTypeValues = [
-  { value: "PRIVATE" as const, label: "Yksityinen", message: "Vain sinun käyttöön" },
-  { value: "SHARED" as const, label: "Jaettu", message: "Kutsu muita käyttäjiä vapaasti" },
-  { value: "ASSIGNED" as const, label: "Määrätty", message: "Vain määrätyt käyttäjät" },
-];
+// Pool types
+export const POOL_TYPES = {
+  PRIVATE: {
+    code: "PRIVATE",
+    label: "Private",
+    icon: "userLock",
+    nameKey: "pool.types.private.name",
+    descriptionKey: "pool.types.private.description",
+    description: "Only for your use, no other members",
+  },
+  SHARED: {
+    code: "SHARED",
+    label: "Shared",
+    icon: "users",
+    nameKey: "pool.types.shared.name",
+    descriptionKey: "pool.types.shared.description",
+    description: "Invite other users freely",
+  },
+};
+export type PoolTypeCode = keyof typeof POOL_TYPES;
+export const poolTypeCodes = Object.keys(POOL_TYPES) as PoolTypeCode[];
+export function getPoolTypeNameKey(typeCode: PoolTypeCode): string {
+  return POOL_TYPES[typeCode]?.label || "pool.types.unknown.name";
+}
+export function getPoolTypeIcon(typeCode: PoolTypeCode): string {
+  return POOL_TYPES[typeCode]?.icon || "users";
+}
 
-export const PoolMemberRoles = ["OWNER", "ADMIN", "MEMBER", "VIEWER"] as const;
-export type PoolMemberRole = (typeof PoolMemberRoles)[number];
+// Pool member roles
+export const POOL_MEMBER_ROLES = {
+  OWNER: {
+    code: "OWNER",
+    label: "Owner",
+    nameKey: "pool.memberRoles.owner",
+    descriptionKey: "pool.memberRoles.ownerDescription",
+    description: "Full access to the pool and its settings",
+  },
+  ADMIN: {
+    code: "ADMIN",
+    label: "Admin",
+    nameKey: "pool.memberRoles.admin",
+    descriptionKey: "pool.memberRoles.adminDescription",
+    description: "Can manage members and settings",
+  },
+  MEMBER: {
+    code: "MEMBER",
+    label: "Member",
+    nameKey: "pool.memberRoles.member",
+    descriptionKey: "pool.memberRoles.memberDescription",
+    description: "Can add and edit logs and vehicles",
+  },
+  VIEWER: {
+    code: "VIEWER",
+    label: "Viewer",
+    nameKey: "pool.memberRoles.viewer",
+    descriptionKey: "pool.memberRoles.viewerDescription",
+    description: "Can view logs and vehicles",
+  },
+};
+export type PoolMemberRoleCode = keyof typeof POOL_MEMBER_ROLES;
+export const poolMemberRoleCodes = Object.keys(POOL_MEMBER_ROLES) as PoolMemberRoleCode[];
 
 export type AccessiblePool = {
   id: string;
-  type: PoolTypes;
-  userRole: PoolMemberRole;
+  type: PoolTypeCode;
+  userRole: PoolMemberRoleCode;
 
   name: string;
 
@@ -32,8 +83,8 @@ export type AccessiblePool = {
 
 export type TPoolInfo = {
   id: string;
-  type: PoolTypes;
-  userRole: PoolMemberRole;
+  type: PoolTypeCode;
+  userRole: PoolMemberRoleCode;
 
   name: string;
   description: string;
@@ -46,7 +97,7 @@ export type TPoolInfo = {
 };
 
 export type TPoolMember = {
-  role: PoolMemberRole;
+  role: PoolMemberRoleCode;
   createdAt: Date;
   user: {
     id: string;

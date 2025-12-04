@@ -2,11 +2,15 @@ import { OdometerTypeCode } from "../vehicle";
 
 // Volume units
 export const VOLUME_UNITS = {
-  LITER: { code: "LITER", label: "Liter", nameKey: "user.volumeUnits.liter" },
-  GALLON: { code: "GALLON", label: "Gallon", nameKey: "user.volumeUnits.gallon" },
+  LITER: { code: "LITER", label: "Liter", unit: "L", nameKey: "user.volumeUnits.liter" },
+  GALLON: { code: "GALLON", label: "Gallon", unit: "gal", nameKey: "user.volumeUnits.gallon" },
 } as const;
 export type VolumeUnitCode = keyof typeof VOLUME_UNITS;
 export const volumeUnitCodes = Object.keys(VOLUME_UNITS) as VolumeUnitCode[];
+export function getVolumeUnit(code: string | undefined): string {
+  if (!code) return "";
+  return VOLUME_UNITS[code as VolumeUnitCode]?.unit;
+}
 export function getVolumeUnitNamekey(code: string): string {
   return VOLUME_UNITS[code as VolumeUnitCode]?.label;
 }
@@ -133,7 +137,6 @@ export type TBasicProfile = {
   image: string | null;
   createdAt: Date;
   preferences: {
-    odometerType: OdometerTypeCode;
     volumeUnit: VolumeUnitCode;
     consumptionUnitCode_distance: string;
     consumptionUnitCode_hour: string;

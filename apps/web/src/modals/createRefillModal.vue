@@ -26,8 +26,10 @@ import z from "zod";
 import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
 
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 const { currentVehicleId } = useCurrentVehicle();
+const { preferredCurrencySymbol, preferredVolumeUnit } = useCurrentUser();
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
   validationSchema: toTypedSchema(
     RefillSchema.extend({
@@ -197,6 +199,7 @@ watch(isModalOpen, (open) => {
               name="fuelAmount"
               type="number"
               step="0.01"
+              :suffix="preferredVolumeUnit"
               placeholder="Amount"
               :onValueChange="handleFuelAmountChange"
               data-cy="fuel-amount-input"
@@ -206,7 +209,7 @@ watch(isModalOpen, (open) => {
               type="number"
               step="0.001"
               placeholder="Unit Price"
-              suffix="€"
+              :suffix="preferredCurrencySymbol"
               :onValueChange="handlePricePerUnitChange"
               data-cy="price-per-unit-input"
             />
@@ -215,6 +218,7 @@ watch(isModalOpen, (open) => {
               type="number"
               step="0.01"
               placeholder="Total cost"
+              :suffix="preferredCurrencySymbol"
               :onValueChange="handleCostTotalChange"
               data-cy="total-cost-input"
             />

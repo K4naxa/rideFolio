@@ -118,12 +118,15 @@ const handleCreateVehicleClick = () => {
             <Icon name="users" size="sm" />
             Groups
           </span>
-          <RouterLink
-            to=""
-            class="hover:text-primary/90 hover:border-primary/50 ml-auto flex items-center gap-2 rounded-md border border-transparent p-1 transition-colors duration-200"
+          <button
+            @click="
+              modalStore.onOpen('pool');
+              setOpenMobile(false);
+            "
+            class="hover:text-primary/90 hover:border-primary/50 ml-auto flex cursor-pointer items-center rounded-md border border-transparent p-1 transition-colors duration-200"
           >
             <Icon name="plus" />
-          </RouterLink>
+          </button>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="pools && pools.length > 0">
           <SidebarMenuSub class="gap-0">

@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
   TPoolMember,
   AccessiblePool,
-  PoolMemberRole,
+  PoolMemberRoleCode,
   TPoolVehicle,
   NewPoolServerSchema,
   TNewPoolServerOutput,
@@ -34,7 +34,7 @@ export class PoolsController {
   async getUserPoolRole(
     @Session() userSession: UserSession,
     @Param('id') id: string,
-  ): Promise<{ role: PoolMemberRole }> {
+  ): Promise<{ role: PoolMemberRoleCode }> {
     console.log(`Fetching user role for pool with id: ${id}`);
     return await this.poolsService.getUserPoolRole(userSession, id);
   }

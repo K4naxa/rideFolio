@@ -8,7 +8,8 @@ export type ModalType =
   | "createNote"
   | "createTodo"
   | "alert"
-  | "userSettings";
+  | "userSettings"
+  | "pool";
 
 export const useModalStore = defineStore("modal", () => {
   const type = ref<ModalType | null>(null);

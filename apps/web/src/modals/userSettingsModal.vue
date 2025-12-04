@@ -19,9 +19,7 @@ import {
   getConsumptionUnitNamekey,
   getCurrencyName,
   getCurrencySymbol,
-  getOdometerNamekey,
   getVolumeUnitNamekey,
-  ODOMETER_TYPES,
   VOLUME_UNITS,
 } from "@repo/validation";
 import { computed } from "vue";
@@ -50,31 +48,6 @@ const { mutateAsync: updatePreference } = useUserPreferenceUpdate();
       <Separator />
 
       <CardContent class="space-y-10 px-0!">
-        <!-- Default values -->
-        <div>
-          <h3 class="text-muted-foreground">Default values</h3>
-          <div class="settingGrid">
-            <p class="">Odometer type:</p>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild class="w-36">
-                <Button variant="outline" size="sm">
-                  {{ getOdometerNamekey(currentUser?.preferences.odometerType ?? "") }}
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  v-for="type in ODOMETER_TYPES"
-                  :key="type.code"
-                  @click="updatePreference({ key: 'odometerType', value: type.code })"
-                >
-                  {{ type.label }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-
         <!-- Preferred units -->
         <div class="space-y-2">
           <h3 class="text-muted-foreground">Preferred Units</h3>

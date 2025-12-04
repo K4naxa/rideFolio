@@ -21,7 +21,6 @@ export class UsersService {
 
         createdAt: true,
 
-        odometerType: true,
         volumeUnit: true,
         consumptionUnitCode_distance: true,
         consumptionUnitCode_hour: true,
@@ -41,7 +40,6 @@ export class UsersService {
       image: user.image,
       createdAt: user.createdAt,
       preferences: {
-        odometerType: user.odometerType,
         volumeUnit: user.volumeUnit,
         consumptionUnitCode_distance: user.consumptionUnitCode_distance,
         consumptionUnitCode_hour: user.consumptionUnitCode_hour,

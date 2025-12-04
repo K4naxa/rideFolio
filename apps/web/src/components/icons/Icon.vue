@@ -14,6 +14,7 @@ import {
   Home,
   User,
   Users,
+  UserLock,
   UserPlus,
   MoreHorizontal,
   Search,
@@ -99,6 +100,7 @@ type IconName =
   | "shoppingCart"
   | "user"
   | "users"
+  | "userLock"
   | "userPlus"
   | "home"
   | "settings"
@@ -174,6 +176,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   shoppingCart: ShoppingCart,
   user: User,
   users: Users,
+  userLock: UserLock,
   userPlus: UserPlus,
   home: Home,
   settings: Settings,

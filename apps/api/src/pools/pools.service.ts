@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool, Prisma } from 'prisma/generated/prisma/client';
-import { AccessiblePool, TPoolMember, PoolMemberRole, TNewPoolServerOutput, TPoolVehicle } from '@repo/validation';
+import { AccessiblePool, TPoolMember, TNewPoolServerOutput, TPoolVehicle, PoolMemberRoleCode } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -146,7 +146,7 @@ export class PoolsService {
 
       return {
         ...restOfPool,
-        userRole: currentUserRole, // Add the role to the top level
+        userRole: currentUserRole as PoolMemberRoleCode, // Add the role to the top level
         vehicles: vehicles.map((v) => v.vehicle), // Flatten the vehicle structure
       };
     });
@@ -167,7 +167,7 @@ export class PoolsService {
     });
   }
 
-  async getUserPoolRole(userSession: UserSession, poolId: string): Promise<{ role: PoolMemberRole }> {
+  async getUserPoolRole(userSession: UserSession, poolId: string): Promise<{ role: PoolMemberRoleCode }> {
     await this.authValidationService.hasAccessToPool(userSession.user.id, poolId);
 
     const membership = await this.prisma.poolMember.findUnique({

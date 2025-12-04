@@ -42,6 +42,7 @@ const router = createRouter({
     {
       path: "/",
       component: AuthLayout,
+      redirect: "/dashboard",
       meta: { requiresAuth: true },
       children: [
         {
@@ -113,6 +114,12 @@ const router = createRouter({
               component: VehicleNotesView,
             },
           ],
+        },
+        {
+          path: "/pools",
+          name: "pools",
+          meta: { requiresAuth: true },
+          children: [],
         },
       ],
     },

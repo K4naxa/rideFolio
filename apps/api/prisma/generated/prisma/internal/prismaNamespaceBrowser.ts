@@ -98,7 +98,6 @@ export const UserScalarFieldEnum = {
   image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  odometerType: 'odometerType',
   volumeUnit: 'volumeUnit',
   consumptionUnitCode_distance: 'consumptionUnitCode_distance',
   consumptionUnitCode_hour: 'consumptionUnitCode_hour',

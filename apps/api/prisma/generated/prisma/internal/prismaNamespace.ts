@@ -2025,7 +2025,6 @@ export const UserScalarFieldEnum = {
   image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  odometerType: 'odometerType',
   volumeUnit: 'volumeUnit',
   consumptionUnitCode_distance: 'consumptionUnitCode_distance',
   consumptionUnitCode_hour: 'consumptionUnitCode_hour',
@@ -2421,20 +2420,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'OdometerTypes'
- */
-export type EnumOdometerTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OdometerTypes'>
-    
-
-
-/**
- * Reference to a field of type 'OdometerTypes[]'
- */
-export type ListEnumOdometerTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OdometerTypes[]'>
-    
-
-
-/**
  * Reference to a field of type 'VolumeUnitTypes'
  */
 export type EnumVolumeUnitTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VolumeUnitTypes'>
@@ -2501,6 +2486,20 @@ export type EnumFuelTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'FuelTypes[]'
  */
 export type ListEnumFuelTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FuelTypes[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OdometerTypes'
+ */
+export type EnumOdometerTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OdometerTypes'>
+    
+
+
+/**
+ * Reference to a field of type 'OdometerTypes[]'
+ */
+export type ListEnumOdometerTypesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OdometerTypes[]'>
     
 
 

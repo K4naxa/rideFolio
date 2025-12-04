@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "vue";
 import { cn } from "@/lib/utils";
 import { useField } from "vee-validate";
+import Label from "../label/Label.vue";
 
 interface InputProps {
   class?: HTMLAttributes["class"];
@@ -48,7 +49,8 @@ async function handleBlur() {
 
 <template>
   <div :aria-invalid="!!errorMessage" class="group">
-    <label v-if="label">{{ label }}</label>
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
+
     <textarea
       v-model="value"
       :name="props.name"
@@ -58,11 +60,11 @@ async function handleBlur() {
       @blur="handleBlur"
       :class="
         cn(
-          ' placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20  aria-invalid:border-destructive flex field-sizing-content min-h-16 w-full rounded-md border bg-input px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+          'placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-input flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
           props.class,
         )
       "
     />
-    <p v-if="errorMessage" class="text-sm text-destructive mt-1 ml-2">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="text-destructive mt-1 ml-2 text-sm">{{ errorMessage }}</p>
   </div>
 </template>

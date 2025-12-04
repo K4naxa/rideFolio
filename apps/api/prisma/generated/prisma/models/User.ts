@@ -32,7 +32,6 @@ export type UserMinAggregateOutputType = {
   image: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  odometerType: $Enums.OdometerTypes | null
   volumeUnit: $Enums.VolumeUnitTypes | null
   consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes | null
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes | null
@@ -47,7 +46,6 @@ export type UserMaxAggregateOutputType = {
   image: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  odometerType: $Enums.OdometerTypes | null
   volumeUnit: $Enums.VolumeUnitTypes | null
   consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes | null
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes | null
@@ -62,7 +60,6 @@ export type UserCountAggregateOutputType = {
   image: number
   createdAt: number
   updatedAt: number
-  odometerType: number
   volumeUnit: number
   consumptionUnitCode_distance: number
   consumptionUnitCode_hour: number
@@ -79,7 +76,6 @@ export type UserMinAggregateInputType = {
   image?: true
   createdAt?: true
   updatedAt?: true
-  odometerType?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
   consumptionUnitCode_hour?: true
@@ -94,7 +90,6 @@ export type UserMaxAggregateInputType = {
   image?: true
   createdAt?: true
   updatedAt?: true
-  odometerType?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
   consumptionUnitCode_hour?: true
@@ -109,7 +104,6 @@ export type UserCountAggregateInputType = {
   image?: true
   createdAt?: true
   updatedAt?: true
-  odometerType?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
   consumptionUnitCode_hour?: true
@@ -197,7 +191,6 @@ export type UserGroupByOutputType = {
   image: string | null
   createdAt: Date
   updatedAt: Date
-  odometerType: $Enums.OdometerTypes
   volumeUnit: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes
@@ -233,7 +226,6 @@ export type UserWhereInput = {
   image?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFilter<"User"> | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFilter<"User"> | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFilter<"User"> | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"User"> | $Enums.TimeConsumptionTypes
@@ -260,7 +252,6 @@ export type UserOrderByWithRelationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  odometerType?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
@@ -290,7 +281,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFilter<"User"> | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFilter<"User"> | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFilter<"User"> | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"User"> | $Enums.TimeConsumptionTypes
@@ -317,7 +307,6 @@ export type UserOrderByWithAggregationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  odometerType?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
@@ -338,7 +327,6 @@ export type UserScalarWhereWithAggregatesInput = {
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  odometerType?: Prisma.EnumOdometerTypesWithAggregatesFilter<"User"> | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesWithAggregatesFilter<"User"> | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesWithAggregatesFilter<"User"> | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesWithAggregatesFilter<"User"> | $Enums.TimeConsumptionTypes
@@ -353,7 +341,6 @@ export type UserCreateInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -380,7 +367,6 @@ export type UserUncheckedCreateInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -407,7 +393,6 @@ export type UserUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -434,7 +419,6 @@ export type UserUncheckedUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -461,7 +445,6 @@ export type UserCreateManyInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -476,7 +459,6 @@ export type UserUpdateManyMutationInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -491,7 +473,6 @@ export type UserUncheckedUpdateManyInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -506,7 +487,6 @@ export type UserCountOrderByAggregateInput = {
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  odometerType?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
@@ -521,7 +501,6 @@ export type UserMaxOrderByAggregateInput = {
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  odometerType?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
@@ -536,7 +515,6 @@ export type UserMinOrderByAggregateInput = {
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  odometerType?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
@@ -567,10 +545,6 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type EnumOdometerTypesFieldUpdateOperationsInput = {
-  set?: $Enums.OdometerTypes
 }
 
 export type EnumVolumeUnitTypesFieldUpdateOperationsInput = {
@@ -773,7 +747,6 @@ export type UserCreateWithoutOwnedVehiclesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -799,7 +772,6 @@ export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -841,7 +813,6 @@ export type UserUpdateWithoutOwnedVehiclesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -867,7 +838,6 @@ export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -893,7 +863,6 @@ export type UserCreateWithoutCreatedMaintenancesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -919,7 +888,6 @@ export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -961,7 +929,6 @@ export type UserUpdateWithoutCreatedMaintenancesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -987,7 +954,6 @@ export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1013,7 +979,6 @@ export type UserCreateWithoutCreatedTodosInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1039,7 +1004,6 @@ export type UserUncheckedCreateWithoutCreatedTodosInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1070,7 +1034,6 @@ export type UserCreateWithoutCompletedTodosInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1096,7 +1059,6 @@ export type UserUncheckedCreateWithoutCompletedTodosInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1138,7 +1100,6 @@ export type UserUpdateWithoutCreatedTodosInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1164,7 +1125,6 @@ export type UserUncheckedUpdateWithoutCreatedTodosInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1201,7 +1161,6 @@ export type UserUpdateWithoutCompletedTodosInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1227,7 +1186,6 @@ export type UserUncheckedUpdateWithoutCompletedTodosInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1253,7 +1211,6 @@ export type UserCreateWithoutNotesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1279,7 +1236,6 @@ export type UserUncheckedCreateWithoutNotesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1321,7 +1277,6 @@ export type UserUpdateWithoutNotesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1347,7 +1302,6 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1373,7 +1327,6 @@ export type UserCreateWithoutShoppingListItemsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1399,7 +1352,6 @@ export type UserUncheckedCreateWithoutShoppingListItemsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1441,7 +1393,6 @@ export type UserUpdateWithoutShoppingListItemsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1467,7 +1418,6 @@ export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1493,7 +1443,6 @@ export type UserCreateWithoutPoolMembershipsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1519,7 +1468,6 @@ export type UserUncheckedCreateWithoutPoolMembershipsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1561,7 +1509,6 @@ export type UserUpdateWithoutPoolMembershipsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1587,7 +1534,6 @@ export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1613,7 +1559,6 @@ export type UserCreateWithoutSentPoolInvitesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1639,7 +1584,6 @@ export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1670,7 +1614,6 @@ export type UserCreateWithoutReceivedPoolInvitesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1696,7 +1639,6 @@ export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1738,7 +1680,6 @@ export type UserUpdateWithoutSentPoolInvitesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1764,7 +1705,6 @@ export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1801,7 +1741,6 @@ export type UserUpdateWithoutReceivedPoolInvitesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1827,7 +1766,6 @@ export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1853,7 +1791,6 @@ export type UserCreateWithoutCreatedRefillsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1879,7 +1816,6 @@ export type UserUncheckedCreateWithoutCreatedRefillsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1921,7 +1857,6 @@ export type UserUpdateWithoutCreatedRefillsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1947,7 +1882,6 @@ export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -1973,7 +1907,6 @@ export type UserCreateWithoutAccountsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -1999,7 +1932,6 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -2041,7 +1973,6 @@ export type UserUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -2067,7 +1998,6 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -2093,7 +2023,6 @@ export type UserCreateWithoutSessionsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -2119,7 +2048,6 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  odometerType?: $Enums.OdometerTypes
   volumeUnit?: $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
@@ -2161,7 +2089,6 @@ export type UserUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -2187,7 +2114,6 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
   volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
   consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
@@ -2343,7 +2269,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   image?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  odometerType?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
@@ -2371,7 +2296,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  odometerType?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
@@ -2386,7 +2310,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  odometerType?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
@@ -2401,14 +2324,13 @@ export type UserSelectScalar = {
   image?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  odometerType?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
   currency?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "odometerType" | "volumeUnit" | "consumptionUnitCode_distance" | "consumptionUnitCode_hour" | "currency", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "volumeUnit" | "consumptionUnitCode_distance" | "consumptionUnitCode_hour" | "currency", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   poolMemberships?: boolean | Prisma.User$poolMembershipsArgs<ExtArgs>
   ownedVehicles?: boolean | Prisma.User$ownedVehiclesArgs<ExtArgs>
@@ -2451,7 +2373,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     image: string | null
     createdAt: Date
     updatedAt: Date
-    odometerType: $Enums.OdometerTypes
     volumeUnit: $Enums.VolumeUnitTypes
     consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes
     consumptionUnitCode_hour: $Enums.TimeConsumptionTypes
@@ -2898,7 +2819,6 @@ export interface UserFieldRefs {
   readonly image: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly odometerType: Prisma.FieldRef<"User", 'OdometerTypes'>
   readonly volumeUnit: Prisma.FieldRef<"User", 'VolumeUnitTypes'>
   readonly consumptionUnitCode_distance: Prisma.FieldRef<"User", 'DistanceConsumptionTypes'>
   readonly consumptionUnitCode_hour: Prisma.FieldRef<"User", 'TimeConsumptionTypes'>

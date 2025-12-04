@@ -114,13 +114,16 @@ html {
 */
 @layer base {
   h1 {
-    @apply text-foreground text-2xl font-bold;
+    @apply text-foreground text-xl font-bold;
   }
   h2 {
-    @apply text-foreground text-xl font-semibold;
+    @apply text-foreground text-lg font-semibold;
   }
   h3 {
-    @apply text-foreground text-lg font-semibold;
+    @apply text-foreground text-base font-semibold;
+  }
+  h4 {
+    @apply text-foreground text-sm leading-tight font-semibold;
   }
   .dark {
     /* Core Colors */
