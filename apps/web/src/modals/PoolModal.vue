@@ -24,25 +24,26 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { usePoolCreate } from "@/lib/queries/pools/pool-mutations";
 import { useModalStore } from "@/stores/modal";
-import { getPoolTypeIcon, NewPoolFormSchema, POOL_TYPES } from "@repo/validation";
+import { getPoolTypeIcon, POOL_TYPES, PoolSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { AnimatePresence, Motion } from "motion-v";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { computed, watch } from "vue";
+import { computed, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
-const { handleSubmit, values, setValues, isSubmitting, resetForm } = useForm({
-  validationSchema: toTypedSchema(NewPoolFormSchema),
+const { mutateAsync: createPool } = usePoolCreate();
+const { handleSubmit, values, isSubmitting, resetForm } = useForm({
+  validationSchema: toTypedSchema(PoolSchema),
   initialValues: {
     name: "",
     description: "",
     type: "PRIVATE",
-    vehicleIds: [] as string[],
+    vehicleIds: [],
     allowMembersToAddLogs: true,
-    allowMembersToAddVehicles: true,
+    allowMembersToAddVehicles: false,
     allowMembersToDeleteLogs: true,
     allowMembersToEditLogs: true,
   },
@@ -64,25 +65,36 @@ watch(isModalOpen, (open) => {
         name: "",
         description: "",
         type: "PRIVATE",
-        vehicleIds: [] as string[],
+        vehicleIds: [],
         allowMembersToAddLogs: true,
-        allowMembersToAddVehicles: true,
+        allowMembersToAddVehicles: false,
         allowMembersToDeleteLogs: true,
         allowMembersToEditLogs: true,
       },
     });
   }
 });
+
+const onSubmit = handleSubmit(async (values) => {
+  console.log("Creating pool with values:", values);
+  const res = await createPool(values);
+  await router.push("/pools/" + res.newPoolId);
+  handleClose();
+});
+
+watchEffect(() => {
+  console.log("Selected vehicle IDs:", values.vehicleIds);
+});
 </script>
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <form>
-      <DialogScrollContent class="text-foreground max-w-4xl">
-        <DialogHeader class="">
-          <DialogTitle>Create a New Group</DialogTitle>
-          <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
-        </DialogHeader>
+    <DialogScrollContent class="text-foreground max-w-4xl">
+      <DialogHeader class="">
+        <DialogTitle>Create a New Group</DialogTitle>
+        <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
+      </DialogHeader>
+      <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6">
         <div>
           <div class="mb-4 space-y-2 px-0">
             <Label class="text-muted-foreground">Group info</Label>
@@ -197,55 +209,74 @@ watch(isModalOpen, (open) => {
                 You don't have any vehicles to add to this group. Create a vehicle first to add it to the group.
               </EmptyDescription>
             </Empty>
-            <ScrollArea v-else class="max-h-72 w-full overflow-hidden">
-              <ul class="space-y-3 pb-3">
-                <label
-                  v-for="{ vehicleData: vehicle } in usersOwnVehicles"
-                  :key="vehicle.id"
-                  class="listHover grid min-w-xl grid-cols-[auto_auto_1fr_1fr_1fr_1fr] items-center gap-6 rounded px-3 py-2 hover:cursor-pointer"
-                >
-                  <Checkbox class="size-6" />
-                  <div class="bg-muted grid aspect-video h-12 place-items-center overflow-hidden rounded">
-                    <img
-                      v-if="vehicle.image"
-                      :src="vehicle.image"
-                      :alt="'Image of ' + vehicle.name"
-                      class="object-cover"
-                    />
-                    <Icon
-                      :name="vehicle.type.icon as IconProps['name']"
-                      v-else-if="vehicle.type.icon"
-                      class="stroke-muted-foreground"
-                    />
-                  </div>
 
-                  <div>
-                    <p class="font-semibold">{{ vehicle.name }}</p>
-                    <p class="text-muted-foreground text-sm">{{ vehicle.make }} {{ vehicle.model }}</p>
-                  </div>
-                  <div v-if="vehicle.licensePlate">
-                    <h4 class="text-muted-foreground">License Plate</h4>
-                    <p class="text-sm">{{ vehicle.licensePlate }}</p>
-                  </div>
-                  <div v-else />
-                  <div>
-                    <h4 class="text-muted-foreground">Odometer</h4>
-                    <p class="text-sm">
-                      {{ vehicle.odometerData.value }}
-                      <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
-                    </p>
-                  </div>
-                  <div>
-                    <h4 class="text-muted-foreground">Lifetime travel</h4>
-                    <p class="text-sm">
-                      {{ vehicle.odometerData.lifeTimeTracked }}
-                      <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
-                    </p>
-                  </div>
-                </label>
-              </ul>
-              <ScrollBar orientation="horizontal" class="" />
-            </ScrollArea>
+            <Field v-else v-slot="{ value, handleChange }" name="vehicleIds">
+              <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
+              <ScrollArea class="w-full overflow-hidden">
+                <ul class="space-y-3 pb-3">
+                  <label
+                    v-for="{ vehicleData: vehicle } in usersOwnVehicles"
+                    :key="vehicle.id"
+                    class="listHover grid min-w-xl grid-cols-[auto_auto_1fr_1fr_1fr_1fr] items-center gap-6 rounded px-3 py-2 hover:cursor-pointer"
+                  >
+                    <Checkbox
+                      class="size-6"
+                      :model-value="value?.includes(vehicle.id) ?? false"
+                      @update:model-value="
+                        (checked: boolean | 'indeterminate') => {
+                          if (checked === true) {
+                            const currentValue = value || [];
+                            handleChange([...currentValue, vehicle.id]);
+                          } else if (checked === false) {
+                            const currentValue = value || [];
+                            handleChange(currentValue.filter((id: string) => id !== vehicle.id));
+                          }
+                        }
+                      "
+                    />
+                    <div class="bg-muted grid aspect-video h-12 place-items-center overflow-hidden rounded">
+                      <img
+                        v-if="vehicle.image"
+                        :src="vehicle.image"
+                        :alt="'Image of ' + vehicle.name"
+                        class="object-cover"
+                      />
+                      <Icon
+                        :name="vehicle.type.icon as IconProps['name']"
+                        v-else-if="vehicle.type.icon"
+                        class="stroke-muted-foreground"
+                      />
+                    </div>
+
+                    <div>
+                      <p class="font-semibold">{{ vehicle.name }}</p>
+                      <p class="text-muted-foreground text-sm">{{ vehicle.make }} {{ vehicle.model }}</p>
+                    </div>
+                    <div v-if="vehicle.licensePlate">
+                      <h4 class="text-muted-foreground">License Plate</h4>
+                      <p class="text-sm">{{ vehicle.licensePlate }}</p>
+                    </div>
+                    <div v-else />
+                    <div>
+                      <h4 class="text-muted-foreground">Odometer</h4>
+                      <p class="text-sm">
+                        {{ vehicle.odometerData.value }}
+                        <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
+                      </p>
+                    </div>
+                    <div>
+                      <h4 class="text-muted-foreground">Lifetime travel</h4>
+                      <p class="text-sm">
+                        {{ vehicle.odometerData.lifeTimeTracked }}
+                        <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
+                      </p>
+                    </div>
+                  </label>
+                </ul>
+                <ScrollBar orientation="horizontal" class="" />
+                <ScrollBar orientation="vertical" class="" />
+              </ScrollArea>
+            </Field>
           </div>
 
           <DialogFooter class="pt-8">
@@ -253,10 +284,10 @@ watch(isModalOpen, (open) => {
               <span v-if="!isSubmitting">Create</span>
               <span v-else> <Spinner /> Creating.. </span>
             </Button>
-            <Button type="button" variant="outline" @click="router.back()" data-cy="cancel-refill-btn">Cancel</Button>
+            <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
           </DialogFooter>
         </div>
-      </DialogScrollContent>
-    </form>
+      </form>
+    </DialogScrollContent>
   </Dialog>
 </template>

@@ -129,7 +129,7 @@ const handleCreateVehicleClick = () => {
           </button>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="pools && pools.length > 0">
-          <SidebarMenuSub class="gap-0">
+          <SidebarMenuSub>
             <SidebarMenuSubItem v-for="pool in pools" :key="pool.id">
               <SidebarMenuSubButton asChild :is-active="currentPoolId === pool.id">
                 <RouterLink :to="`/pools/${pool.id}`">{{ pool.name }}</RouterLink>
@@ -141,7 +141,7 @@ const handleCreateVehicleClick = () => {
 
       <SidebarGroup class="mt-auto">
         <SidebarGroupContent class="space-y-4">
-          <SidebarMenu class="gap-0">
+          <SidebarMenu>
             <SidebarMenuButton asChild @click="modalStore.onOpen('userSettings')">
               <Button variant="ghost" class="w-full justify-start">
                 <p class="flex items-center gap-3"><Icon name="settings" size="sm" /> Settings</p>

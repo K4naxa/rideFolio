@@ -16,6 +16,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import DangerView from "@/views/Profile/DangerView.vue";
 import VerifyEmailView from "@/views/Login-Register/verifyEmailView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import PoolView from "@/views/Pool/PoolView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -119,7 +120,14 @@ const router = createRouter({
           path: "/pools",
           name: "pools",
           meta: { requiresAuth: true },
-          children: [],
+          children: [
+            {
+              path: ":poolId",
+              name: "pool-view",
+              meta: { requiresAuth: true },
+              component: PoolView,
+            },
+          ],
         },
       ],
     },

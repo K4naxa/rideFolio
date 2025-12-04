@@ -28,7 +28,7 @@ export default defineConfigWithVueTs(
   },
   {
     name: "app/typescript-parser-options",
-    files: ["**/*.{ts,mts,tsx}"],
+    files: ["**/*.{ts,mts,tsx,vue}"],
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: __dirname,

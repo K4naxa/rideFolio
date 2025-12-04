@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool, Prisma } from 'prisma/generated/prisma/client';
-import { AccessiblePool, TPoolMember, TNewPoolServerOutput, TPoolVehicle, PoolMemberRoleCode } from '@repo/validation';
+import { AccessiblePool, TPoolMember, TPoolVehicle, PoolMemberRoleCode, PoolSchemaValues } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -16,7 +16,7 @@ export class PoolsService {
     private readonly authValidationService: AuthValidationService,
   ) {}
 
-  async createNewPool(userSession: UserSession, newPoolDto: TNewPoolServerOutput): Promise<{ newPoolId: string }> {
+  async createNewPool(userSession: UserSession, newPoolDto: PoolSchemaValues): Promise<{ newPoolId: string }> {
     const { vehicleIds, ...poolData } = newPoolDto;
     let createdPool: Pool | undefined;
 
@@ -55,16 +55,6 @@ export class PoolsService {
       });
     } catch (error) {
       console.error('ERROR creating a pool: ', error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        const target = error.meta?.target as string;
-
-        if (target?.includes('name')) {
-          throw new BadRequestException({
-            message: 'Ryhmän nimi on jo käytössä',
-            field: 'name',
-          });
-        }
-      }
 
       throw new BadRequestException({
         message: 'Error creating a new pool',

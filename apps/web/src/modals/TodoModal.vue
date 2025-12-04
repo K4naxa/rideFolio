@@ -130,7 +130,7 @@ const onSubmit = handleSubmit(async (values) => {
       </DialogHeader>
       <form @submit="onSubmit" class="flex flex-col gap-5" data-cy="create-todo-form">
         <Field v-slot="{ value, handleChange }" name="vehicleId">
-          <div>
+          <div v-if="!currentVehicle">
             <VehicleSelect
               :value="value"
               @valueChange="handleChange"

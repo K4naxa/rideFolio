@@ -5,8 +5,8 @@ import {
   AccessiblePool,
   PoolMemberRoleCode,
   TPoolVehicle,
-  NewPoolServerSchema,
-  TNewPoolServerOutput,
+  PoolSchema,
+  PoolSchemaValues,
 } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { Pool } from 'prisma/generated/prisma/client';
@@ -51,10 +51,10 @@ export class PoolsController {
     return await this.poolsService.getPoolVehicles(userSession, id);
   }
 
-  @Post('new')
+  @Post('')
   async createNewPool(
     @Session() userSession: UserSession,
-    @Body(new ZodValidationPipe(NewPoolServerSchema as ZodType)) newPoolDto: TNewPoolServerOutput,
+    @Body(new ZodValidationPipe(PoolSchema as ZodType)) newPoolDto: PoolSchemaValues,
   ) {
     const createdPool = await this.poolsService.createNewPool(userSession, newPoolDto);
     return createdPool;
