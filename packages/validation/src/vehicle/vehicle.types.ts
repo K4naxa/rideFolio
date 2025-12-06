@@ -52,7 +52,7 @@ export type TLogVehicle = {
   image: string | null;
 };
 
-export interface TBasicVehicle {
+export type BasicVehicle = {
   id: string;
   name: string;
 
@@ -67,7 +67,7 @@ export interface TBasicVehicle {
 
   fuelType: FuelTypeCode;
   odometerData: TOdometerData;
-}
+};
 
 export type TAccessibleVehicle = {
   isOwnerUser: boolean;
@@ -77,7 +77,7 @@ export type TAccessibleVehicle = {
 
   poolId: string | null;
 
-  vehicleData: TBasicVehicle;
+  vehicleData: BasicVehicle;
 };
 
 export type TVehicleOwner = {

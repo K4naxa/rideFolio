@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Vehicle } from 'prisma/generated/prisma/client';
-import { TAccessibleVehicle, TBasicVehicle, TPoolVehicle } from '@repo/validation';
+import { Prisma, Vehicle } from 'prisma/generated/prisma/client';
+import { BasicVehicle, TAccessibleVehicle } from '@repo/validation';
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
@@ -21,23 +21,6 @@ interface RawVehicleWithPools extends Vehicle {
   }[];
 }
 
-interface RawPoolVehicle {
-  addedAt: Date;
-  vehicle: Vehicle & {
-    vehicleType: {
-      code: string;
-      nameKey: string;
-      icon: string | null;
-    };
-    owner: {
-      id: string;
-      name: string;
-      email: string;
-      image: string | null; // Handle nullable image
-    };
-  };
-}
-
 interface RawBasicVehicle extends Vehicle {
   vehicleType: {
     code: string;
@@ -53,8 +36,18 @@ export class VehicleTransformerService {
     private unitConversion: UnitConversionService,
   ) {}
 
+  DBInclude_BasicVehicle: Prisma.VehicleInclude = {
+    vehicleType: {
+      select: {
+        code: true,
+        nameKey: true,
+        icon: true,
+      },
+    },
+  };
+
   // Transform raw vehicle to TBasicVehicle
-  toBasicVehicle(rawVehicle: RawBasicVehicle): TBasicVehicle {
+  toBasicVehicle(rawVehicle: RawBasicVehicle): BasicVehicle {
     return {
       id: rawVehicle.id,
       name: rawVehicle.name,
@@ -106,21 +99,6 @@ export class VehicleTransformerService {
       canDeleteLogs,
       poolId,
       vehicleData: this.toBasicVehicle(rawVehicle),
-    };
-  }
-
-  // Transform to pool Vehicle
-  toPoolVehicle(rawVehicleData: RawPoolVehicle, userId: string): TPoolVehicle {
-    return {
-      addedAt: rawVehicleData.addedAt,
-      isOwnerUser: rawVehicleData.vehicle.owner.id === userId,
-      vehicleData: this.toBasicVehicle(rawVehicleData.vehicle),
-      owner: {
-        id: rawVehicleData.vehicle.owner.id,
-        name: rawVehicleData.vehicle.owner.name,
-        email: rawVehicleData.vehicle.owner.email,
-        image: rawVehicleData.vehicle.owner.image,
-      },
     };
   }
 }

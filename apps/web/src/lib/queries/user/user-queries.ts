@@ -7,9 +7,7 @@ export function useUserQuery() {
   const { isAuthenticated } = useAuth();
   return useQuery({
     queryKey: ["currentUser"],
-    queryFn: async () => {
-      return fetchApi<TBasicProfile>("/users/me");
-    },
+    queryFn: async () => await fetchApi<TBasicProfile>("/users/me"),
     enabled: isAuthenticated,
   });
 }

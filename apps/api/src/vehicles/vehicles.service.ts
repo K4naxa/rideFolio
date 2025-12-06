@@ -16,7 +16,6 @@ import {
   RecentActivityInfiniteResponse,
   RecentActivityItem,
   TAccessibleVehicle,
-  TBasicVehicle,
   TStatCardData,
   VehicleSchemaType,
   VehicleType,
@@ -148,23 +147,6 @@ export class VehiclesService {
     } catch (error) {
       console.error('Error fetching accessible vehicles:', error);
       throw new BadRequestException({ message: 'Failed to fetch vehicles.' });
-    }
-  }
-
-  async getOwnVehicles(userSession: UserSession): Promise<TBasicVehicle[]> {
-    try {
-      const rawVehicles = await this.vehicleRepository.findOwnVehicles(userSession.user.id);
-
-      if (!rawVehicles || rawVehicles.length === 0) {
-        throw new NotFoundException('No vehicles found for the user');
-      }
-
-      return rawVehicles.map((v) => this.vehicleTransformer.toBasicVehicle(v));
-    } catch (error) {
-      console.error('Error fetching own vehicles:', error);
-      throw new BadRequestException({
-        message: 'Failed to fetch own vehicles.',
-      });
     }
   }
 

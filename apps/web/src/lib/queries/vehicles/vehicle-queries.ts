@@ -9,10 +9,7 @@ import { computed, unref, type MaybeRef } from "vue";
 export function useVehicleHeroStatCards(vehicleId: MaybeRef<string | undefined>) {
   return useQuery({
     queryKey: computed(() => queryKeys.vehicles.heroStatCards(handleEmpty(vehicleId))),
-    queryFn: async () => {
-      const result = await fetchApi<TStatCardData>(`/vehicles/${unref(vehicleId)}/stat-card`);
-      return result;
-    },
+    queryFn: async () => await fetchApi<TStatCardData>(`/vehicles/${unref(vehicleId)}/stat-card`),
     enabled: computed(() => !!unref(vehicleId)),
   });
 }
@@ -35,7 +32,7 @@ export function useVehiclesAll() {
   const { isAuthenticated } = useAuth();
   return useQuery({
     queryKey: ["vehicles"],
-    queryFn: async () => fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
+    queryFn: async () => await fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
     staleTime: 1000 * 60 * 30,
     enabled: isAuthenticated,
   });
@@ -44,7 +41,7 @@ export function useVehiclesAll() {
 export function useVehicleTypes(options?: { enabled?: MaybeRef<boolean> }) {
   return useQuery({
     queryKey: ["vehicleTypes"],
-    queryFn: async () => fetchApi<VehicleType[]>("vehicles/types"),
+    queryFn: async () => await fetchApi<VehicleType[]>("vehicles/types"),
     staleTime: 1000 * 60 * 60,
     enabled: options?.enabled ?? true,
     refetchOnMount: true,

@@ -1,7 +1,6 @@
 import { api } from "@/lib/api";
 import type { PoolSchemaValues } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { useRouter } from "vue-router";
 
 export function usePoolCreate() {
   const queryClient = useQueryClient();

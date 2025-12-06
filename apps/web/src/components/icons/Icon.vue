@@ -39,6 +39,7 @@ import {
   Sun,
   KeyIcon,
   Moon,
+  Edit,
   Camera,
   Files,
   LogOut,
@@ -92,6 +93,7 @@ type IconName =
   | "fileText"
   | "wrench"
   | "pin"
+  | "edit"
   | "pinOff"
   | "refill"
   | "maintenance"
@@ -213,6 +215,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   wrench: WrenchIcon,
   error: OctagonAlert,
   save: SaveIcon,
+  edit: Edit,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);

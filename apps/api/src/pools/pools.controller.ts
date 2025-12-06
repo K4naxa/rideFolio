@@ -1,15 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
-import {
-  TPoolMember,
-  AccessiblePool,
-  PoolMemberRoleCode,
-  TPoolVehicle,
-  PoolSchema,
-  PoolSchemaValues,
-} from '@repo/validation';
+import { AccessiblePool, PoolSchema, PoolSchemaValues, PoolDetails } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
-import { Pool } from 'prisma/generated/prisma/client';
+
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { PoolsService } from 'src/pools/pools.service';
 import { ZodType } from 'zod';
@@ -23,32 +16,9 @@ export class PoolsController {
     const pools = await this.poolsService.getAccessiblePools(userSession.user.id);
     return pools;
   }
-
-  @Get(':id/info')
-  async getPoolInfo(@Session() userSession: UserSession, @Param('id') id: string): Promise<Pool | null> {
-    console.log(`Fetching info for pool with id: ${id}`);
-    return await this.poolsService.getPoolInfo(userSession, id);
-  }
-
-  @Get(':id/role')
-  async getUserPoolRole(
-    @Session() userSession: UserSession,
-    @Param('id') id: string,
-  ): Promise<{ role: PoolMemberRoleCode }> {
-    console.log(`Fetching user role for pool with id: ${id}`);
-    return await this.poolsService.getUserPoolRole(userSession, id);
-  }
-
-  @Get(':id/members')
-  async getPoolMembers(@Session() userSession: UserSession, @Param('id') id: string): Promise<TPoolMember[]> {
-    console.log(`Fetching members for pool with id: ${id}`);
-    return await this.poolsService.getPoolMembers(userSession, id);
-  }
-
-  @Get(':id/vehicles')
-  async getPoolVehicles(@Session() userSession: UserSession, @Param('id') id: string): Promise<TPoolVehicle[]> {
-    console.log(`Fetching vehicles for pool with id: ${id}`);
-    return await this.poolsService.getPoolVehicles(userSession, id);
+  @Get(':poolId')
+  async getPoolDetails(@Session() userSession: UserSession, @Param('poolId') poolId: string): Promise<PoolDetails> {
+    return await this.poolsService.getPoolDetails(userSession, poolId);
   }
 
   @Post('')

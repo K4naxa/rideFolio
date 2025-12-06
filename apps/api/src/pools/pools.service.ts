@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Pool, Prisma } from 'prisma/generated/prisma/client';
-import { AccessiblePool, TPoolMember, TPoolVehicle, PoolMemberRoleCode, PoolSchemaValues } from '@repo/validation';
+import { Pool } from 'prisma/generated/prisma/client';
+import { AccessiblePool, PoolMemberRoleCode, PoolSchemaValues, PoolDetails } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -69,10 +69,6 @@ export class PoolsService {
 
     return { newPoolId: createdPool.id };
   }
-
-  // =================================================================
-  // == FETCH ALL POOLS FOR A USER ==
-  // =================================================================
 
   async getAccessiblePools(currentUserId: string): Promise<AccessiblePool[]> {
     const pools = await this.prisma.pool.findMany({
@@ -144,82 +140,76 @@ export class PoolsService {
     return transformedPools;
   }
 
-  // =================================================================
-  // == GET POOL DETAILS ==
-  // =================================================================
+  async getPoolDetails(userSession: UserSession, poolId: string): Promise<PoolDetails> {
+    // Validate that the user has access to the pool
 
-  async getPoolInfo(userSession: UserSession, poolId: string) {
-    // Check if the user has access to the pool
-    await this.authValidationService.hasAccessToPool(userSession.user.id, poolId);
+    const poolDetails = await this.prisma.pool.findUnique({
+      where: { id: poolId, members: { some: { userId: userSession.user.id } } },
 
-    return await this.prisma.pool.findUnique({
-      where: { id: poolId },
-    });
-  }
-
-  async getUserPoolRole(userSession: UserSession, poolId: string): Promise<{ role: PoolMemberRoleCode }> {
-    await this.authValidationService.hasAccessToPool(userSession.user.id, poolId);
-
-    const membership = await this.prisma.poolMember.findUnique({
-      where: {
-        poolId_userId: {
-          poolId: poolId,
-          userId: userSession.user.id,
-        },
-      },
-      select: { role: true },
-    });
-
-    if (!membership) {
-      // Should never happen if hasAccessToPool is called first
-      throw new NotFoundException('Membership not found');
-    }
-
-    return { role: membership.role };
-  }
-
-  async getPoolMembers(userSession: UserSession, poolId: string): Promise<TPoolMember[]> {
-    // Check if the user has access to the pool
-    await this.authValidationService.hasAccessToPool(userSession.user.id, poolId);
-
-    // Fetch all members of the pool, sorted by role
-    return await this.prisma.poolMember.findMany({
-      where: { poolId },
-      orderBy: {
-        role: 'asc', // Sort by role, so OWNER is first
-      },
       select: {
-        role: true,
+        id: true,
+        type: true,
+        name: true,
+        description: true,
         createdAt: true,
-        user: {
+        members: {
           select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
+            role: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        vehicles: {
+          select: {
+            addedAt: true,
+            allowMembersToAddLogs: true,
+            allowMembersToDeleteLogs: true,
+            allowMembersToEditLogs: true,
+            vehicle: {
+              include: {
+                ...this.vehicleTransformer.DBInclude_BasicVehicle,
+                owner: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    image: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
+
+    if (!poolDetails) throw new NotFoundException(`Pool not found or access denied.`);
+
+    return {
+      id: poolDetails.id,
+      type: poolDetails.type,
+      name: poolDetails.name,
+      description: poolDetails.description,
+      createdAt: poolDetails.createdAt,
+      userRole: poolDetails.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
+      Members: poolDetails.members,
+      Vehicles: poolDetails.vehicles.map((v) => ({
+        addedAt: v.addedAt,
+        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
+        owner: v.vehicle.owner,
+        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
+      })),
+    };
   }
 
-  async getPoolVehicles(userSession: UserSession, id: string): Promise<TPoolVehicle[]> {
-    // Check if the user has access to the pool
-    await this.authValidationService.hasAccessToPool(userSession.user.id, id);
-
-    // Fetch all vehicles in the pool
-    const rawVehicles = await this.vehicleRepository.findPoolVehicles(id);
-
-    // Add isUsersOwner flag to each vehicle
-    return rawVehicles.map((vehicle) => {
-      return this.vehicleTransformer.toPoolVehicle(vehicle, userSession.user.id);
-    });
-  }
-  // =================================================================
-  // == DELETE A POOL ==\
-  // =================================================================
   async deletePool(userSession: UserSession, poolId: string): Promise<void> {
-    // Step 1: Validate the poolId and users ownership
     const validatedPoolId = await this.prisma.poolMember.findUnique({
       where: {
         poolId_userId: {
@@ -237,8 +227,6 @@ export class PoolsService {
       throw new ForbiddenException(`Pool not found or access denied.`);
     }
 
-    // Final Step: If all checks pass, proceed with deletion.
-    // Deleting the pool will cascade and delete all PoolMember and PoolVehicle links.
     await this.prisma.pool.delete({
       where: { id: validatedPoolId.poolId },
     });

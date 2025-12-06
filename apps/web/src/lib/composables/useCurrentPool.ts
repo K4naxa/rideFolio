@@ -26,6 +26,7 @@ export function useCurrentPool() {
   return {
     currentPoolId,
     hasCurrentPool,
+
     currentPool,
     currentPoolName,
   };

@@ -18,25 +18,17 @@ export const useAllNotes = () => {
 
 export const useVehicleNotes = (vehicleId: MaybeRef<string | undefined>) => {
   return useQuery({
-    queryKey: computed(() => {
-      return queryKeys.notes.byVehicle(handleEmpty(vehicleId));
-    }),
-    queryFn: async () => {
-      const response = await api.get<Note[]>(`/notes/vehicle/${unref(vehicleId)}`);
-      return response.data;
-    },
+    queryKey: computed(() => queryKeys.notes.byVehicle(handleEmpty(vehicleId))),
+    queryFn: async () => fetchApi<Note[]>(`/notes/vehicle/${unref(vehicleId)}`),
     enabled: computed(() => !!unref(vehicleId)),
   });
 };
 
 export const useEditableNote = (noteId: MaybeRef<string | undefined>) => {
   return useQuery({
-    queryKey: computed(() => {
-      return queryKeys.notes.editable(handleEmpty(noteId));
-    }),
-    queryFn: async (): Promise<NoteSchemaType | undefined> => {
-      return await fetchApi<Required<NoteSchemaType>>(`/notes/${unref(noteId)}/editable`);
-    },
+    queryKey: computed(() => queryKeys.notes.editable(handleEmpty(noteId))),
+    queryFn: async (): Promise<NoteSchemaType | undefined> =>
+      await fetchApi<Required<NoteSchemaType>>(`/notes/${unref(noteId)}/editable`),
     enabled: computed(() => !!unref(noteId) && unref(noteId) !== "new"),
   });
 };

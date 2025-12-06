@@ -1,4 +1,4 @@
-import { TBasicVehicle, TVehicleOwner } from "../vehicle";
+import { BasicVehicle, TVehicleOwner } from "../vehicle";
 
 // Pool types
 export const POOL_TYPES = {
@@ -61,42 +61,31 @@ export const POOL_MEMBER_ROLES = {
 };
 export type PoolMemberRoleCode = keyof typeof POOL_MEMBER_ROLES;
 export const poolMemberRoleCodes = Object.keys(POOL_MEMBER_ROLES) as PoolMemberRoleCode[];
+export function getPoolMemberRoleNameKey(roleCode: PoolMemberRoleCode): string {
+  return POOL_MEMBER_ROLES[roleCode]?.label || "pool.memberRoles.unknown";
+}
+
+// Data types
 
 export type AccessiblePool = {
   id: string;
   type: PoolTypeCode;
-  userRole: PoolMemberRoleCode;
-
   name: string;
-
-  allowMembersToAddLogs: boolean;
-  allowMembersToDeleteLogs: boolean;
-  allowMembersToEditLogs: boolean;
-
-  allowMembersToAddVehicles: boolean;
-  vehicles: {
-    id: string;
-    name: string;
-    image: string | null;
-  }[];
 };
 
-export type TPoolInfo = {
+export type PoolDetails = {
   id: string;
   type: PoolTypeCode;
+  name: string;
+  description: string | null;
+  createdAt: Date;
   userRole: PoolMemberRoleCode;
 
-  name: string;
-  description: string;
-
-  allowMembersToAddLogs: boolean;
-  allowMembersToDeleteLogs: boolean;
-  allowMembersToEditLogs: boolean;
-
-  allowMembersToAddVehicles: boolean;
+  Members: PoolMember[];
+  Vehicles: PoolVehicle[];
 };
 
-export type TPoolMember = {
+export type PoolMember = {
   role: PoolMemberRoleCode;
   createdAt: Date;
   user: {
@@ -107,9 +96,9 @@ export type TPoolMember = {
   };
 };
 
-export type TPoolVehicle = {
+export type PoolVehicle = {
   addedAt: Date;
-  isOwnerUser: boolean;
-  vehicleData: TBasicVehicle;
+  isCurrentUserOwner: boolean;
+  data: BasicVehicle;
   owner: TVehicleOwner;
 };
