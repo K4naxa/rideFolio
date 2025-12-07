@@ -1,6 +1,11 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { PoolInviteValues, PoolSchemaValues } from "@repo/validation";
+import {
+  type PoolDetails,
+  type PoolInviteValues,
+  type PoolMemberRoleCode,
+  type PoolSchemaValues,
+} from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "vue-sonner";
@@ -44,6 +49,39 @@ export function usePoolLeave() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
+export function usePoolUpdateUserRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-update-user-role"],
+    mutationFn: async (data: { poolId: string; userId: string; role: PoolMemberRoleCode }) => {
+      return await api.patch("/pools/" + data.poolId + "/user/" + data.userId + "/role", { role: data.role });
+    },
+    onSuccess: (_, variants) => {
+      if (variants.role === "OWNER") {
+        // On owner transfer, invalidate entire pool details to reflect changes to current user's role
+        queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+        queryClient.invalidateQueries({ queryKey: queryKeys.pools.detail(variants.poolId) });
+      } else {
+        queryClient.setQueryData<PoolDetails>(queryKeys.pools.detail(variants.poolId), (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            members: oldData.members.map((member) => {
+              if (member.user.id === variants.userId) {
+                return {
+                  ...member,
+                  role: variants.role,
+                };
+              }
+              return member;
+            }),
+          };
+        });
+      }
     },
   });
 }

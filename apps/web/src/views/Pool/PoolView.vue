@@ -15,6 +15,7 @@ import {
   getPoolMemberRoleNameKey,
   POOL_MEMBER_ROLES,
   PoolInviteSchema,
+  type PoolMemberRoleCode,
 } from "@repo/validation";
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
@@ -37,7 +38,7 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { usePoolInviteCancel, usePoolInviteUser } from "@/lib/queries/pools/pool-mutations";
+import { usePoolInviteCancel, usePoolInviteUser, usePoolUpdateUserRole } from "@/lib/queries/pools/pool-mutations";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { toast } from "vue-sonner";
@@ -45,11 +46,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import axios from "axios";
 import PoolLoadingSkeleton from "./components/PoolLoadingSkeleton.vue";
 import PoolErrorState from "./components/PoolErrorState.vue";
+import { useModalStore } from "@/stores/modal";
+import type { AlertModalData } from "@/modals/alertModal.vue";
 
+const modalStore = useModalStore();
 const { currentUser } = useCurrentUser();
 const { currentPoolId } = useCurrentPool();
 const { mutateAsync: sendPoolInvite, isPending: isInviting } = usePoolInviteUser();
 const { mutateAsync: cancelPoolInvite } = usePoolInviteCancel();
+const { mutateAsync: updateRole } = usePoolUpdateUserRole();
 const { data, isLoading, isError } = usePoolDetails(computed(() => currentPoolId.value));
 watchEffect(() => {
   if (isError.value) {
@@ -86,6 +91,53 @@ const onSubmit = handleSubmit(async (values) => {
     },
   });
 });
+
+function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCode) {
+  if (role === "OWNER") {
+    modalStore.onOpen("alert", {
+      title: "Transfer Pool Ownership",
+      description:
+        "Are you sure you want to transfer ownership of this pool? You will lose your admin privileges and the new owner will have full control over the pool.",
+      actionButton: {
+        label: "Transfer Ownership",
+        class: "bg-red-600 hover:bg-red-700 focus:ring-red-600",
+      },
+      onAction: async () => {
+        await updateRole(
+          {
+            poolId,
+            userId,
+            role,
+          },
+          {
+            onSuccess: () => {
+              toast.success("Pool ownership transferred successfully.");
+            },
+            onError: () => {
+              toast.error("Failed to transfer pool ownership.");
+            },
+          },
+        );
+      },
+    } satisfies AlertModalData);
+  } else {
+    updateRole(
+      {
+        poolId,
+        userId,
+        role,
+      },
+      {
+        onSuccess: () => {
+          toast.success("User role updated successfully.");
+        },
+        onError: () => {
+          toast.error("Failed to update user role.");
+        },
+      },
+    );
+  }
+}
 </script>
 
 <template>
@@ -102,7 +154,18 @@ const onSubmit = handleSubmit(async (values) => {
         <CardHeader>
           <CardTitle class="flex items-center justify-between">
             <h1>{{ data?.name }}</h1>
-            <PoolManagementDropdown v-if="!isLoading && !isError" :details="data" />
+            <div class="flex items-center gap-8">
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge variant="outline" class="px-3 text-base">
+                    {{ getPoolMemberRoleNameKey(data?.userRole) }}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>Your role in this pool</TooltipContent>
+              </Tooltip>
+
+              <PoolManagementDropdown v-if="!isLoading && !isError" :details="data" />
+            </div>
           </CardTitle>
         </CardHeader>
         <Separator />
@@ -111,6 +174,7 @@ const onSubmit = handleSubmit(async (values) => {
           <template v-if="data?.type === 'SHARED'">
             <h3 class="mb-4 flex items-center gap-2"><Icon name="users" /> Members</h3>
             <div class="space-y-4">
+              <!-- New member invite form -->
               <form v-if="canManagePool" @submit="onSubmit" class="space-y-2">
                 <Label>Invite a new member</Label>
                 <Field name="poolId" type="hidden" :value="currentPoolId" />
@@ -125,7 +189,11 @@ const onSubmit = handleSubmit(async (values) => {
                         <SelectContent align="center">
                           <SelectLabel>User Role</SelectLabel>
 
-                          <SelectItem v-for="role in POOL_MEMBER_ROLES" :key="role.code" :value="role.code">
+                          <SelectItem
+                            v-for="role in Object.values(POOL_MEMBER_ROLES).filter((r) => r.code !== 'OWNER')"
+                            :key="role.code"
+                            :value="role.code"
+                          >
                             {{ role.label }}
                           </SelectItem>
                         </SelectContent>
@@ -162,38 +230,57 @@ const onSubmit = handleSubmit(async (values) => {
                         <p class="text-muted-foreground text-sm">{{ member.user.email }}</p>
                       </div>
                       <div>
-                        <Select
-                          v-if="canManagePool"
-                          :disabled="data.userRole === 'OWNER' && member.user.id === currentUser?.id"
-                        >
-                          <SelectTrigger>
-                            <SelectValue :placeholder="getPoolMemberRoleNameKey(member.role)" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem v-for="role in POOL_MEMBER_ROLES" :key="role.code" :value="role.code">
-                              {{ role.label }}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <DropdownMenu v-if="canManagePool">
+                          <DropdownMenuTrigger asChild :disabled="member.role === 'OWNER'">
+                            <Button variant="outline" size="sm" class="gap-2">
+                              {{ getPoolMemberRoleNameKey(member.role) }}
+                              <Icon name="chevronDown" class="h-4 w-4 opacity-50" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" class="w-48">
+                            <DropdownMenuLabel>Change Role</DropdownMenuLabel>
+                            <Separator />
+                            <DropdownMenuItem
+                              v-for="role in Object.values(POOL_MEMBER_ROLES).filter(
+                                (r) => r.code !== 'OWNER' || data?.userRole === 'OWNER',
+                              )"
+                              :key="role.code"
+                              :checked="member.role === role.code"
+                              :disabled="member.role === role.code"
+                              @select="handleRoleUpdate(data.id, member.user.id, role.code as PoolMemberRoleCode)"
+                            >
+                              <div class="flex w-full items-center justify-between">
+                                <span>{{ role.label }}</span>
+                                <Badge v-if="member.role === role.code" variant="secondary" class="text-xs">
+                                  Current
+                                </Badge>
+                              </div>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
                         <Badge v-else variant="outline" class="text-base">{{
                           getPoolMemberRoleNameKey(member.role)
                         }}</Badge>
                       </div>
 
-                      <DropdownMenu v-if="canManagePool">
-                        <DropdownMenuTrigger>
-                          <Icon name="dotsHorizontal" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            variant="destructive"
-                            :disabled="data.userRole === 'OWNER' && member.user.id === currentUser?.id"
-                          >
-                            <Icon name="logout" /> Remove Member
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div v-if="canManagePool" class="w-6">
+                        <DropdownMenu v-if="member.role !== 'OWNER'">
+                          <DropdownMenuTrigger>
+                            <Icon name="dotsHorizontal" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
+                            <Separator />
+                            <DropdownMenuItem
+                              variant="destructive"
+                              :disabled="data.userRole === 'OWNER' && member.user.id === currentUser?.id"
+                            >
+                              <Icon name="logout" /> Remove Member
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </li>
 
                     <!-- Member Invites -->

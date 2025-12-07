@@ -225,6 +225,47 @@ export class PoolsService {
     };
   }
 
+  async updateUserRoleInPool(
+    userSession: UserSession,
+    poolId: string,
+    userId: string,
+    role: PoolMemberRole,
+  ): Promise<void> {
+    // 1. Validate that the current user has permission to update roles in the pool
+    await this.canUserManagePool(userSession, poolId);
+
+    if (role === 'OWNER') {
+      // Validate that current user is the OWNER of the pool
+      const isOwner = await this.prisma.poolMember.findUnique({
+        where: {
+          poolId_userId: { poolId, userId: userSession.user.id },
+          role: 'OWNER',
+        },
+      });
+      if (!isOwner) {
+        throw new ForbiddenException(`Only the current OWNER can transfer ownership.`);
+      }
+
+      await this.prisma.$transaction(async (tx) => {
+        // 1. Update the current OWNER to ADMIN
+        await tx.poolMember.update({
+          where: { poolId_userId: { poolId, userId: userSession.user.id } },
+          data: { role: 'ADMIN' },
+        });
+        // 2. Update the new OWNER
+        await tx.poolMember.update({
+          where: { poolId_userId: { poolId, userId } },
+          data: { role: 'OWNER' },
+        });
+      });
+    } else {
+      await this.prisma.poolMember.update({
+        where: { poolId_userId: { poolId, userId } },
+        data: { role },
+      });
+    }
+  }
+
   async deletePool(userSession: UserSession, poolId: string): Promise<void> {
     const validatedPoolId = await this.prisma.poolMember.findUnique({
       where: {
@@ -270,7 +311,7 @@ export class PoolsService {
   // Invite handling
   async inviteToPool(userSession: UserSession, inviteData: PoolInviteValues) {
     // 1. Validate that the current user has permission to invite to the pool
-    await this.canUserManagePoolInvites(userSession, inviteData.poolId);
+    await this.canUserManagePool(userSession, inviteData.poolId);
     // 2. Find the user by email
     const receiver = await this.prisma.user.findUnique({
       where: { email: inviteData.email },
@@ -316,7 +357,7 @@ export class PoolsService {
       where: { id: inviteId },
       select: { poolId: true, receiverId: true },
     });
-    await this.canUserManagePoolInvites(userSession, invite.poolId);
+    await this.canUserManagePool(userSession, invite.poolId);
 
     await this.prisma.$transaction(async (tx) => {
       // 2. Delete the pool invite
@@ -367,7 +408,7 @@ export class PoolsService {
   // HELPERS
   ////////////////////////////////////
 
-  private async canUserManagePoolInvites(userSession: UserSession, poolId: string): Promise<void> {
+  private async canUserManagePool(userSession: UserSession, poolId: string): Promise<void> {
     console.log('Checking invite permissions for user:', userSession.user.id, 'on pool/invite:', poolId);
     const user = await this.prisma.poolMember.findUnique({
       where: {

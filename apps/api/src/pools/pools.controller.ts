@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import {
   AccessiblePool,
@@ -9,6 +9,7 @@ import {
   PoolInviteValues,
 } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { PoolMemberRole } from 'prisma/generated/prisma/enums';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { PoolsService } from 'src/pools/pools.service';
@@ -54,6 +55,16 @@ export class PoolsController {
     @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
   ) {
     return await this.poolsService.leavePool(userSession, poolId);
+  }
+
+  @Patch(':poolId/user/:userId/role')
+  async updateUserRoleInPool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+    @Param('userId', new ZodValidationPipe(z.string())) userId: string,
+    @Body('role', new ZodValidationPipe(z.enum(PoolMemberRole))) role: PoolMemberRole,
+  ) {
+    return await this.poolsService.updateUserRoleInPool(userSession, poolId, userId, role);
   }
 
   // INVITE LOGIC
