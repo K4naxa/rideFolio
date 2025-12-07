@@ -1,5 +1,6 @@
 import { api, fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 import type { TAccessibleVehicle, TRefillForClient, TStatCardData, VehicleType } from "@repo/validation";
