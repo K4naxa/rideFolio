@@ -65,6 +65,29 @@ export function getPoolMemberRoleNameKey(roleCode: PoolMemberRoleCode): string {
   return POOL_MEMBER_ROLES[roleCode]?.label || "pool.memberRoles.unknown";
 }
 
+export const POOL_INVITE_STATES = {
+  PENDING: {
+    code: "PENDING",
+    label: "Pending",
+    nameKey: "pool.inviteStates.pending",
+  },
+  ACCEPTED: {
+    code: "ACCEPTED",
+    label: "Accepted",
+    nameKey: "pool.inviteStates.accepted",
+  },
+  DECLINED: {
+    code: "DECLINED",
+    label: "Declined",
+    nameKey: "pool.inviteStates.declined",
+  },
+};
+export type PoolInviteStateCode = keyof typeof POOL_INVITE_STATES;
+export const poolInviteStateCodes = Object.keys(POOL_INVITE_STATES) as PoolInviteStateCode[];
+export function getPoolInviteStateNameKey(stateCode: PoolInviteStateCode): string {
+  return POOL_INVITE_STATES[stateCode]?.label || "pool.inviteStates.unknown";
+}
+
 // Data types
 
 export type AccessiblePool = {
@@ -81,8 +104,17 @@ export type PoolDetails = {
   createdAt: Date;
   userRole: PoolMemberRoleCode;
 
-  Members: PoolMember[];
-  Vehicles: PoolVehicle[];
+  members: PoolMember[];
+  invites?: PoolInvites[];
+  vehicles: PoolVehicle[];
+};
+
+export type PoolInvites = {
+  id: string;
+  email: string;
+  roleToGrant: PoolMemberRoleCode;
+  state: PoolInviteStateCode;
+  createdAt: Date;
 };
 
 export type PoolMember = {

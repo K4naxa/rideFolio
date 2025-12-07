@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { poolTypeCodes } from "./pool.types";
+import { poolMemberRoleCodes, poolTypeCodes } from "./pool.types";
 
 // Client-side form schema (what the form actually works with)
 export const PoolSchema = z.object({
@@ -30,3 +30,12 @@ export const PoolSchema = z.object({
 });
 
 export type PoolSchemaValues = z.infer<typeof PoolSchema>;
+
+export const PoolInviteSchema = z.object({
+  email: z.email("Invalid email address"),
+  roleToGrant: z.enum(poolMemberRoleCodes, {
+    message: "Role is required",
+  }),
+  poolId: z.cuid("Invalid pool ID"),
+});
+export type PoolInviteValues = z.infer<typeof PoolInviteSchema>;

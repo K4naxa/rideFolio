@@ -69,6 +69,7 @@ export const ModelName = {
   PoolInvite: 'PoolInvite',
   Refill: 'Refill',
   VehicleMonthlyStatistics: 'VehicleMonthlyStatistics',
+  Notification: 'Notification',
   Account: 'Account',
   Verification: 'Verification',
   Session: 'Session'
@@ -382,6 +383,23 @@ export const VehicleMonthlyStatisticsScalarFieldEnum = {
 export type VehicleMonthlyStatisticsScalarFieldEnum = (typeof VehicleMonthlyStatisticsScalarFieldEnum)[keyof typeof VehicleMonthlyStatisticsScalarFieldEnum]
 
 
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  metadata: 'metadata',
+  requiresAction: 'requiresAction',
+  isRead: 'isRead',
+  readAt: 'readAt',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
 export const AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -435,6 +453,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull'
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -449,4 +475,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

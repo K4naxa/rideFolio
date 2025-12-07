@@ -108,6 +108,11 @@ export type Refill = Prisma.RefillModel
  */
 export type VehicleMonthlyStatistics = Prisma.VehicleMonthlyStatisticsModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model Account
  * 
  */

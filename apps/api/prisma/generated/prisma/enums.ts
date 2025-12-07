@@ -58,6 +58,18 @@ export const TimeConsumptionTypes = {
 export type TimeConsumptionTypes = (typeof TimeConsumptionTypes)[keyof typeof TimeConsumptionTypes]
 
 
+export const NotificationType = {
+  POOL_INVITE: 'POOL_INVITE',
+  POOL_INVITE_ACCEPTED: 'POOL_INVITE_ACCEPTED',
+  POOL_INVITE_DECLINED: 'POOL_INVITE_DECLINED',
+  POOL_MEMBER_LEFT: 'POOL_MEMBER_LEFT',
+  POOL_YOUR_ROLE_CHANGED: 'POOL_YOUR_ROLE_CHANGED',
+  POOL_YOUR_VEHICLE_REMOVED: 'POOL_YOUR_VEHICLE_REMOVED'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const PoolType = {
   PRIVATE: 'PRIVATE',
   SHARED: 'SHARED'

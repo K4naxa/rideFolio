@@ -7,6 +7,7 @@ import { VehicleTransformerService } from 'src/utils/vehicleTransformer.service'
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
+import { NotificationService } from 'src/notifications/notification.service';
 
 @Module({
   imports: [],
@@ -20,6 +21,7 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
     OdometerService,
     UnitConversionService,
     AuthValidationService,
+    NotificationService,
   ],
 })
 export class PoolsModule {}

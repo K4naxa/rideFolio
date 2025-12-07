@@ -12,7 +12,7 @@ import { useModalStore } from "@/stores/modal";
 import type { PoolDetails } from "@repo/validation";
 
 interface PoolManagementDropdownProps {
-  details: PoolDetails;
+  details: PoolDetails | undefined;
 }
 
 const props = defineProps<PoolManagementDropdownProps>();
@@ -41,14 +41,14 @@ function handleDeleteClick() {
       <DropdownMenuGroup>
         <DropdownMenuLabel><Label class="text-muted-foreground">Manage Pool</Label></DropdownMenuLabel>
         <Separator />
-        <DropdownMenuItem v-if="props.details.userRole === 'OWNER' || props.details.userRole === 'ADMIN'">
+        <DropdownMenuItem v-if="props.details?.userRole === 'OWNER' || props.details?.userRole === 'ADMIN'">
           <Icon name="edit" /> Edit Pool
         </DropdownMenuItem>
-        <DropdownMenuItem v-if="props.details.userRole === 'OWNER'" variant="destructive" @click="handleDeleteClick">
+        <DropdownMenuItem v-if="props.details?.userRole === 'OWNER'" variant="destructive" @click="handleDeleteClick">
           <Icon name="trash" /> Delete Pool
         </DropdownMenuItem>
       </DropdownMenuGroup>
-      <DropdownMenuGroup v-if="props.details.userRole !== 'OWNER'">
+      <DropdownMenuGroup v-if="props.details?.userRole !== 'OWNER'">
         <DropdownMenuLabel><Label class="text-muted-foreground">Actions</Label></DropdownMenuLabel>
         <Separator />
 

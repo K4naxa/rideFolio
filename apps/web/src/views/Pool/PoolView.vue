@@ -10,7 +10,12 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
-import { getPoolMemberRoleNameKey, POOL_MEMBER_ROLES } from "@repo/validation";
+import {
+  getPoolInviteStateNameKey,
+  getPoolMemberRoleNameKey,
+  POOL_MEMBER_ROLES,
+  PoolInviteSchema,
+} from "@repo/validation";
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Select from "@/components/ui/select/Select.vue";
@@ -32,13 +37,47 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { usePoolInviteCancel, usePoolInviteUser } from "@/lib/queries/pools/pool-mutations";
+import { ErrorMessage, Field, useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { toast } from "vue-sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import axios from "axios";
 
 const { currentUser } = useCurrentUser();
 const { currentPoolId } = useCurrentPool();
+const { mutateAsync: sendPoolInvite, isPending: isInviting } = usePoolInviteUser();
+const { mutateAsync: cancelPoolInvite } = usePoolInviteCancel();
 const { data, isLoading, isError } = usePoolDetails(computed(() => currentPoolId.value));
 const canManagePool = computed(() => {
   if (!data.value) return false;
   return ["OWNER", "ADMIN"].includes(data.value.userRole);
+});
+
+const { handleSubmit, resetForm, setFieldError } = useForm({
+  validationSchema: toTypedSchema(PoolInviteSchema),
+  initialValues: {
+    email: "",
+    roleToGrant: undefined,
+  },
+});
+
+const onSubmit = handleSubmit(async (values) => {
+  console.log("Submitting invite with values:", values);
+  await sendPoolInvite(values, {
+    onSuccess: () => {
+      resetForm();
+      toast.success("Pool invite sent successfully.");
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          setFieldError("email", "No user found with this email.");
+          return;
+        }
+      }
+    },
+  });
 });
 </script>
 
@@ -48,7 +87,7 @@ const canManagePool = computed(() => {
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <h1>{{ data?.name }}</h1>
-          <PoolManagementDropdown v-if="!isLoading && !isError" :details="data!" />
+          <PoolManagementDropdown v-if="!isLoading && !isError" :details="data" />
         </CardTitle>
       </CardHeader>
       <Separator />
@@ -57,41 +96,45 @@ const canManagePool = computed(() => {
         <template v-if="data?.type === 'SHARED'">
           <h3 class="mb-4 flex items-center gap-2"><Icon name="users" /> Members</h3>
           <div class="space-y-4">
-            <div v-if="canManagePool" class="space-y-2">
-              <p class="text-md font-medium">Invite new member</p>
+            <form v-if="canManagePool" @submit="onSubmit" class="space-y-2">
+              <Label>Invite a new member</Label>
+              <Field name="poolId" type="hidden" :value="currentPoolId" />
               <div class="grid grid-cols-2 gap-4 lg:flex">
-                <Input type="email" placeholder="user@example.com" class="col-span-2 flex-1" />
-                <Select>
-                  <SelectTrigger class="w-full lg:w-32">
-                    <SelectValue placeholder="User role" />
-                  </SelectTrigger>
-                  <SelectContent align="center">
-                    <SelectLabel>User Role</SelectLabel>
+                <Input name="email" type="email" placeholder="user@example.com" class="col-span-2 flex-1" />
+                <div>
+                  <Field v-slot="{ value, handleChange }" name="roleToGrant">
+                    <Select :model-value="value" @update:model-value="handleChange">
+                      <SelectTrigger class="h-fit w-full lg:w-32">
+                        <SelectValue placeholder="User role" />
+                      </SelectTrigger>
+                      <SelectContent align="center">
+                        <SelectLabel>User Role</SelectLabel>
 
-                    <SelectItem v-for="role in POOL_MEMBER_ROLES" :key="role.code" :value="role.code">
-                      {{ role.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button>
-                  <Icon name="userPlus" className="mr-2" />
+                        <SelectItem v-for="role in POOL_MEMBER_ROLES" :key="role.code" :value="role.code">
+                          {{ role.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <ErrorMessage name="roleToGrant" class="text-destructive mt-1 ml-2 text-sm" />
+                  </Field>
+                </div>
+                <Button type="submit" :disabled="isInviting">
+                  <Icon name="userPlus" class="mr-2" />
                   Send Invite
                 </Button>
               </div>
-            </div>
-
-            <Separator />
+            </form>
 
             <div class="space-y-2">
               <Label>Members with access</Label>
 
               <!-- Users table -->
-              <ul>
-                <ScrollArea class="max-h-96 overflow-hidden rounded border">
-                  <div
-                    v-for="member in data?.Members"
+              <ScrollArea class="max-h-96 overflow-hidden rounded border">
+                <ul>
+                  <li
+                    v-for="member in data?.members"
                     :key="member.user.id"
-                    class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-8 p-4"
+                    class="listHover grid grid-cols-[auto_1fr_auto_auto] items-center gap-8 p-4"
                   >
                     <Avatar class="h-8 w-8 rounded-lg">
                       <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'User'" />
@@ -135,29 +178,75 @@ const canManagePool = computed(() => {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </div>
+                  </li>
+
+                  <!-- Member Invites -->
+                  <li
+                    v-for="invite in data?.invites"
+                    :key="invite.id"
+                    class="listHover grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-8 p-4"
+                  >
+                    <Avatar class="h-8 w-8 rounded-lg">
+                      <AvatarFallback class="rounded-lg">{{ getInitials(invite.email) }}</AvatarFallback>
+                    </Avatar>
+
+                    <div>
+                      <p class="text-muted-foreground text-sm">{{ invite.email }}</p>
+                    </div>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge class="px-3 text-base" variant="secondary">{{
+                          getPoolInviteStateNameKey(invite.state)
+                        }}</Badge>
+                      </TooltipTrigger>
+                      <TooltipContent> Waiting for user to respond to the invite. </TooltipContent>
+                    </Tooltip>
+                    <div>
+                      <Select v-if="canManagePool" disabled>
+                        <SelectTrigger>
+                          <SelectValue :placeholder="getPoolMemberRoleNameKey(invite.roleToGrant)" />
+                        </SelectTrigger>
+                      </Select>
+                      <Badge v-else variant="outline" class="">{{
+                        getPoolMemberRoleNameKey(invite.roleToGrant)
+                      }}</Badge>
+                    </div>
+
+                    <DropdownMenu v-if="canManagePool">
+                      <DropdownMenuTrigger>
+                        <Icon name="dotsHorizontal" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>Invite Actions</DropdownMenuLabel>
+                        <DropdownMenuItem variant="destructive" @click="cancelPoolInvite(invite.id)">
+                          <Icon name="close" /> Cancel Invite
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </li>
                   <ScrollBar orientation="horizontal" />
                   <ScrollBar orientation="vertical" />
-                </ScrollArea>
-              </ul>
+                </ul>
+              </ScrollArea>
             </div>
           </div>
         </template>
 
         <div class="space-y-4">
           <div class="flex items-center text-lg">
-            <Label>
-              Vehicles <Badge variant="secondary">{{ data?.Vehicles.length }} </Badge>
-            </Label>
+            <h3 class="flex items-center gap-2">
+              <Icon name="carFront" /> Vehicles <Badge variant="secondary">{{ data?.vehicles.length }} </Badge>
+            </h3>
             <Button variant="default" class="ml-auto" size="sm"> Add Vehicle </Button>
           </div>
 
+          <!-- Vehicle list -->
           <ScrollArea class="w-full overflow-hidden">
             <ul class="space-y-3 pb-3">
               <li
-                v-for="vehicle in data?.Vehicles"
+                v-for="vehicle in data?.vehicles"
                 :key="vehicle.data.id"
-                class="listHover grid min-w-3xl grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_auto] items-center gap-6 rounded px-3 py-2 hover:cursor-pointer"
+                class="listHover grid min-w-3xl grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_auto] items-center gap-6 rounded px-3 py-2"
               >
                 <div class="bg-muted grid aspect-video h-16 place-items-center overflow-hidden rounded">
                   <img

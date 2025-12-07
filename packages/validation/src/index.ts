@@ -9,3 +9,4 @@ export * from "./logs/index.js";
 export * from "./todo/index.js";
 export * from "./note/index.js";
 export * from "./shoppingList/index.js";
+export * from "./notification/index.js";

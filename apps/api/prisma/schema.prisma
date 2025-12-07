@@ -42,6 +42,16 @@ enum TimeConsumptionTypes {
   HOURS_PER_GALLON
 }
 
+
+enum NotificationType {
+  POOL_INVITE
+  POOL_INVITE_ACCEPTED
+  POOL_INVITE_DECLINED
+  POOL_MEMBER_LEFT
+  POOL_YOUR_ROLE_CHANGED
+  POOL_YOUR_VEHICLE_REMOVED
+}
+
 // ** POOL INFORMATION
 enum PoolType {
   PRIVATE // A user's personal default pool
@@ -114,6 +124,8 @@ model User {
   // Invite relations
   sentPoolInvites     PoolInvite[] @relation("SentBy")
   receivedPoolInvites PoolInvite[] @relation("ReceivedBy")
+
+  notifications Notification[]
 
   // OAuth and Session relations
   accounts Account[]
@@ -540,7 +552,31 @@ model VehicleMonthlyStatistics {
   updatedAt DateTime @updatedAt
 
   @@unique([vehicleId, year, month])
- }
+}
+
+
+model Notification {
+  id String @id @default(cuid())
+  userId String // Recipient user ID
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type NotificationType 
+
+  title String
+  message String
+  metadata Json?
+
+  requiresAction Boolean @default(false) //  (e.g., invite)
+  isRead Boolean @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@index([userId, isRead])
+}
+
+
 
 // ** Authentication and Authorization **
 model Account {

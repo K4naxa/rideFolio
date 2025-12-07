@@ -1,11 +1,18 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
-import { AccessiblePool, PoolSchema, PoolSchemaValues, PoolDetails } from '@repo/validation';
+import {
+  AccessiblePool,
+  PoolSchema,
+  PoolSchemaValues,
+  PoolDetails,
+  PoolInviteSchema,
+  PoolInviteValues,
+} from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { PoolsService } from 'src/pools/pools.service';
-import { ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 
 @Controller('pools')
 export class PoolsController {
@@ -33,5 +40,21 @@ export class PoolsController {
   @Delete(':id')
   async deletePool(@Session() userSession: UserSession, @Param('id') id: string) {
     return await this.poolsService.deletePool(userSession, id);
+  }
+
+  @Post(':poolId/invite')
+  async inviteToPool(
+    @Session() userSession: UserSession,
+    @Body(new ZodValidationPipe(PoolInviteSchema as ZodType)) inviteData: PoolInviteValues,
+  ) {
+    return await this.poolsService.inviteToPool(userSession, inviteData);
+  }
+
+  @Delete('invite/:inviteId')
+  async cancelPoolInvite(
+    @Session() userSession: UserSession,
+    @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
+  ) {
+    return await this.poolsService.cancelPoolInvite(userSession, inviteId);
   }
 }
