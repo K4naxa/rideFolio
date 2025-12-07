@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { ProfileUpdateValues } from "@repo/validation";
+import type { Notification, ProfileUpdateValues } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
@@ -40,6 +40,26 @@ export function useUserPreferenceUpdate() {
       }
       console.log("Preference updated successfully:", data);
       queryClient.setQueryData(["currentUser"], data);
+    },
+  });
+}
+
+export function useUserNotificationsMarkAsRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["notifications-mark-as-read"],
+    mutationFn: async (notificationId: string) => {
+      return await api.patch("/users/notifications/" + notificationId + "/read");
+    },
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData<Notification[]>(queryKeys.user.notifications, (old) => {
+        if (!old) return old;
+        return old.map((notification) =>
+          notification.id === variables
+            ? { ...notification, isRead: true, readAt: new Date().toISOString() }
+            : notification,
+        );
+      });
     },
   });
 }

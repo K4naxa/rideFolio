@@ -56,4 +56,8 @@ export const queryKeys = {
     all: ["shopping-list"] as const,
     byVehicle: (vehicleId: string) => ["shopping-list", "vehicle", vehicleId] as const,
   },
+
+  user: {
+    notifications: ["user", "notifications"] as const,
+  },
 };

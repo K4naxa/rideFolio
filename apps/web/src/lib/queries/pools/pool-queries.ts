@@ -5,6 +5,8 @@ import { handleEmpty } from "@/lib/queries/util";
 import type { AccessiblePool, PoolDetails } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, unref, watchEffect, type MaybeRef } from "vue";
+import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
 
 export function usePoolsAll() {
   const { isAuthenticated } = useAuth();
@@ -18,6 +20,7 @@ export function usePoolsAll() {
 
 export function usePoolDetails(poolId: MaybeRef<string | undefined>) {
   const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
   return useQuery({
     queryKey: computed(() => queryKeys.pools.detail(handleEmpty(poolId))),

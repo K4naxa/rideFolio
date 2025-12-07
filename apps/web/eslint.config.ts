@@ -13,6 +13,15 @@ export default defineConfigWithVueTs(
     files: ["**/*.{ts,mts,tsx,vue}"],
   },
   globalIgnores(["**/dist/**", "**/dist-ssr/**", "**/coverage/**"]),
+  {
+    name: "app/vue-parser-options",
+    files: ["**/*.vue"],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
   pluginVue.configs["flat/essential"],
   vueTsConfigs.recommended,
   {
@@ -28,7 +37,7 @@ export default defineConfigWithVueTs(
   },
   {
     name: "app/typescript-parser-options",
-    files: ["**/*.{ts,mts,tsx,vue}"],
+    files: ["**/*.{ts,mts,tsx}"],
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: __dirname,

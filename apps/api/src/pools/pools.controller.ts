@@ -24,7 +24,10 @@ export class PoolsController {
     return pools;
   }
   @Get(':poolId')
-  async getPoolDetails(@Session() userSession: UserSession, @Param('poolId') poolId: string): Promise<PoolDetails> {
+  async getPoolDetails(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+  ): Promise<PoolDetails> {
     return await this.poolsService.getPoolDetails(userSession, poolId);
   }
 
@@ -37,17 +40,45 @@ export class PoolsController {
     return createdPool;
   }
 
-  @Delete(':id')
-  async deletePool(@Session() userSession: UserSession, @Param('id') id: string) {
-    return await this.poolsService.deletePool(userSession, id);
+  @Delete(':poolId')
+  async deletePool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+  ) {
+    return await this.poolsService.deletePool(userSession, poolId);
   }
 
+  @Post(':poolId/leave')
+  async leavePool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+  ) {
+    return await this.poolsService.leavePool(userSession, poolId);
+  }
+
+  // INVITE LOGIC
   @Post(':poolId/invite')
   async inviteToPool(
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(PoolInviteSchema as ZodType)) inviteData: PoolInviteValues,
   ) {
     return await this.poolsService.inviteToPool(userSession, inviteData);
+  }
+
+  @Post('invite/:inviteId/accept')
+  async acceptPoolInvite(
+    @Session() userSession: UserSession,
+    @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
+  ) {
+    return await this.poolsService.acceptPoolInvite(userSession, inviteId);
+  }
+
+  @Post('invite/:inviteId/deny')
+  async denyPoolInvite(
+    @Session() userSession: UserSession,
+    @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
+  ) {
+    return await this.poolsService.denyPoolInvite(userSession, inviteId);
   }
 
   @Delete('invite/:inviteId')

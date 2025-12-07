@@ -104,6 +104,13 @@ export type PoolDetails = {
   createdAt: Date;
   userRole: PoolMemberRoleCode;
 
+  rules: {
+    allowMembersToaddLogs: boolean;
+    allowMembersToaddVehicles: boolean;
+    allowMembersToEditLogs: boolean;
+    allowMembersToDeleteLogs: boolean;
+  };
+
   members: PoolMember[];
   invites?: PoolInvites[];
   vehicles: PoolVehicle[];

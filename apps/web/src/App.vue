@@ -12,6 +12,7 @@ import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
 import AlertModal from "./modals/alertModal.vue";
 import UserSettingsModal from "./modals/userSettingsModal.vue";
 import PoolModal from "./modals/PoolModal.vue";
+import PoolInvitationModal from "./modals/PoolInvitationModal.vue";
 
 configure({});
 
@@ -30,8 +31,9 @@ const themeStore = useThemeStore();
   <TodoModal />
   <NoteModal />
   <CreateMaintenanceModal />
-  <UserSettingsModal />\
+  <UserSettingsModal />
   <PoolModal />
+  <PoolInvitationModal />
 </template>
 
 <style scoped></style>

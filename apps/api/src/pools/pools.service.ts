@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Pool } from 'prisma/generated/prisma/client';
+import { Pool, PoolMemberRole, Prisma } from 'prisma/generated/prisma/client';
 import { AccessiblePool, PoolMemberRoleCode, PoolSchemaValues, PoolDetails, PoolInviteValues } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -32,13 +32,7 @@ export class PoolsService {
         });
 
         // 2. Add the creator into the pool as a creator
-        await prisma.poolMember.create({
-          data: {
-            poolId: pool.id,
-            userId: userSession.user.id,
-            role: 'OWNER',
-          },
-        });
+        await this.addUserToPool(prisma, userSession.user.id, pool.id, 'OWNER');
 
         // 3. Add optional vehicles to the pool if provided
         if (vehicleIds && vehicleIds.length > 0) {
@@ -148,12 +142,7 @@ export class PoolsService {
     const poolDetails = await this.prisma.pool.findUnique({
       where: { id: poolId, members: { some: { userId: userSession.user.id } } },
 
-      select: {
-        id: true,
-        type: true,
-        name: true,
-        description: true,
-        createdAt: true,
+      include: {
         members: {
           select: {
             role: true,
@@ -214,6 +203,12 @@ export class PoolsService {
       createdAt: poolDetails.createdAt,
       userRole: poolDetails.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
       members: poolDetails.members,
+      rules: {
+        allowMembersToaddLogs: poolDetails.allowMembersToAddLogs,
+        allowMembersToaddVehicles: poolDetails.allowMembersToAddVehicles,
+        allowMembersToEditLogs: poolDetails.allowMembersToEditLogs,
+        allowMembersToDeleteLogs: poolDetails.allowMembersToDeleteLogs,
+      },
       vehicles: poolDetails.vehicles.map((v) => ({
         addedAt: v.addedAt,
         isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
@@ -253,8 +248,26 @@ export class PoolsService {
     });
   }
 
-  // Invite handling
+  async leavePool(userSession: UserSession, poolId: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      // 1. Remove the user from the pool members
+      await tx.poolMember.delete({
+        where: { poolId_userId: { poolId, userId: userSession.user.id } },
+      });
 
+      // Remove users vehicles from the pool
+      await tx.poolVehicle.deleteMany({
+        where: {
+          poolId,
+          vehicle: {
+            ownerId: userSession.user.id,
+          },
+        },
+      });
+    });
+  }
+
+  // Invite handling
   async inviteToPool(userSession: UserSession, inviteData: PoolInviteValues) {
     // 1. Validate that the current user has permission to invite to the pool
     await this.canUserManagePoolInvites(userSession, inviteData.poolId);
@@ -324,6 +337,32 @@ export class PoolsService {
     });
   }
 
+  async acceptPoolInvite(userSession: UserSession, inviteId: string) {
+    // 1. Find the invite and validate it
+    const invite = await this.prisma.poolInvite.findUnique({
+      where: { id: inviteId, receiverId: userSession.user.id },
+    });
+    if (!invite) throw new NotFoundException(`Invite not found or access denied.`);
+
+    // Add user to the accepted pool
+    await this.prisma.$transaction(async (tx) => {
+      await this.addUserToPool(tx, userSession.user.id, invite.poolId, invite.roleToGrant);
+      await tx.poolInvite.delete({ where: { id: invite.id } });
+    });
+  }
+
+  async denyPoolInvite(userSession: UserSession, inviteId: string) {
+    // 1. Find the invite and validate it
+    const invite = await this.prisma.poolInvite.findUnique({
+      where: { id: inviteId, receiverId: userSession.user.id },
+    });
+    if (!invite) throw new NotFoundException(`Invite not found or access denied.`);
+    // 2. Delete the invite
+    await this.prisma.poolInvite.delete({
+      where: { id: invite.id },
+    });
+  }
+
   /////////////////////////////////////
   // HELPERS
   ////////////////////////////////////
@@ -338,5 +377,20 @@ export class PoolsService {
     });
     console.log('User invite permissions:', user);
     if (!user) throw new ForbiddenException('You do not have permission to invite users to this pool.');
+  }
+
+  private async addUserToPool(
+    prisma: Prisma.TransactionClient,
+    userId: string,
+    poolId: string,
+    roleToGrant: PoolMemberRole,
+  ) {
+    await prisma.poolMember.create({
+      data: {
+        poolId,
+        userId,
+        role: roleToGrant,
+      },
+    });
   }
 }

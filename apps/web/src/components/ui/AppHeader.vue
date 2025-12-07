@@ -10,6 +10,7 @@ import { useModalStore } from "@/stores/modal";
 import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
+import NotificationsPopover from "../NotificationsPopover.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();
@@ -83,10 +84,7 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
       </Button>
     </div>
     <div class="ml-auto flex items-center gap-x-2.5">
-      <Button variant="ghost" class="p-2">
-        <Icons name="bell" size="sm" />
-        <span class="sr-only">Notification</span>
-      </Button>
+      <NotificationsPopover />
 
       <AppHeaderProfileButton />
     </div>

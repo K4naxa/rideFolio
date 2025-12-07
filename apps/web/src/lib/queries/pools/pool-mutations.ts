@@ -20,6 +20,34 @@ export function usePoolCreate() {
   });
 }
 
+export function usePoolDelete() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-delete"],
+    mutationFn: async (poolId: string) => {
+      return await api.delete("/pools/" + poolId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
+export function usePoolLeave() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-leave"],
+    mutationFn: async (poolId: string) => {
+      return await api.post("/pools/" + poolId + "/leave");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
 export function usePoolInviteUser() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -45,6 +73,29 @@ export function usePoolInviteCancel() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+    },
+  });
+}
+
+export function usePoolInviteAccept() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-invite-accept"],
+    mutationFn: async (inviteId: string) => {
+      return await api.post("/pools/invite/" + inviteId + "/accept");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
+export function usePoolInviteDeny() {
+  return useMutation({
+    mutationKey: ["pool-invite-deny"],
+    mutationFn: async (inviteId: string) => {
+      return await api.post("/pools/invite/" + inviteId + "/deny");
     },
   });
 }

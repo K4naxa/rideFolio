@@ -42,6 +42,9 @@ export interface PoolInviteNotification extends BaseNotification {
   metadata: {
     poolId: string;
     poolName: string;
+    poolDescription: string | null;
+    poolMemberCount: number;
+    poolVehicleCount: number;
     inviteId: string;
     sender: {
       name: string;
@@ -62,3 +65,5 @@ export interface PoolInviteResponseNotification extends BaseNotification {
     };
   };
 }
+
+export type Notification = PoolInviteNotification | PoolInviteResponseNotification;
