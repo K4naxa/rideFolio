@@ -37,12 +37,12 @@ const mainSidebarLinks: MainSideBarLinks[] = [
   {
     label: "Notes",
     icon: "notes",
-    to: "",
+    to: "/notes",
   },
   {
     label: "To-dos",
     icon: "todo",
-    to: "",
+    to: "/todos",
   },
 ];
 
@@ -76,12 +76,16 @@ const handleCreateVehicleClick = () => {
 
     <SidebarContent>
       <SidebarGroup>
-        <SidebarMenuButton :key="link.label" v-for="link in mainSidebarLinks" as-child>
-          <RouterLink :to="link.to" class="flex items-center gap-3 font-semibold">
-            <Icon :name="link.icon" />
-            {{ link.label }}
-          </RouterLink>
-        </SidebarMenuButton>
+        <SidebarGroupContent class="space-y-1">
+          <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
+            <SidebarMenuButton asChild>
+              <RouterLink :to="link.to" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
+                <Icon :name="link.icon" size="sm" />
+                {{ link.label }}
+              </RouterLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarGroupContent>
       </SidebarGroup>
 
       <SidebarGroup>
