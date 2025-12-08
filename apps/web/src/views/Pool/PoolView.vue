@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import Card from "@/components/ui/card/Card.vue";
-import CardHeader from "@/components/ui/card/CardHeader.vue";
-import CardTitle from "@/components/ui/card/CardTitle.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import { usePoolDetails } from "@/lib/queries/pools/pool-queries";
 import { computed, watchEffect } from "vue";
 import PoolManagementDropdown from "./components/PoolManagementDropdown.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
-import CardContent from "@/components/ui/card/CardContent.vue";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import {
@@ -48,6 +44,7 @@ import PoolLoadingSkeleton from "./components/PoolLoadingSkeleton.vue";
 import PoolErrorState from "./components/PoolErrorState.vue";
 import { useModalStore } from "@/stores/modal";
 import type { AlertModalData } from "@/modals/alertModal.vue";
+import CardDescription from "@/components/ui/card/CardDescription.vue";
 
 const modalStore = useModalStore();
 const { currentUser } = useCurrentUser();
@@ -141,7 +138,7 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
 </script>
 
 <template>
-  <div class="flex min-w-0 flex-1 justify-center p-4 lg:p-6">
+  <div class="flex min-w-0 flex-1 justify-center p-4 lg:p-8">
     <Transition name="fade" mode="out-in">
       <!-- Loading Skeleton -->
       <PoolLoadingSkeleton v-if="isLoading" />
@@ -150,10 +147,10 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
       <PoolErrorState v-else-if="isError" />
 
       <!-- Main Content -->
-      <Card v-else-if="data" class="h-fit w-full max-w-7xl">
-        <CardHeader>
-          <CardTitle class="flex items-center justify-between">
-            <h1>{{ data?.name }}</h1>
+      <div v-else-if="data" class="mx-auto flex w-full flex-col lg:max-w-7xl">
+        <header class="mb-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold tracking-tight">{{ data?.name }}</h1>
             <div class="flex items-center gap-8">
               <Tooltip>
                 <TooltipTrigger>
@@ -166,13 +163,13 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
 
               <PoolManagementDropdown v-if="!isLoading && !isError" :details="data" />
             </div>
-          </CardTitle>
-        </CardHeader>
-        <Separator />
-
-        <CardContent class="space-y-8">
+          </div>
+          <CardDescription class="text-base">{{ data.description }}</CardDescription>
+          <Separator class="mt-2" />
+        </header>
+        <div class="space-y-6 lg:space-y-10">
           <template v-if="data?.type === 'SHARED'">
-            <h3 class="mb-4 flex items-center gap-2"><Icon name="users" /> Members</h3>
+            <h3 class="mb-2 flex items-center gap-2"><Icon name="users" /> Members</h3>
             <div class="space-y-4">
               <!-- New member invite form -->
               <form v-if="canManagePool" @submit="onSubmit" class="space-y-2">
@@ -217,7 +214,7 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
                     <li
                       v-for="member in data?.members"
                       :key="member.user.id"
-                      class="listHover grid items-center gap-8 p-4"
+                      class="listHover grid items-center gap-4 rounded p-2.5 lg:gap-6"
                       :class="[canManagePool ? 'grid-cols-[auto_1fr_auto_auto]' : 'grid-cols-[auto_1fr_auto]']"
                     >
                       <Avatar class="h-8 w-8 rounded-lg">
@@ -335,8 +332,8 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
             </div>
           </template>
 
-          <div class="space-y-4">
-            <div class="flex items-center text-lg">
+          <div class="space-y-2">
+            <div class="flex items-end text-lg">
               <h3 class="flex items-center gap-2">
                 <Icon name="carFront" /> Vehicles <Badge variant="secondary">{{ data?.vehicles.length }} </Badge>
               </h3>
@@ -351,79 +348,83 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
             </div>
 
             <!-- Vehicle list -->
-            <ScrollArea class="w-full overflow-hidden">
-              <ul class="space-y-3 pb-3">
-                <li
-                  v-for="vehicle in data?.vehicles"
-                  :key="vehicle.data.id"
-                  class="listHover grid min-w-3xl grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_auto] items-center gap-6 rounded px-3 py-2"
-                >
-                  <div class="bg-muted grid aspect-video h-16 place-items-center overflow-hidden rounded">
-                    <img
-                      v-if="vehicle.data.image"
-                      :src="vehicle.data.image"
-                      :alt="'Image of ' + vehicle.data.name"
-                      class="object-cover"
-                    />
-                    <Icon
-                      :name="vehicle.data.type.icon as IconProps['name']"
-                      v-else-if="vehicle.data.type.icon"
-                      class="stroke-muted-foreground"
-                    />
-                  </div>
-
-                  <div>
-                    <p class="font-semibold">{{ vehicle.data.name }}</p>
-                    <p class="text-muted-foreground text-sm">{{ vehicle.data.make }} {{ vehicle.data.model }}</p>
-                  </div>
-                  <div v-if="vehicle.data.licensePlate">
-                    <h4 class="text-muted-foreground">License Plate</h4>
-                    <p class="text-sm">{{ vehicle.data.licensePlate }}</p>
-                  </div>
-                  <div v-else />
-                  <div>
-                    <h4 class="text-muted-foreground">Odometer</h4>
-                    <p class="text-sm">
-                      {{ vehicle.data.odometerData.value }}
-                      <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
-                    </p>
-                  </div>
-                  <div>
-                    <h4 class="text-muted-foreground">Lifetime travel</h4>
-                    <p class="text-sm">
-                      {{ vehicle.data.odometerData.lifeTimeTracked }}
-                      <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Avatar>
-                      <AvatarImage
-                        v-if="vehicle.owner.image"
-                        :src="vehicle.owner.image"
-                        :alt="vehicle.owner.name ?? 'User'"
+            <div class="">
+              <ScrollArea class="w-full overflow-hidden rounded border">
+                <ul class="">
+                  <li
+                    v-for="vehicle in data?.vehicles"
+                    :key="vehicle.data.id"
+                    class="listHover grid min-w-3xl grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_auto] items-center gap-6 rounded p-2.5 md:p-4"
+                  >
+                    <div class="bg-muted grid aspect-video h-16 place-items-center overflow-hidden rounded">
+                      <img
+                        v-if="vehicle.data.image"
+                        :src="vehicle.data.image"
+                        :alt="'Image of ' + vehicle.data.name"
+                        class="object-cover"
                       />
-                      <AvatarFallback v-else class="rounded-lg">{{ getInitials(vehicle.owner.name) }}</AvatarFallback>
-                    </Avatar>
-                    {{ vehicle.owner.name || "Unknown User" }}
-                  </div>
+                      <Icon
+                        :name="vehicle.data.type.icon as IconProps['name']"
+                        v-else-if="vehicle.data.type.icon"
+                        class="stroke-muted-foreground"
+                      />
+                    </div>
 
-                  <DropdownMenu v-if="canManagePool || vehicle.isCurrentUserOwner">
-                    <DropdownMenuTrigger>
-                      <Icon name="dotsHorizontal" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem variant="destructive"> <Icon name="logout" /> Remove Vehicle </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </li>
-              </ul>
-              <ScrollBar orientation="horizontal" class="" />
-              <ScrollBar orientation="vertical" class="" />
-            </ScrollArea>
+                    <div>
+                      <p class="font-semibold">{{ vehicle.data.name }}</p>
+                      <p class="text-muted-foreground text-sm">{{ vehicle.data.make }} {{ vehicle.data.model }}</p>
+                    </div>
+                    <div v-if="vehicle.data.licensePlate">
+                      <h4 class="text-muted-foreground">License Plate</h4>
+                      <p class="text-sm">{{ vehicle.data.licensePlate }}</p>
+                    </div>
+                    <div v-else />
+                    <div>
+                      <h4 class="text-muted-foreground">Odometer</h4>
+                      <p class="text-sm">
+                        {{ vehicle.data.odometerData.value }}
+                        <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
+                      </p>
+                    </div>
+                    <div>
+                      <h4 class="text-muted-foreground">Lifetime travel</h4>
+                      <p class="text-sm">
+                        {{ vehicle.data.odometerData.lifeTimeTracked }}
+                        <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Avatar>
+                        <AvatarImage
+                          v-if="vehicle.owner.image"
+                          :src="vehicle.owner.image"
+                          :alt="vehicle.owner.name ?? 'User'"
+                        />
+                        <AvatarFallback v-else class="rounded-lg">{{ getInitials(vehicle.owner.name) }}</AvatarFallback>
+                      </Avatar>
+                      {{ vehicle.owner.name || "Unknown User" }}
+                    </div>
+
+                    <DropdownMenu v-if="canManagePool || vehicle.isCurrentUserOwner">
+                      <DropdownMenuTrigger>
+                        <Icon name="dotsHorizontal" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem variant="destructive">
+                          <Icon name="logout" /> Remove Vehicle
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </li>
+                </ul>
+                <ScrollBar orientation="horizontal" class="" />
+                <ScrollBar orientation="vertical" class="" />
+              </ScrollArea>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </Transition>
   </div>
 </template>
