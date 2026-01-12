@@ -2,6 +2,7 @@ import { ref, watch, type Ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { toast } from "vue-sonner";
 import type { Note, NoteSchemaType } from "@repo/validation";
+import { isHtmlEmpty } from "@/lib/utils/html";
 
 interface AutoSaveOptions {
   noteId: Ref<Note["id"]>;
@@ -30,7 +31,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
   // Check if note has minimum required content
   function hasMinimumContent(note: NoteSchemaType): boolean {
     const hasTitle = !!(note.title && note.title.trim().length > 0);
-    const hasContent = !!(note.content && note.content.trim().length > 0);
+    const hasContent = !isHtmlEmpty(note.content);
     return hasTitle || hasContent;
   }
 
