@@ -70,7 +70,6 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                   </div>
                 </div>
                 <p class="text-muted-foreground ml-auto text-sm">{{ useTimeAgo(new Date(activity.data.date)) }}</p>
-                <Button variant="outline" size="icon"> <Icon name="dotsHorizontal" /> </Button>
               </div>
 
               <!-- Maintenance activity -->
@@ -95,8 +94,6 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                 </div>
 
                 <p class="text-muted-foreground ml-auto text-sm">{{ useTimeAgo(new Date(activity.data.date)) }}</p>
-
-                <Button variant="outline" size="icon"> <Icon name="dotsHorizontal" /> </Button>
               </div>
             </div>
 
