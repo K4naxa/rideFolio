@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.2.0
+ * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.2.0",
+  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
 }
 
 /**
@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  QuickLink: 'QuickLink',
   VehicleType: 'VehicleType',
   VehiclePartLocation: 'VehiclePartLocation',
   VehiclePart: 'VehiclePart',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "vehicleType" | "vehiclePartLocation" | "vehiclePart" | "vehicle" | "maintenance" | "maintenanceType" | "maintenanceCategory" | "maintenancePart" | "todo" | "note" | "shoppingListItem" | "pool" | "poolMember" | "poolVehicle" | "poolInvite" | "refill" | "vehicleMonthlyStatistics" | "notification" | "account" | "verification" | "session"
+    modelProps: "user" | "quickLink" | "vehicleType" | "vehiclePartLocation" | "vehiclePart" | "vehicle" | "maintenance" | "maintenanceType" | "maintenanceCategory" | "maintenancePart" | "todo" | "note" | "shoppingListItem" | "pool" | "poolMember" | "poolVehicle" | "poolInvite" | "refill" | "vehicleMonthlyStatistics" | "notification" | "account" | "verification" | "session"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -496,6 +497,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    QuickLink: {
+      payload: Prisma.$QuickLinkPayload<ExtArgs>
+      fields: Prisma.QuickLinkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.QuickLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.QuickLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        findFirst: {
+          args: Prisma.QuickLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.QuickLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        findMany: {
+          args: Prisma.QuickLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>[]
+        }
+        create: {
+          args: Prisma.QuickLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        createMany: {
+          args: Prisma.QuickLinkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.QuickLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>[]
+        }
+        delete: {
+          args: Prisma.QuickLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        update: {
+          args: Prisma.QuickLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        deleteMany: {
+          args: Prisma.QuickLinkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.QuickLinkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.QuickLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>[]
+        }
+        upsert: {
+          args: Prisma.QuickLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$QuickLinkPayload>
+        }
+        aggregate: {
+          args: Prisma.QuickLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateQuickLink>
+        }
+        groupBy: {
+          args: Prisma.QuickLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QuickLinkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.QuickLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.QuickLinkCountAggregateOutputType> | number
         }
       }
     }
@@ -2109,6 +2184,19 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const QuickLinkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  url: 'url',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QuickLinkScalarFieldEnum = (typeof QuickLinkScalarFieldEnum)[keyof typeof QuickLinkScalarFieldEnum]
+
+
 export const VehicleTypeScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -2805,6 +2893,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  quickLink?: Prisma.QuickLinkOmit
   vehicleType?: Prisma.VehicleTypeOmit
   vehiclePartLocation?: Prisma.VehiclePartLocationOmit
   vehiclePart?: Prisma.VehiclePartOmit

@@ -107,11 +107,7 @@ const handleNewClick = () => {
             <div class="flex items-center justify-between gap-1">
               <span class="truncate font-medium">{{ note.title }}</span>
 
-              <Icon
-                name="pin"
-                v-if="note.pinned"
-                className="size-4 text-primary stroke-primary hover:text-primary hover:stroke-primary transition-colors"
-              />
+              <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
             </div>
             <div class="text-muted-foreground mt-1 line-clamp-6 text-sm lg:line-clamp-3">
               {{ getTextSnippet(String(note.content), 80) }}

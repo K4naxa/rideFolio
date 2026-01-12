@@ -10,7 +10,7 @@ defineOptions({
 
 interface InputProps {
   initialValue?: string | number | null;
-  type: "text" | "email" | "password" | "number" | "date" | "search";
+  type: "text" | "email" | "password" | "number" | "date" | "search" | "url";
   name?: string;
   validator?: string;
   label?: string;

@@ -4,9 +4,13 @@ import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import { watch, type HTMLAttributes } from "vue";
+import { computed, watch, type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
+import { CharacterCount } from "@tiptap/extension-character-count";
 import EditorMenuBar from "./EditorMenuBar.vue";
+import Icon from "@/components/icons/Icon.vue";
+
+const CHARACTER_LIMIT = 5000;
 
 const emit = defineEmits<{
   (e: "update:value", value: string): void;
@@ -51,9 +55,13 @@ const editor = useEditor({
       emptyEditorClass:
         "flex-1 cursor-text before:content-[attr(data-placeholder)] before:absolute before:top-0 before:left-0 before:text-mauve-11 before:opacity-50",
     }),
+    CharacterCount.configure({
+      limit: CHARACTER_LIMIT,
+    }),
   ],
   content: props.value || "",
   editable: props.editable || true,
+
   onUpdate: ({ editor }) => {
     emit("update:value", editor.getHTML());
   },
@@ -62,6 +70,13 @@ const editor = useEditor({
       class: "flex-1",
     },
   },
+});
+
+const characterCount = computed(() => {
+  return editor.value?.storage.characterCount.characters() ?? 0;
+});
+const characterCountIsAtLimit = computed(() => {
+  return characterCount.value >= CHARACTER_LIMIT;
 });
 
 // Watch for external value changes and update editor content
@@ -79,13 +94,34 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 min-h-0 min-w-0">
+  <div class="flex min-h-0 min-w-0 flex-1 flex-col">
     <EditorMenuBar v-if="editor" :editor="editor" />
-    <div :class="twMerge('flex flex-col min-h-0 flex-1 overflow-y-auto scrollbar', props.class)">
+
+    <!-- Character limit error message -->
+    <div
+      class="flex items-center gap-2 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-400"
+      v-if="characterCountIsAtLimit"
+    >
+      <Icon name="alert" class="stroke-destructive" />
+      <span>
+        <strong>Character limit reached!</strong> You've used all {{ CHARACTER_LIMIT.toLocaleString() }} characters.
+      </span>
+    </div>
+
+    <div
+      :class="
+        twMerge(
+          'scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto px-1',
+          characterCountIsAtLimit ? 'border-destructive rounded border' : '',
+          props.class,
+        )
+      "
+    >
+      <!-- Free slot inside the editor container ( used for title ) -->
       <slot />
 
-      <editor-content :editor="editor" class="flex-1 flex" />
-      <span v-if="error" class="text-sm text-destructive mt-2">{{ error }}</span>
+      <editor-content :editor="editor" class="flex flex-1" />
+      <span v-if="error" class="text-destructive mt-2 text-sm">{{ error }}</span>
     </div>
   </div>
 </template>

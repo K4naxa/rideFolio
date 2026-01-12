@@ -6,7 +6,7 @@ export const NoteSchema = z
     title: z.string().max(100, "100 character limit passed").optional().nullable(),
     content: z
       .string()
-      .max(5000, "5000 character limit passed")
+      .max(25000, "25000 character limit passed")
       .transform((val) => (val === "" ? null : val))
       .optional()
       .nullable(),

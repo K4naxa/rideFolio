@@ -17,3 +17,17 @@ export function getInitials(name?: string | null) {
   const initials = names.map((n) => n[0]).join("");
   return initials.toUpperCase().slice(0, 2);
 }
+
+export function getFaviconUrl(url: string) {
+  try {
+    const { hostname } = new URL(url);
+    return `https://www.google.com/s2/favicons?domain=${hostname}`;
+  } catch {
+    return "";
+  }
+}
+
+// DEVELOPMENT UTILITY ONLY
+export async function addNetworkDelay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

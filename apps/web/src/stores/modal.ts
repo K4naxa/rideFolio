@@ -11,7 +11,8 @@ export type ModalType =
   | "createTodo"
   | "alert"
   | "userSettings"
-  | "pool";
+  | "pool"
+  | "quicklink";
 
 export const useModalStore = defineStore("modal", () => {
   const type = ref<ModalType | null>(null);

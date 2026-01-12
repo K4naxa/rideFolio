@@ -246,7 +246,6 @@ export type NotificationOrderByWithRelationInput = {
 
 export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  type_userId_metadata?: Prisma.NotificationTypeUserIdMetadataCompoundUniqueInput
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
@@ -261,7 +260,7 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Notification"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "type_userId_metadata">
+}, "id">
 
 export type NotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -402,12 +401,6 @@ export type NotificationListRelationFilter = {
 
 export type NotificationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type NotificationTypeUserIdMetadataCompoundUniqueInput = {
-  type: $Enums.NotificationType
-  userId: string
-  metadata: runtime.InputJsonValue
 }
 
 export type NotificationCountOrderByAggregateInput = {

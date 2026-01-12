@@ -134,8 +134,26 @@ model User {
   completedTodos Todo[] @relation("CompletedBy")
   notes Note[] @relation("CreatedBy")
   shoppingListItems ShoppingListItem[] @relation("ShoppingListCreatedBy")
+  quickLinks QuickLink[]
 }
 
+model QuickLink {
+  id String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name String
+  url  String
+  description String? @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+
+//  VEHICLE PARTS AND LOCATIONS
 model VehicleType {
   id String @id @default(cuid())
   code String @unique
@@ -151,9 +169,8 @@ model VehicleType {
   vehicles Vehicle[]
   @@index([code])
   @@index([isActive])
-}
+ }
 
-//  VEHICLE PARTS AND LOCATIONS
 model VehiclePartLocation {
   id String @id @default(cuid())
   code String

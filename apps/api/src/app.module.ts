@@ -17,6 +17,8 @@ import { createAuth } from './auth/auth'; // Your Better Auth instance
 import { APP_GUARD } from '@nestjs/core';
 import { EmailService } from 'src/email/email.service';
 import { EmailModule } from 'src/email/email.module';
+import { QuicklinksController } from './quicklinks/quicklinks.controller';
+import { QuicklinksModule } from './quicklinks/quicklinks.module';
 
 @Module({
   imports: [
@@ -40,8 +42,9 @@ import { EmailModule } from 'src/email/email.module';
     NoteModule,
     ShoppingListModule,
     EmailModule,
+    QuicklinksModule,
   ],
-  controllers: [AppController, PoolsController, StatisticsController],
+  controllers: [AppController, PoolsController, StatisticsController, QuicklinksController],
   providers: [
     AppService,
     {

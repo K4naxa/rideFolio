@@ -24,7 +24,7 @@ const openCreateVehicleModal = () => {
           class="group bg-card hover:border-primary/50 focus-visible:ring-ring/50 flex aspect-4/3 h-24 cursor-pointer flex-col overflow-hidden rounded border transition-shadow duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] sm:h-28 md:h-36 lg:h-40 dark:bg-transparent"
         >
           <!-- Vehicle image / type icon -->
-          <div class="relative h-2/3 overflow-hidden rounded-t">
+          <div class="bg-muted relative h-3/4 overflow-hidden rounded-t-lg">
             <img
               v-if="vehicle.vehicleData.image"
               :src="vehicle.vehicleData.image"
@@ -33,9 +33,9 @@ const openCreateVehicleModal = () => {
               alt="Vehicle Image"
               class="grid scale-105 object-cover object-center transition-transform duration-250 ease-in-out group-hover:scale-100"
             />
-            <div v-else class="grid h-full place-items-center rounded-t">
-              <span class="text-muted-foreground"
-                ><VehicleTypeIcon
+            <div v-else class="grid h-full place-items-center rounded-t-lg">
+              <span class="text-muted-foreground">
+                <VehicleTypeIcon
                   :type="vehicle.vehicleData.type.code"
                   class="text-muted-foreground stroke-muted-foreground size-14"
                 />

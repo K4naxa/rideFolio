@@ -243,6 +243,7 @@ export type UserWhereInput = {
   completedTodos?: Prisma.TodoListRelationFilter
   notes?: Prisma.NoteListRelationFilter
   shoppingListItems?: Prisma.ShoppingListItemListRelationFilter
+  quickLinks?: Prisma.QuickLinkListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -270,6 +271,7 @@ export type UserOrderByWithRelationInput = {
   completedTodos?: Prisma.TodoOrderByRelationAggregateInput
   notes?: Prisma.NoteOrderByRelationAggregateInput
   shoppingListItems?: Prisma.ShoppingListItemOrderByRelationAggregateInput
+  quickLinks?: Prisma.QuickLinkOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -300,6 +302,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   completedTodos?: Prisma.TodoListRelationFilter
   notes?: Prisma.NoteListRelationFilter
   shoppingListItems?: Prisma.ShoppingListItemListRelationFilter
+  quickLinks?: Prisma.QuickLinkListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -361,6 +364,7 @@ export type UserCreateInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -388,6 +392,7 @@ export type UserUncheckedCreateInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -415,6 +420,7 @@ export type UserUpdateInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -442,6 +448,7 @@ export type UserUncheckedUpdateInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -564,6 +571,20 @@ export type EnumDistanceConsumptionTypesFieldUpdateOperationsInput = {
 
 export type EnumTimeConsumptionTypesFieldUpdateOperationsInput = {
   set?: $Enums.TimeConsumptionTypes
+}
+
+export type UserCreateNestedOneWithoutQuickLinksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuickLinksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutQuickLinksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuickLinksInput
+  upsert?: Prisma.UserUpsertWithoutQuickLinksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutQuickLinksInput, Prisma.UserUpdateWithoutQuickLinksInput>, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
 }
 
 export type UserCreateNestedOneWithoutOwnedVehiclesInput = {
@@ -760,6 +781,130 @@ export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
+export type UserCreateWithoutQuickLinksInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  volumeUnit?: $Enums.VolumeUnitTypes
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
+  currency?: string
+  poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
+  ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
+  createdRefills?: Prisma.RefillCreateNestedManyWithoutUserInput
+  createdMaintenances?: Prisma.MaintenanceCreateNestedManyWithoutUserInput
+  sentPoolInvites?: Prisma.PoolInviteCreateNestedManyWithoutSenderInput
+  receivedPoolInvites?: Prisma.PoolInviteCreateNestedManyWithoutReceiverInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  createdTodos?: Prisma.TodoCreateNestedManyWithoutCreatedByInput
+  completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
+  notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
+  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutQuickLinksInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  volumeUnit?: $Enums.VolumeUnitTypes
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
+  currency?: string
+  poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
+  createdRefills?: Prisma.RefillUncheckedCreateNestedManyWithoutUserInput
+  createdMaintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutUserInput
+  sentPoolInvites?: Prisma.PoolInviteUncheckedCreateNestedManyWithoutSenderInput
+  receivedPoolInvites?: Prisma.PoolInviteUncheckedCreateNestedManyWithoutReceiverInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  createdTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCreatedByInput
+  completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutQuickLinksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
+}
+
+export type UserUpsertWithoutQuickLinksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutQuickLinksInput, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutQuickLinksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutQuickLinksInput, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
+}
+
+export type UserUpdateWithoutQuickLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
+  ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
+  createdRefills?: Prisma.RefillUpdateManyWithoutUserNestedInput
+  createdMaintenances?: Prisma.MaintenanceUpdateManyWithoutUserNestedInput
+  sentPoolInvites?: Prisma.PoolInviteUpdateManyWithoutSenderNestedInput
+  receivedPoolInvites?: Prisma.PoolInviteUpdateManyWithoutReceiverNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  createdTodos?: Prisma.TodoUpdateManyWithoutCreatedByNestedInput
+  completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutQuickLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
+  createdRefills?: Prisma.RefillUncheckedUpdateManyWithoutUserNestedInput
+  createdMaintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutUserNestedInput
+  sentPoolInvites?: Prisma.PoolInviteUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPoolInvites?: Prisma.PoolInviteUncheckedUpdateManyWithoutReceiverNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  createdTodos?: Prisma.TodoUncheckedUpdateManyWithoutCreatedByNestedInput
+  completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
 export type UserCreateWithoutOwnedVehiclesInput = {
   id?: string
   name: string
@@ -784,6 +929,7 @@ export type UserCreateWithoutOwnedVehiclesInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
@@ -810,6 +956,7 @@ export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedVehiclesInput = {
@@ -852,6 +999,7 @@ export type UserUpdateWithoutOwnedVehiclesInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
@@ -878,6 +1026,7 @@ export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedMaintenancesInput = {
@@ -904,6 +1053,7 @@ export type UserCreateWithoutCreatedMaintenancesInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
@@ -930,6 +1080,7 @@ export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedMaintenancesInput = {
@@ -972,6 +1123,7 @@ export type UserUpdateWithoutCreatedMaintenancesInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
@@ -998,6 +1150,7 @@ export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTodosInput = {
@@ -1024,6 +1177,7 @@ export type UserCreateWithoutCreatedTodosInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTodosInput = {
@@ -1050,6 +1204,7 @@ export type UserUncheckedCreateWithoutCreatedTodosInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTodosInput = {
@@ -1081,6 +1236,7 @@ export type UserCreateWithoutCompletedTodosInput = {
   createdTodos?: Prisma.TodoCreateNestedManyWithoutCreatedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCompletedTodosInput = {
@@ -1107,6 +1263,7 @@ export type UserUncheckedCreateWithoutCompletedTodosInput = {
   createdTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCreatedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCompletedTodosInput = {
@@ -1149,6 +1306,7 @@ export type UserUpdateWithoutCreatedTodosInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTodosInput = {
@@ -1175,6 +1333,7 @@ export type UserUncheckedUpdateWithoutCreatedTodosInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutCompletedTodosInput = {
@@ -1212,6 +1371,7 @@ export type UserUpdateWithoutCompletedTodosInput = {
   createdTodos?: Prisma.TodoUpdateManyWithoutCreatedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompletedTodosInput = {
@@ -1238,6 +1398,7 @@ export type UserUncheckedUpdateWithoutCompletedTodosInput = {
   createdTodos?: Prisma.TodoUncheckedUpdateManyWithoutCreatedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotesInput = {
@@ -1264,6 +1425,7 @@ export type UserCreateWithoutNotesInput = {
   createdTodos?: Prisma.TodoCreateNestedManyWithoutCreatedByInput
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotesInput = {
@@ -1290,6 +1452,7 @@ export type UserUncheckedCreateWithoutNotesInput = {
   createdTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCreatedByInput
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotesInput = {
@@ -1332,6 +1495,7 @@ export type UserUpdateWithoutNotesInput = {
   createdTodos?: Prisma.TodoUpdateManyWithoutCreatedByNestedInput
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotesInput = {
@@ -1358,6 +1522,7 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   createdTodos?: Prisma.TodoUncheckedUpdateManyWithoutCreatedByNestedInput
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutShoppingListItemsInput = {
@@ -1384,6 +1549,7 @@ export type UserCreateWithoutShoppingListItemsInput = {
   createdTodos?: Prisma.TodoCreateNestedManyWithoutCreatedByInput
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutShoppingListItemsInput = {
@@ -1410,6 +1576,7 @@ export type UserUncheckedCreateWithoutShoppingListItemsInput = {
   createdTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCreatedByInput
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutShoppingListItemsInput = {
@@ -1452,6 +1619,7 @@ export type UserUpdateWithoutShoppingListItemsInput = {
   createdTodos?: Prisma.TodoUpdateManyWithoutCreatedByNestedInput
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
@@ -1478,6 +1646,7 @@ export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
   createdTodos?: Prisma.TodoUncheckedUpdateManyWithoutCreatedByNestedInput
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPoolMembershipsInput = {
@@ -1504,6 +1673,7 @@ export type UserCreateWithoutPoolMembershipsInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPoolMembershipsInput = {
@@ -1530,6 +1700,7 @@ export type UserUncheckedCreateWithoutPoolMembershipsInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPoolMembershipsInput = {
@@ -1572,6 +1743,7 @@ export type UserUpdateWithoutPoolMembershipsInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
@@ -1598,6 +1770,7 @@ export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSentPoolInvitesInput = {
@@ -1624,6 +1797,7 @@ export type UserCreateWithoutSentPoolInvitesInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
@@ -1650,6 +1824,7 @@ export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSentPoolInvitesInput = {
@@ -1681,6 +1856,7 @@ export type UserCreateWithoutReceivedPoolInvitesInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
@@ -1707,6 +1883,7 @@ export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReceivedPoolInvitesInput = {
@@ -1749,6 +1926,7 @@ export type UserUpdateWithoutSentPoolInvitesInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
@@ -1775,6 +1953,7 @@ export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReceivedPoolInvitesInput = {
@@ -1812,6 +1991,7 @@ export type UserUpdateWithoutReceivedPoolInvitesInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
@@ -1838,6 +2018,7 @@ export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedRefillsInput = {
@@ -1864,6 +2045,7 @@ export type UserCreateWithoutCreatedRefillsInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedRefillsInput = {
@@ -1890,6 +2072,7 @@ export type UserUncheckedCreateWithoutCreatedRefillsInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedRefillsInput = {
@@ -1932,6 +2115,7 @@ export type UserUpdateWithoutCreatedRefillsInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
@@ -1958,6 +2142,7 @@ export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1984,6 +2169,7 @@ export type UserCreateWithoutNotificationsInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2010,6 +2196,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2052,6 +2239,7 @@ export type UserUpdateWithoutNotificationsInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2078,6 +2266,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -2104,6 +2293,7 @@ export type UserCreateWithoutAccountsInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -2130,6 +2320,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -2172,6 +2363,7 @@ export type UserUpdateWithoutAccountsInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -2198,6 +2390,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -2224,6 +2417,7 @@ export type UserCreateWithoutSessionsInput = {
   completedTodos?: Prisma.TodoCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -2250,6 +2444,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   completedTodos?: Prisma.TodoUncheckedCreateNestedManyWithoutCompletedByInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutCreatedByUserInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutCreatedByInput
+  quickLinks?: Prisma.QuickLinkUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -2292,6 +2487,7 @@ export type UserUpdateWithoutSessionsInput = {
   completedTodos?: Prisma.TodoUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -2318,6 +2514,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   completedTodos?: Prisma.TodoUncheckedUpdateManyWithoutCompletedByNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutCreatedByUserNestedInput
   shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  quickLinks?: Prisma.QuickLinkUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -2339,6 +2536,7 @@ export type UserCountOutputType = {
   completedTodos: number
   notes: number
   shoppingListItems: number
+  quickLinks: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2355,6 +2553,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   completedTodos?: boolean | UserCountOutputTypeCountCompletedTodosArgs
   notes?: boolean | UserCountOutputTypeCountNotesArgs
   shoppingListItems?: boolean | UserCountOutputTypeCountShoppingListItemsArgs
+  quickLinks?: boolean | UserCountOutputTypeCountQuickLinksArgs
 }
 
 /**
@@ -2458,6 +2657,13 @@ export type UserCountOutputTypeCountShoppingListItemsArgs<ExtArgs extends runtim
   where?: Prisma.ShoppingListItemWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountQuickLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuickLinkWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2484,6 +2690,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   completedTodos?: boolean | Prisma.User$completedTodosArgs<ExtArgs>
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   shoppingListItems?: boolean | Prisma.User$shoppingListItemsArgs<ExtArgs>
+  quickLinks?: boolean | Prisma.User$quickLinksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2544,6 +2751,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   completedTodos?: boolean | Prisma.User$completedTodosArgs<ExtArgs>
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   shoppingListItems?: boolean | Prisma.User$shoppingListItemsArgs<ExtArgs>
+  quickLinks?: boolean | Prisma.User$quickLinksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2565,6 +2773,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     completedTodos: Prisma.$TodoPayload<ExtArgs>[]
     notes: Prisma.$NotePayload<ExtArgs>[]
     shoppingListItems: Prisma.$ShoppingListItemPayload<ExtArgs>[]
+    quickLinks: Prisma.$QuickLinkPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2985,6 +3194,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   completedTodos<T extends Prisma.User$completedTodosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedTodosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TodoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notes<T extends Prisma.User$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shoppingListItems<T extends Prisma.User$shoppingListItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shoppingListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShoppingListItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  quickLinks<T extends Prisma.User$quickLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quickLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuickLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3722,6 +3932,30 @@ export type User$shoppingListItemsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ShoppingListItemScalarFieldEnum | Prisma.ShoppingListItemScalarFieldEnum[]
+}
+
+/**
+ * User.quickLinks
+ */
+export type User$quickLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QuickLink
+   */
+  select?: Prisma.QuickLinkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QuickLink
+   */
+  omit?: Prisma.QuickLinkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuickLinkInclude<ExtArgs> | null
+  where?: Prisma.QuickLinkWhereInput
+  orderBy?: Prisma.QuickLinkOrderByWithRelationInput | Prisma.QuickLinkOrderByWithRelationInput[]
+  cursor?: Prisma.QuickLinkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuickLinkScalarFieldEnum | Prisma.QuickLinkScalarFieldEnum[]
 }
 
 /**

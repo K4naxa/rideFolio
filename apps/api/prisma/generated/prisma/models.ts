@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/QuickLink'
 export type * from './models/VehicleType'
 export type * from './models/VehiclePartLocation'
 export type * from './models/VehiclePart'

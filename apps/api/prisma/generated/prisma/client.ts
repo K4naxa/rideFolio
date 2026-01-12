@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model QuickLink
+ * 
+ */
+export type QuickLink = Prisma.QuickLinkModel
+/**
  * Model VehicleType
  * 
  */
