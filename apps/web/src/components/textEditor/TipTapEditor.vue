@@ -10,7 +10,7 @@ import { CharacterCount } from "@tiptap/extension-character-count";
 import EditorMenuBar from "./EditorMenuBar.vue";
 import Icon from "@/components/icons/Icon.vue";
 
-const CHARACTER_LIMIT = 5000;
+const CHARACTER_LIMIT = 25000;
 
 const emit = defineEmits<{
   (e: "update:value", value: string): void;

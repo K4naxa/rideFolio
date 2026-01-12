@@ -52,12 +52,9 @@ const editorState = computed(() => {
     isBulletList: props.editor.isActive("bulletList"),
     isOrderedList: props.editor.isActive("orderedList"),
     textAlign:
-      (["left", "center", "right", "justify"] as const).find((align) =>
-        props.editor?.isActive({ textAlign: align }),
-      ) || "left",
-    headingLevel: ([1, 2, 3] as const).find((level) =>
-      props.editor?.isActive("heading", { level }),
-    ),
+      (["left", "center", "right", "justify"] as const).find((align) => props.editor?.isActive({ textAlign: align })) ||
+      "left",
+    headingLevel: ([1, 2, 3] as const).find((level) => props.editor?.isActive("heading", { level })),
     paragraph: props.editor.isActive("paragraph"),
   };
 });
@@ -125,8 +122,7 @@ const menuOptions = computed<MenuOptions[]>(() => {
       icon: Highlighter,
       level: 0,
       label: "Highlight",
-      onClick: () =>
-        props.editor?.chain().focus().toggleHighlight({ color: "var(--color-primary)" }).run(),
+      onClick: () => props.editor?.chain().focus().toggleHighlight({ color: "var(--color-primary)" }).run(),
       isActive: editorState.value.isHighlight,
     },
     {
@@ -178,21 +174,18 @@ const menuOptions = computed<MenuOptions[]>(() => {
   <div
     v-if="props.editor"
     :class="
-      twMerge(
-        'border rounded p-1 mb-1 flex items-center gap-2 bg-background overflow-x-auto scrollbar',
-        props.class,
-      )
+      twMerge('bg-background scrollbar mb-1 flex items-center gap-2 overflow-x-auto rounded border p-1', props.class)
     "
   >
     <Toggle
       v-for="(option, index) in menuOptions"
-      :key="index"
-      :pressed="option.isActive"
+      v-model="option.isActive"
       @mousedown.prevent="option.onClick"
       :aria-label="option.label"
       size="sm"
       type="button"
-      ><component :is="option.icon"
-    /></Toggle>
+    >
+      <component :is="option.icon" />
+    </Toggle>
   </div>
 </template>

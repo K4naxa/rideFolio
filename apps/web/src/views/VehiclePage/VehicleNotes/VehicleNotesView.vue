@@ -65,7 +65,7 @@ const handleNewClick = () => {
 <template>
   <div class="flex flex-1 gap-8 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)]">
     <!-- left side -->
-    <div class="flex w-full min-w-0 flex-col gap-8 lg:max-w-96 lg:border-r">
+    <div class="flex w-full min-w-60 flex-col gap-8 lg:max-w-96 lg:border-r">
       <!-- controls -->
       <div class="flex flex-col gap-4 lg:pr-8">
         <Input
