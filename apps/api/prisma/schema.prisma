@@ -373,7 +373,9 @@ model Todo {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  completedAt DateTime?
+  completedAt_date DateTime?
+  completedAt_km Float?
+  completedAt_hour Float?
   createdById String?
   completedById String?
   createdBy User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)

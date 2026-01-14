@@ -262,7 +262,9 @@ export const TodoScalarFieldEnum = {
   dueOdometer_hour: 'dueOdometer_hour',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  completedAt: 'completedAt',
+  completedAt_date: 'completedAt_date',
+  completedAt_km: 'completedAt_km',
+  completedAt_hour: 'completedAt_hour',
   createdById: 'createdById',
   completedById: 'completedById'
 } as const

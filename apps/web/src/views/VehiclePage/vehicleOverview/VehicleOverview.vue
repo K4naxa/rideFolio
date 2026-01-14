@@ -30,7 +30,7 @@ import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
 import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
 
 const { currentVehicleId } = useCurrentVehicle();
-const { data: todos } = useVehicleTodos(currentVehicleId);
+const { data: todos, isLoading, isError } = useVehicleTodos(currentVehicleId);
 const activeTab = ref<"todos" | "shoppinglist">("todos");
 const pendingTodosCount = computed(() => {
   return todos.value?.filter((todo) => !todo.isCompleted).length || 0;
@@ -89,7 +89,7 @@ const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
         </div>
         <TabsContent value="todos">
           <div class="flex max-h-92 min-h-0 rounded border">
-            <TodoTable size="sm" />
+            <TodoTable :todos="todos" :isLoading="isLoading" :isError="isError" size="sm" />
           </div>
         </TabsContent>
         <TabsContent value="shoppinglist">
@@ -107,7 +107,7 @@ const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
             <CardDescription> Overview of your vehicles todos </CardDescription>
           </CardHeader>
           <CardContent class="flex min-h-0 p-0">
-            <TodoTable class="flex-1" size="sm" />
+            <TodoTable :todos="todos" :isLoading="isLoading" :isError="isError" class="flex-1" size="sm" />
           </CardContent>
         </Card>
         <Card class="flex h-100 w-full flex-col">

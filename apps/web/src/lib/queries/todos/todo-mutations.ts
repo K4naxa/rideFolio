@@ -17,6 +17,11 @@ export function useTodoCreate() {
         if (!old) return [newTodo];
         return [newTodo, ...old];
       });
+      // update all todos cache
+      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+        if (!old) return [newTodo];
+        return [newTodo, ...old];
+      });
     },
     onError: (error) => {
       console.error("Todo API: Creation Error  ", error);
@@ -35,6 +40,11 @@ export function useTodoUpdate() {
     onSuccess: (updatedTodo) => {
       // update vehicle todos cache
       queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(updatedTodo.vehicleData.id), (old) => {
+        if (!old) return old;
+        return old.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
+      });
+      // update all todos cache
+      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
         if (!old) return old;
         return old.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
       });
@@ -59,6 +69,11 @@ export function useTodoToggle() {
         if (!old) return old;
         return old.map((todo) => (todo.id === data.id ? data : todo));
       });
+      // update all todos cache
+      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+        if (!old) return old;
+        return old.map((todo) => (todo.id === data.id ? data : todo));
+      });
     },
     onError: (error) => {
       console.error("Todo API: Toggle Error  ", error);
@@ -76,6 +91,10 @@ export function useTodoDelete() {
     },
     onSuccess: (_, variables) => {
       queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(variables.vehicleId), (old) => {
+        if (!old) return old;
+        return old.filter((todo) => todo.id !== variables.todoId);
+      });
+      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
         if (!old) return old;
         return old.filter((todo) => todo.id !== variables.todoId);
       });

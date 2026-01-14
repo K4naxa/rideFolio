@@ -5,6 +5,7 @@ export const useTodoSettingsStore = defineStore("todoSettings", {
     showCompleted: false,
     showPriority: false,
     showDueInfo: false,
+    showCompletedInfo: false,
   }),
 
   actions: {
@@ -19,7 +20,9 @@ export const useTodoSettingsStore = defineStore("todoSettings", {
     toggleDueInfo() {
       this.showDueInfo = !this.showDueInfo;
     },
-
+    toggleCompletedInfo() {
+      this.showCompletedInfo = !this.showCompletedInfo;
+    },
     // Or a more flexible approach:
     setSetting(key: keyof typeof this.$state, value: boolean) {
       this[key] = value;

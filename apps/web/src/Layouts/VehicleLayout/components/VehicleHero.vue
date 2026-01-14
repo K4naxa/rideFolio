@@ -17,10 +17,10 @@ import Icon from "@/components/icons/Icon.vue";
 import { useModalStore } from "@/stores/modal";
 import type { AlertModalData } from "@/modals/alertModal.vue";
 import { useRouter } from "vue-router";
-import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
 import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries";
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 
 const router = useRouter();
 const modalStore = useModalStore();
@@ -58,19 +58,11 @@ const statsOpen = ref(false);
   <div class="flex w-full flex-col gap-4 px-4 lg:flex-row lg:px-8" data-cy="vehicle-hero">
     <!-- Vehicle image & placeholder -->
     <div class="flex aspect-video h-52 w-full shrink-0 justify-center lg:w-auto">
-      <img
-        v-if="currentVehicle?.vehicleData.image"
-        :src="currentVehicle.vehicleData.image"
-        class="h-full rounded"
-        alt="Vehicle Image"
+      <VehicleAvatar
+        :src="currentVehicle?.vehicleData.image"
+        :type="currentVehicle?.vehicleData.type.code"
+        class="h-full w-full max-w-sm rounded-lg lg:max-w-none"
       />
-      <div v-else class="bg-muted/40 grid h-full w-full place-items-center rounded border">
-        <VehicleTypeIcon
-          v-if="currentVehicle && currentVehicle.vehicleData.type.code"
-          :type="currentVehicle?.vehicleData.type.code"
-          class="stroke-muted-foreground size-16 rounded"
-        />
-      </div>
     </div>
 
     <div>

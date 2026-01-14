@@ -23,9 +23,12 @@ export type Todo = {
     date: Date;
   };
   completedData: {
-    name: string;
-    image: string | null;
-    date: Date;
+    user: {
+      name: string;
+      image: string | null;
+    };
+    odometer: TConversionResult;
+    date: Date | null;
   } | null;
 };
 

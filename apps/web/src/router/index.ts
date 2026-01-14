@@ -1,22 +1,14 @@
 import AuthLayout from "@/Layouts/AuthLayout/AuthLayout.vue";
-import ProfileLayout from "@/Layouts/ProfileLayout.vue";
 import VehicleLayout from "@/Layouts/VehicleLayout/VehicleLayout.vue";
 import { authClient } from "@/lib/authClient";
 import DashboardView from "@/views/Dashboard/DashboardView.vue";
 import LoginView from "@/views/Login-Register/LoginView.vue";
-import ProfileView from "@/views/Profile/ProfileView.vue";
-import SecurityView from "@/views/Profile/SecurityView.vue";
-import SessionsView from "@/views/Profile/SessionsView.vue";
 import RegisterView from "@/views/Login-Register/RegisterView.vue";
 import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
 import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
 import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
 import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import DangerView from "@/views/Profile/DangerView.vue";
-import VerifyEmailView from "@/views/Login-Register/verifyEmailView.vue";
-import NotFoundView from "@/views/NotFoundView.vue";
-import PoolView from "@/views/Pool/PoolView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +29,7 @@ const router = createRouter({
     {
       path: "/verify-email",
       name: "verify-email",
-      component: VerifyEmailView,
+      component: () => import("@/views/Login-Register/verifyEmailView.vue"),
       meta: { guestOnly: true },
     },
     {
@@ -59,34 +51,40 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: "/todos",
+          name: "todos",
+          component: () => import("@/views/Todos/TodosView.vue"),
+          meta: { requiresAuth: true },
+        },
+        {
           path: "/profile",
           name: "profile layout",
-          component: ProfileLayout,
+          component: () => import("@/Layouts/ProfileLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
               path: "",
               name: "profile",
               meta: { requiresAuth: true },
-              component: ProfileView,
+              component: () => import("@/views/Profile/ProfileView.vue"),
             },
             {
               path: "security",
               name: "profile-security",
               meta: { requiresAuth: true },
-              component: SecurityView,
+              component: () => import("@/views/Profile/SecurityView.vue"),
             },
             {
               path: "sessions",
               name: "profile-sessions",
               meta: { requiresAuth: true },
-              component: SessionsView,
+              component: () => import("@/views/Profile/SessionsView.vue"),
             },
             {
               path: "danger",
               name: "profile-danger",
               meta: { requiresAuth: true },
-              component: DangerView,
+              component: () => import("@/views/Profile/DangerView.vue"),
             },
           ],
         },
@@ -131,7 +129,7 @@ const router = createRouter({
               path: ":poolId",
               name: "pool-view",
               meta: { requiresAuth: true },
-              component: PoolView,
+              component: () => import("@/views/Pool/PoolView.vue"),
             },
           ],
         },
@@ -140,7 +138,7 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: "not-found",
-      component: NotFoundView,
+      component: () => import("@/views/NotFoundView.vue"),
     },
   ],
 });

@@ -1,4 +1,5 @@
 import { api, fetchApi } from "@/lib/api";
+import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 import type { Todo } from "@repo/validation";
@@ -12,5 +13,15 @@ export function useVehicleTodos(vehicleId: MaybeRef<string | undefined>) {
 
     staleTime: 1000 * 60 * 10,
     enabled: computed(() => !!unref(vehicleId)),
+  });
+}
+
+export function useTodosAll() {
+  const { isAuthenticated } = useAuth();
+  return useQuery({
+    queryKey: queryKeys.todos.all,
+    queryFn: async () => await fetchApi<Todo[]>(`/todos`),
+    staleTime: 1000 * 60 * 10,
+    enabled: computed(() => isAuthenticated.value),
   });
 }

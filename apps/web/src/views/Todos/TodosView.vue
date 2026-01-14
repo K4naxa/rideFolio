@@ -1,44 +1,39 @@
-<script setup lang="ts">
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import Icon from "@/components/icons/Icon.vue";
+import Button from "@/components/ui/button/Button.vue";
+import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
+import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
+import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
+import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
+import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import Input from "@/components/ui/input/Input.vue";
+import { useTodosAll } from "@/lib/queries/todos/todo-queries";
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
+import TodoTable from "@/views/VehiclePage/VehicleTodos/components/TodoTable.vue";
 import { storeToRefs } from "pinia";
-
-import Button from "@/components/ui/button/Button.vue";
-import Input from "@/components/ui/input/Input.vue";
-
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-
-import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
-import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
-
-import Icon from "@/components/icons/Icon.vue";
-import TodoTable from "./components/TodoTable.vue";
-import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
-import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-
-const settingsStore = useTodoSettingsStore();
-const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
-const { onOpen } = useModalStore();
+import { computed, ref } from "vue";
 
 const searchQuery = ref("");
 
-const { currentVehicleId } = useCurrentVehicle();
-const { data: todos, isLoading, isError } = useVehicleTodos(currentVehicleId);
+const { data: Todos, isLoading, isError } = useTodosAll();
 const filteredTodos = computed(() => {
-  if (!searchQuery.value) return todos.value;
-  return todos.value?.filter(
+  if (!searchQuery.value) return Todos.value;
+  return Todos.value?.filter(
     (todo) =>
       todo.title.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.description?.toLowerCase().includes(searchQuery.value!.toLowerCase()),
+      todo.description?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
+      todo.vehicleData.make?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
+      todo.vehicleData.model?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
+      todo.vehicleData.name?.toLowerCase().includes(searchQuery.value!.toLowerCase()),
   );
 });
+const settingsStore = useTodoSettingsStore();
+const { showCompleted, showDueInfo, showPriority, showCompletedInfo } = storeToRefs(settingsStore);
+const { onOpen } = useModalStore();
 </script>
-
 <template>
-  <div class="flex h-full flex-col">
+  <div class="flex h-full w-full flex-col p-4 lg:p-8">
     <header class="mb-6 flex flex-col content-center justify-between gap-3 sm:flex-row">
       <Input
         v-model="searchQuery"
@@ -58,7 +53,9 @@ const filteredTodos = computed(() => {
           <DropdownMenuContent class="w-52">
             <DropdownMenuCheckboxItem v-model:model-value="showPriority"> Show priority </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem v-model:model-value="showDueInfo"> Show due info </DropdownMenuCheckboxItem>
-
+            <DropdownMenuCheckboxItem v-model:model-value="showCompletedInfo">
+              Show completed info
+            </DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem v-model:model-value="showCompleted"> Show completed </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
@@ -71,7 +68,13 @@ const filteredTodos = computed(() => {
       </div>
     </header>
     <div class="flex rounded border">
-      <TodoTable :search-query="searchQuery" :todos="filteredTodos" :is-loading="isLoading" :is-error="isError" />
+      <TodoTable
+        :todos="filteredTodos"
+        :isLoading="isLoading"
+        :isError="isError"
+        :search-query="searchQuery"
+        show-vehicle
+      />
     </div>
   </div>
 </template>

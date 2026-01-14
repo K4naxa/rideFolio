@@ -17,21 +17,24 @@ import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
-import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
-import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
+
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
+import type { Todo } from "@repo/validation";
+import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 
-const { currentVehicleId } = useCurrentVehicle();
-const { data: todos, isLoading, error } = useVehicleTodos(currentVehicleId);
 const { mutate: toggleTodo } = useTodoToggle();
 const { mutate: deleteTodo } = useTodoDelete();
 interface TodoTableProps {
-  searchQuery?: string;
   size?: "sm" | "md";
   hideCompleted?: boolean;
+  searchQuery?: string;
+  todos: Todo[] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  showVehicle?: boolean;
 }
 const props = defineProps<TodoTableProps>();
 const { onOpen } = useModalStore();
@@ -54,28 +57,24 @@ const getPriorityConfig = (priority: string) => {
 
 // Dynamic grid template columns based on visible columns
 const settingsStore = useTodoSettingsStore();
-const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
+const { showCompleted, showDueInfo, showPriority, showCompletedInfo } = storeToRefs(settingsStore);
 const tableColumns = computed(() => {
   const cols = ["3rem"];
+
+  if (props.showVehicle) cols.push("6rem");
   if (showPriority.value) cols.push("4rem");
   cols.push("1fr");
   if (showDueInfo.value) cols.push("10rem");
+  // Completed date column
+  if (showCompletedInfo.value) cols.push("7rem");
   cols.push("3rem");
   return cols.join(" ");
 });
 
 const filteredTodos = computed(() => {
-  if (!todos.value) return [];
+  if (!props.todos) return [];
 
-  let filtered = [...todos.value];
-
-  // Apply search filter if query exists
-  const query = props.searchQuery?.toLowerCase().trim();
-  if (query) {
-    filtered = filtered.filter(
-      (todo) => todo.title.toLowerCase().includes(query) || todo.description?.toLowerCase().includes(query),
-    );
-  }
+  let filtered = [...props.todos];
 
   // Always apply completed filter based on showCompleted setting
   if (!showCompleted.value || props.hideCompleted) {
@@ -107,14 +106,16 @@ const formatDate = (dateString: string) => {
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
     <ScrollArea v-if="!isLoading && filteredTodos.length" class="h-full min-h-0 w-full min-w-0 flex-1" key="scrollArea">
       <div
-        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t border-b px-2 shadow-sm"
+        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t-lg border-b px-2 shadow-sm"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
         :style="{ gridTemplateColumns: tableColumns }"
       >
         <Label class="flex justify-center">State</Label>
+        <Label v-if="props.showVehicle">Vehicle</Label>
         <Label v-if="showPriority">Priority</Label>
         <Label class="max-w-96 min-w-60 md:max-w-none">Todo</Label>
         <Label v-if="showDueInfo">Due</Label>
+        <Label v-if="showCompletedInfo">Completed</Label>
         <Label></Label>
       </div>
 
@@ -125,7 +126,9 @@ const formatDate = (dateString: string) => {
           :key="todo.id"
           :class="[
             'listHover grid gap-x-3 px-2',
-            (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive border-l-2',
+            (todo.dueDate?.overdue || todo.dueOdometer?.overdue) &&
+              !todo.isCompleted &&
+              'border-l-destructive border-l-2',
             props.size ? (props.size === 'sm' ? 'py-2 text-sm' : 'py-4 text-base') : 'py-4',
           ]"
           :style="{ gridTemplateColumns: tableColumns }"
@@ -142,6 +145,13 @@ const formatDate = (dateString: string) => {
               "
               class="size-6"
             />
+          </div>
+
+          <div v-if="props.showVehicle" class="flex min-h-0 items-center gap-2">
+            <VehicleAvatar v-if="todo.vehicleData.image" :src="todo.vehicleData.image" :type="todo.vehicleData.type" />
+            <div v-else class="bg-muted grid h-full flex-1 place-content-center rounded border">
+              <Label class="text-muted-foreground">{{ todo.vehicleData.name }}</Label>
+            </div>
           </div>
 
           <!-- Priority Badge -->
@@ -167,12 +177,24 @@ const formatDate = (dateString: string) => {
 
           <!-- Due Info -->
           <div v-if="showDueInfo" class="flex flex-col justify-center gap-1 text-sm">
-            <div v-if="todo.dueOdometer" :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue }">
+            <div
+              v-if="todo.dueOdometer"
+              :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue && !todo.isCompleted }"
+            >
               {{ formatOdometer(todo.dueOdometer.value, todo.dueOdometer.unit) }}
             </div>
-            <div v-if="todo.dueDate" :class="{ 'text-destructive font-medium': todo.dueDate.overdue }">
+            <div
+              v-if="todo.dueDate"
+              :class="{ 'text-destructive font-medium': todo.dueDate.overdue && !todo.isCompleted }"
+            >
               {{ formatDate(String(todo.dueDate.date)) }}
             </div>
+          </div>
+          <div v-if="showCompletedInfo" class="text-muted-foreground flex flex-col justify-center gap-1 text-sm">
+            <p v-if="todo.completedData">{{ formatDate(String(todo.completedData?.date)) }}</p>
+            <p v-if="todo.completedData">
+              {{ formatOdometer(todo.completedData?.odometer.value, todo.completedData?.odometer.unit) }}
+            </p>
           </div>
 
           <!-- Actions (placeholder) -->
@@ -200,7 +222,7 @@ const formatDate = (dateString: string) => {
 
     <div v-else class="grid flex-1 place-content-center">
       <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
-      <p v-else-if="error" class="text-destructive">Error loading todos.</p>
+      <p v-else-if="isError" class="text-destructive">Error loading todos.</p>
       <Empty v-else-if="searchQuery">
         <EmptyHeader>
           <EmptyTitle class="text-foreground"> No todos found </EmptyTitle>
@@ -232,4 +254,3 @@ const formatDate = (dateString: string) => {
     </div>
   </div>
 </template>
-<style scoped></style>

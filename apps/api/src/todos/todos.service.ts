@@ -106,12 +106,39 @@ export class TodosService {
     }
 
     await this.authValidation.canCreateLogs(userSession.user.id, todo.vehicle.id);
+
+    // if toggling !complete
+    if (!complete) {
+      const updatedTodo = await this.prisma.todo.update({
+        where: { id: todoId },
+        data: {
+          isCompleted: complete,
+          completedById: null,
+          completedAt_date: null,
+          completedAt_km: null,
+          completedAt_hour: null,
+        },
+        include: this.getTodoInclude(),
+      });
+      return this.formatTodo(updatedTodo);
+    }
+
+    // We are completing the todo
+
+    // Vehicle odometer for completed data
+    const vehicleOdometer = await this.prisma.vehicle.findUnique({
+      where: { id: todo.vehicle.id },
+      select: { odometer_km: true, odometer_hour: true, odometerType: true },
+    });
+
     const updatedTodo = await this.prisma.todo.update({
       where: { id: todoId },
       data: {
-        isCompleted: complete,
-        completedById: complete ? userSession.user.id : null,
-        completedAt: complete ? new Date() : null,
+        isCompleted: true,
+        completedById: userSession.user.id,
+        completedAt_date: new Date(),
+        completedAt_km: vehicleOdometer?.odometerType === 'HOUR' ? null : vehicleOdometer?.odometer_km || 0,
+        completedAt_hour: vehicleOdometer?.odometerType === 'HOUR' ? vehicleOdometer?.odometer_hour || 0 : null,
       },
       include: this.getTodoInclude(),
     });
@@ -213,19 +240,21 @@ export class TodosService {
       date: createdAt,
     };
   }
-  private formatCompletedData(
-    isCompleted: boolean,
-    completedBy: Pick<User, 'name' | 'image'> | null,
-    completedAt: Date | null,
-  ): Todo['completedData'] {
-    if (!isCompleted || !completedBy || !completedAt) {
+  private formatCompletedData(todo: TodoWithRelations): Todo['completedData'] {
+    if (!todo.isCompleted) {
       return null;
     }
 
     return {
-      name: completedBy.name ?? '',
-      image: completedBy.image ?? null,
-      date: completedAt,
+      user: {
+        name: todo.completedBy?.name ?? 'Unknown User',
+        image: todo.completedBy?.image ?? null,
+      },
+      date: todo.completedAt_date,
+      odometer: this.unitConversion.getOdometerDataByType(
+        todo.vehicle.odometerType === 'HOUR' ? todo.completedAt_hour || 0 : todo.completedAt_km || 0,
+        todo.vehicle.odometerType,
+      ),
     };
   }
 
@@ -242,7 +271,7 @@ export class TodosService {
       dueDate: this.formatDueDate(todo.dueDate),
       dueOdometer: this.formatDueOdometer(todo, vehicle),
       createdData: this.formatCreatedData(todo.createdBy, todo.createdAt),
-      completedData: this.formatCompletedData(todo.isCompleted, todo.completedBy, todo.completedAt),
+      completedData: this.formatCompletedData(todo),
     };
   }
 

@@ -29,11 +29,15 @@ export type AggregateTodo = {
 export type TodoAvgAggregateOutputType = {
   dueOdometer_km: number | null
   dueOdometer_hour: number | null
+  completedAt_km: number | null
+  completedAt_hour: number | null
 }
 
 export type TodoSumAggregateOutputType = {
   dueOdometer_km: number | null
   dueOdometer_hour: number | null
+  completedAt_km: number | null
+  completedAt_hour: number | null
 }
 
 export type TodoMinAggregateOutputType = {
@@ -48,7 +52,9 @@ export type TodoMinAggregateOutputType = {
   dueOdometer_hour: number | null
   createdAt: Date | null
   updatedAt: Date | null
-  completedAt: Date | null
+  completedAt_date: Date | null
+  completedAt_km: number | null
+  completedAt_hour: number | null
   createdById: string | null
   completedById: string | null
 }
@@ -65,7 +71,9 @@ export type TodoMaxAggregateOutputType = {
   dueOdometer_hour: number | null
   createdAt: Date | null
   updatedAt: Date | null
-  completedAt: Date | null
+  completedAt_date: Date | null
+  completedAt_km: number | null
+  completedAt_hour: number | null
   createdById: string | null
   completedById: string | null
 }
@@ -82,7 +90,9 @@ export type TodoCountAggregateOutputType = {
   dueOdometer_hour: number
   createdAt: number
   updatedAt: number
-  completedAt: number
+  completedAt_date: number
+  completedAt_km: number
+  completedAt_hour: number
   createdById: number
   completedById: number
   _all: number
@@ -92,11 +102,15 @@ export type TodoCountAggregateOutputType = {
 export type TodoAvgAggregateInputType = {
   dueOdometer_km?: true
   dueOdometer_hour?: true
+  completedAt_km?: true
+  completedAt_hour?: true
 }
 
 export type TodoSumAggregateInputType = {
   dueOdometer_km?: true
   dueOdometer_hour?: true
+  completedAt_km?: true
+  completedAt_hour?: true
 }
 
 export type TodoMinAggregateInputType = {
@@ -111,7 +125,9 @@ export type TodoMinAggregateInputType = {
   dueOdometer_hour?: true
   createdAt?: true
   updatedAt?: true
-  completedAt?: true
+  completedAt_date?: true
+  completedAt_km?: true
+  completedAt_hour?: true
   createdById?: true
   completedById?: true
 }
@@ -128,7 +144,9 @@ export type TodoMaxAggregateInputType = {
   dueOdometer_hour?: true
   createdAt?: true
   updatedAt?: true
-  completedAt?: true
+  completedAt_date?: true
+  completedAt_km?: true
+  completedAt_hour?: true
   createdById?: true
   completedById?: true
 }
@@ -145,7 +163,9 @@ export type TodoCountAggregateInputType = {
   dueOdometer_hour?: true
   createdAt?: true
   updatedAt?: true
-  completedAt?: true
+  completedAt_date?: true
+  completedAt_km?: true
+  completedAt_hour?: true
   createdById?: true
   completedById?: true
   _all?: true
@@ -249,7 +269,9 @@ export type TodoGroupByOutputType = {
   dueOdometer_hour: number | null
   createdAt: Date
   updatedAt: Date
-  completedAt: Date | null
+  completedAt_date: Date | null
+  completedAt_km: number | null
+  completedAt_hour: number | null
   createdById: string | null
   completedById: string | null
   _count: TodoCountAggregateOutputType | null
@@ -289,7 +311,9 @@ export type TodoWhereInput = {
   dueOdometer_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
-  completedAt?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_date?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_km?: Prisma.FloatNullableFilter<"Todo"> | number | null
+  completedAt_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdById?: Prisma.StringNullableFilter<"Todo"> | string | null
   completedById?: Prisma.StringNullableFilter<"Todo"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -309,7 +333,9 @@ export type TodoOrderByWithRelationInput = {
   dueOdometer_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
@@ -332,7 +358,9 @@ export type TodoWhereUniqueInput = Prisma.AtLeast<{
   dueOdometer_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
-  completedAt?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_date?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_km?: Prisma.FloatNullableFilter<"Todo"> | number | null
+  completedAt_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdById?: Prisma.StringNullableFilter<"Todo"> | string | null
   completedById?: Prisma.StringNullableFilter<"Todo"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -352,7 +380,9 @@ export type TodoOrderByWithAggregationInput = {
   dueOdometer_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TodoCountOrderByAggregateInput
@@ -377,7 +407,9 @@ export type TodoScalarWhereWithAggregatesInput = {
   dueOdometer_hour?: Prisma.FloatNullableWithAggregatesFilter<"Todo"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Todo"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Todo"> | Date | string
-  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Todo"> | Date | string | null
+  completedAt_date?: Prisma.DateTimeNullableWithAggregatesFilter<"Todo"> | Date | string | null
+  completedAt_km?: Prisma.FloatNullableWithAggregatesFilter<"Todo"> | number | null
+  completedAt_hour?: Prisma.FloatNullableWithAggregatesFilter<"Todo"> | number | null
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Todo"> | string | null
   completedById?: Prisma.StringNullableWithAggregatesFilter<"Todo"> | string | null
 }
@@ -393,7 +425,9 @@ export type TodoCreateInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
   completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
@@ -411,7 +445,9 @@ export type TodoUncheckedCreateInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
   completedById?: string | null
 }
@@ -427,7 +463,9 @@ export type TodoUpdateInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
   completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
@@ -445,7 +483,9 @@ export type TodoUncheckedUpdateInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -462,7 +502,9 @@ export type TodoCreateManyInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
   completedById?: string | null
 }
@@ -478,7 +520,9 @@ export type TodoUpdateManyMutationInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TodoUncheckedUpdateManyInput = {
@@ -493,7 +537,9 @@ export type TodoUncheckedUpdateManyInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -520,7 +566,9 @@ export type TodoCountOrderByAggregateInput = {
   dueOdometer_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  completedAt?: Prisma.SortOrder
+  completedAt_date?: Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
 }
@@ -528,6 +576,8 @@ export type TodoCountOrderByAggregateInput = {
 export type TodoAvgOrderByAggregateInput = {
   dueOdometer_km?: Prisma.SortOrder
   dueOdometer_hour?: Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrder
 }
 
 export type TodoMaxOrderByAggregateInput = {
@@ -542,7 +592,9 @@ export type TodoMaxOrderByAggregateInput = {
   dueOdometer_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  completedAt?: Prisma.SortOrder
+  completedAt_date?: Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
 }
@@ -559,7 +611,9 @@ export type TodoMinOrderByAggregateInput = {
   dueOdometer_hour?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  completedAt?: Prisma.SortOrder
+  completedAt_date?: Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
 }
@@ -567,6 +621,8 @@ export type TodoMinOrderByAggregateInput = {
 export type TodoSumOrderByAggregateInput = {
   dueOdometer_km?: Prisma.SortOrder
   dueOdometer_hour?: Prisma.SortOrder
+  completedAt_km?: Prisma.SortOrder
+  completedAt_hour?: Prisma.SortOrder
 }
 
 export type TodoCreateNestedManyWithoutCreatedByInput = {
@@ -714,7 +770,9 @@ export type TodoCreateWithoutCreatedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
   completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
 }
@@ -731,7 +789,9 @@ export type TodoUncheckedCreateWithoutCreatedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   completedById?: string | null
 }
 
@@ -756,7 +816,9 @@ export type TodoCreateWithoutCompletedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
 }
@@ -773,7 +835,9 @@ export type TodoUncheckedCreateWithoutCompletedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
 }
 
@@ -818,7 +882,9 @@ export type TodoScalarWhereInput = {
   dueOdometer_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Todo"> | Date | string
-  completedAt?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_date?: Prisma.DateTimeNullableFilter<"Todo"> | Date | string | null
+  completedAt_km?: Prisma.FloatNullableFilter<"Todo"> | number | null
+  completedAt_hour?: Prisma.FloatNullableFilter<"Todo"> | number | null
   createdById?: Prisma.StringNullableFilter<"Todo"> | string | null
   completedById?: Prisma.StringNullableFilter<"Todo"> | string | null
 }
@@ -850,7 +916,9 @@ export type TodoCreateWithoutVehicleInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
   completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
 }
@@ -866,7 +934,9 @@ export type TodoUncheckedCreateWithoutVehicleInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
   completedById?: string | null
 }
@@ -909,7 +979,9 @@ export type TodoCreateManyCreatedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   completedById?: string | null
 }
 
@@ -925,7 +997,9 @@ export type TodoCreateManyCompletedByInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
 }
 
@@ -940,7 +1014,9 @@ export type TodoUpdateWithoutCreatedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
   completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
 }
@@ -957,7 +1033,9 @@ export type TodoUncheckedUpdateWithoutCreatedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -973,7 +1051,9 @@ export type TodoUncheckedUpdateManyWithoutCreatedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -988,7 +1068,9 @@ export type TodoUpdateWithoutCompletedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
 }
@@ -1005,7 +1087,9 @@ export type TodoUncheckedUpdateWithoutCompletedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -1021,7 +1105,9 @@ export type TodoUncheckedUpdateManyWithoutCompletedByInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -1036,7 +1122,9 @@ export type TodoCreateManyVehicleInput = {
   dueOdometer_hour?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  completedAt?: Date | string | null
+  completedAt_date?: Date | string | null
+  completedAt_km?: number | null
+  completedAt_hour?: number | null
   createdById?: string | null
   completedById?: string | null
 }
@@ -1052,7 +1140,9 @@ export type TodoUpdateWithoutVehicleInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
   completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
 }
@@ -1068,7 +1158,9 @@ export type TodoUncheckedUpdateWithoutVehicleInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -1084,7 +1176,9 @@ export type TodoUncheckedUpdateManyWithoutVehicleInput = {
   dueOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -1103,7 +1197,9 @@ export type TodoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dueOdometer_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  completedAt?: boolean
+  completedAt_date?: boolean
+  completedAt_km?: boolean
+  completedAt_hour?: boolean
   createdById?: boolean
   completedById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1123,7 +1219,9 @@ export type TodoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dueOdometer_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  completedAt?: boolean
+  completedAt_date?: boolean
+  completedAt_km?: boolean
+  completedAt_hour?: boolean
   createdById?: boolean
   completedById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1143,7 +1241,9 @@ export type TodoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dueOdometer_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  completedAt?: boolean
+  completedAt_date?: boolean
+  completedAt_km?: boolean
+  completedAt_hour?: boolean
   createdById?: boolean
   completedById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1163,12 +1263,14 @@ export type TodoSelectScalar = {
   dueOdometer_hour?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  completedAt?: boolean
+  completedAt_date?: boolean
+  completedAt_km?: boolean
+  completedAt_hour?: boolean
   createdById?: boolean
   completedById?: boolean
 }
 
-export type TodoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "title" | "description" | "priority" | "isCompleted" | "dueDate" | "dueOdometer_km" | "dueOdometer_hour" | "createdAt" | "updatedAt" | "completedAt" | "createdById" | "completedById", ExtArgs["result"]["todo"]>
+export type TodoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "title" | "description" | "priority" | "isCompleted" | "dueDate" | "dueOdometer_km" | "dueOdometer_hour" | "createdAt" | "updatedAt" | "completedAt_date" | "completedAt_km" | "completedAt_hour" | "createdById" | "completedById", ExtArgs["result"]["todo"]>
 export type TodoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Todo$createdByArgs<ExtArgs>
@@ -1204,7 +1306,9 @@ export type $TodoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dueOdometer_hour: number | null
     createdAt: Date
     updatedAt: Date
-    completedAt: Date | null
+    completedAt_date: Date | null
+    completedAt_km: number | null
+    completedAt_hour: number | null
     createdById: string | null
     completedById: string | null
   }, ExtArgs["result"]["todo"]>
@@ -1644,7 +1748,9 @@ export interface TodoFieldRefs {
   readonly dueOdometer_hour: Prisma.FieldRef<"Todo", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Todo", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Todo", 'DateTime'>
-  readonly completedAt: Prisma.FieldRef<"Todo", 'DateTime'>
+  readonly completedAt_date: Prisma.FieldRef<"Todo", 'DateTime'>
+  readonly completedAt_km: Prisma.FieldRef<"Todo", 'Float'>
+  readonly completedAt_hour: Prisma.FieldRef<"Todo", 'Float'>
   readonly createdById: Prisma.FieldRef<"Todo", 'String'>
   readonly completedById: Prisma.FieldRef<"Todo", 'String'>
 }
