@@ -28,7 +28,7 @@ export const useModalStore = defineStore("modal", () => {
     setTimeout(() => {
       type.value = null;
       data.value = undefined;
-    }, 500);
+    }, 200);
   };
 
   return {

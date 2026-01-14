@@ -159,7 +159,7 @@ watch(isModalOpen, (isOpen) => {
 </script>
 
 <template>
-  <Dialog v-model:open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
+  <Dialog :open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
     <DialogContent class="flex max-w-4xl flex-col lg:h-fit lg:max-h-[90vh]">
       <DialogHeader class="flex w-full flex-row justify-between gap-2">
         <DialogTitle class="flex items-center justify-start gap-2 truncate">
