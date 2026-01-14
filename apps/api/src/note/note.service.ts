@@ -136,7 +136,7 @@ export class NoteService {
         vehicleId: true,
         createdById: true,
         createdByUser: { select: { id: true, name: true, image: true } },
-        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
+        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true, image: true } },
       },
       orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
     });
@@ -156,6 +156,7 @@ export class NoteService {
         model: note.vehicle.model ?? '',
         year: note.vehicle.year ?? 0,
         type: note.vehicle.type,
+        image: note.vehicle.image,
       },
     }));
   }
@@ -175,7 +176,7 @@ export class NoteService {
         vehicleId: true,
         createdById: true,
         createdByUser: { select: { id: true, name: true, image: true } },
-        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true } },
+        vehicle: { select: { id: true, name: true, make: true, model: true, year: true, type: true, image: true } },
       },
       orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
     });
@@ -194,6 +195,7 @@ export class NoteService {
         model: note.vehicle.model ?? '',
         year: note.vehicle.year ?? 0,
         type: note.vehicle.type,
+        image: note.vehicle.image,
       },
     }));
   }

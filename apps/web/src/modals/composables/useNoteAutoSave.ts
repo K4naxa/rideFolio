@@ -24,12 +24,14 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     return (
       current.title !== initial.title ||
       current.content !== initial.content ||
-      JSON.stringify(current.tags?.sort()) !== JSON.stringify(initial.tags?.sort())
+      JSON.stringify([...(current.tags ?? [])].sort()) !== JSON.stringify([...(initial.tags ?? [])].sort())
     );
   }
 
   // Check if note has minimum required content
   function hasMinimumContent(note: NoteSchemaType): boolean {
+    // Vehicle Id always required
+    if (!note.vehicleId) return false;
     const hasTitle = !!(note.title && note.title.trim().length > 0);
     const hasContent = !isHtmlEmpty(note.content);
     return hasTitle || hasContent;
@@ -80,7 +82,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
 
   // Watch for form changes and queue saves
   watch(
-    () => [formValues.value.title, formValues.value.content, formValues.value.tags],
+    () => [formValues.value.title, formValues.value.content, formValues.value.tags, formValues.value.vehicleId],
     () => {
       if (shouldAutoSave()) {
         pendingSave.value = {

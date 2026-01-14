@@ -5,6 +5,10 @@ import type {
   TValidPartLocation,
 } from "@repo/validation";
 
+// Composable for data cleanup when vehicle type changes
+// Ensures parts are valid for the new vehicle type
+// Removes incompatible parts and updates locations as needed
+
 export function usePartCleaner() {
   const findPartInCategories = (
     partId: string,

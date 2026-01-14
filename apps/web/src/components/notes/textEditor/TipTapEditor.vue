@@ -53,7 +53,7 @@ const editor = useEditor({
       placeholder: props.placeholder || "Start typing...",
       showOnlyWhenEditable: true,
       emptyEditorClass:
-        "flex-1 cursor-text before:content-[attr(data-placeholder)] before:absolute before:top-0 before:left-0 before:text-mauve-11 before:opacity-50",
+        "flex-1 min-w-0 cursor-text before:content-[attr(data-placeholder)] before:absolute before:top-0 before:left-0 before:text-mauve-11 before:opacity-50",
     }),
     CharacterCount.configure({
       limit: CHARACTER_LIMIT,
@@ -67,7 +67,7 @@ const editor = useEditor({
   },
   editorProps: {
     attributes: {
-      class: "flex-1",
+      class: "flex-1 outline-none break-words whitespace-pre-wrap",
     },
   },
 });
@@ -126,4 +126,12 @@ watch(
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Target the Tiptap editor instance */
+:deep(.ProseMirror) {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>

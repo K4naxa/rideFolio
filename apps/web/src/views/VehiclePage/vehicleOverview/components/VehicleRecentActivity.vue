@@ -31,12 +31,12 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <Card class="flex h-full flex-col">
+  <Card class="flex h-full min-w-72 flex-col">
     <CardHeader>
       <CardTitle> <Icon name="stats" class="stroke-primary" /> Recent activity</CardTitle>
       <CardDescription> Latest activity for {{ currentVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
     </CardHeader>
-    <CardContent class="min-h-0 flex-1 rounded px-0">
+    <CardContent class="@container min-h-0 flex-1 rounded px-0">
       <ScrollArea ref="scrollAreaRef" class="h-full w-full">
         <div class="flex flex-col gap-4" v-auto-animate>
           <div v-if="isLoading" class="flex flex-col gap-8">
@@ -69,7 +69,9 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                     </Badge>
                   </div>
                 </div>
-                <p class="text-muted-foreground ml-auto text-sm">{{ useTimeAgo(new Date(activity.data.date)) }}</p>
+                <p class="text-muted-foreground ml-auto hidden text-sm @[300px]:block">
+                  {{ useTimeAgo(new Date(activity.data.date)) }}
+                </p>
               </div>
 
               <!-- Maintenance activity -->
@@ -93,7 +95,9 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
                   </div>
                 </div>
 
-                <p class="text-muted-foreground ml-auto text-sm">{{ useTimeAgo(new Date(activity.data.date)) }}</p>
+                <p class="text-muted-foreground @[300px]-block ml-auto hidden text-sm text-ellipsis">
+                  {{ useTimeAgo(new Date(activity.data.date)) }}
+                </p>
               </div>
             </div>
 

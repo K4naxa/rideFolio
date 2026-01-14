@@ -10,9 +10,9 @@ export const useAllNotes = () => {
     queryKey: queryKeys.notes.all,
     queryFn: async () => {
       const response = await api.get<Note[]>("/notes");
+      console.log("Fetched notes:", response.data);
       return response.data;
     },
-    enabled: false, // Manual fetching required
   });
 };
 

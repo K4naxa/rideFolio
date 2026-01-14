@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
-import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Button from "@/components/ui/button/Button.vue";
@@ -14,9 +13,10 @@ import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
-import { useNoteAutoSave } from "../composables/useNoteAutoSave";
-import { useEditableNote } from "@/lib/queries/notes/note-queries";
 import { useCreateNote, useDeleteNote, useTogglePinNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
+import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
+import { useNoteAutoSave } from "@/modals/composables/useNoteAutoSave";
+import { useEditableNote } from "@/lib/queries/notes/note-queries";
 
 interface NoteSectionProps {
   noteId: Note["id"];

@@ -15,6 +15,7 @@ export type Note = {
     model: string | null;
     year: number | null;
     type: string | null;
+    image?: string | null;
   };
 };
 

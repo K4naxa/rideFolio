@@ -18,10 +18,10 @@ import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import Input from "@/components/ui/input/Input.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { watchDebounced } from "@vueuse/core";
-import TipTapEditor from "@/components/textEditor/TipTapEditor.vue";
 import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
 import Icon from "@/components/icons/Icon.vue";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
+import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
 
 // Computed properties
 const modalStore = useModalStore();
