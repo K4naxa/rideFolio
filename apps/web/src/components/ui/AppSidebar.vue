@@ -24,6 +24,12 @@ import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import { twMerge } from "tailwind-merge";
 import { useUserQuery } from "@/lib/queries/user/user-queries";
 import Separator from "@/components/ui/separator/Separator.vue";
+import { computed } from "vue";
+import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
+import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import { TooltipComponent } from "echarts/components";
+import { TooltipContent } from "@/components/ui/tooltip";
+import { toast } from "vue-sonner";
 
 interface MainSideBarLinks {
   label: string;
@@ -61,13 +67,26 @@ const modalStore = useModalStore();
 const { setOpenMobile } = useSidebar();
 
 const handleCreateVehicleClick = () => {
+  if (!canCreateVehicle.value) {
+    toast.error("Vehicle Limit Reached", {
+      description: "Please upgrade your plan to add more vehicles.",
+      action: { label: "Upgrade", onClick: () => {} },
+    });
+    return;
+  }
   modalStore.onOpen("createVehicle");
   setOpenMobile(false);
 };
+
+const canCreateVehicle = computed(() => {
+  if (!user.value) return false;
+  if (user.value.limits.vehicles.isUnlimited) return true;
+  return user.value.limits.vehicles.used < user.value.limits.vehicles.limit;
+});
 </script>
 
 <template>
-  <Sidebar>
+  <Sidebar class="">
     <SidebarHeader class="h-16 px-4">
       <SidebarMenu>
         <SidebarMenuItem>
@@ -79,7 +98,7 @@ const handleCreateVehicleClick = () => {
       </SidebarMenu>
     </SidebarHeader>
 
-    <SidebarContent>
+    <SidebarContent class="bottom-safe-area">
       <SidebarGroup>
         <SidebarGroupContent class="space-y-1">
           <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
@@ -98,14 +117,17 @@ const handleCreateVehicleClick = () => {
           <span class="flex w-full items-center gap-3">
             <Icon name="carFront" />
             Vehicles
-            <button
+            <Button
+              class="ml-auto"
+              variant="ghost"
+              size="icon-sm"
+              :class="[!canCreateVehicle && 'opacity-50']"
               aria-label="Create vehicle"
               @click="handleCreateVehicleClick"
               data-cy="create-vehicle-button"
-              class="hover:text-primary/90 hover:border-primary/50 ml-auto flex cursor-pointer items-center rounded-md border border-transparent p-1 transition-colors duration-200"
             >
               <Icon name="plus" />
-            </button>
+            </Button>
           </span>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="vehicles && vehicles?.length > 0" class="mb">
@@ -127,15 +149,18 @@ const handleCreateVehicleClick = () => {
             <Icon name="users" size="sm" />
             Groups
           </span>
-          <button
+
+          <Button
+            class="ml-auto"
+            variant="ghost"
+            size="icon-sm"
             @click="
               modalStore.onOpen('pool');
               setOpenMobile(false);
             "
-            class="hover:text-primary/90 hover:border-primary/50 ml-auto flex cursor-pointer items-center rounded-md border border-transparent p-1 transition-colors duration-200"
           >
             <Icon name="plus" />
-          </button>
+          </Button>
         </SidebarGroupLabel>
         <SidebarGroupContent v-if="pools && pools.length > 0">
           <SidebarMenuSub>
@@ -155,7 +180,7 @@ const handleCreateVehicleClick = () => {
             <div class="flex justify-between gap-6">
               <div class="flex items-center gap-2 text-sm">Storage usage</div>
               <span class="text-muted-foreground text-xs">
-                {{ ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + "%" }}</span
+                {{ ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + "%" }}</span
               >
             </div>
 
@@ -164,8 +189,8 @@ const handleCreateVehicleClick = () => {
               <div
                 :class="twMerge('bg-primary', 'h-2 rounded-full')"
                 :style="{
-                  width: user.storage?.usage
-                    ? ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + '%'
+                  width: user.limits.storage.usage
+                    ? ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + '%'
                     : '0%',
                 }"
               />

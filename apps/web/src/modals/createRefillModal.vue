@@ -146,6 +146,7 @@ watch(isModalOpen, (open) => {
                 @valueChange="handleChange"
                 placeholder="Select a vehicle"
                 data-cy="vehicle-select"
+                :description="'Select from vehicles you have access to.'"
               />
               <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
             </div>

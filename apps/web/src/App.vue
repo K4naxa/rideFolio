@@ -21,7 +21,18 @@ const themeStore = useThemeStore();
 
 <template>
   <RouterView />
-  <Toaster class="pointer-events-auto" :theme="themeStore.resolvedTheme" position="top-center" :rich-colors="true" />
+  <Toaster
+    class="pointer-events-auto"
+    :theme="themeStore.resolvedTheme"
+    position="top-center"
+    :toastOptions="{
+      classes: {
+        error: 'border-destructive text-destructive [&>svg]:text-destructive',
+        success: 'border-green-500 text-green-500 [&>svg]:text-green-500',
+        warning: 'border-yellow-500 text-yellow-500 [&>svg]:text-yellow-500',
+      },
+    }"
+  />
   <VueQueryDevtools />
 
   <!-- Modals -->

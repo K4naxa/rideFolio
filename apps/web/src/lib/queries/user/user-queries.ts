@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/vue-query";
 export function useUserQuery() {
   const { isAuthenticated } = useAuth();
   return useQuery({
-    queryKey: ["currentUser"],
+    queryKey: ["user", "basic-profile"],
     queryFn: async () => await fetchApi<TBasicProfile>("/users/me"),
     enabled: isAuthenticated,
   });
@@ -27,7 +27,7 @@ export function useUserNotifications() {
 export function useUserStorageSummary() {
   const { isAuthenticated } = useAuth();
   return useQuery({
-    queryKey: ["storage usage summary"],
+    queryKey: ["user", "storage-summary"],
     queryFn: async () => {
       await addNetworkDelay(1000);
       return await fetchApi<StorageUsageSummary>("/users/storageSummary");

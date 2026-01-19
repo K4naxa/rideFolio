@@ -18,15 +18,23 @@ export class UsersService {
         name: true,
         email: true,
         image: true,
-
         createdAt: true,
-
         volumeUnit: true,
         consumptionUnitCode_distance: true,
         consumptionUnitCode_hour: true,
         currency: true,
-        storageLimitBytes: true,
         storageUsageBytes: true,
+        plan: {
+          select: {
+            vehicleLimit: true,
+            storageLimitBytes: true,
+          },
+        },
+        _count: {
+          select: {
+            ownedVehicles: true,
+          },
+        },
       },
     });
 
@@ -41,16 +49,23 @@ export class UsersService {
       email: user.email,
       image: user.image,
       createdAt: user.createdAt,
+      limits: {
+        storage: {
+          usage: Number(user.storageUsageBytes),
+          limit: Number(user.plan.storageLimitBytes),
+          isUnlimited: Number(user.plan.storageLimitBytes) === -1,
+        },
+        vehicles: {
+          used: user._count.ownedVehicles,
+          limit: user.plan.vehicleLimit,
+          isUnlimited: user.plan.vehicleLimit === -1,
+        },
+      },
       preferences: {
         volumeUnit: user.volumeUnit,
         consumptionUnitCode_distance: user.consumptionUnitCode_distance,
         consumptionUnitCode_hour: user.consumptionUnitCode_hour,
         currency: user.currency as CurrencyCode,
-      },
-      storage: {
-        usage: Number(user.storageUsageBytes),
-        limit: Number(user.storageLimitBytes),
-        isUnlimited: Number(user.storageLimitBytes) === -1,
       },
     };
 

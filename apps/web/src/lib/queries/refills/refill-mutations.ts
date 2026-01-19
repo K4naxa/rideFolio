@@ -36,9 +36,5 @@ export function useRefillCreate() {
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.heroStatCards(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
     },
-    onError(error) {
-      console.error("Refill API: Creation error ", error);
-      toast.error("Error creating the Refill");
-    },
   });
 }

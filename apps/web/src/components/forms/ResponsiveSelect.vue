@@ -14,7 +14,6 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { twMerge } from "tailwind-merge";
 import { computed, ref, type Component, type HTMLAttributes } from "vue";
 
 export interface ResponsiveSelectOption<T> {
@@ -43,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{ "update:modelValue": [value: T]; select: [value: T] }>();
 
 const isMobile = useIsMobile();
-const drawerOpen = ref(false);
+const isOpen = ref(false);
 const selectedLabel = computed(() => {
   if (props.modelValue === undefined) return props.placeholder;
   const option = props.options.find((opt) => opt.value === props.modelValue);
@@ -53,12 +52,12 @@ const selectedLabel = computed(() => {
 function handleSelect(value: T) {
   emit("update:modelValue", value);
   emit("select", value);
-  drawerOpen.value = false;
+  isOpen.value = false;
 }
 </script>
 
 <template>
-  <DropdownMenu v-if="!isMobile">
+  <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
     <DropdownMenuTrigger>
       <Button variant="outline" size="sm" :class="['flex items-center justify-between gap-2', triggerClass]">
         <span class="truncate">{{ selectedLabel }}</span>
@@ -79,7 +78,7 @@ function handleSelect(value: T) {
     </DropdownMenuContent>
   </DropdownMenu>
 
-  <Drawer v-else v-model:open="drawerOpen">
+  <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger as-child>
       <slot name="trigger">
         <Button variant="outline" size="sm" :class="['flex items-center justify-between gap-2', triggerClass]">

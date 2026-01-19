@@ -19,7 +19,6 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 app.use(router);
 app.use(VueQueryPlugin);
-
 app.use(autoAnimatePlugin);
 
 const themeStore = useThemeStore();

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import VehicleTypeIcon from "@/components/icons/VehicleTypeIcon.vue";
 import { twMerge } from "tailwind-merge";
+import type { HTMLAttributes } from "vue";
 
 const props = defineProps<{
   src: string | null | undefined;
   type: string | null | undefined;
   imgShadow?: boolean;
   alt?: string;
-  class?: string;
+  class?: HTMLAttributes["class"];
 }>();
 </script>
 

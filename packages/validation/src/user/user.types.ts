@@ -134,11 +134,19 @@ export type TBasicProfile = {
   email: string;
   image: string | null;
   createdAt: Date;
-  storage: {
-    usage: number;
-    limit: number;
-    isUnlimited: boolean;
+  limits: {
+    storage: {
+      usage: number;
+      limit: number;
+      isUnlimited: boolean;
+    };
+    vehicles: {
+      used: number;
+      limit: number;
+      isUnlimited: boolean;
+    };
   };
+
   preferences: {
     volumeUnit: VolumeUnitCode;
     consumptionUnitCode_distance: string;

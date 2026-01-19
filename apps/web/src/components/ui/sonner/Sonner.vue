@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Icon from "@/components/icons/Icon.vue";
 import type { ToasterProps } from "vue-sonner";
 import { Toaster as Sonner } from "vue-sonner";
 
@@ -9,10 +10,21 @@ const props = defineProps<ToasterProps>();
   <Sonner
     class="toaster group"
     v-bind="props"
-    :style="{
-      '--normal-bg': 'var(--popover)',
-      '--normal-text': 'var(--popover-foreground)',
-      '--normal-border': 'var(--border)',
+    :icon-size="32"
+    :toast-options="{
+      class: 'toaster group',
+
+      classes: {
+        success: 'toaster-success',
+        toast: 'group border bg-background text-foreground shadow-lg',
+        title: 'text-foreground text-base',
+        description: 'text-muted-foreground',
+        actionButton: 'bg-primary text-primary-foreground',
+        cancelButton: 'bg-muted text-muted-foreground',
+        error: 'border-destructive!  [&>svg]:fill-destructive fill-destructive!',
+        warning: 'border-warning bg-warning/10 [&>svg]:text-warning',
+        info: 'border-primary bg-primary/10 [&>svg]:text-primary',
+      },
     }"
   />
 </template>
