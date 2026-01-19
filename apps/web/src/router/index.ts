@@ -57,6 +57,25 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: "/settings",
+          name: "settings layout",
+          component: () => import("@/Layouts/SettingsLayout.vue"),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: "",
+              name: "settings redirect",
+              redirect: "/settings/preferences",
+            },
+            {
+              path: "preferences",
+              name: "Preference Settings",
+              meta: { requiresAuth: true },
+              component: () => import("@/views/Settings/SettingsPreferenceView.vue"),
+            },
+          ],
+        },
+        {
           path: "/profile",
           name: "profile layout",
           component: () => import("@/Layouts/ProfileLayout.vue"),

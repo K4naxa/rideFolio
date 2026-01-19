@@ -23,7 +23,6 @@ import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import { twMerge } from "tailwind-merge";
 import { useUserQuery } from "@/lib/queries/user/user-queries";
-import { formatBytesToMB } from "@/lib/utils";
 import Separator from "@/components/ui/separator/Separator.vue";
 
 interface MainSideBarLinks {
@@ -150,42 +149,38 @@ const handleCreateVehicleClick = () => {
       </SidebarGroup>
 
       <SidebarGroup class="mt-auto">
-        <SidebarGroupContent class="space-y-4">
-          <SidebarMenu>
-            <div v-if="user" class="space-y-1 px-2">
-              <!--  headerl -->
-              <div class="flex justify-between gap-6">
-                <div class="flex items-center gap-2 text-sm">Storage usage</div>
-                <span class="text-muted-foreground text-xs">
-                  {{ ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + "%" }}</span
-                >
-              </div>
-
-              <!--  progress bar -->
-              <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
-                <div
-                  :class="twMerge('bg-primary', 'h-2 rounded-full')"
-                  :style="{
-                    width: user.storage?.usage
-                      ? ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + '%'
-                      : '0%',
-                  }"
-                />
-              </div>
+        <SidebarGroupContent class="space-y-1">
+          <div v-if="user" class="space-y-1 px-2">
+            <!--  headerl -->
+            <div class="flex justify-between gap-6">
+              <div class="flex items-center gap-2 text-sm">Storage usage</div>
+              <span class="text-muted-foreground text-xs">
+                {{ ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + "%" }}</span
+              >
             </div>
 
-            <Separator class="mt-3" />
-            <SidebarMenuButton asChild @click="modalStore.onOpen('userSettings')">
-              <Button variant="ghost" class="w-full justify-start">
-                <p class="flex items-center gap-3"><Icon name="settings" size="sm" /> Settings</p>
-              </Button>
-            </SidebarMenuButton>
-            <!-- <SidebarMenuButton asChild>
-              <RouterLink to="" class="flex items-center gap-3">
-                <Icon name="subscription" size="sm" /> Upgrade to Pro
+            <!--  progress bar -->
+            <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
+              <div
+                :class="twMerge('bg-primary', 'h-2 rounded-full')"
+                :style="{
+                  width: user.storage?.usage
+                    ? ((user.storage.usage / user.storage.limit) * 100).toFixed(1) + '%'
+                    : '0%',
+                }"
+              />
+            </div>
+          </div>
+
+          <Separator class="mt-3" />
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <RouterLink to="/settings" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
+                <Icon name="settings" size="sm" />
+                Settings
               </RouterLink>
-            </SidebarMenuButton> -->
-          </SidebarMenu>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarGroupContent>
       </SidebarGroup>
     </SidebarContent>

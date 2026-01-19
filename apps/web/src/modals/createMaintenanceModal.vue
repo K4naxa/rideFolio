@@ -184,7 +184,7 @@ watch(isModalOpen, (open) => {
 
           <!-- RIGHT COLUMN -->
           <div class="flex flex-1 flex-col">
-            <Label><Icon name="maintenance" /> Serviced parts</Label>
+            <Label> <Icon name="maintenance" /> Serviced parts </Label>
 
             <div class="flex flex-1">
               <PartsFormField

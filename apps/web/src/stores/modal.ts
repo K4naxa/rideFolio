@@ -10,7 +10,6 @@ export type ModalType =
   | "createNote"
   | "createTodo"
   | "alert"
-  | "userSettings"
   | "pool"
   | "quicklink";
 

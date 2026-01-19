@@ -52,9 +52,3 @@ const navItems: NavItem[] = [
     </nav>
   </div>
 </template>
-<style>
-.bottom-safe-area {
-  /* Ensure it appears above other content */
-  padding-bottom: env(safe-area-inset-bottom);
-}
-</style>

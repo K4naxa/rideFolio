@@ -10,7 +10,6 @@ import NoteModal from "./modals/NoteModal.vue";
 import TodoModal from "./modals/TodoModal.vue";
 import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
 import AlertModal from "./modals/alertModal.vue";
-import UserSettingsModal from "./modals/userSettingsModal.vue";
 import PoolModal from "./modals/PoolModal.vue";
 import PoolInvitationModal from "./modals/PoolInvitationModal.vue";
 import QuickLinkModal from "@/modals/QuickLinkModal.vue";
@@ -32,7 +31,6 @@ const themeStore = useThemeStore();
   <TodoModal />
   <NoteModal />
   <CreateMaintenanceModal />
-  <UserSettingsModal />
   <PoolModal />
   <PoolInvitationModal />
   <QuickLinkModal />
