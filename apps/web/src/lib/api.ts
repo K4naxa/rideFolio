@@ -11,7 +11,7 @@ export interface ApiError {
 export const ErrorCodes = {
   STORAGE_LIMIT_EXCEEDED: "STORAGE_LIMIT_EXCEEDED",
   VEHICLE_LIMIT_EXCEEDED: "VEHICLE_LIMIT_EXCEEDED",
-  UNAUTHORIZED: "UNAUTHORIZED",
+  NOT_FOUND_OR_ACCESS_DENIED: "NOT_FOUND_OR_ACCESS_DENIED",
   FORBIDDEN: "FORBIDDEN",
 } as const;
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
@@ -55,9 +55,21 @@ function handleApiError(error: AxiosError<ApiError>): boolean {
         duration: 8000,
       });
       return true;
-    case ErrorCodes.UNAUTHORIZED:
-      toast.error("Session Expired", { description: "Please log in again." });
-      router.push("/login");
+    case ErrorCodes.NOT_FOUND_OR_ACCESS_DENIED:
+      const method = error.config?.method?.toUpperCase();
+      if (method === "GET") {
+        // User was trying to view something — show 404
+        router.push({
+          name: "not-found",
+          params: { pathMatch: router.currentRoute.value.path.split("/").slice(1) },
+          query: { reason: "not_found_or_denied" },
+        });
+      } else {
+        // User was trying to do something — just toast, don't redirect
+        toast.error("Not Found or Access Denied", {
+          description: apiError.message || "The resource doesn't exist or you don't have access.",
+        });
+      }
       return true;
     case ErrorCodes.FORBIDDEN:
       toast.error("Access Denied", { description: apiError.message || "You don't have permission for this action." });

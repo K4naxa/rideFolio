@@ -37,7 +37,10 @@ export class AuthValidationService {
     // If no vehicle is found, throw an exception.
     if (!vehicle) {
       console.error('Access denied: User does not have access to the vehicle.');
-      throw new NotFoundException('Vehicle not found or access denied.');
+      throw new NotFoundException({
+        code: 'NOT_FOUND_OR_ACCESS_DENIED',
+        message: 'Vehicle not found or access denied.',
+      });
     }
   }
 
