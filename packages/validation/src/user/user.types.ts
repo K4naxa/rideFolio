@@ -1,5 +1,3 @@
-import { OdometerTypeCode } from "../vehicle";
-
 // Volume units
 export const VOLUME_UNITS = {
   LITER: { code: "LITER", label: "Liter", unit: "L", nameKey: "user.volumeUnits.liter" },
@@ -88,7 +86,7 @@ export const CONSUMPTION_UNITS = {
   },
 };
 export const consumptionUnits_distance = Object.values(CONSUMPTION_UNITS).filter(
-  (unit) => unit.odometerType === "distance"
+  (unit) => unit.odometerType === "distance",
 );
 export const consumptionUnitCodes_distance = consumptionUnits_distance.map((v) => v.code);
 
@@ -136,10 +134,34 @@ export type TBasicProfile = {
   email: string;
   image: string | null;
   createdAt: Date;
+  storage: {
+    usage: number;
+    limit: number;
+    isUnlimited: boolean;
+  };
   preferences: {
     volumeUnit: VolumeUnitCode;
     consumptionUnitCode_distance: string;
     consumptionUnitCode_hour: string;
     currency: CurrencyCode;
+  };
+};
+
+type StorageCategoryBreakdown = {
+  category: string;
+  bytes: number;
+};
+
+export type StorageUsageSummary = {
+  storage: {
+    usage: number;
+    limit: number;
+    isUnlimited: boolean;
+    breakdown: StorageCategoryBreakdown[];
+  };
+  vehicles: {
+    used: number;
+    limit: number;
+    isUnlimited: boolean;
   };
 };

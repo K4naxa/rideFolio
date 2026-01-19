@@ -25,6 +25,8 @@ export class UsersService {
         consumptionUnitCode_distance: true,
         consumptionUnitCode_hour: true,
         currency: true,
+        storageLimitBytes: true,
+        storageUsageBytes: true,
       },
     });
 
@@ -44,6 +46,11 @@ export class UsersService {
         consumptionUnitCode_distance: user.consumptionUnitCode_distance,
         consumptionUnitCode_hour: user.consumptionUnitCode_hour,
         currency: user.currency as CurrencyCode,
+      },
+      storage: {
+        usage: Number(user.storageUsageBytes),
+        limit: Number(user.storageLimitBytes),
+        isUnlimited: Number(user.storageLimitBytes) === -1,
       },
     };
 

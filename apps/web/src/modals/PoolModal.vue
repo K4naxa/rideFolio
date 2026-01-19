@@ -126,7 +126,7 @@ watchEffect(() => {
                 <ErrorMessage name="typeId" class="text-destructive mt-1 ml-1 text-sm" />
               </Field>
             </div>
-            <Textarea name="description" placeholder="Describe your pool" maxlength="200" label="Description" />
+            <Textarea name="description" placeholder="Describe your pool" :maxlength="200" label="Description" />
           </div>
         </div>
 

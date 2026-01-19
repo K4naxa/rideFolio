@@ -5,6 +5,7 @@ import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Injectable()
 export class MaintenanceService {
@@ -12,6 +13,7 @@ export class MaintenanceService {
     private prisma: PrismaService,
     private authValidation: AuthValidationService,
     private unitConversion: UnitConversionService,
+    private limitsService: LimitsService,
   ) {}
 
   async getCategoriesAndParts(vehicleType: VehicleType['code']) {
@@ -79,7 +81,13 @@ export class MaintenanceService {
 
   async createMaintenance(userSession: UserSession, maintenanceData: TMaintenanceSchema) {
     // 1. Check if the user has permission to create logs for the vehicle
-    await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
+    const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
+    // validate storage limits
+    const sizeBytes = await this.limitsService.canCreateMaintenance(
+      userSession.user.id,
+      vehicle.ownerId,
+      maintenanceData,
+    );
 
     // 2. Fetch user and vehicle details
     const user = await this.prisma.user.findUnique({
@@ -90,22 +98,14 @@ export class MaintenanceService {
       throw new Error('User not found.');
     }
 
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: maintenanceData.vehicleId },
-    });
-    if (!vehicle) {
-      // Should never happen, but just to satisfy TypeScript
-      throw new Error('Vehicle not found.');
-    }
-
     // TODO: create create logic for image to bucket upload & image to db
 
     // 3. normalize data
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
     const normalizedOdometer = this.unitConversion.normalizeOdometer(maintenanceData.odometer, vehicle.odometerType);
 
-    await this.prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
-      const newMaintenance = await prisma.maintenance.create({
+    await this.prisma.$transaction(async (tx) => {
+      const newMaintenance = await tx.maintenance.create({
         data: {
           vehicleId: maintenanceData.vehicleId,
           userId: userSession.user.id,
@@ -116,12 +116,13 @@ export class MaintenanceService {
           serviceProvider: maintenanceData.serviceProvider,
           costTotal: maintenanceData.totalCost,
           notes: maintenanceData.notes,
+          sizeBytes: sizeBytes,
         },
       });
 
       // Create MaintenanceParts entries
       for (const part of maintenanceData.parts) {
-        await prisma.maintenancePart.create({
+        await tx.maintenancePart.create({
           data: {
             groupId: part.groupId,
             maintenanceId: newMaintenance.id,
@@ -137,20 +138,26 @@ export class MaintenanceService {
       // Update monthly statistics
       if (maintenanceData.totalCost && maintenanceData.totalCost > 0) {
         await this.updateMonthlyStatistics({
-          prisma,
+          prisma: tx,
           vehicleId: maintenanceData.vehicleId,
           date: maintenanceData.date,
           costTotal: maintenanceData.totalCost,
         });
 
         // Update vehicle lifetime total cost
-        await this.prisma.vehicle.update({
+        await tx.vehicle.update({
           where: { id: maintenanceData.vehicleId },
           data: { lifetimeTotalCost: { increment: maintenanceData.totalCost } },
         });
+
+        // Update user's storage usage
+        await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'MAINTENANCE', sizeBytes);
       }
     });
   }
+
+  // TODO: Update maintenance
+  // TODO: Delete maintenance
 
   // Helpers
   private async updateMonthlyStatistics({

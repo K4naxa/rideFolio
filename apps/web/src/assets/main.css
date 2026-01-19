@@ -128,15 +128,15 @@ html {
   }
   .dark {
     /* Core Colors */
-    --color-background: var(--color-neutral-950); /* slate-950 */
+    --color-background: hsl(0, 0%, 1%); /* slate-950 */
     --color-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-card: var(--color-neutral-950); /* slate-900 */
+    --color-card: hsl(0, 0%, 2.5%); /* slate-900 */
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-background-light: oklch(17.5% 0 0); /* slate-900 */
+    --color-background-light: hsl(0, 0%, 3%); /* slate-900 */
 
-    --color-muted: oklch(24.9% 0 0);
+    --color-muted: oklch(20.9% 0 0);
     --color-muted-foreground: var(--color-neutral-400);
 
     --color-accent: oklch(30.1% 0 0);
@@ -200,6 +200,9 @@ html {
 
   .cardBackground {
     @apply from-background-light to-card bg-linear-to-b;
+  }
+  .cardPrimaryBackground {
+    @apply from-primary/10 to-primary/0 bg-linear-to-b backdrop-blur-md;
   }
 
   .hide-mobile {

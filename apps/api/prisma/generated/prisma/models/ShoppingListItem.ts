@@ -28,10 +28,12 @@ export type AggregateShoppingListItem = {
 
 export type ShoppingListItemAvgAggregateOutputType = {
   price: number | null
+  sizeBytes: number | null
 }
 
 export type ShoppingListItemSumAggregateOutputType = {
   price: number | null
+  sizeBytes: number | null
 }
 
 export type ShoppingListItemMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type ShoppingListItemMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   purchasedAt: Date | null
+  sizeBytes: number | null
   createdById: string | null
 }
 
@@ -55,6 +58,7 @@ export type ShoppingListItemMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   purchasedAt: Date | null
+  sizeBytes: number | null
   createdById: string | null
 }
 
@@ -67,6 +71,7 @@ export type ShoppingListItemCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   purchasedAt: number
+  sizeBytes: number
   createdById: number
   _all: number
 }
@@ -74,10 +79,12 @@ export type ShoppingListItemCountAggregateOutputType = {
 
 export type ShoppingListItemAvgAggregateInputType = {
   price?: true
+  sizeBytes?: true
 }
 
 export type ShoppingListItemSumAggregateInputType = {
   price?: true
+  sizeBytes?: true
 }
 
 export type ShoppingListItemMinAggregateInputType = {
@@ -89,6 +96,7 @@ export type ShoppingListItemMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   purchasedAt?: true
+  sizeBytes?: true
   createdById?: true
 }
 
@@ -101,6 +109,7 @@ export type ShoppingListItemMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   purchasedAt?: true
+  sizeBytes?: true
   createdById?: true
 }
 
@@ -113,6 +122,7 @@ export type ShoppingListItemCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   purchasedAt?: true
+  sizeBytes?: true
   createdById?: true
   _all?: true
 }
@@ -212,6 +222,7 @@ export type ShoppingListItemGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   purchasedAt: Date | null
+  sizeBytes: number
   createdById: string | null
   _count: ShoppingListItemCountAggregateOutputType | null
   _avg: ShoppingListItemAvgAggregateOutputType | null
@@ -247,6 +258,7 @@ export type ShoppingListItemWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   purchasedAt?: Prisma.DateTimeNullableFilter<"ShoppingListItem"> | Date | string | null
+  sizeBytes?: Prisma.IntFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableFilter<"ShoppingListItem"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -261,6 +273,7 @@ export type ShoppingListItemOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
@@ -278,6 +291,7 @@ export type ShoppingListItemWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   purchasedAt?: Prisma.DateTimeNullableFilter<"ShoppingListItem"> | Date | string | null
+  sizeBytes?: Prisma.IntFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableFilter<"ShoppingListItem"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -292,6 +306,7 @@ export type ShoppingListItemOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ShoppingListItemCountOrderByAggregateInput
   _avg?: Prisma.ShoppingListItemAvgOrderByAggregateInput
@@ -312,6 +327,7 @@ export type ShoppingListItemScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ShoppingListItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ShoppingListItem"> | Date | string
   purchasedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ShoppingListItem"> | Date | string | null
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableWithAggregatesFilter<"ShoppingListItem"> | string | null
 }
 
@@ -323,6 +339,7 @@ export type ShoppingListItemCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutShoppingListItemsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutShoppingListItemsInput
 }
@@ -336,6 +353,7 @@ export type ShoppingListItemUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   createdById?: string | null
 }
 
@@ -347,6 +365,7 @@ export type ShoppingListItemUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutShoppingListItemsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutShoppingListItemsNestedInput
 }
@@ -360,6 +379,7 @@ export type ShoppingListItemUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -372,6 +392,7 @@ export type ShoppingListItemCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   createdById?: string | null
 }
 
@@ -383,6 +404,7 @@ export type ShoppingListItemUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ShoppingListItemUncheckedUpdateManyInput = {
@@ -394,6 +416,7 @@ export type ShoppingListItemUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -416,11 +439,13 @@ export type ShoppingListItemCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
 export type ShoppingListItemAvgOrderByAggregateInput = {
   price?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type ShoppingListItemMaxOrderByAggregateInput = {
@@ -432,6 +457,7 @@ export type ShoppingListItemMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
@@ -444,11 +470,13 @@ export type ShoppingListItemMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
 export type ShoppingListItemSumOrderByAggregateInput = {
   price?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type ShoppingListItemCreateNestedManyWithoutCreatedByInput = {
@@ -543,6 +571,7 @@ export type ShoppingListItemCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutShoppingListItemsInput
 }
 
@@ -555,6 +584,7 @@ export type ShoppingListItemUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
 }
 
 export type ShoppingListItemCreateOrConnectWithoutCreatedByInput = {
@@ -595,6 +625,7 @@ export type ShoppingListItemScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ShoppingListItem"> | Date | string
   purchasedAt?: Prisma.DateTimeNullableFilter<"ShoppingListItem"> | Date | string | null
+  sizeBytes?: Prisma.IntFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableFilter<"ShoppingListItem"> | string | null
 }
 
@@ -606,6 +637,7 @@ export type ShoppingListItemCreateWithoutVehicleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   createdBy?: Prisma.UserCreateNestedOneWithoutShoppingListItemsInput
 }
 
@@ -617,6 +649,7 @@ export type ShoppingListItemUncheckedCreateWithoutVehicleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   createdById?: string | null
 }
 
@@ -655,6 +688,7 @@ export type ShoppingListItemCreateManyCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
 }
 
 export type ShoppingListItemUpdateWithoutCreatedByInput = {
@@ -665,6 +699,7 @@ export type ShoppingListItemUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutShoppingListItemsNestedInput
 }
 
@@ -677,6 +712,7 @@ export type ShoppingListItemUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ShoppingListItemUncheckedUpdateManyWithoutCreatedByInput = {
@@ -688,6 +724,7 @@ export type ShoppingListItemUncheckedUpdateManyWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ShoppingListItemCreateManyVehicleInput = {
@@ -698,6 +735,7 @@ export type ShoppingListItemCreateManyVehicleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
+  sizeBytes: number
   createdById?: string | null
 }
 
@@ -709,6 +747,7 @@ export type ShoppingListItemUpdateWithoutVehicleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.UserUpdateOneWithoutShoppingListItemsNestedInput
 }
 
@@ -720,6 +759,7 @@ export type ShoppingListItemUncheckedUpdateWithoutVehicleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -731,6 +771,7 @@ export type ShoppingListItemUncheckedUpdateManyWithoutVehicleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -745,6 +786,7 @@ export type ShoppingListItemSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdAt?: boolean
   updatedAt?: boolean
   purchasedAt?: boolean
+  sizeBytes?: boolean
   createdById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.ShoppingListItem$createdByArgs<ExtArgs>
@@ -759,6 +801,7 @@ export type ShoppingListItemSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   purchasedAt?: boolean
+  sizeBytes?: boolean
   createdById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.ShoppingListItem$createdByArgs<ExtArgs>
@@ -773,6 +816,7 @@ export type ShoppingListItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   purchasedAt?: boolean
+  sizeBytes?: boolean
   createdById?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.ShoppingListItem$createdByArgs<ExtArgs>
@@ -787,10 +831,11 @@ export type ShoppingListItemSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   purchasedAt?: boolean
+  sizeBytes?: boolean
   createdById?: boolean
 }
 
-export type ShoppingListItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "name" | "price" | "isPurchased" | "createdAt" | "updatedAt" | "purchasedAt" | "createdById", ExtArgs["result"]["shoppingListItem"]>
+export type ShoppingListItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "name" | "price" | "isPurchased" | "createdAt" | "updatedAt" | "purchasedAt" | "sizeBytes" | "createdById", ExtArgs["result"]["shoppingListItem"]>
 export type ShoppingListItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.ShoppingListItem$createdByArgs<ExtArgs>
@@ -819,6 +864,7 @@ export type $ShoppingListItemPayload<ExtArgs extends runtime.Types.Extensions.In
     createdAt: Date
     updatedAt: Date
     purchasedAt: Date | null
+    sizeBytes: number
     createdById: string | null
   }, ExtArgs["result"]["shoppingListItem"]>
   composites: {}
@@ -1253,6 +1299,7 @@ export interface ShoppingListItemFieldRefs {
   readonly createdAt: Prisma.FieldRef<"ShoppingListItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ShoppingListItem", 'DateTime'>
   readonly purchasedAt: Prisma.FieldRef<"ShoppingListItem", 'DateTime'>
+  readonly sizeBytes: Prisma.FieldRef<"ShoppingListItem", 'Int'>
   readonly createdById: Prisma.FieldRef<"ShoppingListItem", 'String'>
 }
     

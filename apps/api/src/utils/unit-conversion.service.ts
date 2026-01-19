@@ -183,4 +183,8 @@ export class UnitConversionService {
   normalizeOdometer(odometer: number, type: Vehicle['odometerType']): number {
     return type === 'MILE' ? this.milesToKm(odometer) : odometer;
   }
+
+  getMBFromBytes(bytes: bigint): number {
+    return Number(bytes) / (1024 * 1024);
+  }
 }

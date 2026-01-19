@@ -27,8 +27,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more SubscriptionPlans
+ * const subscriptionPlans = await prisma.subscriptionPlan.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -38,10 +38,25 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model SubscriptionPlan
+ * 
+ */
+export type SubscriptionPlan = Prisma.SubscriptionPlanModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model StorageUsage
+ * 
+ */
+export type StorageUsage = Prisma.StorageUsageModel
 /**
  * Model QuickLink
  * 
@@ -67,6 +82,11 @@ export type VehiclePart = Prisma.VehiclePartModel
  * 
  */
 export type Vehicle = Prisma.VehicleModel
+/**
+ * Model Refill
+ * 
+ */
+export type Refill = Prisma.RefillModel
 /**
  * Model Maintenance
  * 
@@ -122,11 +142,6 @@ export type PoolVehicle = Prisma.PoolVehicleModel
  * 
  */
 export type PoolInvite = Prisma.PoolInviteModel
-/**
- * Model Refill
- * 
- */
-export type Refill = Prisma.RefillModel
 /**
  * Model VehicleMonthlyStatistics
  * 

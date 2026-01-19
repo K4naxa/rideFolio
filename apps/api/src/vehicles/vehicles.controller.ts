@@ -35,9 +35,7 @@ export class VehiclesController {
 
   @Get('accessible')
   async getAccessibleVehicles(@Session() userSession: UserSession): Promise<TAccessibleVehicle[]> {
-    console.log('Getting accessible vehicles for user:', userSession.user);
     const vehicles = await this.vehiclesService.getAccessibleVehicles(userSession);
-    console.log('found vehicle count: ', vehicles.length);
     return vehicles;
   }
 

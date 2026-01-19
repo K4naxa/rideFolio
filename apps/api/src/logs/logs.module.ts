@@ -8,6 +8,7 @@ import { OdometerService } from 'src/utils/odometer.service';
 import { MaintenanceService } from './maintenance/maintenance.service';
 import { RefillsService } from './refills.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Module({
   imports: [PrismaModule],
@@ -21,6 +22,7 @@ import { VehicleRepository } from 'src/utils/vehicleRepository';
     MaintenanceService,
     RefillsService,
     VehicleRepository,
+    LimitsService,
   ],
 })
 export class LogsModule {}

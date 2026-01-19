@@ -20,8 +20,18 @@ export type QuickLinkModel = runtime.Types.Result.DefaultSelection<Prisma.$Quick
 
 export type AggregateQuickLink = {
   _count: QuickLinkCountAggregateOutputType | null
+  _avg: QuickLinkAvgAggregateOutputType | null
+  _sum: QuickLinkSumAggregateOutputType | null
   _min: QuickLinkMinAggregateOutputType | null
   _max: QuickLinkMaxAggregateOutputType | null
+}
+
+export type QuickLinkAvgAggregateOutputType = {
+  sizeBytes: number | null
+}
+
+export type QuickLinkSumAggregateOutputType = {
+  sizeBytes: number | null
 }
 
 export type QuickLinkMinAggregateOutputType = {
@@ -30,6 +40,7 @@ export type QuickLinkMinAggregateOutputType = {
   name: string | null
   url: string | null
   description: string | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +51,7 @@ export type QuickLinkMaxAggregateOutputType = {
   name: string | null
   url: string | null
   description: string | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,11 +62,20 @@ export type QuickLinkCountAggregateOutputType = {
   name: number
   url: number
   description: number
+  sizeBytes: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type QuickLinkAvgAggregateInputType = {
+  sizeBytes?: true
+}
+
+export type QuickLinkSumAggregateInputType = {
+  sizeBytes?: true
+}
 
 export type QuickLinkMinAggregateInputType = {
   id?: true
@@ -62,6 +83,7 @@ export type QuickLinkMinAggregateInputType = {
   name?: true
   url?: true
   description?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +94,7 @@ export type QuickLinkMaxAggregateInputType = {
   name?: true
   url?: true
   description?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +105,7 @@ export type QuickLinkCountAggregateInputType = {
   name?: true
   url?: true
   description?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -125,6 +149,18 @@ export type QuickLinkAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: QuickLinkAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: QuickLinkSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: QuickLinkMinAggregateInputType
@@ -155,6 +191,8 @@ export type QuickLinkGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: QuickLinkCountAggregateInputType | true
+  _avg?: QuickLinkAvgAggregateInputType
+  _sum?: QuickLinkSumAggregateInputType
   _min?: QuickLinkMinAggregateInputType
   _max?: QuickLinkMaxAggregateInputType
 }
@@ -165,9 +203,12 @@ export type QuickLinkGroupByOutputType = {
   name: string
   url: string
   description: string | null
+  sizeBytes: number
   createdAt: Date
   updatedAt: Date
   _count: QuickLinkCountAggregateOutputType | null
+  _avg: QuickLinkAvgAggregateOutputType | null
+  _sum: QuickLinkSumAggregateOutputType | null
   _min: QuickLinkMinAggregateOutputType | null
   _max: QuickLinkMaxAggregateOutputType | null
 }
@@ -196,6 +237,7 @@ export type QuickLinkWhereInput = {
   name?: Prisma.StringFilter<"QuickLink"> | string
   url?: Prisma.StringFilter<"QuickLink"> | string
   description?: Prisma.StringNullableFilter<"QuickLink"> | string | null
+  sizeBytes?: Prisma.IntFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -207,6 +249,7 @@ export type QuickLinkOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -221,6 +264,7 @@ export type QuickLinkWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"QuickLink"> | string
   url?: Prisma.StringFilter<"QuickLink"> | string
   description?: Prisma.StringNullableFilter<"QuickLink"> | string | null
+  sizeBytes?: Prisma.IntFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -232,11 +276,14 @@ export type QuickLinkOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.QuickLinkCountOrderByAggregateInput
+  _avg?: Prisma.QuickLinkAvgOrderByAggregateInput
   _max?: Prisma.QuickLinkMaxOrderByAggregateInput
   _min?: Prisma.QuickLinkMinOrderByAggregateInput
+  _sum?: Prisma.QuickLinkSumOrderByAggregateInput
 }
 
 export type QuickLinkScalarWhereWithAggregatesInput = {
@@ -248,6 +295,7 @@ export type QuickLinkScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"QuickLink"> | string
   url?: Prisma.StringWithAggregatesFilter<"QuickLink"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"QuickLink"> | string | null
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"QuickLink"> | Date | string
 }
@@ -257,6 +305,7 @@ export type QuickLinkCreateInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutQuickLinksInput
@@ -268,6 +317,7 @@ export type QuickLinkUncheckedCreateInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -277,6 +327,7 @@ export type QuickLinkUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutQuickLinksNestedInput
@@ -288,6 +339,7 @@ export type QuickLinkUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,6 +350,7 @@ export type QuickLinkCreateManyInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -307,6 +360,7 @@ export type QuickLinkUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +371,7 @@ export type QuickLinkUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -337,8 +392,13 @@ export type QuickLinkCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type QuickLinkAvgOrderByAggregateInput = {
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type QuickLinkMaxOrderByAggregateInput = {
@@ -347,6 +407,7 @@ export type QuickLinkMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -357,8 +418,13 @@ export type QuickLinkMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type QuickLinkSumOrderByAggregateInput = {
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type QuickLinkCreateNestedManyWithoutUserInput = {
@@ -408,6 +474,7 @@ export type QuickLinkCreateWithoutUserInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -417,6 +484,7 @@ export type QuickLinkUncheckedCreateWithoutUserInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -456,6 +524,7 @@ export type QuickLinkScalarWhereInput = {
   name?: Prisma.StringFilter<"QuickLink"> | string
   url?: Prisma.StringFilter<"QuickLink"> | string
   description?: Prisma.StringNullableFilter<"QuickLink"> | string | null
+  sizeBytes?: Prisma.IntFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
 }
@@ -465,6 +534,7 @@ export type QuickLinkCreateManyUserInput = {
   name: string
   url: string
   description?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +544,7 @@ export type QuickLinkUpdateWithoutUserInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -483,6 +554,7 @@ export type QuickLinkUncheckedUpdateWithoutUserInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -492,6 +564,7 @@ export type QuickLinkUncheckedUpdateManyWithoutUserInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -504,6 +577,7 @@ export type QuickLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   name?: boolean
   url?: boolean
   description?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -515,6 +589,7 @@ export type QuickLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   url?: boolean
   description?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -526,6 +601,7 @@ export type QuickLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   url?: boolean
   description?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -537,11 +613,12 @@ export type QuickLinkSelectScalar = {
   name?: boolean
   url?: boolean
   description?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type QuickLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "url" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["quickLink"]>
+export type QuickLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "url" | "description" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["quickLink"]>
 export type QuickLinkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -563,6 +640,7 @@ export type $QuickLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     name: string
     url: string
     description: string | null
+    sizeBytes: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["quickLink"]>
@@ -994,6 +1072,7 @@ export interface QuickLinkFieldRefs {
   readonly name: Prisma.FieldRef<"QuickLink", 'String'>
   readonly url: Prisma.FieldRef<"QuickLink", 'String'>
   readonly description: Prisma.FieldRef<"QuickLink", 'String'>
+  readonly sizeBytes: Prisma.FieldRef<"QuickLink", 'Int'>
   readonly createdAt: Prisma.FieldRef<"QuickLink", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"QuickLink", 'DateTime'>
 }

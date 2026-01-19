@@ -41,6 +41,7 @@ export type VehicleAvgAggregateOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number | null
   lifetimeTotalValidUnitsForConsumption_km: number | null
   lifetimeTotalValidUnitsForConsumption_hour: number | null
+  sizeBytes: number | null
 }
 
 export type VehicleSumAggregateOutputType = {
@@ -58,6 +59,7 @@ export type VehicleSumAggregateOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number | null
   lifetimeTotalValidUnitsForConsumption_km: number | null
   lifetimeTotalValidUnitsForConsumption_hour: number | null
+  sizeBytes: number | null
 }
 
 export type VehicleMinAggregateOutputType = {
@@ -86,6 +88,7 @@ export type VehicleMinAggregateOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number | null
   lifetimeTotalValidUnitsForConsumption_km: number | null
   lifetimeTotalValidUnitsForConsumption_hour: number | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -116,6 +119,7 @@ export type VehicleMaxAggregateOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number | null
   lifetimeTotalValidUnitsForConsumption_km: number | null
   lifetimeTotalValidUnitsForConsumption_hour: number | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -146,6 +150,7 @@ export type VehicleCountAggregateOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number
   lifetimeTotalValidUnitsForConsumption_km: number
   lifetimeTotalValidUnitsForConsumption_hour: number
+  sizeBytes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -167,6 +172,7 @@ export type VehicleAvgAggregateInputType = {
   lifetimeTotalValidFuelForConsumption_L?: true
   lifetimeTotalValidUnitsForConsumption_km?: true
   lifetimeTotalValidUnitsForConsumption_hour?: true
+  sizeBytes?: true
 }
 
 export type VehicleSumAggregateInputType = {
@@ -184,6 +190,7 @@ export type VehicleSumAggregateInputType = {
   lifetimeTotalValidFuelForConsumption_L?: true
   lifetimeTotalValidUnitsForConsumption_km?: true
   lifetimeTotalValidUnitsForConsumption_hour?: true
+  sizeBytes?: true
 }
 
 export type VehicleMinAggregateInputType = {
@@ -212,6 +219,7 @@ export type VehicleMinAggregateInputType = {
   lifetimeTotalValidFuelForConsumption_L?: true
   lifetimeTotalValidUnitsForConsumption_km?: true
   lifetimeTotalValidUnitsForConsumption_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -242,6 +250,7 @@ export type VehicleMaxAggregateInputType = {
   lifetimeTotalValidFuelForConsumption_L?: true
   lifetimeTotalValidUnitsForConsumption_km?: true
   lifetimeTotalValidUnitsForConsumption_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -272,6 +281,7 @@ export type VehicleCountAggregateInputType = {
   lifetimeTotalValidFuelForConsumption_L?: true
   lifetimeTotalValidUnitsForConsumption_km?: true
   lifetimeTotalValidUnitsForConsumption_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -389,6 +399,7 @@ export type VehicleGroupByOutputType = {
   lifetimeTotalValidFuelForConsumption_L: number | null
   lifetimeTotalValidUnitsForConsumption_km: number | null
   lifetimeTotalValidUnitsForConsumption_hour: number | null
+  sizeBytes: number
   createdAt: Date
   updatedAt: Date
   _count: VehicleCountAggregateOutputType | null
@@ -442,6 +453,7 @@ export type VehicleWhereInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -481,6 +493,7 @@ export type VehicleOrderByWithRelationInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
@@ -523,6 +536,7 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -562,6 +576,7 @@ export type VehicleOrderByWithAggregationInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrderInput | Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VehicleCountOrderByAggregateInput
@@ -600,6 +615,7 @@ export type VehicleScalarWhereWithAggregatesInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
 }
@@ -628,6 +644,7 @@ export type VehicleCreateInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -667,6 +684,7 @@ export type VehicleUncheckedCreateInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -702,6 +720,7 @@ export type VehicleUpdateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -741,6 +760,7 @@ export type VehicleUncheckedUpdateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -778,6 +798,7 @@ export type VehicleCreateManyInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -806,6 +827,7 @@ export type VehicleUpdateManyMutationInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -836,6 +858,7 @@ export type VehicleUncheckedUpdateManyInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -876,6 +899,7 @@ export type VehicleCountOrderByAggregateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -895,6 +919,7 @@ export type VehicleAvgOrderByAggregateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type VehicleMaxOrderByAggregateInput = {
@@ -923,6 +948,7 @@ export type VehicleMaxOrderByAggregateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -953,6 +979,7 @@ export type VehicleMinOrderByAggregateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -972,6 +999,7 @@ export type VehicleSumOrderByAggregateInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.SortOrder
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type VehicleScalarRelationFilter = {
@@ -1087,6 +1115,20 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type VehicleCreateNestedOneWithoutRefillsInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutRefillsInput, Prisma.VehicleUncheckedCreateWithoutRefillsInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutRefillsInput
+  connect?: Prisma.VehicleWhereUniqueInput
+}
+
+export type VehicleUpdateOneRequiredWithoutRefillsNestedInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutRefillsInput, Prisma.VehicleUncheckedCreateWithoutRefillsInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutRefillsInput
+  upsert?: Prisma.VehicleUpsertWithoutRefillsInput
+  connect?: Prisma.VehicleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutRefillsInput, Prisma.VehicleUpdateWithoutRefillsInput>, Prisma.VehicleUncheckedUpdateWithoutRefillsInput>
+}
+
 export type VehicleCreateNestedOneWithoutMaintenancesInput = {
   create?: Prisma.XOR<Prisma.VehicleCreateWithoutMaintenancesInput, Prisma.VehicleUncheckedCreateWithoutMaintenancesInput>
   connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutMaintenancesInput
@@ -1157,20 +1199,6 @@ export type VehicleUpdateOneRequiredWithoutPoolsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutPoolsInput, Prisma.VehicleUpdateWithoutPoolsInput>, Prisma.VehicleUncheckedUpdateWithoutPoolsInput>
 }
 
-export type VehicleCreateNestedOneWithoutRefillsInput = {
-  create?: Prisma.XOR<Prisma.VehicleCreateWithoutRefillsInput, Prisma.VehicleUncheckedCreateWithoutRefillsInput>
-  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutRefillsInput
-  connect?: Prisma.VehicleWhereUniqueInput
-}
-
-export type VehicleUpdateOneRequiredWithoutRefillsNestedInput = {
-  create?: Prisma.XOR<Prisma.VehicleCreateWithoutRefillsInput, Prisma.VehicleUncheckedCreateWithoutRefillsInput>
-  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutRefillsInput
-  upsert?: Prisma.VehicleUpsertWithoutRefillsInput
-  connect?: Prisma.VehicleWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutRefillsInput, Prisma.VehicleUpdateWithoutRefillsInput>, Prisma.VehicleUncheckedUpdateWithoutRefillsInput>
-}
-
 export type VehicleCreateNestedOneWithoutMonthlyStatisticsInput = {
   create?: Prisma.XOR<Prisma.VehicleCreateWithoutMonthlyStatisticsInput, Prisma.VehicleUncheckedCreateWithoutMonthlyStatisticsInput>
   connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutMonthlyStatisticsInput
@@ -1209,6 +1237,7 @@ export type VehicleCreateWithoutOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
@@ -1246,6 +1275,7 @@ export type VehicleUncheckedCreateWithoutOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1312,6 +1342,7 @@ export type VehicleScalarWhereInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.FloatNullableFilter<"Vehicle"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
 }
@@ -1340,6 +1371,7 @@ export type VehicleCreateWithoutVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -1377,6 +1409,7 @@ export type VehicleUncheckedCreateWithoutVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -1414,806 +1447,6 @@ export type VehicleUpdateManyWithWhereWithoutVehicleTypeInput = {
   data: Prisma.XOR<Prisma.VehicleUpdateManyMutationInput, Prisma.VehicleUncheckedUpdateManyWithoutVehicleTypeInput>
 }
 
-export type VehicleCreateWithoutMaintenancesInput = {
-  id?: string
-  name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
-  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
-  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleUncheckedCreateWithoutMaintenancesInput = {
-  id?: string
-  name: string
-  ownerId: string
-  type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleCreateOrConnectWithoutMaintenancesInput = {
-  where: Prisma.VehicleWhereUniqueInput
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutMaintenancesInput, Prisma.VehicleUncheckedCreateWithoutMaintenancesInput>
-}
-
-export type VehicleUpsertWithoutMaintenancesInput = {
-  update: Prisma.XOR<Prisma.VehicleUpdateWithoutMaintenancesInput, Prisma.VehicleUncheckedUpdateWithoutMaintenancesInput>
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutMaintenancesInput, Prisma.VehicleUncheckedCreateWithoutMaintenancesInput>
-  where?: Prisma.VehicleWhereInput
-}
-
-export type VehicleUpdateToOneWithWhereWithoutMaintenancesInput = {
-  where?: Prisma.VehicleWhereInput
-  data: Prisma.XOR<Prisma.VehicleUpdateWithoutMaintenancesInput, Prisma.VehicleUncheckedUpdateWithoutMaintenancesInput>
-}
-
-export type VehicleUpdateWithoutMaintenancesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
-  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
-  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleUncheckedUpdateWithoutMaintenancesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleCreateWithoutTodosInput = {
-  id?: string
-  name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
-  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
-  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleUncheckedCreateWithoutTodosInput = {
-  id?: string
-  name: string
-  ownerId: string
-  type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleCreateOrConnectWithoutTodosInput = {
-  where: Prisma.VehicleWhereUniqueInput
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutTodosInput, Prisma.VehicleUncheckedCreateWithoutTodosInput>
-}
-
-export type VehicleUpsertWithoutTodosInput = {
-  update: Prisma.XOR<Prisma.VehicleUpdateWithoutTodosInput, Prisma.VehicleUncheckedUpdateWithoutTodosInput>
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutTodosInput, Prisma.VehicleUncheckedCreateWithoutTodosInput>
-  where?: Prisma.VehicleWhereInput
-}
-
-export type VehicleUpdateToOneWithWhereWithoutTodosInput = {
-  where?: Prisma.VehicleWhereInput
-  data: Prisma.XOR<Prisma.VehicleUpdateWithoutTodosInput, Prisma.VehicleUncheckedUpdateWithoutTodosInput>
-}
-
-export type VehicleUpdateWithoutTodosInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
-  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
-  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleUncheckedUpdateWithoutTodosInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleCreateWithoutNotesInput = {
-  id?: string
-  name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
-  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
-  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleUncheckedCreateWithoutNotesInput = {
-  id?: string
-  name: string
-  ownerId: string
-  type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleCreateOrConnectWithoutNotesInput = {
-  where: Prisma.VehicleWhereUniqueInput
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutNotesInput, Prisma.VehicleUncheckedCreateWithoutNotesInput>
-}
-
-export type VehicleUpsertWithoutNotesInput = {
-  update: Prisma.XOR<Prisma.VehicleUpdateWithoutNotesInput, Prisma.VehicleUncheckedUpdateWithoutNotesInput>
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutNotesInput, Prisma.VehicleUncheckedCreateWithoutNotesInput>
-  where?: Prisma.VehicleWhereInput
-}
-
-export type VehicleUpdateToOneWithWhereWithoutNotesInput = {
-  where?: Prisma.VehicleWhereInput
-  data: Prisma.XOR<Prisma.VehicleUpdateWithoutNotesInput, Prisma.VehicleUncheckedUpdateWithoutNotesInput>
-}
-
-export type VehicleUpdateWithoutNotesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
-  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
-  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleUncheckedUpdateWithoutNotesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleCreateWithoutShoppingListItemsInput = {
-  id?: string
-  name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
-  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
-  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleUncheckedCreateWithoutShoppingListItemsInput = {
-  id?: string
-  name: string
-  ownerId: string
-  type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
-  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleCreateOrConnectWithoutShoppingListItemsInput = {
-  where: Prisma.VehicleWhereUniqueInput
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedCreateWithoutShoppingListItemsInput>
-}
-
-export type VehicleUpsertWithoutShoppingListItemsInput = {
-  update: Prisma.XOR<Prisma.VehicleUpdateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedUpdateWithoutShoppingListItemsInput>
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedCreateWithoutShoppingListItemsInput>
-  where?: Prisma.VehicleWhereInput
-}
-
-export type VehicleUpdateToOneWithWhereWithoutShoppingListItemsInput = {
-  where?: Prisma.VehicleWhereInput
-  data: Prisma.XOR<Prisma.VehicleUpdateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedUpdateWithoutShoppingListItemsInput>
-}
-
-export type VehicleUpdateWithoutShoppingListItemsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
-  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
-  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleUncheckedUpdateWithoutShoppingListItemsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
-  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleCreateWithoutPoolsInput = {
-  id?: string
-  name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
-  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
-  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleUncheckedCreateWithoutPoolsInput = {
-  id?: string
-  name: string
-  ownerId: string
-  type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
-  make?: string | null
-  model?: string | null
-  year?: number | null
-  vin?: string | null
-  licensePlate?: string | null
-  image?: string | null
-  initialOdometer_km?: number | null
-  initialOdometer_hour?: number | null
-  odometer_km?: number | null
-  odometer_hour?: number | null
-  lastRefillOdometer_km?: number | null
-  lastRefillOdometer_hour?: number | null
-  lifetimeTotalTrackedUnits_km?: number | null
-  lifetimeTotalTrackedUnits_hour?: number | null
-  lifetimeTotalFuelConsumed_L?: number | null
-  lifetimeTotalCost?: number | null
-  lifetimeTotalValidFuelForConsumption_L?: number | null
-  lifetimeTotalValidUnitsForConsumption_km?: number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
-  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
-  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
-}
-
-export type VehicleCreateOrConnectWithoutPoolsInput = {
-  where: Prisma.VehicleWhereUniqueInput
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutPoolsInput, Prisma.VehicleUncheckedCreateWithoutPoolsInput>
-}
-
-export type VehicleUpsertWithoutPoolsInput = {
-  update: Prisma.XOR<Prisma.VehicleUpdateWithoutPoolsInput, Prisma.VehicleUncheckedUpdateWithoutPoolsInput>
-  create: Prisma.XOR<Prisma.VehicleCreateWithoutPoolsInput, Prisma.VehicleUncheckedCreateWithoutPoolsInput>
-  where?: Prisma.VehicleWhereInput
-}
-
-export type VehicleUpdateToOneWithWhereWithoutPoolsInput = {
-  where?: Prisma.VehicleWhereInput
-  data: Prisma.XOR<Prisma.VehicleUpdateWithoutPoolsInput, Prisma.VehicleUncheckedUpdateWithoutPoolsInput>
-}
-
-export type VehicleUpdateWithoutPoolsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
-  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
-  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
-}
-
-export type VehicleUncheckedUpdateWithoutPoolsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
-  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
-  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
-  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
-  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
-  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
-}
-
 export type VehicleCreateWithoutRefillsInput = {
   id?: string
   name: string
@@ -2238,6 +1471,7 @@ export type VehicleCreateWithoutRefillsInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -2276,6 +1510,7 @@ export type VehicleUncheckedCreateWithoutRefillsInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -2326,6 +1561,7 @@ export type VehicleUpdateWithoutRefillsInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2364,9 +1600,830 @@ export type VehicleUncheckedUpdateWithoutRefillsInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutMaintenancesInput = {
+  id?: string
+  name: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
+  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutMaintenancesInput = {
+  id?: string
+  name: string
+  ownerId: string
+  type: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutMaintenancesInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutMaintenancesInput, Prisma.VehicleUncheckedCreateWithoutMaintenancesInput>
+}
+
+export type VehicleUpsertWithoutMaintenancesInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutMaintenancesInput, Prisma.VehicleUncheckedUpdateWithoutMaintenancesInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutMaintenancesInput, Prisma.VehicleUncheckedCreateWithoutMaintenancesInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutMaintenancesInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutMaintenancesInput, Prisma.VehicleUncheckedUpdateWithoutMaintenancesInput>
+}
+
+export type VehicleUpdateWithoutMaintenancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
+  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutMaintenancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutTodosInput = {
+  id?: string
+  name: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
+  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutTodosInput = {
+  id?: string
+  name: string
+  ownerId: string
+  type: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutTodosInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutTodosInput, Prisma.VehicleUncheckedCreateWithoutTodosInput>
+}
+
+export type VehicleUpsertWithoutTodosInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutTodosInput, Prisma.VehicleUncheckedUpdateWithoutTodosInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutTodosInput, Prisma.VehicleUncheckedCreateWithoutTodosInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutTodosInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutTodosInput, Prisma.VehicleUncheckedUpdateWithoutTodosInput>
+}
+
+export type VehicleUpdateWithoutTodosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
+  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutTodosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutNotesInput = {
+  id?: string
+  name: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
+  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutNotesInput = {
+  id?: string
+  name: string
+  ownerId: string
+  type: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutNotesInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutNotesInput, Prisma.VehicleUncheckedCreateWithoutNotesInput>
+}
+
+export type VehicleUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutNotesInput, Prisma.VehicleUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutNotesInput, Prisma.VehicleUncheckedCreateWithoutNotesInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutNotesInput, Prisma.VehicleUncheckedUpdateWithoutNotesInput>
+}
+
+export type VehicleUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
+  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutShoppingListItemsInput = {
+  id?: string
+  name: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
+  pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutShoppingListItemsInput = {
+  id?: string
+  name: string
+  ownerId: string
+  type: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
+  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutShoppingListItemsInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedCreateWithoutShoppingListItemsInput>
+}
+
+export type VehicleUpsertWithoutShoppingListItemsInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedUpdateWithoutShoppingListItemsInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedCreateWithoutShoppingListItemsInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutShoppingListItemsInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutShoppingListItemsInput, Prisma.VehicleUncheckedUpdateWithoutShoppingListItemsInput>
+}
+
+export type VehicleUpdateWithoutShoppingListItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
+  pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutShoppingListItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
+  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutPoolsInput = {
+  id?: string
+  name: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
+  refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutPoolsInput = {
+  id?: string
+  name: string
+  ownerId: string
+  type: string
+  fuelType: $Enums.FuelTypes
+  odometerType: $Enums.OdometerTypes
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  vin?: string | null
+  licensePlate?: string | null
+  image?: string | null
+  initialOdometer_km?: number | null
+  initialOdometer_hour?: number | null
+  odometer_km?: number | null
+  odometer_hour?: number | null
+  lastRefillOdometer_km?: number | null
+  lastRefillOdometer_hour?: number | null
+  lifetimeTotalTrackedUnits_km?: number | null
+  lifetimeTotalTrackedUnits_hour?: number | null
+  lifetimeTotalFuelConsumed_L?: number | null
+  lifetimeTotalCost?: number | null
+  lifetimeTotalValidFuelForConsumption_L?: number | null
+  lifetimeTotalValidUnitsForConsumption_km?: number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refills?: Prisma.RefillUncheckedCreateNestedManyWithoutVehicleInput
+  maintenances?: Prisma.MaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedCreateNestedManyWithoutVehicleInput
+  todos?: Prisma.TodoUncheckedCreateNestedManyWithoutVehicleInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutVehicleInput
+  shoppingListItems?: Prisma.ShoppingListItemUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutPoolsInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutPoolsInput, Prisma.VehicleUncheckedCreateWithoutPoolsInput>
+}
+
+export type VehicleUpsertWithoutPoolsInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutPoolsInput, Prisma.VehicleUncheckedUpdateWithoutPoolsInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutPoolsInput, Prisma.VehicleUncheckedCreateWithoutPoolsInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutPoolsInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutPoolsInput, Prisma.VehicleUncheckedUpdateWithoutPoolsInput>
+}
+
+export type VehicleUpdateWithoutPoolsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
+  refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
+  maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
+  monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUpdateManyWithoutVehicleNestedInput
+  todos?: Prisma.TodoUpdateManyWithoutVehicleNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutVehicleNestedInput
+  shoppingListItems?: Prisma.ShoppingListItemUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutPoolsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
+  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  vin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  initialOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  odometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastRefillOdometer_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalTrackedUnits_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalFuelConsumed_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refills?: Prisma.RefillUncheckedUpdateManyWithoutVehicleNestedInput
   maintenances?: Prisma.MaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
   monthlyStatistics?: Prisma.VehicleMonthlyStatisticsUncheckedUpdateManyWithoutVehicleNestedInput
   todos?: Prisma.TodoUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2398,6 +2455,7 @@ export type VehicleCreateWithoutMonthlyStatisticsInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
@@ -2436,6 +2494,7 @@ export type VehicleUncheckedCreateWithoutMonthlyStatisticsInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   pools?: Prisma.PoolVehicleUncheckedCreateNestedManyWithoutVehicleInput
@@ -2486,6 +2545,7 @@ export type VehicleUpdateWithoutMonthlyStatisticsInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2524,6 +2584,7 @@ export type VehicleUncheckedUpdateWithoutMonthlyStatisticsInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2559,6 +2620,7 @@ export type VehicleCreateManyOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2587,6 +2649,7 @@ export type VehicleUpdateWithoutOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
@@ -2624,6 +2687,7 @@ export type VehicleUncheckedUpdateWithoutOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2660,6 +2724,7 @@ export type VehicleUncheckedUpdateManyWithoutOwnerInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2689,6 +2754,7 @@ export type VehicleCreateManyVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: number | null
   lifetimeTotalValidUnitsForConsumption_km?: number | null
   lifetimeTotalValidUnitsForConsumption_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2717,6 +2783,7 @@ export type VehicleUpdateWithoutVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
@@ -2754,6 +2821,7 @@ export type VehicleUncheckedUpdateWithoutVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pools?: Prisma.PoolVehicleUncheckedUpdateManyWithoutVehicleNestedInput
@@ -2790,6 +2858,7 @@ export type VehicleUncheckedUpdateManyWithoutVehicleTypeInput = {
   lifetimeTotalValidFuelForConsumption_L?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lifetimeTotalValidUnitsForConsumption_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2905,6 +2974,7 @@ export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   lifetimeTotalValidFuelForConsumption_L?: boolean
   lifetimeTotalValidUnitsForConsumption_km?: boolean
   lifetimeTotalValidUnitsForConsumption_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2945,6 +3015,7 @@ export type VehicleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lifetimeTotalValidFuelForConsumption_L?: boolean
   lifetimeTotalValidUnitsForConsumption_km?: boolean
   lifetimeTotalValidUnitsForConsumption_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2977,6 +3048,7 @@ export type VehicleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lifetimeTotalValidFuelForConsumption_L?: boolean
   lifetimeTotalValidUnitsForConsumption_km?: boolean
   lifetimeTotalValidUnitsForConsumption_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -3009,11 +3081,12 @@ export type VehicleSelectScalar = {
   lifetimeTotalValidFuelForConsumption_L?: boolean
   lifetimeTotalValidUnitsForConsumption_km?: boolean
   lifetimeTotalValidUnitsForConsumption_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "type" | "fuelType" | "odometerType" | "make" | "model" | "year" | "vin" | "licensePlate" | "image" | "initialOdometer_km" | "initialOdometer_hour" | "odometer_km" | "odometer_hour" | "lastRefillOdometer_km" | "lastRefillOdometer_hour" | "lifetimeTotalTrackedUnits_km" | "lifetimeTotalTrackedUnits_hour" | "lifetimeTotalFuelConsumed_L" | "lifetimeTotalCost" | "lifetimeTotalValidFuelForConsumption_L" | "lifetimeTotalValidUnitsForConsumption_km" | "lifetimeTotalValidUnitsForConsumption_hour" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
+export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "type" | "fuelType" | "odometerType" | "make" | "model" | "year" | "vin" | "licensePlate" | "image" | "initialOdometer_km" | "initialOdometer_hour" | "odometer_km" | "odometer_hour" | "lastRefillOdometer_km" | "lastRefillOdometer_hour" | "lifetimeTotalTrackedUnits_km" | "lifetimeTotalTrackedUnits_hour" | "lifetimeTotalFuelConsumed_L" | "lifetimeTotalCost" | "lifetimeTotalValidFuelForConsumption_L" | "lifetimeTotalValidUnitsForConsumption_km" | "lifetimeTotalValidUnitsForConsumption_hour" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
 export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
@@ -3074,6 +3147,7 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     lifetimeTotalValidFuelForConsumption_L: number | null
     lifetimeTotalValidUnitsForConsumption_km: number | null
     lifetimeTotalValidUnitsForConsumption_hour: number | null
+    sizeBytes: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vehicle"]>
@@ -3533,6 +3607,7 @@ export interface VehicleFieldRefs {
   readonly lifetimeTotalValidFuelForConsumption_L: Prisma.FieldRef<"Vehicle", 'Float'>
   readonly lifetimeTotalValidUnitsForConsumption_km: Prisma.FieldRef<"Vehicle", 'Float'>
   readonly lifetimeTotalValidUnitsForConsumption_hour: Prisma.FieldRef<"Vehicle", 'Float'>
+  readonly sizeBytes: Prisma.FieldRef<"Vehicle", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Vehicle", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Vehicle", 'DateTime'>
 }

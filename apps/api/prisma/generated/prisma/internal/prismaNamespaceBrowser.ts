@@ -51,12 +51,16 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  SubscriptionPlan: 'SubscriptionPlan',
+  Subscription: 'Subscription',
   User: 'User',
+  StorageUsage: 'StorageUsage',
   QuickLink: 'QuickLink',
   VehicleType: 'VehicleType',
   VehiclePartLocation: 'VehiclePartLocation',
   VehiclePart: 'VehiclePart',
   Vehicle: 'Vehicle',
+  Refill: 'Refill',
   Maintenance: 'Maintenance',
   MaintenanceType: 'MaintenanceType',
   MaintenanceCategory: 'MaintenanceCategory',
@@ -68,7 +72,6 @@ export const ModelName = {
   PoolMember: 'PoolMember',
   PoolVehicle: 'PoolVehicle',
   PoolInvite: 'PoolInvite',
-  Refill: 'Refill',
   VehicleMonthlyStatistics: 'VehicleMonthlyStatistics',
   Notification: 'Notification',
   Account: 'Account',
@@ -92,6 +95,38 @@ export const TransactionIsolationLevel = {
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const SubscriptionPlanScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nameKey: 'nameKey',
+  PriceCents: 'PriceCents',
+  currency: 'currency',
+  interval: 'interval',
+  storageLimitBytes: 'storageLimitBytes',
+  vehicleLimit: 'vehicleLimit',
+  stripePriceId: 'stripePriceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  stripeCustomerId: 'stripeCustomerId',
+  status: 'status',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -100,6 +135,10 @@ export const UserScalarFieldEnum = {
   image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  role: 'role',
+  planId: 'planId',
+  storageLimitBytes: 'storageLimitBytes',
+  storageUsageBytes: 'storageUsageBytes',
   volumeUnit: 'volumeUnit',
   consumptionUnitCode_distance: 'consumptionUnitCode_distance',
   consumptionUnitCode_hour: 'consumptionUnitCode_hour',
@@ -109,12 +148,23 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const StorageUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  bytes: 'bytes'
+} as const
+
+export type StorageUsageScalarFieldEnum = (typeof StorageUsageScalarFieldEnum)[keyof typeof StorageUsageScalarFieldEnum]
+
+
 export const QuickLinkScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   name: 'name',
   url: 'url',
   description: 'description',
+  sizeBytes: 'sizeBytes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -185,11 +235,35 @@ export const VehicleScalarFieldEnum = {
   lifetimeTotalValidFuelForConsumption_L: 'lifetimeTotalValidFuelForConsumption_L',
   lifetimeTotalValidUnitsForConsumption_km: 'lifetimeTotalValidUnitsForConsumption_km',
   lifetimeTotalValidUnitsForConsumption_hour: 'lifetimeTotalValidUnitsForConsumption_hour',
+  sizeBytes: 'sizeBytes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
+
+
+export const RefillScalarFieldEnum = {
+  id: 'id',
+  vehicleId: 'vehicleId',
+  userId: 'userId',
+  date: 'date',
+  odometer_km: 'odometer_km',
+  odometer_hour: 'odometer_hour',
+  fullRefill: 'fullRefill',
+  skippedRefill: 'skippedRefill',
+  fuelAmount_L: 'fuelAmount_L',
+  pricePerUnit: 'pricePerUnit',
+  costTotal: 'costTotal',
+  notes: 'notes',
+  consumption_L_per_100km: 'consumption_L_per_100km',
+  consumption_L_per_hour: 'consumption_L_per_hour',
+  sizeBytes: 'sizeBytes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RefillScalarFieldEnum = (typeof RefillScalarFieldEnum)[keyof typeof RefillScalarFieldEnum]
 
 
 export const MaintenanceScalarFieldEnum = {
@@ -204,6 +278,7 @@ export const MaintenanceScalarFieldEnum = {
   serviceProvider: 'serviceProvider',
   notes: 'notes',
   image: 'image',
+  sizeBytes: 'sizeBytes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -266,7 +341,8 @@ export const TodoScalarFieldEnum = {
   completedAt_km: 'completedAt_km',
   completedAt_hour: 'completedAt_hour',
   createdById: 'createdById',
-  completedById: 'completedById'
+  completedById: 'completedById',
+  sizeBytes: 'sizeBytes'
 } as const
 
 export type TodoScalarFieldEnum = (typeof TodoScalarFieldEnum)[keyof typeof TodoScalarFieldEnum]
@@ -279,9 +355,10 @@ export const NoteScalarFieldEnum = {
   content: 'content',
   tags: 'tags',
   pinned: 'pinned',
+  updatedAt: 'updatedAt',
+  sizeBytes: 'sizeBytes',
   createdAt: 'createdAt',
-  createdById: 'createdById',
-  updatedAt: 'updatedAt'
+  createdById: 'createdById'
 } as const
 
 export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
@@ -296,6 +373,7 @@ export const ShoppingListItemScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   purchasedAt: 'purchasedAt',
+  sizeBytes: 'sizeBytes',
   createdById: 'createdById'
 } as const
 
@@ -354,28 +432,6 @@ export const PoolInviteScalarFieldEnum = {
 } as const
 
 export type PoolInviteScalarFieldEnum = (typeof PoolInviteScalarFieldEnum)[keyof typeof PoolInviteScalarFieldEnum]
-
-
-export const RefillScalarFieldEnum = {
-  id: 'id',
-  vehicleId: 'vehicleId',
-  userId: 'userId',
-  date: 'date',
-  odometer_km: 'odometer_km',
-  odometer_hour: 'odometer_hour',
-  fullRefill: 'fullRefill',
-  skippedRefill: 'skippedRefill',
-  fuelAmount_L: 'fuelAmount_L',
-  pricePerUnit: 'pricePerUnit',
-  costTotal: 'costTotal',
-  notes: 'notes',
-  consumption_L_per_100km: 'consumption_L_per_100km',
-  consumption_L_per_hour: 'consumption_L_per_hour',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type RefillScalarFieldEnum = (typeof RefillScalarFieldEnum)[keyof typeof RefillScalarFieldEnum]
 
 
 export const VehicleMonthlyStatisticsScalarFieldEnum = {

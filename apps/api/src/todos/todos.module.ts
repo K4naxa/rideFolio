@@ -6,6 +6,7 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Module({
   controllers: [TodosController],
@@ -16,6 +17,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
     OdometerService,
     VehicleRepository,
     PrismaService,
+    LimitsService,
   ],
 })
 export class TodosModule {}

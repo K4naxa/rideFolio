@@ -27,6 +27,11 @@ export function getFaviconUrl(url: string) {
   }
 }
 
+export const formatBytesToMB = (bytes: number | undefined) => {
+  if (bytes === undefined) return "0.00";
+  return (bytes / 1024 / 1024).toFixed(2);
+};
+
 // DEVELOPMENT UTILITY ONLY
 export async function addNetworkDelay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));

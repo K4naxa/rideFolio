@@ -30,12 +30,14 @@ export type MaintenanceAvgAggregateOutputType = {
   odometer_km: number | null
   odometer_hour: number | null
   costTotal: number | null
+  sizeBytes: number | null
 }
 
 export type MaintenanceSumAggregateOutputType = {
   odometer_km: number | null
   odometer_hour: number | null
   costTotal: number | null
+  sizeBytes: number | null
 }
 
 export type MaintenanceMinAggregateOutputType = {
@@ -50,6 +52,7 @@ export type MaintenanceMinAggregateOutputType = {
   serviceProvider: string | null
   notes: string | null
   image: string | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +69,7 @@ export type MaintenanceMaxAggregateOutputType = {
   serviceProvider: string | null
   notes: string | null
   image: string | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -82,6 +86,7 @@ export type MaintenanceCountAggregateOutputType = {
   serviceProvider: number
   notes: number
   image: number
+  sizeBytes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -92,12 +97,14 @@ export type MaintenanceAvgAggregateInputType = {
   odometer_km?: true
   odometer_hour?: true
   costTotal?: true
+  sizeBytes?: true
 }
 
 export type MaintenanceSumAggregateInputType = {
   odometer_km?: true
   odometer_hour?: true
   costTotal?: true
+  sizeBytes?: true
 }
 
 export type MaintenanceMinAggregateInputType = {
@@ -112,6 +119,7 @@ export type MaintenanceMinAggregateInputType = {
   serviceProvider?: true
   notes?: true
   image?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,6 +136,7 @@ export type MaintenanceMaxAggregateInputType = {
   serviceProvider?: true
   notes?: true
   image?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -144,6 +153,7 @@ export type MaintenanceCountAggregateInputType = {
   serviceProvider?: true
   notes?: true
   image?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -247,6 +257,7 @@ export type MaintenanceGroupByOutputType = {
   serviceProvider: string | null
   notes: string | null
   image: string | null
+  sizeBytes: number
   createdAt: Date
   updatedAt: Date
   _count: MaintenanceCountAggregateOutputType | null
@@ -286,6 +297,7 @@ export type MaintenanceWhereInput = {
   serviceProvider?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   notes?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   image?: Prisma.StringNullableFilter<"Maintenance"> | string | null
+  sizeBytes?: Prisma.IntFilter<"Maintenance"> | number
   createdAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   type?: Prisma.XOR<Prisma.MaintenanceTypeScalarRelationFilter, Prisma.MaintenanceTypeWhereInput>
@@ -306,6 +318,7 @@ export type MaintenanceOrderByWithRelationInput = {
   serviceProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   type?: Prisma.MaintenanceTypeOrderByWithRelationInput
@@ -329,6 +342,7 @@ export type MaintenanceWhereUniqueInput = Prisma.AtLeast<{
   serviceProvider?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   notes?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   image?: Prisma.StringNullableFilter<"Maintenance"> | string | null
+  sizeBytes?: Prisma.IntFilter<"Maintenance"> | number
   createdAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   type?: Prisma.XOR<Prisma.MaintenanceTypeScalarRelationFilter, Prisma.MaintenanceTypeWhereInput>
@@ -349,6 +363,7 @@ export type MaintenanceOrderByWithAggregationInput = {
   serviceProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MaintenanceCountOrderByAggregateInput
@@ -373,6 +388,7 @@ export type MaintenanceScalarWhereWithAggregatesInput = {
   serviceProvider?: Prisma.StringNullableWithAggregatesFilter<"Maintenance"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Maintenance"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"Maintenance"> | string | null
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"Maintenance"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Maintenance"> | Date | string
 }
@@ -386,6 +402,7 @@ export type MaintenanceCreateInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   type: Prisma.MaintenanceTypeCreateNestedOneWithoutMaintenancesInput
@@ -406,6 +423,7 @@ export type MaintenanceUncheckedCreateInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   parts?: Prisma.MaintenancePartUncheckedCreateNestedManyWithoutMaintenanceInput
@@ -420,6 +438,7 @@ export type MaintenanceUpdateInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.MaintenanceTypeUpdateOneRequiredWithoutMaintenancesNestedInput
@@ -440,6 +459,7 @@ export type MaintenanceUncheckedUpdateInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parts?: Prisma.MaintenancePartUncheckedUpdateManyWithoutMaintenanceNestedInput
@@ -457,6 +477,7 @@ export type MaintenanceCreateManyInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -470,6 +491,7 @@ export type MaintenanceUpdateManyMutationInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -486,6 +508,7 @@ export type MaintenanceUncheckedUpdateManyInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -512,6 +535,7 @@ export type MaintenanceCountOrderByAggregateInput = {
   serviceProvider?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -520,6 +544,7 @@ export type MaintenanceAvgOrderByAggregateInput = {
   odometer_km?: Prisma.SortOrder
   odometer_hour?: Prisma.SortOrder
   costTotal?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type MaintenanceMaxOrderByAggregateInput = {
@@ -534,6 +559,7 @@ export type MaintenanceMaxOrderByAggregateInput = {
   serviceProvider?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -550,6 +576,7 @@ export type MaintenanceMinOrderByAggregateInput = {
   serviceProvider?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -558,6 +585,7 @@ export type MaintenanceSumOrderByAggregateInput = {
   odometer_km?: Prisma.SortOrder
   odometer_hour?: Prisma.SortOrder
   costTotal?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type MaintenanceScalarRelationFilter = {
@@ -714,6 +742,7 @@ export type MaintenanceCreateWithoutUserInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   type: Prisma.MaintenanceTypeCreateNestedOneWithoutMaintenancesInput
@@ -732,6 +761,7 @@ export type MaintenanceUncheckedCreateWithoutUserInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   parts?: Prisma.MaintenancePartUncheckedCreateNestedManyWithoutMaintenanceInput
@@ -778,6 +808,7 @@ export type MaintenanceScalarWhereInput = {
   serviceProvider?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   notes?: Prisma.StringNullableFilter<"Maintenance"> | string | null
   image?: Prisma.StringNullableFilter<"Maintenance"> | string | null
+  sizeBytes?: Prisma.IntFilter<"Maintenance"> | number
   createdAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
 }
@@ -791,6 +822,7 @@ export type MaintenanceCreateWithoutVehicleInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   type: Prisma.MaintenanceTypeCreateNestedOneWithoutMaintenancesInput
@@ -809,6 +841,7 @@ export type MaintenanceUncheckedCreateWithoutVehicleInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   parts?: Prisma.MaintenancePartUncheckedCreateNestedManyWithoutMaintenanceInput
@@ -849,6 +882,7 @@ export type MaintenanceCreateWithoutTypeInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutMaintenancesInput
@@ -867,6 +901,7 @@ export type MaintenanceUncheckedCreateWithoutTypeInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   parts?: Prisma.MaintenancePartUncheckedCreateNestedManyWithoutMaintenanceInput
@@ -907,6 +942,7 @@ export type MaintenanceCreateWithoutPartsInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   type: Prisma.MaintenanceTypeCreateNestedOneWithoutMaintenancesInput
@@ -926,6 +962,7 @@ export type MaintenanceUncheckedCreateWithoutPartsInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -955,6 +992,7 @@ export type MaintenanceUpdateWithoutPartsInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.MaintenanceTypeUpdateOneRequiredWithoutMaintenancesNestedInput
@@ -974,6 +1012,7 @@ export type MaintenanceUncheckedUpdateWithoutPartsInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -989,6 +1028,7 @@ export type MaintenanceCreateManyUserInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1002,6 +1042,7 @@ export type MaintenanceUpdateWithoutUserInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.MaintenanceTypeUpdateOneRequiredWithoutMaintenancesNestedInput
@@ -1020,6 +1061,7 @@ export type MaintenanceUncheckedUpdateWithoutUserInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parts?: Prisma.MaintenancePartUncheckedUpdateManyWithoutMaintenanceNestedInput
@@ -1036,6 +1078,7 @@ export type MaintenanceUncheckedUpdateManyWithoutUserInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1051,6 +1094,7 @@ export type MaintenanceCreateManyVehicleInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1064,6 +1108,7 @@ export type MaintenanceUpdateWithoutVehicleInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.MaintenanceTypeUpdateOneRequiredWithoutMaintenancesNestedInput
@@ -1082,6 +1127,7 @@ export type MaintenanceUncheckedUpdateWithoutVehicleInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parts?: Prisma.MaintenancePartUncheckedUpdateManyWithoutMaintenanceNestedInput
@@ -1098,6 +1144,7 @@ export type MaintenanceUncheckedUpdateManyWithoutVehicleInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1113,6 +1160,7 @@ export type MaintenanceCreateManyTypeInput = {
   serviceProvider?: string | null
   notes?: string | null
   image?: string | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1126,6 +1174,7 @@ export type MaintenanceUpdateWithoutTypeInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutMaintenancesNestedInput
@@ -1144,6 +1193,7 @@ export type MaintenanceUncheckedUpdateWithoutTypeInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parts?: Prisma.MaintenancePartUncheckedUpdateManyWithoutMaintenanceNestedInput
@@ -1160,6 +1210,7 @@ export type MaintenanceUncheckedUpdateManyWithoutTypeInput = {
   serviceProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1207,6 +1258,7 @@ export type MaintenanceSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   serviceProvider?: boolean
   notes?: boolean
   image?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   type?: boolean | Prisma.MaintenanceTypeDefaultArgs<ExtArgs>
@@ -1228,6 +1280,7 @@ export type MaintenanceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   serviceProvider?: boolean
   notes?: boolean
   image?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   type?: boolean | Prisma.MaintenanceTypeDefaultArgs<ExtArgs>
@@ -1247,6 +1300,7 @@ export type MaintenanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   serviceProvider?: boolean
   notes?: boolean
   image?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   type?: boolean | Prisma.MaintenanceTypeDefaultArgs<ExtArgs>
@@ -1266,11 +1320,12 @@ export type MaintenanceSelectScalar = {
   serviceProvider?: boolean
   notes?: boolean
   image?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MaintenanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "userId" | "date" | "odometer_km" | "odometer_hour" | "typeId" | "costTotal" | "serviceProvider" | "notes" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenance"]>
+export type MaintenanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "userId" | "date" | "odometer_km" | "odometer_hour" | "typeId" | "costTotal" | "serviceProvider" | "notes" | "image" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenance"]>
 export type MaintenanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   type?: boolean | Prisma.MaintenanceTypeDefaultArgs<ExtArgs>
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1309,6 +1364,7 @@ export type $MaintenancePayload<ExtArgs extends runtime.Types.Extensions.Interna
     serviceProvider: string | null
     notes: string | null
     image: string | null
+    sizeBytes: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["maintenance"]>
@@ -1749,6 +1805,7 @@ export interface MaintenanceFieldRefs {
   readonly serviceProvider: Prisma.FieldRef<"Maintenance", 'String'>
   readonly notes: Prisma.FieldRef<"Maintenance", 'String'>
   readonly image: Prisma.FieldRef<"Maintenance", 'String'>
+  readonly sizeBytes: Prisma.FieldRef<"Maintenance", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Maintenance", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Maintenance", 'DateTime'>
 }

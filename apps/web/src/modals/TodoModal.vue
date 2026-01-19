@@ -140,8 +140,13 @@ const onSubmit = handleSubmit(async (values) => {
             <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
           </div>
         </Field>
-        <Input name="title" placeholder="To-do" type="text" data-cy="todo-title-input" />
-        <Textarea name="description" placeholder="To-do description" data-cy="todo-description-input" />
+        <Input name="title" placeholder="To-do" type="text" data-cy="todo-title-input" :maxlength="100" />
+        <Textarea
+          name="description"
+          placeholder="To-do description"
+          data-cy="todo-description-input"
+          :maxlength="500"
+        />
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Field v-slot="{ value, handleChange }" name="priority">

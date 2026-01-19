@@ -24,6 +24,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { Extend } from 'zod/v4/core/util.cjs';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Injectable()
 export class VehiclesService {
@@ -33,6 +34,7 @@ export class VehiclesService {
     private vehicleRepository: VehicleRepository,
     private vehicleTransformer: VehicleTransformerService,
     private authValidationService: AuthValidationService,
+    private limitsService: LimitsService,
   ) {}
 
   // ***       Management       ***
@@ -49,8 +51,11 @@ export class VehiclesService {
           field: 'type',
         });
       }
-      // ** 1. Create the vehicle
 
+      // Validate that user can create more vehicles
+      const byteSize = await this.limitsService.canCreateVehicle(userSession.user.id, vehicleData);
+
+      // ** 1. Create the vehicle
       const odometer_is_distance_type = vehicleData.odometerType !== 'HOUR';
       let formattedDistanceOdometer: number | null = vehicleData.odometer || null;
 
@@ -65,20 +70,28 @@ export class VehiclesService {
         formattedDistanceOdometer = this.unitConversion.milesToKm(vehicleData.odometer);
       }
 
-      const vehicle = await this.prisma.vehicle.create({
-        data: {
-          ...formattedVehicleData,
+      const vehicle = await this.prisma.$transaction(async (tx) => {
+        // Create vehicle
+        const vehicle = await this.prisma.vehicle.create({
+          data: {
+            ...formattedVehicleData,
 
-          ownerId: userSession.user.id,
+            ownerId: userSession.user.id,
+            sizeBytes: byteSize,
 
-          initialOdometer_km: odometer_is_distance_type ? formattedDistanceOdometer : null,
-          odometer_km: odometer_is_distance_type ? formattedDistanceOdometer : null,
+            initialOdometer_km: odometer_is_distance_type ? formattedDistanceOdometer : null,
+            odometer_km: odometer_is_distance_type ? formattedDistanceOdometer : null,
 
-          initialOdometer_hour: !odometer_is_distance_type ? formattedDistanceOdometer : null,
-          odometer_hour: !odometer_is_distance_type ? formattedDistanceOdometer : null,
-        },
+            initialOdometer_hour: !odometer_is_distance_type ? formattedDistanceOdometer : null,
+            odometer_hour: !odometer_is_distance_type ? formattedDistanceOdometer : null,
+          },
+        });
+
+        // Update user's storage usage
+        await this.limitsService.incrementStorageUsage(tx, userSession.user.id, 'VEHICLE', byteSize);
+
+        return vehicle;
       });
-
       return { newVehicleId: vehicle.id };
 
       // Link the vehicle to the user's private pool
@@ -103,12 +116,50 @@ export class VehiclesService {
 
   async delete(userSession: UserSession, vehicleId: string) {
     console.log('Deleting vehicle with ID:', vehicleId);
+
+    // TODO: Delete images from storage and update storage usage accordingly
     try {
-      await this.prisma.vehicle.delete({
-        where: {
-          id: vehicleId,
-          ownerId: userSession.user.id,
+      const vehicle = await this.prisma.vehicle.findUniqueOrThrow({
+        where: { id: vehicleId, ownerId: userSession.user.id },
+        select: {
+          sizeBytes: true,
+          id: true,
+          image: true,
+          refills: { select: { sizeBytes: true } },
+          maintenances: { select: { sizeBytes: true } },
+          todos: { select: { sizeBytes: true } },
+          notes: { select: { sizeBytes: true } },
+          shoppingListItems: { select: { sizeBytes: true } },
         },
+      });
+
+      const vehicleBytes = vehicle.sizeBytes;
+      const refillsBytes = vehicle.refills.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+      const maintenancesBytes = vehicle.maintenances.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+      const todosBytes = vehicle.todos.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+      const notesBytes = vehicle.notes.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+      const shoppingListItemsBytes = vehicle.shoppingListItems.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+
+      await this.prisma.$transaction(async (tx) => {
+        await Promise.all([
+          await tx.vehicle.delete({ where: { id: vehicle.id } }),
+          await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'VEHICLE', vehicleBytes),
+          refillsBytes > 0 &&
+            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'REFILL', refillsBytes)),
+          maintenancesBytes > 0 &&
+            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'MAINTENANCE', maintenancesBytes)),
+          todosBytes > 0 &&
+            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'TODO', todosBytes)),
+          notesBytes > 0 &&
+            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'NOTE', notesBytes)),
+          shoppingListItemsBytes > 0 &&
+            (await this.limitsService.decrementStorageUsage(
+              tx,
+              userSession.user.id,
+              'SHOPPING_LIST',
+              shoppingListItemsBytes,
+            )),
+        ]);
       });
     } catch (error) {
       console.error('Error deleting vehicle:', error);

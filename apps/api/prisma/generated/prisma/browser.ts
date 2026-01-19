@@ -18,10 +18,25 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model SubscriptionPlan
+ * 
+ */
+export type SubscriptionPlan = Prisma.SubscriptionPlanModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model StorageUsage
+ * 
+ */
+export type StorageUsage = Prisma.StorageUsageModel
 /**
  * Model QuickLink
  * 
@@ -47,6 +62,11 @@ export type VehiclePart = Prisma.VehiclePartModel
  * 
  */
 export type Vehicle = Prisma.VehicleModel
+/**
+ * Model Refill
+ * 
+ */
+export type Refill = Prisma.RefillModel
 /**
  * Model Maintenance
  * 
@@ -102,11 +122,6 @@ export type PoolVehicle = Prisma.PoolVehicleModel
  * 
  */
 export type PoolInvite = Prisma.PoolInviteModel
-/**
- * Model Refill
- * 
- */
-export type Refill = Prisma.RefillModel
 /**
  * Model VehicleMonthlyStatistics
  * 

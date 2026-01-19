@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Todo as PrismaTodo, Vehicle, User } from 'prisma/generated/prisma/client';
 import { Todo, TodoSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { LimitsService } from 'src/limits/limits.service';
 
 type TodoWithRelations = PrismaTodo & {
   createdBy: Pick<User, 'name' | 'image'> | null;
@@ -20,33 +21,36 @@ export class TodosService {
     private readonly unitConversion: UnitConversionService,
     private readonly vehicleRepo: VehicleRepository,
     private readonly authValidation: AuthValidationService,
+    private readonly limitsService: LimitsService,
   ) {}
 
   async createTodo(userSession: UserSession, todoDto: TodoSchemaType): Promise<Todo> {
-    await this.authValidation.canCreateLogs(userSession.user.id, todoDto.vehicleId);
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: todoDto.vehicleId },
-    });
+    // validate and enforce access
+    const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, todoDto.vehicleId);
+    const sizeBytes = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, todoDto);
 
-    if (!vehicle) throw new Error('Vehicle not found');
     const { dueOdometer_km, dueOdometer_hour } = this.normalizeOdometerForStorage(todoDto.dueOdometer, vehicle);
 
-    const createdTodo = await this.prisma.todo.create({
-      data: {
-        vehicleId: todoDto.vehicleId,
-        title: todoDto.title,
-        description: todoDto.description,
-        priority: todoDto.priority,
-        isCompleted: false,
-        dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
-        dueOdometer_km,
-        dueOdometer_hour,
-        createdById: userSession.user.id,
-      },
-      include: this.getTodoInclude(),
+    const newTodo = await this.prisma.$transaction(async (tx) => {
+      await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'TODO', sizeBytes);
+      return await tx.todo.create({
+        data: {
+          vehicleId: todoDto.vehicleId,
+          title: todoDto.title,
+          description: todoDto.description,
+          priority: todoDto.priority,
+          isCompleted: false,
+          dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
+          dueOdometer_km,
+          dueOdometer_hour,
+          createdById: userSession.user.id,
+          sizeBytes,
+        },
+        include: this.getTodoInclude(),
+      });
     });
 
-    return this.formatTodo(createdTodo);
+    return this.formatTodo(newTodo);
   }
 
   async getAllTodosForUser(userSession: UserSession): Promise<Todo[]> {
@@ -153,31 +157,44 @@ export class TodosService {
     if (!todo) {
       throw new Error('Todo not found');
     }
-    await this.authValidation.canDeleteLogs(userSession.user.id, todo.vehicle.id);
-    await this.prisma.todo.delete({
-      where: { id: todoId },
+    const vehicle = await this.authValidation.canDeleteLogs(userSession.user.id, todo.vehicle.id);
+
+    await this.prisma.$transaction(async (tx) => {
+      await this.limitsService.decrementStorageUsage(tx, vehicle.ownerId, 'TODO', todo.sizeBytes);
+      await tx.todo.delete({ where: { id: todoId } });
     });
   }
 
   async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType): Promise<Todo> {
-    await this.authValidation.canEditLogs(userSession.user.id, todoDto.vehicleId);
-
-    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: todoDto.vehicleId } });
-    if (!vehicle) throw new Error('Vehicle not found');
-    const { dueOdometer_km, dueOdometer_hour } = this.normalizeOdometerForStorage(todoDto.dueOdometer, vehicle);
-
-    const updatedTodo = await this.prisma.todo.update({
-      where: { id: todoId },
-      data: {
-        vehicleId: todoDto.vehicleId,
-        title: todoDto.title,
-        description: todoDto.description,
-        priority: todoDto.priority,
-        dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
-        dueOdometer_km,
-        dueOdometer_hour,
+    const vehicle = await this.authValidation.canEditLogs(userSession.user.id, todoDto.vehicleId);
+    const oldTodo = await this.prisma.todo.findUnique({ where: { id: todoId } });
+    if (!oldTodo) throw new NotFoundException('Todo not found');
+    const newSizeBytes = await this.limitsService.canUpdateLog(
+      userSession.user.id,
+      vehicle.ownerId,
+      oldTodo?.sizeBytes,
+      {
+        ...oldTodo,
+        ...todoDto,
       },
-      include: this.getTodoInclude(),
+    );
+
+    const { dueOdometer, dueDate, ...directFields } = todoDto;
+    const { dueOdometer_km, dueOdometer_hour } = this.normalizeOdometerForStorage(dueOdometer, vehicle);
+
+    const updatedTodo = await this.prisma.$transaction(async (tx) => {
+      await this.limitsService.syncStorageUsage(tx, vehicle.ownerId, 'TODO', oldTodo.sizeBytes, newSizeBytes);
+      return tx.todo.update({
+        where: { id: todoId },
+        data: {
+          ...directFields,
+          dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
+          dueOdometer_km,
+          dueOdometer_hour,
+          sizeBytes: newSizeBytes,
+        },
+        include: this.getTodoInclude(),
+      });
     });
 
     return this.formatTodo(updatedTodo);

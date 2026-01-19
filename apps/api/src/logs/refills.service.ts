@@ -6,6 +6,7 @@ import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { Extend } from 'zod/v4/core/util.cjs';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Injectable()
 export class RefillsService {
@@ -13,48 +14,29 @@ export class RefillsService {
     private prisma: PrismaService,
     private unitConversion: UnitConversionService,
     private authValidation: AuthValidationService,
+    private limitsService: LimitsService,
   ) {}
 
   async createRefill(UserSession: UserSession, refillData: RefillSchemaOutput): Promise<void> {
     // 1. Check if the user has permission to create logs for the vehicle
-    await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
+    const vehicle = await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
+    // validate user storage limits
+    const byteSize = await this.limitsService.canCreateLog(UserSession.user.id, vehicle.ownerId, refillData);
 
     // 2. Fetch user, vehicle and previous log data
-    const [user, vehicle, previousLog] = (await Promise.all([
+    const [user, previousLog] = (await Promise.all([
       this.prisma.user.findUnique({
         where: { id: UserSession.user.id },
         select: {
           volumeUnit: true,
         },
       }),
-      this.prisma.vehicle.findUnique({
-        where: { id: refillData.vehicleId },
-        select: {
-          odometerType: true,
-          initialOdometer_km: true,
-          initialOdometer_hour: true,
-          id: true,
-          lifetimeTotalFuelConsumed_L: true,
-          lifetimeTotalCost: true,
-          lifetimeTotalValidFuelForConsumption_L: true,
-          lifetimeTotalValidUnitsForConsumption_km: true,
-          lifetimeTotalValidUnitsForConsumption_hour: true,
-        },
-      }),
+
       this.prisma.refill.findFirst({
         where: { vehicleId: refillData.vehicleId },
         orderBy: { date: 'desc' },
       }),
-    ])) as [
-      { volumeUnit: User['volumeUnit'] } | null,
-      {
-        odometerType: Vehicle['odometerType'];
-        initialOdometer_km: Vehicle['initialOdometer_km'];
-        initialOdometer_hour: Vehicle['initialOdometer_hour'];
-        id: Vehicle['id'];
-      } | null,
-      Refill | null,
-    ];
+    ])) as [{ volumeUnit: User['volumeUnit'] } | null, Refill | null];
     if (!user || !vehicle) {
       // Should never happen, but just to satisfy TypeScript
       throw new Error('User or Vehicle not found');
@@ -68,7 +50,7 @@ export class RefillsService {
     this.validateOdometerIncrease(previousLog, normalizedOdometer, isOdometerHourly);
     const odometerDelta = this.calculateOdometerDelta(previousLog, normalizedOdometer, isOdometerHourly);
     // 4. Start prisma transaction
-    await this.prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
+    await this.prisma.$transaction(async (tx) => {
       let consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null } = {
         consumption: null,
         validFuel: null,
@@ -78,7 +60,7 @@ export class RefillsService {
       // Calculate consumption only if full refill
       if (refillData.fullRefill) {
         consumptionResult = await this.calculateConsumption(
-          prisma,
+          tx,
           refillData,
           normalizedOdometer,
           fuelLiters,
@@ -87,7 +69,7 @@ export class RefillsService {
       }
 
       // Create refill
-      await prisma.refill.create({
+      await tx.refill.create({
         data: {
           vehicleId: refillData.vehicleId,
           userId: UserSession.user.id,
@@ -102,11 +84,12 @@ export class RefillsService {
           notes: refillData.notes,
           consumption_L_per_100km: isOdometerHourly ? null : consumptionResult.consumption,
           consumption_L_per_hour: isOdometerHourly ? consumptionResult.consumption : null,
+          sizeBytes: byteSize,
         },
       });
 
       // Update vehicle with new odometer + lifetime stats
-      await prisma.vehicle.update({
+      await tx.vehicle.update({
         where: { id: vehicle.id },
         data: {
           // Current odometer
@@ -140,7 +123,7 @@ export class RefillsService {
 
       //  Update monthly statistics
       await this.updateMonthlyStatistics(
-        prisma,
+        tx,
         refillData.vehicleId,
         refillData.date,
         fuelLiters,
@@ -149,6 +132,9 @@ export class RefillsService {
         odometerDelta,
         isOdometerHourly,
       );
+
+      // Update user's storage usage
+      await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'REFILL', byteSize);
     });
   }
 

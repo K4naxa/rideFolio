@@ -7,23 +7,48 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ROLE {
+  USER
+  ADMIN
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+  TRIALING
+}
+
+enum StorageUsageCategory {
+  VEHICLE
+  IMAGE
+  NOTE
+  REFILL
+  MAINTENANCE
+  TODO
+  SHOPPING_LIST
+  QUICK_LINK
+}
+
 // ** VEHICLE ENUMS
 enum FuelTypes {
   GASOLINE
   DIESEL
   HYBRID
 }
+
 // enum for users preferred measurement system
 enum OdometerTypes {
   KILOMETER
   MILE
   HOUR
 }
+
 enum VolumeUnitTypes {
   LITER
   GALLON
 }
-
 
 enum DistanceConsumptionTypes {
   KILOMETERS_PER_LITER
@@ -42,7 +67,6 @@ enum TimeConsumptionTypes {
   HOURS_PER_GALLON
 }
 
-
 enum NotificationType {
   POOL_INVITE
   POOL_INVITE_ACCEPTED
@@ -55,7 +79,7 @@ enum NotificationType {
 // ** POOL INFORMATION
 enum PoolType {
   PRIVATE // A user's personal default pool
-  SHARED  // A standard shared pool
+  SHARED // A standard shared pool
   // ASSIGNED // A pool assigned to a user, typically for a specific vehicle or purpose
 }
 
@@ -72,18 +96,19 @@ enum PoolInviteStatus {
   DECLINED // Invite has been declined
 }
 
-
 // ---- TODO ENUMS
 enum TodoDueTypes {
   DATE
   ODOMETER
   HOUR
 }
+
 enum TodoStatus {
   PENDING
   COMPLETED
   CANCELED
 }
+
 enum TodoPriority {
   LOW
   MEDIUM
@@ -91,23 +116,75 @@ enum TodoPriority {
   CRITICAL
 }
 
+model SubscriptionPlan {
+  id      String @id @default(cuid())
+  code    String @unique // e.g. 'FREE', 'PRO', 'ENTERPRISE'
+  nameKey String // i18n key for plan name
 
+  // Pricing for display purposes
+  PriceCents Int    @default(0) // Price in cents
+  currency   String @default("EUR") // Currency code, e.g. "EUR", "USD"
+  interval   String @default("MONTH") // e.g. "MONTH", "YEAR"
 
+  // Limits
+  storageLimitBytes BigInt //  Use -1 for Unlimited.
+  vehicleLimit      Int // Use -1 for Unlimited.
 
-model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  emailVerified Boolean @default(false)
-  image     String?
+  // PAYMENT PROVIDER MAPPING
+  // ID To link DB to payment provider plans
+  stripePriceId String? @unique
+
+  subscriptions Subscription[]
+  users         User[] // users on this plan
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  volumeUnit   VolumeUnitTypes @default(LITER)
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+  planId String
 
-  consumptionUnitCode_distance  DistanceConsumptionTypes @default(LITERS_PER_100KM)
-  consumptionUnitCode_hour      TimeConsumptionTypes @default(LITERS_PER_HOUR)
-  currency                  String @default("EUR") // Default to Euro
+  // PROVIDER DATA
+  stripeSubscriptionId String @unique
+  stripeCustomerId     String
+
+  status SubscriptionStatus @default(ACTIVE)
+
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+
+  // Did they click 'Cancel Subscription'? Access remains until period end.
+  cancelAtPeriodEnd Boolean          @default(false)
+  user              User             @relation(fields: [userId], references: [id])
+  plan              SubscriptionPlan @relation(fields: [planId], references: [id])
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  role ROLE @default(USER)
+
+  planId       String
+  plan         SubscriptionPlan @relation(fields: [planId], references: [id])
+  subscription Subscription?
+
+  storageLimitBytes BigInt         @default(0) // synced from plan limits, but stored here for quick access
+  storageUsageBytes BigInt         @default(0)
+  storageUsage      StorageUsage[]
+
+  volumeUnit VolumeUnitTypes @default(LITER)
+
+  consumptionUnitCode_distance DistanceConsumptionTypes @default(LITERS_PER_100KM)
+  consumptionUnitCode_hour     TimeConsumptionTypes     @default(LITERS_PER_HOUR)
+  currency                     String                   @default("EUR") // Default to Euro
 
   // A user can be a member of many pools.
   poolMemberships PoolMember[]
@@ -127,24 +204,38 @@ model User {
 
   notifications Notification[]
 
+  createdTodos      Todo[]             @relation("CreatedBy")
+  completedTodos    Todo[]             @relation("CompletedBy")
+  notes             Note[]             @relation("CreatedBy")
+  shoppingListItems ShoppingListItem[] @relation("ShoppingListCreatedBy")
+  quickLinks        QuickLink[]
+
   // OAuth and Session relations
   accounts Account[]
   sessions Session[]
-  createdTodos Todo[] @relation("CreatedBy")
-  completedTodos Todo[] @relation("CompletedBy")
-  notes Note[] @relation("CreatedBy")
-  shoppingListItems ShoppingListItem[] @relation("ShoppingListCreatedBy")
-  quickLinks QuickLink[]
+}
+
+model StorageUsage {
+  id     String @id @default(cuid())
+  userId String
+
+  category StorageUsageCategory // e.g., "images", "notes", "logs"
+  bytes    BigInt               @default(0) // Number of bytes used in this category
+  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
 }
 
 model QuickLink {
-  id String @id @default(cuid())
+  id     String @id @default(cuid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  name String
-  url  String
+  name        String
+  url         String
   description String? @default("")
+
+  sizeBytes Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -152,88 +243,84 @@ model QuickLink {
   @@index([userId])
 }
 
-
 //  VEHICLE PARTS AND LOCATIONS
 model VehicleType {
-  id String @id @default(cuid())
-  code String @unique
+  id      String @id @default(cuid())
+  code    String @unique
   nameKey String
 
-  icon String?
-  isActive Boolean @default(true)
-  sortOrder Int @default(0)
+  icon      String?
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
 
   partLocations VehiclePartLocation[]
-  vehicleParts VehiclePart[]
+  vehicleParts  VehiclePart[]
 
   vehicles Vehicle[]
+
   @@index([code])
   @@index([isActive])
- }
+}
 
 model VehiclePartLocation {
-  id String @id @default(cuid())
-  code String
+  id      String @id @default(cuid())
+  code    String
   nameKey String
 
   // What vehicle type uses this part location
-  vehicleType VehicleType @relation(fields: [vehicleTypeId], references: [id])
+  vehicleType   VehicleType @relation(fields: [vehicleTypeId], references: [id])
   vehicleTypeId String
 
   // Parts that can be installed at this location
-  validForParts VehiclePart[]
+  validForParts    VehiclePart[]
   maintenanceParts MaintenancePart[]
 
   @@unique([vehicleTypeId, code])
   @@index([vehicleTypeId])
-
-  }
+}
 
 model VehiclePart {
-  id         String @id @default(cuid())
-  code       String 
-  nameKey    String
-  
+  id      String @id @default(cuid())
+  code    String
+  nameKey String
+
   categoryId String
   category   MaintenanceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   validLocations VehiclePartLocation[] // Locations where this part can be installed
-  vehicleTypes VehicleType[] // Types of vehicles that can use this part
+  vehicleTypes   VehicleType[] // Types of vehicles that can use this part
 
-  isCommon   Boolean @default(true)
-  sortOrder  Int     @default(0)
-  isActive   Boolean @default(true)
-  
+  isCommon  Boolean @default(true)
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   maintenanceParts MaintenancePart[]
-
-
 
   @@index([categoryId])
   @@index([isActive])
-  }
-
+}
 
 model Vehicle {
-  id   String   @id @default(cuid())
+  id   String @id @default(cuid())
   name String
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  type String
+  type        String
   vehicleType VehicleType @relation(fields: [type], references: [code], onDelete: Cascade)
 
   fuelType     FuelTypes
   odometerType OdometerTypes
-  make        String? @default("")
-  model       String? @default("")
-  year       Int?
-  vin             String?  
-  licensePlate    String?  
-  image           String?
+  make         String?       @default("")
+  model        String?       @default("")
+  year         Int?
+  vin          String?
+  licensePlate String?
+  image        String?
 
   // Initial odometer (Set once, during vehicle creation or when changing the odometer type distance / hour)
   initialOdometer_km   Float?
@@ -245,64 +332,96 @@ model Vehicle {
 
   // lastRefill Odometer (Used to validate new refills)
 
-
-  lastRefillOdometer_km   Float? @default(0) 
+  lastRefillOdometer_km   Float? @default(0)
   lastRefillOdometer_hour Float? @default(0)
 
   // Tracked Units
-  lifetimeTotalTrackedUnits_km    Float?
-  lifetimeTotalTrackedUnits_hour  Float?
+  lifetimeTotalTrackedUnits_km   Float?
+  lifetimeTotalTrackedUnits_hour Float?
 
-  lifetimeTotalFuelConsumed_L   Float? @default(0)
-  lifetimeTotalCost         Float? @default(0)
+  lifetimeTotalFuelConsumed_L Float? @default(0)
+  lifetimeTotalCost           Float? @default(0)
 
-  lifetimeTotalValidFuelForConsumption_L  Float? @default(0)
+  lifetimeTotalValidFuelForConsumption_L     Float? @default(0)
   lifetimeTotalValidUnitsForConsumption_km   Float? @default(0)
   lifetimeTotalValidUnitsForConsumption_hour Float? @default(0)
 
+  sizeBytes Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // A single vehicle can be linked to multiple pools via PoolVehicle.
-  pools    PoolVehicle[]
-  refills  Refill[]
-  maintenances Maintenance[]
+  pools             PoolVehicle[]
+  refills           Refill[]
+  maintenances      Maintenance[]
   monthlyStatistics VehicleMonthlyStatistics[]
-  todos Todo[]
-  notes Note[]
+  todos             Todo[]
+  notes             Note[]
   shoppingListItems ShoppingListItem[]
 
   @@index([ownerId])
- }
+}
 
+model Refill {
+  id        String   @id @default(cuid())
+  vehicleId String
+  userId    String?
+  date      DateTime
 
+  odometer_km   Float?
+  odometer_hour Float?
 
-model Maintenance {
-  id              String   @id @default(cuid())
-  vehicleId       String
-  userId          String?  
-  
-  date            DateTime
-  odometer_km   Float? 
-  odometer_hour Float? 
-  
-  typeId       String
-  type         MaintenanceType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  fullRefill    Boolean
+  skippedRefill Boolean
 
-  costTotal       Float?    
-  serviceProvider String? 
-  notes           String?  
-  image String?  
-  
+  fuelAmount_L Float
+  pricePerUnit Float?
+  costTotal    Float?
+  notes        String?
+
+  // Consumption
+  consumption_L_per_100km Float?
+  consumption_L_per_hour  Float?
+
+  sizeBytes Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  
+
+  @@index([vehicleId])
+  @@index([userId])
+  @@index([vehicleId, date])
+}
+
+model Maintenance {
+  id        String  @id @default(cuid())
+  vehicleId String
+  userId    String?
+
+  date          DateTime
+  odometer_km   Float?
+  odometer_hour Float?
+
+  typeId String
+  type   MaintenanceType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  costTotal       Float?
+  serviceProvider String?
+  notes           String?
+  image           String?
+
+  sizeBytes Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   // Many-to-many relationship with parts
   parts MaintenancePart[]
-  
+
   @@index([vehicleId])
   @@index([userId])
   @@index([vehicleId, date])
@@ -310,117 +429,123 @@ model Maintenance {
 }
 
 model MaintenanceType {
-  id String @id @default(cuid())
-  code String @unique // 'preventive', 'repair', etc.
+  id      String  @id @default(cuid())
+  code    String  @unique // 'preventive', 'repair', etc.
   nameKey String
-  icon String?
+  icon    String?
 
-  sortOrder Int @default(0)
-  isActive Boolean @default(true)
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
 
   maintenances Maintenance[]
+
   @@index([isActive])
   @@index([code])
 }
+
 model MaintenanceCategory {
-  id          String @id @default(cuid())
-  code        String @unique // 'engine', 'brakes', etc.
-  nameKey     String
-  sortOrder   Int    @default(0)
-  isActive    Boolean @default(true)
-  
+  id        String  @id @default(cuid())
+  code      String  @unique // 'engine', 'brakes', etc.
+  nameKey   String
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   parts VehiclePart[]
+
   @@index([isActive])
   @@index([code])
- }
+}
 
 model MaintenancePart {
-  id              String   @id @default(cuid())
+  id              String  @id @default(cuid())
   maintenanceId   String
   partId          String
-  groupId         String   
+  groupId         String
   // Where the parts / part was installed
-  locationId      String?   
+  locationId      String?
   // User given custom label & description for this part
   label           String? @default("")
   description     String? @default("")
   // This is used to store user's custom string
-  customPartLabel  String?
+  customPartLabel String?
 
-  maintenance     Maintenance           @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
-  part            VehiclePart           @relation(fields: [partId], references: [id], onDelete: Cascade)
-  location        VehiclePartLocation?  @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  maintenance Maintenance          @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+  part        VehiclePart          @relation(fields: [partId], references: [id], onDelete: Cascade)
+  location    VehiclePartLocation? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
   @@index([maintenanceId])
   @@index([partId])
- }
+}
 
 model Todo {
-  id String @id @default(cuid())
-  vehicleId String
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  title String
-  description String? @default("")
-  priority TodoPriority?
-  isCompleted Boolean @default(false)
+  id          String        @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  title       String
+  description String?       @default("")
+  priority    TodoPriority?
+  isCompleted Boolean       @default(false)
 
-  dueDate DateTime?
-  dueOdometer_km Float?
+  dueDate          DateTime?
+  dueOdometer_km   Float?
   dueOdometer_hour Float?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   completedAt_date DateTime?
-  completedAt_km Float?
+  completedAt_km   Float?
   completedAt_hour Float?
-  createdById String?
-  completedById String?
-  createdBy User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById      String?
+  completedById    String?
+
+  sizeBytes   Int
+  createdBy   User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   completedBy User? @relation("CompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+
   @@index([vehicleId])
   @@index([isCompleted])
+}
 
- }
-
-model Note{
-  id String @id @default(cuid())
+model Note {
+  id        String   @id @default(cuid())
   vehicleId String
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  title String? @default("")
-  content String? @default("")
-  tags String[]
-  pinned Boolean @default(false)
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  title     String?  @default("")
+  content   String?  @default("")
+  tags      String[]
+  pinned    Boolean  @default(false)
 
-  createdAt DateTime @default(now())
+  createdByUser User?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedAt     DateTime @updatedAt
+
+  sizeBytes   Int
+  createdAt   DateTime @default(now())
   createdById String?
-  createdByUser User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedAt DateTime @updatedAt
-
- }
+}
 
 model ShoppingListItem {
-  id String @id @default(cuid())
+  id        String  @id @default(cuid())
   vehicleId String
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  
-  name String
-  price Float?
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  name        String
+  price       Float?
   isPurchased Boolean @default(false)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   purchasedAt DateTime?
-  
+
+  sizeBytes   Int
   createdById String?
-  createdBy User? @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  
+  createdBy   User?   @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
   @@index([vehicleId])
   @@index([isPurchased])
- }
-
+}
 
 model Pool {
   id          String   @id @default(cuid())
@@ -440,40 +565,41 @@ model Pool {
   invites  PoolInvite[]
 
   // Settings that override default member permissions.
-  allowMembersToAddLogs   Boolean @default(true)
-  allowMembersToEditLogs  Boolean @default(false)
-  allowMembersToDeleteLogs Boolean @default(false)
+  allowMembersToAddLogs     Boolean @default(true)
+  allowMembersToEditLogs    Boolean @default(false)
+  allowMembersToDeleteLogs  Boolean @default(false)
   allowMembersToAddVehicles Boolean @default(false)
- }
+}
 
 model PoolMember {
-  id     String         @id @default(cuid())
-  role   PoolMemberRole @default(MEMBER)
-  poolId String
-  pool   Pool   @relation(fields: [poolId], references: [id], onDelete: Cascade)
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String         @id @default(cuid())
+  role      PoolMemberRole @default(MEMBER)
+  poolId    String
+  pool      Pool           @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   // A member joins a pool at a specific time.
-  createdAt DateTime @default(now())
+  createdAt DateTime       @default(now())
+
   // A user can only be in a pool once.
-  @@unique([poolId, userId]) 
+  @@unique([poolId, userId])
   @@index([poolId])
   @@index([userId])
- }
+}
 
 model PoolVehicle {
   id String @id @default(cuid())
 
-  poolId    String
-  pool      Pool    @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  poolId String
+  pool   Pool   @relation(fields: [poolId], references: [id], onDelete: Cascade)
 
   vehicleId String
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  
+
   // Settings that override default member permissions.
-  allowMembersToAddLogs     Boolean @default(true)
-  allowMembersToEditLogs    Boolean @default(false)
-  allowMembersToDeleteLogs  Boolean @default(false)
+  allowMembersToAddLogs    Boolean @default(true)
+  allowMembersToEditLogs   Boolean @default(false)
+  allowMembersToDeleteLogs Boolean @default(false)
 
   // The vehicle was added to the pool at a specific time.
   addedAt DateTime @default(now())
@@ -482,7 +608,7 @@ model PoolVehicle {
   @@unique([poolId, vehicleId])
   @@index([poolId])
   @@index([vehicleId])
- }
+}
 
 model PoolInvite {
   id String @id @default(cuid())
@@ -492,54 +618,22 @@ model PoolInvite {
   // The role the receiver will have if they accept.
   roleToGrant PoolMemberRole @default(MEMBER)
 
-  poolId  String
-  pool    Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  poolId String
+  pool   Pool   @relation(fields: [poolId], references: [id], onDelete: Cascade)
 
-  senderId   String
-  sender     User     @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   User   @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
 
-  receiverId    String
-  receiver      User    @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User   @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
 
   expiresAt DateTime
   createdAt DateTime @default(now())
 
- // The invite can only be sent once to a specific user for a specific pool.
+  // The invite can only be sent once to a specific user for a specific pool.
   @@unique([poolId, receiverId])
   @@index([receiverId])
- }
-
-model Refill {
-  id          String   @id @default(cuid())
-  vehicleId   String
-  userId      String? 
-  date        DateTime
-
-  odometer_km   Float? 
-  odometer_hour Float? 
-
-  fullRefill    Boolean
-  skippedRefill Boolean
-
-  fuelAmount_L  Float
-  pricePerUnit  Float?
-  costTotal     Float?
-  notes         String?
-
-  // Consumption
-  consumption_L_per_100km  Float?
-  consumption_L_per_hour     Float?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([vehicleId])
-  @@index([userId])
-  @@index([vehicleId, date])
- }
+}
 
 model VehicleMonthlyStatistics {
   id String @id @default(cuid())
@@ -548,24 +642,23 @@ model VehicleMonthlyStatistics {
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
   // The specific month and year for this statistic record
-  year Int
+  year  Int
   month Int // 1 for January, 12 for December
 
   // Totals used ONLY for accurate consumption calculation this month
-  monthlyValidUnitsForConsumption_km   Float   @default(0)
-  monthlyValidUnitsForConsumption_hour Float   @default(0)
-  monthlyValidFuelForConsumption_L    Float @default(0)
+  monthlyValidUnitsForConsumption_km   Float @default(0)
+  monthlyValidUnitsForConsumption_hour Float @default(0)
+  monthlyValidFuelForConsumption_L     Float @default(0)
 
   //shared 
-  totalFuelConsumed_L   Float @default(0)
-  totalFuelCost         Float @default(0)
-  totalMaintenanceCost  Float @default(0)
-  monthlyRunningCost    Float @default(0)
+  totalFuelConsumed_L  Float @default(0)
+  totalFuelCost        Float @default(0)
+  totalMaintenanceCost Float @default(0)
+  monthlyRunningCost   Float @default(0)
 
   // monthly units (distance / time )
-  monthlyOdometerUnits_km     Float @default(0)
-  monthlyOdometerUnits_hour   Float @default(0)
-
+  monthlyOdometerUnits_km   Float @default(0)
+  monthlyOdometerUnits_hour Float @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -573,70 +666,66 @@ model VehicleMonthlyStatistics {
   @@unique([vehicleId, year, month])
 }
 
-
 model Notification {
-  id String @id @default(cuid())
+  id     String @id @default(cuid())
   userId String // Recipient user ID
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type NotificationType 
+  type NotificationType
 
-  title String
-  message String
+  title    String
+  message  String
   metadata Json?
 
-  requiresAction Boolean @default(false) //  (e.g., invite)
-  isRead Boolean @default(false)
-  readAt DateTime?
+  requiresAction Boolean   @default(false) //  (e.g., invite)
+  isRead         Boolean   @default(false)
+  readAt         DateTime?
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   expiresAt DateTime?
 
   @@index([userId, isRead])
 }
 
-
-
 // ** Authentication and Authorization **
 model Account {
-  id                 String    @id @default(cuid())
-  userId             String                          // The ID of the user
-  accountId          String                          // The ID of the account as provided by the SSO or equal to userId for credential accounts
-  providerId         String
+  id         String @id @default(cuid())
+  userId     String // The ID of the user
+  accountId  String // The ID of the account as provided by the SSO or equal to userId for credential accounts
+  providerId String
 
-  accessToken        String?                         // The access token of the account. Returned by the provider
-  refreshToken       String?                         // The refresh token of the account. Returned by the provider
-  accessTokenExpiresAt DateTime?
+  accessToken           String? // The access token of the account. Returned by the provider
+  refreshToken          String? // The refresh token of the account. Returned by the provider
+  accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
-  scope              String?                         // The scope of the account. Returned by the provider
-  idToken           String?                          // The ID token of the account. Returned by the provider
-  password          String?                          // The password of the account. Mainly used for email and password authentication
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  scope                 String? // The scope of the account. Returned by the provider
+  idToken               String? // The ID token of the account. Returned by the provider
+  password              String? // The password of the account. Mainly used for email and password authentication
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Verification {
   id         String   @id @default(cuid())
-  identifier String                         // The identifier for the verification request
-  value      String   @unique               // The value to be verified
+  identifier String // The identifier for the verification request
+  value      String   @unique // The value to be verified
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
- }
+}
 
 model Session {
-  id           String   @id @default(cuid())
-  userId       String
-  token       String   @unique          // The unique session token
-  expiresAt    DateTime
-  ipAddress   String?
-  userAgent   String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique // The unique session token
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

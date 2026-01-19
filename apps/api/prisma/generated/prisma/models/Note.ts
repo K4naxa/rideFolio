@@ -20,8 +20,18 @@ export type NoteModel = runtime.Types.Result.DefaultSelection<Prisma.$NotePayloa
 
 export type AggregateNote = {
   _count: NoteCountAggregateOutputType | null
+  _avg: NoteAvgAggregateOutputType | null
+  _sum: NoteSumAggregateOutputType | null
   _min: NoteMinAggregateOutputType | null
   _max: NoteMaxAggregateOutputType | null
+}
+
+export type NoteAvgAggregateOutputType = {
+  sizeBytes: number | null
+}
+
+export type NoteSumAggregateOutputType = {
+  sizeBytes: number | null
 }
 
 export type NoteMinAggregateOutputType = {
@@ -30,9 +40,10 @@ export type NoteMinAggregateOutputType = {
   title: string | null
   content: string | null
   pinned: boolean | null
+  updatedAt: Date | null
+  sizeBytes: number | null
   createdAt: Date | null
   createdById: string | null
-  updatedAt: Date | null
 }
 
 export type NoteMaxAggregateOutputType = {
@@ -41,9 +52,10 @@ export type NoteMaxAggregateOutputType = {
   title: string | null
   content: string | null
   pinned: boolean | null
+  updatedAt: Date | null
+  sizeBytes: number | null
   createdAt: Date | null
   createdById: string | null
-  updatedAt: Date | null
 }
 
 export type NoteCountAggregateOutputType = {
@@ -53,12 +65,21 @@ export type NoteCountAggregateOutputType = {
   content: number
   tags: number
   pinned: number
+  updatedAt: number
+  sizeBytes: number
   createdAt: number
   createdById: number
-  updatedAt: number
   _all: number
 }
 
+
+export type NoteAvgAggregateInputType = {
+  sizeBytes?: true
+}
+
+export type NoteSumAggregateInputType = {
+  sizeBytes?: true
+}
 
 export type NoteMinAggregateInputType = {
   id?: true
@@ -66,9 +87,10 @@ export type NoteMinAggregateInputType = {
   title?: true
   content?: true
   pinned?: true
+  updatedAt?: true
+  sizeBytes?: true
   createdAt?: true
   createdById?: true
-  updatedAt?: true
 }
 
 export type NoteMaxAggregateInputType = {
@@ -77,9 +99,10 @@ export type NoteMaxAggregateInputType = {
   title?: true
   content?: true
   pinned?: true
+  updatedAt?: true
+  sizeBytes?: true
   createdAt?: true
   createdById?: true
-  updatedAt?: true
 }
 
 export type NoteCountAggregateInputType = {
@@ -89,9 +112,10 @@ export type NoteCountAggregateInputType = {
   content?: true
   tags?: true
   pinned?: true
+  updatedAt?: true
+  sizeBytes?: true
   createdAt?: true
   createdById?: true
-  updatedAt?: true
   _all?: true
 }
 
@@ -133,6 +157,18 @@ export type NoteAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: NoteAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: NoteSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: NoteMinAggregateInputType
@@ -163,6 +199,8 @@ export type NoteGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: NoteCountAggregateInputType | true
+  _avg?: NoteAvgAggregateInputType
+  _sum?: NoteSumAggregateInputType
   _min?: NoteMinAggregateInputType
   _max?: NoteMaxAggregateInputType
 }
@@ -174,10 +212,13 @@ export type NoteGroupByOutputType = {
   content: string | null
   tags: string[]
   pinned: boolean
+  updatedAt: Date
+  sizeBytes: number
   createdAt: Date
   createdById: string | null
-  updatedAt: Date
   _count: NoteCountAggregateOutputType | null
+  _avg: NoteAvgAggregateOutputType | null
+  _sum: NoteSumAggregateOutputType | null
   _min: NoteMinAggregateOutputType | null
   _max: NoteMaxAggregateOutputType | null
 }
@@ -207,9 +248,10 @@ export type NoteWhereInput = {
   content?: Prisma.StringNullableFilter<"Note"> | string | null
   tags?: Prisma.StringNullableListFilter<"Note">
   pinned?: Prisma.BoolFilter<"Note"> | boolean
+  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+  sizeBytes?: Prisma.IntFilter<"Note"> | number
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Note"> | string | null
-  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
@@ -221,9 +263,10 @@ export type NoteOrderByWithRelationInput = {
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
   createdByUser?: Prisma.UserOrderByWithRelationInput
 }
@@ -238,9 +281,10 @@ export type NoteWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringNullableFilter<"Note"> | string | null
   tags?: Prisma.StringNullableListFilter<"Note">
   pinned?: Prisma.BoolFilter<"Note"> | boolean
+  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+  sizeBytes?: Prisma.IntFilter<"Note"> | number
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Note"> | string | null
-  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
@@ -252,12 +296,15 @@ export type NoteOrderByWithAggregationInput = {
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   _count?: Prisma.NoteCountOrderByAggregateInput
+  _avg?: Prisma.NoteAvgOrderByAggregateInput
   _max?: Prisma.NoteMaxOrderByAggregateInput
   _min?: Prisma.NoteMinOrderByAggregateInput
+  _sum?: Prisma.NoteSumOrderByAggregateInput
 }
 
 export type NoteScalarWhereWithAggregatesInput = {
@@ -270,9 +317,10 @@ export type NoteScalarWhereWithAggregatesInput = {
   content?: Prisma.StringNullableWithAggregatesFilter<"Note"> | string | null
   tags?: Prisma.StringNullableListFilter<"Note">
   pinned?: Prisma.BoolWithAggregatesFilter<"Note"> | boolean
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Note"> | Date | string
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"Note"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Note"> | string | null
-  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Note"> | Date | string
 }
 
 export type NoteCreateInput = {
@@ -281,8 +329,9 @@ export type NoteCreateInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
-  createdAt?: Date | string
   updatedAt?: Date | string
+  sizeBytes: number
+  createdAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutNotesInput
   createdByUser?: Prisma.UserCreateNestedOneWithoutNotesInput
 }
@@ -294,9 +343,10 @@ export type NoteUncheckedCreateInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
+  updatedAt?: Date | string
+  sizeBytes: number
   createdAt?: Date | string
   createdById?: string | null
-  updatedAt?: Date | string
 }
 
 export type NoteUpdateInput = {
@@ -305,8 +355,9 @@ export type NoteUpdateInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutNotesNestedInput
   createdByUser?: Prisma.UserUpdateOneWithoutNotesNestedInput
 }
@@ -318,9 +369,10 @@ export type NoteUncheckedUpdateInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteCreateManyInput = {
@@ -330,9 +382,10 @@ export type NoteCreateManyInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
+  updatedAt?: Date | string
+  sizeBytes: number
   createdAt?: Date | string
   createdById?: string | null
-  updatedAt?: Date | string
 }
 
 export type NoteUpdateManyMutationInput = {
@@ -341,8 +394,9 @@ export type NoteUpdateManyMutationInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteUncheckedUpdateManyInput = {
@@ -352,9 +406,10 @@ export type NoteUncheckedUpdateManyInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteListRelationFilter = {
@@ -382,9 +437,14 @@ export type NoteCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
+}
+
+export type NoteAvgOrderByAggregateInput = {
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type NoteMaxOrderByAggregateInput = {
@@ -393,9 +453,10 @@ export type NoteMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type NoteMinOrderByAggregateInput = {
@@ -404,9 +465,14 @@ export type NoteMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
+}
+
+export type NoteSumOrderByAggregateInput = {
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type NoteCreateNestedManyWithoutCreatedByUserInput = {
@@ -508,8 +574,9 @@ export type NoteCreateWithoutCreatedByUserInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
-  createdAt?: Date | string
   updatedAt?: Date | string
+  sizeBytes: number
+  createdAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutNotesInput
 }
 
@@ -520,8 +587,9 @@ export type NoteUncheckedCreateWithoutCreatedByUserInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
-  createdAt?: Date | string
   updatedAt?: Date | string
+  sizeBytes: number
+  createdAt?: Date | string
 }
 
 export type NoteCreateOrConnectWithoutCreatedByUserInput = {
@@ -560,9 +628,10 @@ export type NoteScalarWhereInput = {
   content?: Prisma.StringNullableFilter<"Note"> | string | null
   tags?: Prisma.StringNullableListFilter<"Note">
   pinned?: Prisma.BoolFilter<"Note"> | boolean
+  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+  sizeBytes?: Prisma.IntFilter<"Note"> | number
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Note"> | string | null
-  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
 }
 
 export type NoteCreateWithoutVehicleInput = {
@@ -571,8 +640,9 @@ export type NoteCreateWithoutVehicleInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
-  createdAt?: Date | string
   updatedAt?: Date | string
+  sizeBytes: number
+  createdAt?: Date | string
   createdByUser?: Prisma.UserCreateNestedOneWithoutNotesInput
 }
 
@@ -582,9 +652,10 @@ export type NoteUncheckedCreateWithoutVehicleInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
+  updatedAt?: Date | string
+  sizeBytes: number
   createdAt?: Date | string
   createdById?: string | null
-  updatedAt?: Date | string
 }
 
 export type NoteCreateOrConnectWithoutVehicleInput = {
@@ -620,8 +691,9 @@ export type NoteCreateManyCreatedByUserInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
-  createdAt?: Date | string
   updatedAt?: Date | string
+  sizeBytes: number
+  createdAt?: Date | string
 }
 
 export type NoteUpdateWithoutCreatedByUserInput = {
@@ -630,8 +702,9 @@ export type NoteUpdateWithoutCreatedByUserInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutNotesNestedInput
 }
 
@@ -642,8 +715,9 @@ export type NoteUncheckedUpdateWithoutCreatedByUserInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteUncheckedUpdateManyWithoutCreatedByUserInput = {
@@ -653,8 +727,9 @@ export type NoteUncheckedUpdateManyWithoutCreatedByUserInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteCreateManyVehicleInput = {
@@ -663,9 +738,10 @@ export type NoteCreateManyVehicleInput = {
   content?: string | null
   tags?: Prisma.NoteCreatetagsInput | string[]
   pinned?: boolean
+  updatedAt?: Date | string
+  sizeBytes: number
   createdAt?: Date | string
   createdById?: string | null
-  updatedAt?: Date | string
 }
 
 export type NoteUpdateWithoutVehicleInput = {
@@ -674,8 +750,9 @@ export type NoteUpdateWithoutVehicleInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdByUser?: Prisma.UserUpdateOneWithoutNotesNestedInput
 }
 
@@ -685,9 +762,10 @@ export type NoteUncheckedUpdateWithoutVehicleInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteUncheckedUpdateManyWithoutVehicleInput = {
@@ -696,9 +774,10 @@ export type NoteUncheckedUpdateManyWithoutVehicleInput = {
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NoteUpdatetagsInput | string[]
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -710,9 +789,10 @@ export type NoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   content?: boolean
   tags?: boolean
   pinned?: boolean
+  updatedAt?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   createdById?: boolean
-  updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdByUser?: boolean | Prisma.Note$createdByUserArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
@@ -724,9 +804,10 @@ export type NoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   content?: boolean
   tags?: boolean
   pinned?: boolean
+  updatedAt?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   createdById?: boolean
-  updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdByUser?: boolean | Prisma.Note$createdByUserArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
@@ -738,9 +819,10 @@ export type NoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   content?: boolean
   tags?: boolean
   pinned?: boolean
+  updatedAt?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   createdById?: boolean
-  updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdByUser?: boolean | Prisma.Note$createdByUserArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
@@ -752,12 +834,13 @@ export type NoteSelectScalar = {
   content?: boolean
   tags?: boolean
   pinned?: boolean
+  updatedAt?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   createdById?: boolean
-  updatedAt?: boolean
 }
 
-export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "title" | "content" | "tags" | "pinned" | "createdAt" | "createdById" | "updatedAt", ExtArgs["result"]["note"]>
+export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "title" | "content" | "tags" | "pinned" | "updatedAt" | "sizeBytes" | "createdAt" | "createdById", ExtArgs["result"]["note"]>
 export type NoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   createdByUser?: boolean | Prisma.Note$createdByUserArgs<ExtArgs>
@@ -784,9 +867,10 @@ export type $NotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     content: string | null
     tags: string[]
     pinned: boolean
+    updatedAt: Date
+    sizeBytes: number
     createdAt: Date
     createdById: string | null
-    updatedAt: Date
   }, ExtArgs["result"]["note"]>
   composites: {}
 }
@@ -1218,9 +1302,10 @@ export interface NoteFieldRefs {
   readonly content: Prisma.FieldRef<"Note", 'String'>
   readonly tags: Prisma.FieldRef<"Note", 'String[]'>
   readonly pinned: Prisma.FieldRef<"Note", 'Boolean'>
+  readonly updatedAt: Prisma.FieldRef<"Note", 'DateTime'>
+  readonly sizeBytes: Prisma.FieldRef<"Note", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Note", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Note", 'String'>
-  readonly updatedAt: Prisma.FieldRef<"Note", 'DateTime'>
 }
     
 

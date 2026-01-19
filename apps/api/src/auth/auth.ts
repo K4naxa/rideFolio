@@ -17,8 +17,41 @@ export const createAuth = (emailService: EmailService) =>
       revokeSessionsOnPasswordReset: true,
     },
     user: {
+      additionalFields: {
+        planId: {
+          type: 'string',
+        },
+        storageLimitBytes: {
+          type: 'number',
+        },
+      },
       deleteUser: {
         enabled: true,
+      },
+    },
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (user) => {
+            try {
+              console.log('New user signed up: ', user.email);
+
+              // Fetch FREE subscription plan
+              const freePlan = await prisma.subscriptionPlan.findUnique({ where: { code: 'FREE' } });
+              if (!freePlan) throw new Error('FREE subscription plan not found in database');
+
+              return {
+                data: {
+                  ...user,
+                  planId: freePlan.id,
+                  storageLimitBytes: Number(freePlan.storageLimitBytes),
+                },
+              };
+            } catch (error) {
+              console.error('❌ Error assigning FREE subscription plan to new user:', error);
+            }
+          },
+        },
       },
     },
     emailVerification: {

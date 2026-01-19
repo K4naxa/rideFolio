@@ -34,6 +34,7 @@ export type RefillAvgAggregateOutputType = {
   costTotal: number | null
   consumption_L_per_100km: number | null
   consumption_L_per_hour: number | null
+  sizeBytes: number | null
 }
 
 export type RefillSumAggregateOutputType = {
@@ -44,6 +45,7 @@ export type RefillSumAggregateOutputType = {
   costTotal: number | null
   consumption_L_per_100km: number | null
   consumption_L_per_hour: number | null
+  sizeBytes: number | null
 }
 
 export type RefillMinAggregateOutputType = {
@@ -61,6 +63,7 @@ export type RefillMinAggregateOutputType = {
   notes: string | null
   consumption_L_per_100km: number | null
   consumption_L_per_hour: number | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +83,7 @@ export type RefillMaxAggregateOutputType = {
   notes: string | null
   consumption_L_per_100km: number | null
   consumption_L_per_hour: number | null
+  sizeBytes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -99,6 +103,7 @@ export type RefillCountAggregateOutputType = {
   notes: number
   consumption_L_per_100km: number
   consumption_L_per_hour: number
+  sizeBytes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -113,6 +118,7 @@ export type RefillAvgAggregateInputType = {
   costTotal?: true
   consumption_L_per_100km?: true
   consumption_L_per_hour?: true
+  sizeBytes?: true
 }
 
 export type RefillSumAggregateInputType = {
@@ -123,6 +129,7 @@ export type RefillSumAggregateInputType = {
   costTotal?: true
   consumption_L_per_100km?: true
   consumption_L_per_hour?: true
+  sizeBytes?: true
 }
 
 export type RefillMinAggregateInputType = {
@@ -140,6 +147,7 @@ export type RefillMinAggregateInputType = {
   notes?: true
   consumption_L_per_100km?: true
   consumption_L_per_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -159,6 +167,7 @@ export type RefillMaxAggregateInputType = {
   notes?: true
   consumption_L_per_100km?: true
   consumption_L_per_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -178,6 +187,7 @@ export type RefillCountAggregateInputType = {
   notes?: true
   consumption_L_per_100km?: true
   consumption_L_per_hour?: true
+  sizeBytes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -284,6 +294,7 @@ export type RefillGroupByOutputType = {
   notes: string | null
   consumption_L_per_100km: number | null
   consumption_L_per_hour: number | null
+  sizeBytes: number
   createdAt: Date
   updatedAt: Date
   _count: RefillCountAggregateOutputType | null
@@ -326,6 +337,7 @@ export type RefillWhereInput = {
   notes?: Prisma.StringNullableFilter<"Refill"> | string | null
   consumption_L_per_100km?: Prisma.FloatNullableFilter<"Refill"> | number | null
   consumption_L_per_hour?: Prisma.FloatNullableFilter<"Refill"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Refill"> | number
   createdAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -347,6 +359,7 @@ export type RefillOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrderInput | Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
@@ -371,6 +384,7 @@ export type RefillWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"Refill"> | string | null
   consumption_L_per_100km?: Prisma.FloatNullableFilter<"Refill"> | number | null
   consumption_L_per_hour?: Prisma.FloatNullableFilter<"Refill"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Refill"> | number
   createdAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
@@ -392,6 +406,7 @@ export type RefillOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrderInput | Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RefillCountOrderByAggregateInput
@@ -419,6 +434,7 @@ export type RefillScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"Refill"> | string | null
   consumption_L_per_100km?: Prisma.FloatNullableWithAggregatesFilter<"Refill"> | number | null
   consumption_L_per_hour?: Prisma.FloatNullableWithAggregatesFilter<"Refill"> | number | null
+  sizeBytes?: Prisma.IntWithAggregatesFilter<"Refill"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Refill"> | Date | string
 }
@@ -436,6 +452,7 @@ export type RefillCreateInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutRefillsInput
@@ -457,6 +474,7 @@ export type RefillUncheckedCreateInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +492,7 @@ export type RefillUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutRefillsNestedInput
@@ -495,6 +514,7 @@ export type RefillUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -514,6 +534,7 @@ export type RefillCreateManyInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -531,6 +552,7 @@ export type RefillUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -550,6 +572,7 @@ export type RefillUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -579,6 +602,7 @@ export type RefillCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -591,6 +615,7 @@ export type RefillAvgOrderByAggregateInput = {
   costTotal?: Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type RefillMaxOrderByAggregateInput = {
@@ -608,6 +633,7 @@ export type RefillMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -627,6 +653,7 @@ export type RefillMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -639,6 +666,7 @@ export type RefillSumOrderByAggregateInput = {
   costTotal?: Prisma.SortOrder
   consumption_L_per_100km?: Prisma.SortOrder
   consumption_L_per_hour?: Prisma.SortOrder
+  sizeBytes?: Prisma.SortOrder
 }
 
 export type RefillCreateNestedManyWithoutUserInput = {
@@ -746,6 +774,7 @@ export type RefillCreateWithoutUserInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutRefillsInput
@@ -765,6 +794,7 @@ export type RefillUncheckedCreateWithoutUserInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -813,6 +843,7 @@ export type RefillScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"Refill"> | string | null
   consumption_L_per_100km?: Prisma.FloatNullableFilter<"Refill"> | number | null
   consumption_L_per_hour?: Prisma.FloatNullableFilter<"Refill"> | number | null
+  sizeBytes?: Prisma.IntFilter<"Refill"> | number
   createdAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
 }
@@ -830,6 +861,7 @@ export type RefillCreateWithoutVehicleInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutCreatedRefillsInput
@@ -849,6 +881,7 @@ export type RefillUncheckedCreateWithoutVehicleInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -893,6 +926,7 @@ export type RefillCreateManyUserInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -910,6 +944,7 @@ export type RefillUpdateWithoutUserInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutRefillsNestedInput
@@ -929,6 +964,7 @@ export type RefillUncheckedUpdateWithoutUserInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -947,6 +983,7 @@ export type RefillUncheckedUpdateManyWithoutUserInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -965,6 +1002,7 @@ export type RefillCreateManyVehicleInput = {
   notes?: string | null
   consumption_L_per_100km?: number | null
   consumption_L_per_hour?: number | null
+  sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -982,6 +1020,7 @@ export type RefillUpdateWithoutVehicleInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutCreatedRefillsNestedInput
@@ -1001,6 +1040,7 @@ export type RefillUncheckedUpdateWithoutVehicleInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1019,6 +1059,7 @@ export type RefillUncheckedUpdateManyWithoutVehicleInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumption_L_per_100km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   consumption_L_per_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1040,6 +1081,7 @@ export type RefillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   notes?: boolean
   consumption_L_per_100km?: boolean
   consumption_L_per_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1061,6 +1103,7 @@ export type RefillSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   notes?: boolean
   consumption_L_per_100km?: boolean
   consumption_L_per_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1082,6 +1125,7 @@ export type RefillSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   notes?: boolean
   consumption_L_per_100km?: boolean
   consumption_L_per_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
@@ -1103,11 +1147,12 @@ export type RefillSelectScalar = {
   notes?: boolean
   consumption_L_per_100km?: boolean
   consumption_L_per_hour?: boolean
+  sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RefillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "userId" | "date" | "odometer_km" | "odometer_hour" | "fullRefill" | "skippedRefill" | "fuelAmount_L" | "pricePerUnit" | "costTotal" | "notes" | "consumption_L_per_100km" | "consumption_L_per_hour" | "createdAt" | "updatedAt", ExtArgs["result"]["refill"]>
+export type RefillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleId" | "userId" | "date" | "odometer_km" | "odometer_hour" | "fullRefill" | "skippedRefill" | "fuelAmount_L" | "pricePerUnit" | "costTotal" | "notes" | "consumption_L_per_100km" | "consumption_L_per_hour" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["refill"]>
 export type RefillInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Refill$userArgs<ExtArgs>
@@ -1142,6 +1187,7 @@ export type $RefillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     notes: string | null
     consumption_L_per_100km: number | null
     consumption_L_per_hour: number | null
+    sizeBytes: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["refill"]>
@@ -1583,6 +1629,7 @@ export interface RefillFieldRefs {
   readonly notes: Prisma.FieldRef<"Refill", 'String'>
   readonly consumption_L_per_100km: Prisma.FieldRef<"Refill", 'Float'>
   readonly consumption_L_per_hour: Prisma.FieldRef<"Refill", 'Float'>
+  readonly sizeBytes: Prisma.FieldRef<"Refill", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Refill", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Refill", 'DateTime'>
 }

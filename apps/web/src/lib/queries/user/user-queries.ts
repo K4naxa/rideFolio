@@ -1,7 +1,8 @@
 import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { TBasicProfile, Notification } from "@repo/validation";
+import { addNetworkDelay } from "@/lib/utils";
+import { type TBasicProfile, type Notification, type StorageUsageSummary } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 
 export function useUserQuery() {
@@ -20,5 +21,17 @@ export function useUserNotifications() {
     queryFn: async () => await fetchApi<Notification[]>("/users/notifications"),
     enabled: isAuthenticated,
     placeholderData: [],
+  });
+}
+
+export function useUserStorageSummary() {
+  const { isAuthenticated } = useAuth();
+  return useQuery({
+    queryKey: ["storage usage summary"],
+    queryFn: async () => {
+      await addNetworkDelay(1000);
+      return await fetchApi<StorageUsageSummary>("/users/storageSummary");
+    },
+    enabled: isAuthenticated,
   });
 }

@@ -9,6 +9,39 @@
 * 🟢 You can import this file directly.
 */
 
+export const ROLE = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+} as const
+
+export type ROLE = (typeof ROLE)[keyof typeof ROLE]
+
+
+export const SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  PAST_DUE: 'PAST_DUE',
+  CANCELED: 'CANCELED',
+  UNPAID: 'UNPAID',
+  TRIALING: 'TRIALING'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const StorageUsageCategory = {
+  VEHICLE: 'VEHICLE',
+  IMAGE: 'IMAGE',
+  NOTE: 'NOTE',
+  REFILL: 'REFILL',
+  MAINTENANCE: 'MAINTENANCE',
+  TODO: 'TODO',
+  SHOPPING_LIST: 'SHOPPING_LIST',
+  QUICK_LINK: 'QUICK_LINK'
+} as const
+
+export type StorageUsageCategory = (typeof StorageUsageCategory)[keyof typeof StorageUsageCategory]
+
+
 export const FuelTypes = {
   GASOLINE: 'GASOLINE',
   DIESEL: 'DIESEL',

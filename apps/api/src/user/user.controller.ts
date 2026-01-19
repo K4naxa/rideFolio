@@ -11,12 +11,14 @@ import {
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import z, { ZodType } from 'zod';
 import { NotificationService } from 'src/notifications/notification.service';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private notificationService: NotificationService,
+    private limitsService: LimitsService,
   ) {}
 
   @Get('me')
@@ -51,5 +53,10 @@ export class UsersController {
     @Body(new ZodValidationPipe(UpdatePreferenceSchema as ZodType)) data: UpdatePreferenceValues,
   ): Promise<TBasicProfile> {
     return await this.usersService.updatePreferences(session.user.id, data);
+  }
+
+  @Get('storageSummary')
+  async getStorageSummary(@Session() session: UserSession) {
+    return await this.limitsService.getUsageSummary(session.user.id);
   }
 }

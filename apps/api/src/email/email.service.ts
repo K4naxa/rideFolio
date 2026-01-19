@@ -21,8 +21,6 @@ export class EmailService {
   }
 
   async sendEmailVerification({ userEmail, token }: { userEmail: string; token: string }) {
-    console.log('Sending email verification to:', userEmail, 'with token:', token);
-
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
     const verificationUrl = `${frontendUrl}/verify-email?token=${token}`;
 
@@ -34,7 +32,7 @@ export class EmailService {
         text: `Please verify your email by clicking the following link: ${verificationUrl}`,
       });
 
-      this.logger.log(`Sent email verification to ${userEmail}`);
+      this.logger.log(`📧 Sent email verification to ${userEmail}`);
     } catch (error) {
       this.logger.error(`Failed to send email verification to ${userEmail}`, error);
       throw new Error('Failed to send verification email');
