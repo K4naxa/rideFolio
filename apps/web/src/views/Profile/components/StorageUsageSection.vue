@@ -104,7 +104,20 @@ const categoryColors: Record<string, string> = {
   TODO: "bg-todo",
   SHOPPING_LIST: "bg-green-300",
   QUICK_LINK: "bg-blue-300",
+  OTHER: "bg-muted-foreground",
 };
+
+const topCategoriesBreakdown = computed(() => {
+  const otherCategories = props.storage?.breakdown.slice(3) || [];
+  const topCategories = props.storage?.breakdown.slice(0, 3) || [];
+  return [
+    ...(topCategories || []),
+    {
+      category: "OTHER",
+      bytes: otherCategories.reduce((acc, curr) => acc + curr.bytes, 0),
+    },
+  ];
+});
 </script>
 <template>
   <div class="flex flex-col gap-8">
@@ -131,8 +144,8 @@ const categoryColors: Record<string, string> = {
         <!-- Break down by category -->
         <div class="hidden h-full w-full lg:block">
           <Label class="text-muted-foreground mb-6">Breakdown by Category</Label>
-          <div class="flex h-full w-full flex-1 flex-col gap-5">
-            <div v-for="category in props.storage?.breakdown" :key="category.category" class="space-y-1">
+          <div class="flex w-full flex-1 flex-col justify-between gap-6">
+            <div v-for="category in topCategoriesBreakdown" :key="category.category" class="space-y-1.5">
               <!--  headerl -->
               <div class="flex justify-between gap-6">
                 <div class="flex items-center gap-2 text-sm">
