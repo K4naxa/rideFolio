@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuth } from "@/lib/authClient";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import DropdownMenu from "./dropdown-menu/DropdownMenu.vue";
 import DropdownMenuTrigger from "./dropdown-menu/DropdownMenuTrigger.vue";
 import Avatar from "./avatar/Avatar.vue";
@@ -14,15 +14,19 @@ import { useThemeStore } from "@/stores/theme";
 import Icon from "../icons/Icon.vue";
 import { getInitials } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
+
+import { ref, watch } from "vue";
 
 const themeStore = useThemeStore();
 const { currentUser } = useCurrentUser();
 const { signOut } = useAuth();
+const isMobile = useIsMobile();
 </script>
 
 <!-- TODO: add a loading skeleton for the user trigger when fetching user data -->
 <template>
-  <DropdownMenu :modal="false">
+  <DropdownMenu :modal="false" v-if="!isMobile">
     <DropdownMenuTrigger
       class="hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5"
     >

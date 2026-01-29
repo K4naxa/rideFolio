@@ -196,16 +196,6 @@ const canCreateVehicle = computed(() => {
               />
             </div>
           </div>
-
-          <Separator class="mt-3" />
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <RouterLink to="/settings" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
-                <Icon name="settings" size="sm" />
-                Settings
-              </RouterLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarGroupContent>
       </SidebarGroup>
     </SidebarContent>

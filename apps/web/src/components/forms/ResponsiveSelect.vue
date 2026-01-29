@@ -112,6 +112,7 @@ function fromSelectValue(value: string): T {
       <Button
         role="combobox"
         :disabled="disabled"
+        variant="outline"
         :class="
           twMerge(
             'w-full justify-between font-normal',
@@ -136,23 +137,21 @@ function fromSelectValue(value: string): T {
         <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
       </DrawerHeader>
       <div class="px-4 pb-4">
-        <div class="flex flex-col gap-1" role="listbox">
-          <Button
+        <ul class="divide-border flex flex-col gap-1 divide-y" role="listbox">
+          <li
             v-for="option in options"
             :key="String(option.value)"
-            variant="ghost"
-            role="option"
             :aria-selected="modelValue === option.value"
             :disabled="option.disabled"
-            :class="twMerge('h-12 justify-start text-base', modelValue === option.value && 'bg-accent')"
+            :class="twMerge('flex h-12 items-center justify-start text-base', modelValue === option.value && '')"
             @click="handleSelect(option.value)"
           >
             <Icon :name="option.icon" v-if="option.icon" class="mr-3 h-5 w-5" />
             <span v-if="option.symbol" class="text-muted-foreground mr-2">{{ option.symbol }}</span>
             {{ option.label }}
             <Icon v-if="modelValue === option.value" name="check" class="text-primary ml-auto h-5 w-5" />
-          </Button>
-        </div>
+          </li>
+        </ul>
       </div>
       <DrawerFooter class="pt-2">
         <DrawerClose as-child>

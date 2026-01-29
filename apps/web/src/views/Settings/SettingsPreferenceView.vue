@@ -79,7 +79,7 @@ const consumptionUnitsHour = consumptionUnits_hour.map((unit) => {
           :modelValue="currentUser?.preferences.currency"
           placeholder="Select Currency"
           title="Currency"
-          description="Choose your preferred currency"
+          description="Choose your preferred currency (visual only)"
           triggerClass="w-50"
           @select="(value) => updatePreference({ key: 'currency', value })"
         />

@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import MobileQuickAddButton from "../AuthLayout/MobileQuickAddButton.vue";
-import type { IconProps } from "@/components/icons/Icon.vue";
 import Icon from "@/components/icons/Icon.vue";
 
-interface NavItem {
-  name: string;
-  route: string;
-  icon: IconProps["name"];
-}
-
-const navItems: NavItem[] = [
-  { name: "Home", route: "/dashboard", icon: "home" },
-  { name: "Notes", route: "", icon: "notes" },
-  { name: "Todos", route: "", icon: "todo" },
-  { name: "Profile", route: "", icon: "user" },
-];
+import UserDrawer from "@/components/drawers/UserDrawer.vue";
 </script>
 
 <template>
@@ -24,14 +12,23 @@ const navItems: NavItem[] = [
   >
     <nav class="flex w-full items-center justify-evenly pt-2">
       <!-- First two nav items -->
+
       <RouterLink
-        v-for="item in navItems.slice(0, 2)"
-        :key="item.name"
-        :to="item.route"
+        to="/dashboard"
         class="text-muted-foreground hover:text-foreground router-link-active:text-primary flex flex-1 flex-col items-center justify-center px-1 py-2 text-xs font-medium transition-colors duration-200"
+        active-class="text-primary"
       >
-        <Icon :name="item.icon" class="mb-1 size-5" />
-        <span class="text-xs">{{ item.name }}</span>
+        <Icon name="home" class="mb-1 size-5" />
+        <span class="text-xs">Home</span>
+      </RouterLink>
+
+      <RouterLink
+        to="/notes"
+        class="text-muted-foreground hover:text-foreground router-link-active:text-primary flex flex-1 flex-col items-center justify-center px-1 py-2 text-xs font-medium transition-colors duration-200"
+        active-class="text-primary"
+      >
+        <Icon name="notes" class="mb-1 size-5" />
+        <span class="text-xs">Notes</span>
       </RouterLink>
 
       <!-- Quick Add Button in the middle -->
@@ -39,16 +36,16 @@ const navItems: NavItem[] = [
         <MobileQuickAddButton />
       </div>
 
-      <!-- Last two nav items -->
       <RouterLink
-        v-for="item in navItems.slice(2)"
-        :key="item.name"
-        :to="item.route"
+        to="/todos"
         class="text-muted-foreground hover:text-foreground router-link-active:text-primary flex flex-1 flex-col items-center justify-center px-1 py-2 text-xs font-medium transition-colors duration-200"
+        active-class="text-primary"
       >
-        <Icon :name="item.icon" class="mb-1 size-5" />
-        <span class="text-xs">{{ item.name }}</span>
+        <Icon name="todo" class="mb-1 size-5" />
+        <span class="text-xs">Todos</span>
       </RouterLink>
+
+      <UserDrawer />
     </nav>
   </div>
 </template>
