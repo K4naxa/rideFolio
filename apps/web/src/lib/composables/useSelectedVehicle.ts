@@ -26,6 +26,7 @@ export function useSelectedVehicle(vehicleId: MaybeRef<string | undefined>) {
       undefined
     );
   });
+  const selectedVehicleTypeCode = computed(() => selectedVehicle.value?.vehicleData.type.code);
 
   watch(
     () => vehicleId,
@@ -41,7 +42,7 @@ export function useSelectedVehicle(vehicleId: MaybeRef<string | undefined>) {
     hasSelectedVehicle,
     selectedVehicle,
     selectedVehicleIcon,
-
+    selectedVehicleTypeCode,
     selectedVehicleOdometerUnit,
     selectedVehicleLastRefillOdometer,
   };

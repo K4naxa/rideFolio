@@ -32,7 +32,7 @@ export type MaintenancePartMinAggregateOutputType = {
   locationId: string | null
   label: string | null
   description: string | null
-  customPartLabel: string | null
+  customName: string | null
 }
 
 export type MaintenancePartMaxAggregateOutputType = {
@@ -43,7 +43,7 @@ export type MaintenancePartMaxAggregateOutputType = {
   locationId: string | null
   label: string | null
   description: string | null
-  customPartLabel: string | null
+  customName: string | null
 }
 
 export type MaintenancePartCountAggregateOutputType = {
@@ -54,7 +54,7 @@ export type MaintenancePartCountAggregateOutputType = {
   locationId: number
   label: number
   description: number
-  customPartLabel: number
+  customName: number
   _all: number
 }
 
@@ -67,7 +67,7 @@ export type MaintenancePartMinAggregateInputType = {
   locationId?: true
   label?: true
   description?: true
-  customPartLabel?: true
+  customName?: true
 }
 
 export type MaintenancePartMaxAggregateInputType = {
@@ -78,7 +78,7 @@ export type MaintenancePartMaxAggregateInputType = {
   locationId?: true
   label?: true
   description?: true
-  customPartLabel?: true
+  customName?: true
 }
 
 export type MaintenancePartCountAggregateInputType = {
@@ -89,7 +89,7 @@ export type MaintenancePartCountAggregateInputType = {
   locationId?: true
   label?: true
   description?: true
-  customPartLabel?: true
+  customName?: true
   _all?: true
 }
 
@@ -173,7 +173,7 @@ export type MaintenancePartGroupByOutputType = {
   locationId: string | null
   label: string | null
   description: string | null
-  customPartLabel: string | null
+  customName: string | null
   _count: MaintenancePartCountAggregateOutputType | null
   _min: MaintenancePartMinAggregateOutputType | null
   _max: MaintenancePartMaxAggregateOutputType | null
@@ -205,7 +205,7 @@ export type MaintenancePartWhereInput = {
   locationId?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   label?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   description?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
-  customPartLabel?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
+  customName?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   maintenance?: Prisma.XOR<Prisma.MaintenanceScalarRelationFilter, Prisma.MaintenanceWhereInput>
   part?: Prisma.XOR<Prisma.VehiclePartScalarRelationFilter, Prisma.VehiclePartWhereInput>
   location?: Prisma.XOR<Prisma.VehiclePartLocationNullableScalarRelationFilter, Prisma.VehiclePartLocationWhereInput> | null
@@ -219,7 +219,7 @@ export type MaintenancePartOrderByWithRelationInput = {
   locationId?: Prisma.SortOrderInput | Prisma.SortOrder
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  customPartLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  customName?: Prisma.SortOrderInput | Prisma.SortOrder
   maintenance?: Prisma.MaintenanceOrderByWithRelationInput
   part?: Prisma.VehiclePartOrderByWithRelationInput
   location?: Prisma.VehiclePartLocationOrderByWithRelationInput
@@ -236,7 +236,7 @@ export type MaintenancePartWhereUniqueInput = Prisma.AtLeast<{
   locationId?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   label?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   description?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
-  customPartLabel?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
+  customName?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   maintenance?: Prisma.XOR<Prisma.MaintenanceScalarRelationFilter, Prisma.MaintenanceWhereInput>
   part?: Prisma.XOR<Prisma.VehiclePartScalarRelationFilter, Prisma.VehiclePartWhereInput>
   location?: Prisma.XOR<Prisma.VehiclePartLocationNullableScalarRelationFilter, Prisma.VehiclePartLocationWhereInput> | null
@@ -250,7 +250,7 @@ export type MaintenancePartOrderByWithAggregationInput = {
   locationId?: Prisma.SortOrderInput | Prisma.SortOrder
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  customPartLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  customName?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MaintenancePartCountOrderByAggregateInput
   _max?: Prisma.MaintenancePartMaxOrderByAggregateInput
   _min?: Prisma.MaintenancePartMinOrderByAggregateInput
@@ -267,7 +267,7 @@ export type MaintenancePartScalarWhereWithAggregatesInput = {
   locationId?: Prisma.StringNullableWithAggregatesFilter<"MaintenancePart"> | string | null
   label?: Prisma.StringNullableWithAggregatesFilter<"MaintenancePart"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"MaintenancePart"> | string | null
-  customPartLabel?: Prisma.StringNullableWithAggregatesFilter<"MaintenancePart"> | string | null
+  customName?: Prisma.StringNullableWithAggregatesFilter<"MaintenancePart"> | string | null
 }
 
 export type MaintenancePartCreateInput = {
@@ -275,7 +275,7 @@ export type MaintenancePartCreateInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
   maintenance: Prisma.MaintenanceCreateNestedOneWithoutPartsInput
   part: Prisma.VehiclePartCreateNestedOneWithoutMaintenancePartsInput
   location?: Prisma.VehiclePartLocationCreateNestedOneWithoutMaintenancePartsInput
@@ -289,7 +289,7 @@ export type MaintenancePartUncheckedCreateInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartUpdateInput = {
@@ -297,7 +297,7 @@ export type MaintenancePartUpdateInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maintenance?: Prisma.MaintenanceUpdateOneRequiredWithoutPartsNestedInput
   part?: Prisma.VehiclePartUpdateOneRequiredWithoutMaintenancePartsNestedInput
   location?: Prisma.VehiclePartLocationUpdateOneWithoutMaintenancePartsNestedInput
@@ -311,7 +311,7 @@ export type MaintenancePartUncheckedUpdateInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartCreateManyInput = {
@@ -322,7 +322,7 @@ export type MaintenancePartCreateManyInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartUpdateManyMutationInput = {
@@ -330,7 +330,7 @@ export type MaintenancePartUpdateManyMutationInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartUncheckedUpdateManyInput = {
@@ -341,7 +341,7 @@ export type MaintenancePartUncheckedUpdateManyInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartListRelationFilter = {
@@ -362,7 +362,7 @@ export type MaintenancePartCountOrderByAggregateInput = {
   locationId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  customPartLabel?: Prisma.SortOrder
+  customName?: Prisma.SortOrder
 }
 
 export type MaintenancePartMaxOrderByAggregateInput = {
@@ -373,7 +373,7 @@ export type MaintenancePartMaxOrderByAggregateInput = {
   locationId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  customPartLabel?: Prisma.SortOrder
+  customName?: Prisma.SortOrder
 }
 
 export type MaintenancePartMinOrderByAggregateInput = {
@@ -384,7 +384,7 @@ export type MaintenancePartMinOrderByAggregateInput = {
   locationId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  customPartLabel?: Prisma.SortOrder
+  customName?: Prisma.SortOrder
 }
 
 export type MaintenancePartCreateNestedManyWithoutLocationInput = {
@@ -518,7 +518,7 @@ export type MaintenancePartCreateWithoutLocationInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
   maintenance: Prisma.MaintenanceCreateNestedOneWithoutPartsInput
   part: Prisma.VehiclePartCreateNestedOneWithoutMaintenancePartsInput
 }
@@ -530,7 +530,7 @@ export type MaintenancePartUncheckedCreateWithoutLocationInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartCreateOrConnectWithoutLocationInput = {
@@ -570,7 +570,7 @@ export type MaintenancePartScalarWhereInput = {
   locationId?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   label?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
   description?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
-  customPartLabel?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
+  customName?: Prisma.StringNullableFilter<"MaintenancePart"> | string | null
 }
 
 export type MaintenancePartCreateWithoutPartInput = {
@@ -578,7 +578,7 @@ export type MaintenancePartCreateWithoutPartInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
   maintenance: Prisma.MaintenanceCreateNestedOneWithoutPartsInput
   location?: Prisma.VehiclePartLocationCreateNestedOneWithoutMaintenancePartsInput
 }
@@ -590,7 +590,7 @@ export type MaintenancePartUncheckedCreateWithoutPartInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartCreateOrConnectWithoutPartInput = {
@@ -624,7 +624,7 @@ export type MaintenancePartCreateWithoutMaintenanceInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
   part: Prisma.VehiclePartCreateNestedOneWithoutMaintenancePartsInput
   location?: Prisma.VehiclePartLocationCreateNestedOneWithoutMaintenancePartsInput
 }
@@ -636,7 +636,7 @@ export type MaintenancePartUncheckedCreateWithoutMaintenanceInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartCreateOrConnectWithoutMaintenanceInput = {
@@ -672,7 +672,7 @@ export type MaintenancePartCreateManyLocationInput = {
   groupId: string
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartUpdateWithoutLocationInput = {
@@ -680,7 +680,7 @@ export type MaintenancePartUpdateWithoutLocationInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maintenance?: Prisma.MaintenanceUpdateOneRequiredWithoutPartsNestedInput
   part?: Prisma.VehiclePartUpdateOneRequiredWithoutMaintenancePartsNestedInput
 }
@@ -692,7 +692,7 @@ export type MaintenancePartUncheckedUpdateWithoutLocationInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartUncheckedUpdateManyWithoutLocationInput = {
@@ -702,7 +702,7 @@ export type MaintenancePartUncheckedUpdateManyWithoutLocationInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartCreateManyPartInput = {
@@ -712,7 +712,7 @@ export type MaintenancePartCreateManyPartInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartUpdateWithoutPartInput = {
@@ -720,7 +720,7 @@ export type MaintenancePartUpdateWithoutPartInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maintenance?: Prisma.MaintenanceUpdateOneRequiredWithoutPartsNestedInput
   location?: Prisma.VehiclePartLocationUpdateOneWithoutMaintenancePartsNestedInput
 }
@@ -732,7 +732,7 @@ export type MaintenancePartUncheckedUpdateWithoutPartInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartUncheckedUpdateManyWithoutPartInput = {
@@ -742,7 +742,7 @@ export type MaintenancePartUncheckedUpdateManyWithoutPartInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartCreateManyMaintenanceInput = {
@@ -752,7 +752,7 @@ export type MaintenancePartCreateManyMaintenanceInput = {
   locationId?: string | null
   label?: string | null
   description?: string | null
-  customPartLabel?: string | null
+  customName?: string | null
 }
 
 export type MaintenancePartUpdateWithoutMaintenanceInput = {
@@ -760,7 +760,7 @@ export type MaintenancePartUpdateWithoutMaintenanceInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   part?: Prisma.VehiclePartUpdateOneRequiredWithoutMaintenancePartsNestedInput
   location?: Prisma.VehiclePartLocationUpdateOneWithoutMaintenancePartsNestedInput
 }
@@ -772,7 +772,7 @@ export type MaintenancePartUncheckedUpdateWithoutMaintenanceInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaintenancePartUncheckedUpdateManyWithoutMaintenanceInput = {
@@ -782,7 +782,7 @@ export type MaintenancePartUncheckedUpdateManyWithoutMaintenanceInput = {
   locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customPartLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -795,7 +795,7 @@ export type MaintenancePartSelect<ExtArgs extends runtime.Types.Extensions.Inter
   locationId?: boolean
   label?: boolean
   description?: boolean
-  customPartLabel?: boolean
+  customName?: boolean
   maintenance?: boolean | Prisma.MaintenanceDefaultArgs<ExtArgs>
   part?: boolean | Prisma.VehiclePartDefaultArgs<ExtArgs>
   location?: boolean | Prisma.MaintenancePart$locationArgs<ExtArgs>
@@ -809,7 +809,7 @@ export type MaintenancePartSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   locationId?: boolean
   label?: boolean
   description?: boolean
-  customPartLabel?: boolean
+  customName?: boolean
   maintenance?: boolean | Prisma.MaintenanceDefaultArgs<ExtArgs>
   part?: boolean | Prisma.VehiclePartDefaultArgs<ExtArgs>
   location?: boolean | Prisma.MaintenancePart$locationArgs<ExtArgs>
@@ -823,7 +823,7 @@ export type MaintenancePartSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   locationId?: boolean
   label?: boolean
   description?: boolean
-  customPartLabel?: boolean
+  customName?: boolean
   maintenance?: boolean | Prisma.MaintenanceDefaultArgs<ExtArgs>
   part?: boolean | Prisma.VehiclePartDefaultArgs<ExtArgs>
   location?: boolean | Prisma.MaintenancePart$locationArgs<ExtArgs>
@@ -837,10 +837,10 @@ export type MaintenancePartSelectScalar = {
   locationId?: boolean
   label?: boolean
   description?: boolean
-  customPartLabel?: boolean
+  customName?: boolean
 }
 
-export type MaintenancePartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maintenanceId" | "partId" | "groupId" | "locationId" | "label" | "description" | "customPartLabel", ExtArgs["result"]["maintenancePart"]>
+export type MaintenancePartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maintenanceId" | "partId" | "groupId" | "locationId" | "label" | "description" | "customName", ExtArgs["result"]["maintenancePart"]>
 export type MaintenancePartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   maintenance?: boolean | Prisma.MaintenanceDefaultArgs<ExtArgs>
   part?: boolean | Prisma.VehiclePartDefaultArgs<ExtArgs>
@@ -872,7 +872,7 @@ export type $MaintenancePartPayload<ExtArgs extends runtime.Types.Extensions.Int
     locationId: string | null
     label: string | null
     description: string | null
-    customPartLabel: string | null
+    customName: string | null
   }, ExtArgs["result"]["maintenancePart"]>
   composites: {}
 }
@@ -1306,7 +1306,7 @@ export interface MaintenancePartFieldRefs {
   readonly locationId: Prisma.FieldRef<"MaintenancePart", 'String'>
   readonly label: Prisma.FieldRef<"MaintenancePart", 'String'>
   readonly description: Prisma.FieldRef<"MaintenancePart", 'String'>
-  readonly customPartLabel: Prisma.FieldRef<"MaintenancePart", 'String'>
+  readonly customName: Prisma.FieldRef<"MaintenancePart", 'String'>
 }
     
 

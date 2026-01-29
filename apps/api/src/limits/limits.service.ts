@@ -1,7 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { TMaintenanceSchema, VehicleSchemaType } from '@repo/validation';
+import { MaintenanceInput, VehicleSchemaType } from '@repo/validation';
 import { Prisma } from 'prisma/generated/prisma/client';
 import { ROLE, StorageUsageCategory } from 'prisma/generated/prisma/enums';
+import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
@@ -13,6 +14,7 @@ export class LimitsService {
   constructor(
     private prisma: PrismaService,
     private unitConversion: UnitConversionService,
+    private partTransformer: MaintenancePartTransformer,
   ) {}
 
   calculateSizeBytes(data: unknown): number {
@@ -114,9 +116,14 @@ export class LimitsService {
     return sizeBytes;
   }
 
-  async canCreateMaintenance(userId: string, storageOwnerId: string, data: TMaintenanceSchema): Promise<number> {
+  async canCreateMaintenance(userId: string, storageOwnerId: string, data: MaintenanceInput): Promise<number> {
     const { parts, ...maintenanceData } = data;
-    const sizeBytes = this.calculateSizeWithChildrenBytes(maintenanceData, parts) + CREATION_SYSTEM_OVERHEAD_BUFFER;
+
+    // Estimate size including parts
+    const partsDbFormat = this.partTransformer.toDbFormat('temp-id', parts); // 'temp-id' since we only need size
+
+    const sizeBytes =
+      this.calculateSizeWithChildrenBytes(maintenanceData, partsDbFormat) + CREATION_SYSTEM_OVERHEAD_BUFFER;
     await this.enforceStorageLimit(userId, storageOwnerId, sizeBytes);
     return sizeBytes;
   }

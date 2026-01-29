@@ -1,14 +1,23 @@
-export type TValidPartLocation = {
+export type MaintenanceCategoryWithParts = {
   id: string;
   code: string;
   nameKey: string;
+  sortOrder: number;
+  parts: MaintenanceCategoryPart[];
 };
-export type TMaintenanceCategoryPart = {
+
+export type MaintenanceCategoryPart = {
   categoryId: string;
   code: string;
   id: string;
   nameKey: string;
-  validLocations?: TValidPartLocation[];
+  validLocations?: PartLocation[];
+};
+
+export type PartLocation = {
+  id: string;
+  code: string;
+  nameKey: string;
 };
 
 export type MaintenanceType = {
@@ -18,23 +27,13 @@ export type MaintenanceType = {
   id: string;
 };
 
-export type TMaintenanceFormPart = {
-  partId: string;
+export type MaintenancePartDisplay = {
   groupId: string;
-  nameKey: string;
-  code: string;
-  locationId?: string | null;
+  partId: string;
+  partCode: string;
+  partNameKey: string;
+  customPartName?: string | null;
   label?: string | null;
   description?: string | null;
-  customPartLabel?: string | null;
-
-  validLocations?: TValidPartLocation[];
-};
-
-export type TMaintenanceCategory = {
-  id: string;
-  code: string;
-  nameKey: string;
-  sortOrder: number;
-  parts: TMaintenanceCategoryPart[];
+  locations: PartLocation[];
 };

@@ -460,17 +460,17 @@ model MaintenanceCategory {
 }
 
 model MaintenancePart {
-  id              String  @id @default(cuid())
-  maintenanceId   String
-  partId          String
-  groupId         String
+  id            String  @id @default(cuid())
+  maintenanceId String
+  partId        String
+  groupId       String
   // Where the parts / part was installed
-  locationId      String?
+  locationId    String?
   // User given custom label & description for this part
-  label           String? @default("")
-  description     String? @default("")
+  label         String? @default("")
+  description   String? @default("")
   // This is used to store user's custom string
-  customPartLabel String?
+  customName    String?
 
   maintenance Maintenance          @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
   part        VehiclePart          @relation(fields: [partId], references: [id], onDelete: Cascade)

@@ -72,7 +72,7 @@ function handleSelect(value: string) {
 <template>
   <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
     <DropdownMenuTrigger class="w-full">
-      <Button variant="outline" :class="['h-fit w-full p-1!']">
+      <Button type="button" variant="outline" :class="['h-fit w-full p-1!']">
         <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
         <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
         <Icon name="chevronDown" class="text-muted-foreground mr-1.5" />
@@ -97,7 +97,7 @@ function handleSelect(value: string) {
 
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger as-child>
-      <Button variant="outline" :class="['h-fit w-full p-1.5!']">
+      <Button type="button" variant="outline" :class="['h-fit w-full p-1.5!']">
         <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
         <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
         <Icon name="chevronDown" class="text-muted-foreground" />

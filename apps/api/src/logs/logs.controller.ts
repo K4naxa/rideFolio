@@ -4,7 +4,7 @@ import {
   MaintenanceType,
   RefillSchema,
   RefillSchemaOutput,
-  TMaintenanceSchema,
+  MaintenanceInput,
 } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ZodType } from 'zod';
@@ -48,7 +48,7 @@ export class LogsController {
   @AllowAnonymous() // Allow anonymous access
   @Get('maintenance/categories/:vehicleTypeCode')
   async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: VehicleType['code']) {
-    return await this.maintenanceService.getCategoriesAndParts(vehicleType);
+    return await this.maintenanceService.getCategoriesWithParts(vehicleType);
   }
 
   @Get('maintenance/types')
@@ -59,7 +59,7 @@ export class LogsController {
   async createMaintenance(
     @Session() SessionUser: UserSession,
     @Body(new ZodValidationPipe(MaintenanceSchema as ZodType))
-    maintenanceDto: TMaintenanceSchema,
+    maintenanceDto: MaintenanceInput,
   ) {
     await this.maintenanceService.createMaintenance(SessionUser, maintenanceDto);
     return { status: 'success' };

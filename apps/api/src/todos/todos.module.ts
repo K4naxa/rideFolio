@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TodosController } from './todos.controller';
-import { TodosService } from './todos.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LimitsService } from 'src/limits/limits.service';
+import { LimitsModule } from 'src/limits/limits.module';
+import { TodosService } from 'src/todos/todos.service';
 
 @Module({
+  imports: [LimitsModule],
   controllers: [TodosController],
   providers: [
     TodosService,
@@ -17,7 +18,7 @@ import { LimitsService } from 'src/limits/limits.service';
     OdometerService,
     VehicleRepository,
     PrismaService,
-    LimitsService,
   ],
+  exports: [TodosService],
 })
 export class TodosModule {}

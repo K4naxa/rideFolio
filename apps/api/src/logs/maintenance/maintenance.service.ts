@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
-import { MaintenanceType, TMaintenanceSchema } from '@repo/validation';
+import { Maintenance, Prisma, VehicleType } from 'prisma/generated/prisma/client';
+import { MaintenanceType, MaintenanceInput, MaintenanceCategoryWithParts } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { LimitsService } from 'src/limits/limits.service';
+import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 
 @Injectable()
 export class MaintenanceService {
@@ -14,9 +15,10 @@ export class MaintenanceService {
     private authValidation: AuthValidationService,
     private unitConversion: UnitConversionService,
     private limitsService: LimitsService,
+    private partTransformer: MaintenancePartTransformer,
   ) {}
 
-  async getCategoriesAndParts(vehicleType: VehicleType['code']) {
+  async getCategoriesWithParts(vehicleType: VehicleType['code']): Promise<MaintenanceCategoryWithParts[]> {
     const vehicleType_id = await this.prisma.vehicleType.findUnique({
       where: { code: vehicleType },
       select: { id: true },
@@ -79,9 +81,10 @@ export class MaintenanceService {
     });
   }
 
-  async createMaintenance(userSession: UserSession, maintenanceData: TMaintenanceSchema) {
+  async createMaintenance(userSession: UserSession, maintenanceData: MaintenanceInput) {
     // 1. Check if the user has permission to create logs for the vehicle
     const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
+
     // validate storage limits
     const sizeBytes = await this.limitsService.canCreateMaintenance(
       userSession.user.id,
@@ -120,20 +123,12 @@ export class MaintenanceService {
         },
       });
 
+      const partsToCreate = this.partTransformer.toDbFormat(newMaintenance.id, maintenanceData.parts);
+
       // Create MaintenanceParts entries
-      for (const part of maintenanceData.parts) {
-        await tx.maintenancePart.create({
-          data: {
-            groupId: part.groupId,
-            maintenanceId: newMaintenance.id,
-            partId: part.partId,
-            locationId: part.locationId,
-            label: part.label,
-            description: part.description,
-            customPartLabel: part.customPartLabel,
-          },
-        });
-      }
+      await tx.maintenancePart.createMany({
+        data: partsToCreate,
+      });
 
       // Update monthly statistics
       if (maintenanceData.totalCost && maintenanceData.totalCost > 0) {

@@ -2616,7 +2616,7 @@ export const MaintenancePartScalarFieldEnum = {
   locationId: 'locationId',
   label: 'label',
   description: 'description',
-  customPartLabel: 'customPartLabel'
+  customName: 'customName'
 } as const
 
 export type MaintenancePartScalarFieldEnum = (typeof MaintenancePartScalarFieldEnum)[keyof typeof MaintenancePartScalarFieldEnum]

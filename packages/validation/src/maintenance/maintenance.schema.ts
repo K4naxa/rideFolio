@@ -1,5 +1,25 @@
 import * as z from "zod";
 
+export const MaintenancePartSchema = z.object({
+  partId: z.cuid(),
+  partCode: z.string(),
+  partNameKey: z.string(),
+  groupId: z.string(),
+  categoryCode: z.string(),
+  categoryNameKey: z.string(),
+  customName: z.string().max(255).optional().nullable(),
+  label: z.string().max(60).optional().nullable(),
+  description: z.string().max(255).optional().nullable(),
+  locations: z.array(
+    z.object({
+      id: z.string(),
+      code: z.string(),
+      nameKey: z.string(),
+    }),
+  ),
+});
+export type MaintenancePartInput = z.infer<typeof MaintenancePartSchema>;
+
 export const MaintenanceSchema = z.object({
   vehicleId: z.cuid("Select a vehicle"),
   date: z.coerce.date("Select a date"),
@@ -16,17 +36,8 @@ export const MaintenanceSchema = z.object({
   odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
   typeId: z.string().min(1, "Select maintenance type"),
   serviceProvider: z.string().max(255, "Max length 255 characters").nullable(),
-  parts: z.array(
-    z.object({
-      partId: z.string(),
-      groupId: z.string(),
-      locationId: z.string().optional().nullable(),
-      label: z.string().max(60).optional().nullable(),
-      description: z.string().max(255).optional().nullable(),
-      customPartLabel: z.string().max(255).optional().nullable(),
-    })
-  ),
+  parts: z.array(MaintenancePartSchema),
   totalCost: z.coerce.number().nullable(),
   notes: z.string().nullable(),
 });
-export type TMaintenanceSchema = z.infer<typeof MaintenanceSchema>;
+export type MaintenanceInput = z.infer<typeof MaintenanceSchema>;

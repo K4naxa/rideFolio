@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { LogsController } from './logs.controller';
 import { LogsService } from './logs.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -8,11 +8,12 @@ import { OdometerService } from 'src/utils/odometer.service';
 import { MaintenanceService } from './maintenance/maintenance.service';
 import { RefillsService } from './refills.service';
 import { VehicleRepository } from 'src/utils/vehicleRepository';
-import { LimitsService } from 'src/limits/limits.service';
+import { LimitsModule } from 'src/limits/limits.module';
+import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 
 @Module({
-  imports: [PrismaModule],
-  exports: [LogsService, RefillsService],
+  imports: [PrismaModule, forwardRef(() => LimitsModule)],
+  exports: [LogsService, RefillsService, MaintenancePartTransformer],
   controllers: [LogsController],
   providers: [
     LogsService,
@@ -22,7 +23,7 @@ import { LimitsService } from 'src/limits/limits.service';
     MaintenanceService,
     RefillsService,
     VehicleRepository,
-    LimitsService,
+    MaintenancePartTransformer,
   ],
 })
 export class LogsModule {}

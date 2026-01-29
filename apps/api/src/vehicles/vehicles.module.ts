@@ -7,10 +7,10 @@ import { VehicleRepository } from 'src/utils/vehicleRepository';
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { LimitsService } from 'src/limits/limits.service';
+import { LimitsModule } from 'src/limits/limits.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, LimitsModule],
   providers: [
     VehiclesService,
     VehicleRepository,
@@ -18,7 +18,6 @@ import { LimitsService } from 'src/limits/limits.service';
     OdometerService,
     UnitConversionService,
     AuthValidationService,
-    LimitsService,
   ],
   exports: [VehiclesService],
   controllers: [VehiclesController],

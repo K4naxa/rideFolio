@@ -16,7 +16,7 @@ const forwardedProps = useForwardProps(delegatedProps);
   <DialogTitle
     data-slot="dialog-title"
     v-bind="forwardedProps"
-    :class="cn('text-lg leading-none font-semibold flex gap-3 items-center', props.class)"
+    :class="cn('flex items-center gap-3 text-xl leading-none font-semibold', props.class)"
   >
     <slot />
   </DialogTitle>

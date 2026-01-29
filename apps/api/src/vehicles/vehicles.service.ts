@@ -287,7 +287,7 @@ export class VehiclesService {
             label: MaintenancePart['label'];
             groupId: MaintenancePart['groupId'];
             description: MaintenancePart['description'];
-            customPartLabel: MaintenancePart['customPartLabel'];
+            customName: MaintenancePart['customName'];
           }[];
         }
       >;
@@ -318,7 +318,7 @@ export class VehiclesService {
               label: true,
               groupId: true,
               description: true,
-              customPartLabel: true,
+              customName: true,
               part: { select: { code: true, id: true } },
               location: { select: { code: true } },
             },

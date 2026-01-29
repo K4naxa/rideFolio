@@ -7,12 +7,12 @@ import { toast } from "vue-sonner";
 export function useUserUpdate() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["updateProfile"],
+    mutationKey: ["update", "user-profile"],
     mutationFn: async (data: ProfileUpdateValues) => {
       return api.patch("users/profile", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.basicProfile });
       toast.success("Profile updated successfully");
     },
   });
@@ -28,7 +28,7 @@ export function useUserPreferenceUpdate() {
       });
       return res.data;
     },
-    mutationKey: ["updateUserPreference"],
+    mutationKey: ["update", "user-preference"],
     onSuccess: (data, variables) => {
       if (
         variables.key === "volumeUnit " ||
@@ -39,7 +39,7 @@ export function useUserPreferenceUpdate() {
         queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
       }
       console.log("Preference updated successfully:", data);
-      queryClient.setQueryData(["currentUser"], data);
+      queryClient.setQueryData(queryKeys.user.basicProfile, data);
     },
   });
 }
@@ -47,7 +47,7 @@ export function useUserPreferenceUpdate() {
 export function useUserNotificationsMarkAsRead() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["notifications-mark-as-read"],
+    mutationKey: ["notifications", "markAsRead"],
     mutationFn: async (notificationId: string) => {
       return await api.patch("/users/notifications/" + notificationId + "/read");
     },

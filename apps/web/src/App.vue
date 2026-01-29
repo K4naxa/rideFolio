@@ -8,11 +8,11 @@ import { useThemeStore } from "./stores/theme";
 import CreateRefillModal from "./modals/createRefillModal.vue";
 import NoteModal from "./modals/NoteModal.vue";
 import TodoModal from "./modals/TodoModal.vue";
-import CreateMaintenanceModal from "./modals/createMaintenanceModal.vue";
 import AlertModal from "./modals/alertModal.vue";
 import PoolModal from "./modals/PoolModal.vue";
 import PoolInvitationModal from "./modals/PoolInvitationModal.vue";
 import QuickLinkModal from "@/modals/QuickLinkModal.vue";
+import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.vue";
 
 configure({});
 

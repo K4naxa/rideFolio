@@ -63,6 +63,8 @@ import {
   ShieldIcon,
   LinkIcon,
   SaveIcon,
+  Circle,
+  CircleCheck,
   type LucideIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
@@ -133,7 +135,9 @@ type IconName =
   | "billing"
   | "stats"
   | "link"
-  | "save";
+  | "save"
+  | "circle"
+  | "circleCheck";
 
 export interface IconProps {
   name: IconName;
@@ -216,6 +220,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   error: OctagonAlert,
   save: SaveIcon,
   edit: Edit,
+  circle: Circle,
+  circleCheck: CircleCheck,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
