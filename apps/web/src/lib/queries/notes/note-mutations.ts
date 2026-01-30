@@ -16,10 +16,6 @@ export function useCreateNote() {
       syncNewNoteToCache(data);
       toast.success("Note created successfully");
     },
-    onError: (error) => {
-      toast.error("Error creating the Note");
-      console.error("NOTE API ERROR: ", error);
-    },
   });
 }
 
@@ -34,10 +30,6 @@ export function useUpdateNote() {
     onSuccess: (data) => {
       syncNoteToCache(data.id, data);
       toast.success("Note updated successfully");
-    },
-    onError: (error) => {
-      toast.error("Error updating the Note");
-      console.error("NOTE API ERROR: ", error);
     },
   });
 }

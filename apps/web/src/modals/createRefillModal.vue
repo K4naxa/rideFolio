@@ -129,7 +129,7 @@ watch(isModalOpen, (open) => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal">
+    <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal" size="full">
       <DialogHeader>
         <DialogTitle>
           <Icons name="refill" />
@@ -138,7 +138,7 @@ watch(isModalOpen, (open) => {
         <DialogDescription class="text-start">Log a new fuel refill for your vehicle</DialogDescription>
       </DialogHeader>
       <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4 lg:gap-6">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect
@@ -153,7 +153,7 @@ watch(isModalOpen, (open) => {
           </Field>
 
           <!-- Date & Odometer -->
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
             <DateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
             <div class="relative pb-3">
               <Input
@@ -195,7 +195,7 @@ watch(isModalOpen, (open) => {
           </div>
 
           <!-- Cost fields  -->
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
             <Input
               name="fuelAmount"
               type="number"

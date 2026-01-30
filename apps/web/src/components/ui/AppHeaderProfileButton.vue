@@ -16,8 +16,6 @@ import { getInitials } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
-import { ref, watch } from "vue";
-
 const themeStore = useThemeStore();
 const { currentUser } = useCurrentUser();
 const { signOut } = useAuth();
@@ -42,26 +40,32 @@ const isMobile = useIsMobile();
     <DropdownMenuContent class="min-w-44 rounded-lg" side="bottom" align="end">
       <DropdownMenuGroup class="">
         <DropdownMenuItem asChild class="cursor-pointer">
-          <RouterLink to="/profile">
-            <Icon name="user" className="mr-2" />
+          <RouterLink to="/profile" class="flex items-center gap-3">
+            <Icon name="user" />
             <span>Profile</span>
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuItem asChild class="cursor-pointer">
-          <RouterLink to="/billing">
-            <Icon name="billing" className="mr-2" />
+          <RouterLink to="/settings/preferences" class="flex items-center gap-3">
+            <Icon name="settings" />
+            <span>Preferences</span>
+          </RouterLink>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild class="cursor-pointer">
+          <RouterLink to="/billing" class="flex items-center gap-3">
+            <Icon name="billing" />
             <span>Billing</span>
           </RouterLink>
         </DropdownMenuItem>
-        <DropdownMenuItem @click="themeStore.toggleTheme">
-          <Icon name="darkMode" v-if="themeStore.resolvedTheme === 'dark'" className="mr-2" />
-          <Icon name="lightMode" v-else-if="themeStore.resolvedTheme === 'light'" className="mr-2" />
+        <DropdownMenuItem @click="themeStore.toggleTheme" class="flex cursor-pointer items-center gap-3">
+          <Icon name="darkMode" v-if="themeStore.resolvedTheme === 'dark'" />
+          <Icon name="lightMode" v-else-if="themeStore.resolvedTheme === 'light'" />
           Theme
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem class="cursor-pointer" @click="signOut">
-        <Icon name="logout" className="mr-2" />
+        <Icon name="logout" />
         <span>Log out</span>
       </DropdownMenuItem>
     </DropdownMenuContent>

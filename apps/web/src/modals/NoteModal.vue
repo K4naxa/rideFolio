@@ -22,6 +22,7 @@ import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/queries/notes
 import Icon from "@/components/icons/Icon.vue";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
+import { DialogScrollContent } from "@/components/ui/dialog";
 
 // Computed properties
 const modalStore = useModalStore();
@@ -160,18 +161,17 @@ watch(isModalOpen, (isOpen) => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose" :key="initialNote?.id">
-    <DialogContent class="flex max-w-4xl flex-col lg:h-fit lg:max-h-[90vh]">
-      <DialogHeader class="flex w-full flex-row justify-between gap-2">
-        <DialogTitle class="flex items-center justify-start gap-2 truncate">
-          <span v-if="initialNote">{{ values.title }}</span>
-          <span v-else>Create Note</span>
-        </DialogTitle>
-        <Button v-if="!initialNote" variant="outline" @click="handleCancel">Cancel</Button>
-      </DialogHeader>
+    <DialogScrollContent class="flex h-dvh max-w-4xl flex-col lg:h-fit lg:max-h-[90vh]">
+      <div class="flex gap-4">
+        <Button variant="outline" @click="handleCancel">
+          <Icon name="chevronLeft" />
+        </Button>
+        <div class="ml-auto"></div>
+      </div>
 
-      <form class="flex min-h-0 flex-col space-y-4" @submit.prevent>
+      <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
         <!-- Vehicle Selection - Only show when creating new note without vehicleId -->
-        <div v-if="!currentVehicleId" class="flex flex-col">
+        <div v-if="!currentVehicleId && !createdNoteId" class="flex flex-col">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
@@ -182,13 +182,13 @@ watch(isModalOpen, (isOpen) => {
 
         <div class="border-border bg-input flex min-h-0 flex-1 flex-col space-y-2 rounded border">
           <!-- Editor Content -->
-          <div class="flex h-full min-h-64 flex-1">
+          <div class="flex min-h-64 flex-1">
             <TipTapEditor
               :value="values.content"
               @update:value="(value: string) => setFieldValue('content', value)"
               :editable="true"
               :error="errors.content ?? undefined"
-              class="px-3.5 pb-2"
+              class="flex-1 px-3.5 pb-2"
             >
               <!-- Title Field -->
               <div>
@@ -199,7 +199,7 @@ watch(isModalOpen, (isOpen) => {
                   placeholder="Title"
                   maxlength="50"
                   class="flex-1"
-                  input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl"
+                  input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl shadow-none"
                 />
                 <span v-if="errors.title" class="text-destructive text-sm">{{ errors.title }}</span>
               </div>
@@ -237,6 +237,6 @@ watch(isModalOpen, (isOpen) => {
           <span v-if="errors.tags" class="text-destructive text-sm">{{ errors.tags }}</span>
         </div>
       </form>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
