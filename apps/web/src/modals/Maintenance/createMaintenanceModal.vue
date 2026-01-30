@@ -119,9 +119,9 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
           <DialogDescription> Fill in the details below to create a new maintenance record. </DialogDescription>
         </DialogHeader>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6">
           <!--Left column  -->
-          <div class="flex flex-col gap-4 lg:gap-6">
+          <div class="flex flex-col gap-4">
             <Field v-slot="{ value, handleChange }" name="vehicleId">
               <div>
                 <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
@@ -129,12 +129,12 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
               </div>
             </Field>
 
-            <div class="grid grid-cols-2 gap-4 lg:gap-6">
+            <div class="grid grid-cols-2 gap-4">
               <DateInput name="date" :initial-value="new Date()" disableFuture />
               <Input name="odometer" type="number" placeholder="Odometer" :suffix="selectedVehicleOdometerUnit" />
             </div>
 
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Field v-slot="{ value, handleChange }" name="typeId">
                 <div>
                   <ResponsiveSelect
@@ -168,15 +168,15 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
           <div class="flex flex-1 flex-col">
             <Label> <Icon name="maintenance" /> Serviced parts </Label>
 
-            <div class="flex flex-1 flex-col">
-              <PartsFormField :selected-vehicle="selectedVehicle" />
+            <div class="flex h-full min-h-0 lg:max-h-none">
+              <PartsFormField :selected-vehicle="selectedVehicle" class="min-h-0 flex-1" />
               <ErrorMessage name="parts" class="text-destructive mt-1 ml-1 text-sm" />
             </div>
           </div>
         </div>
 
         <!-- MOBILE ONLY / RECEIPT AND NOTES -->
-        <div class="mt-6 flex flex-col gap-6 lg:hidden">
+        <div class="flex flex-col gap-4 lg:hidden">
           <Field v-slot="{ value, handleChange }" name="image">
             <UploadImage title="Upload a picture" :value="value" @change="handleChange" />
             <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />

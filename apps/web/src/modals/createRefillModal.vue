@@ -132,10 +132,9 @@ watch(isModalOpen, (open) => {
     <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal" size="full">
       <DialogHeader>
         <DialogTitle>
-          <Icons name="refill" />
-          Create new refill
+          <div class="flex items-center gap-2"><Icons name="refill" /> Create new refill</div>
         </DialogTitle>
-        <DialogDescription class="text-start">Log a new fuel refill for your vehicle</DialogDescription>
+        <DialogDescription class="text-start"> Log a new fuel refill for your vehicle </DialogDescription>
       </DialogHeader>
       <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
         <div class="flex flex-col gap-4 lg:gap-6">

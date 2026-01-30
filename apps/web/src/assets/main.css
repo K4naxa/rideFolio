@@ -236,17 +236,17 @@ html {
     animation: collapsible-up 0.2s ease-out;
   }
 
-  .scrollbar::-webkit-scrollbar {
+  .scrollArea::-webkit-scrollbar {
     width: 7px;
     height: 7px;
   }
 
-  .scrollbar::-webkit-scrollbar-track {
+  .scrollArea::-webkit-scrollbar-track {
     border-radius: 100vh;
     background: var(--color-scrollbar-track);
   }
 
-  .scrollbar::-webkit-scrollbar-thumb {
+  .scrollArea::-webkit-scrollbar-thumb {
     background: var(--color-scrollbar-thumb);
     border-radius: 100vh;
   }

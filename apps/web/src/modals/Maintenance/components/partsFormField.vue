@@ -143,141 +143,87 @@ watch(
 </script>
 
 <template>
-  <div class="flex max-h-full min-h-0 min-w-0 flex-1 flex-col gap-6 overflow-hidden pt-3 lg:h-full">
+  <div class="flex min-h-0 flex-col gap-4 overflow-hidden pt-3">
     <!-- part Creation -->
-    <section>
-      <div class="flex flex-col gap-4 lg:flex-row">
-        <div class="flex-2">
-          <ResponsiveCombobox
-            :items="<MaintenanceCategoryWithParts[]>partCategories ?? []"
-            label-key="code"
-            :value-key="'id'"
-            :isLoading="partCategoriesLoading"
-            v-model="selectedCategory"
-            :disabled="!selectedVehicle"
-            placeholder="Select Category"
-            description="Select a category to see available parts"
-          >
-            <template #item="{ item }">
-              <span class="capitalize">{{ item.code }}</span>
-            </template>
-          </ResponsiveCombobox>
-        </div>
+    <div>
+      <section class="shrink-0">
+        <div class="flex flex-col gap-4 lg:flex-row">
+          <div class="flex-2">
+            <ResponsiveCombobox
+              :items="<MaintenanceCategoryWithParts[]>partCategories ?? []"
+              label-key="code"
+              :value-key="'id'"
+              :isLoading="partCategoriesLoading"
+              v-model="selectedCategory"
+              :disabled="!selectedVehicle"
+              placeholder="Select Category"
+              description="Select a category to see available parts"
+            >
+              <template #item="{ item }">
+                <span class="capitalize">{{ item.code }}</span>
+              </template>
+            </ResponsiveCombobox>
+          </div>
 
-        <div class="flex-2">
-          <ResponsiveCombobox
-            :search-keys="['code']"
-            v-model="selectedPart"
-            :items="<MaintenanceCategoryPart[]>selectedCategory?.parts ?? []"
-            value-key="code"
-            label-key="code"
-            :disabled="!selectedCategory"
-            placeholder="Select Part"
-            description="Select a part to add to the maintenance"
-          >
-            <template #item="{ item }">
-              <span>{{ item.code }}</span>
-            </template>
-          </ResponsiveCombobox>
-        </div>
+          <div class="flex-2">
+            <ResponsiveCombobox
+              :search-keys="['code']"
+              v-model="selectedPart"
+              :items="<MaintenanceCategoryPart[]>selectedCategory?.parts ?? []"
+              value-key="code"
+              label-key="code"
+              :disabled="!selectedCategory"
+              placeholder="Select Part"
+              description="Select a part to add to the maintenance"
+            >
+              <template #item="{ item }">
+                <span>{{ item.code }}</span>
+              </template>
+            </ResponsiveCombobox>
+          </div>
 
-        <Button type="button" class="flex-1" @click="addPart(selectedPart)" :disabled="!selectedPart">Add v1 ^</Button>
-      </div>
-    </section>
-    <section>
-      <div>
-        <MobilePartSelection :part-categories="partCategories" :is-loading="partCategoriesLoading" />
-      </div>
-    </section>
+          <Button type="button" class="flex-1" @click="addPart(selectedPart)" :disabled="!selectedPart">Add</Button>
+        </div>
+      </section>
+      <section class="mt-2 lg:hidden">
+        <div>
+          <MobilePartSelection :part-categories="partCategories" :is-loading="partCategoriesLoading" />
+        </div>
+      </section>
+    </div>
 
     <!-- parts list -->
-    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded lg:max-h-full">
-      <!-- content -->
-      <ul
-        v-auto-animate
-        class="scrollbar divide-border flex max-h-96 min-h-24 flex-1 flex-col divide-y overflow-y-auto p-1.5 lg:overflow-x-hidden"
-      >
-        <Empty v-if="formParts.length === 0" class="text-muted-foreground my-auto text-center">
-          <EmptyTitle>No parts added yet</EmptyTitle>
-          <EmptyDescription>Add parts using the controls above to track serviced parts.</EmptyDescription>
-        </Empty>
 
-        <ScrollArea v-else class="">
-          <div v-for="part in formParts" :key="part.groupId" class="bg-card mb-4 rounded border p-2.5">
-            <div class="flex w-full gap-3">
-              <h2>{{ part.partCode }}</h2>
-              <Badge variant="outline" class="bg-muted text-muted-foreground border-none text-sm">
-                {{ part.categoryCode }}
+    <div class="scrollArea flex h-fit min-h-0 grow flex-col gap-2 overflow-y-auto lg:h-0">
+      <Empty v-if="formParts.length === 0" class="text-muted-foreground my-auto text-center">
+        <EmptyTitle>No parts added yet</EmptyTitle>
+        <EmptyDescription>Add parts using the controls above to track serviced parts.</EmptyDescription>
+      </Empty>
+
+      <div v-for="part in formParts" :key="part.groupId" class="bg-card mr-1 rounded border p-2.5">
+        <div class="flex w-full items-center gap-3">
+          <h3 class="truncate">{{ part.partCode }}</h3>
+          <Badge variant="outline" class="bg-muted text-muted-foreground border-none text-sm">
+            {{ part.categoryCode }}
+          </Badge>
+          <Popover v-if="getPossibleLocations(part).length > 0">
+            <PopoverTrigger>
+              <Badge v-if="part.locations.length === 0" variant="outline" class="h-full cursor-pointer">
+                select locations
               </Badge>
-              <Popover v-if="getPossibleLocations(part).length > 0">
-                <PopoverTrigger>
-                  <Badge v-if="part.locations.length === 0" variant="outline" class="h-full cursor-pointer">
-                    select locations
-                  </Badge>
-                  <Badge v-else variant="outline" class="h-full cursor-pointer">
-                    <span v-for="loc in part.locations" class="text-primary text-sm">
-                      {{
-                        loc.code
-                          .split("_")
-                          .map((word) => word[0]?.toUpperCase() || "")
-                          .join("")
-                      }}
-                    </span>
-                  </Badge>
-                </PopoverTrigger>
-                <PopoverContent class="p-2" side="bottom" align="start">
-                  <div class="grid grid-cols-2 gap-2">
-                    <Button
-                      v-for="loc in getPossibleLocations(part)"
-                      type="button"
-                      variant="outline"
-                      :class="
-                        twMerge(
-                          'flex-1 justify-center',
-                          isLocationSelected(loc, part) ? 'bg-primary! text-primary-foreground!' : '',
-                        )
-                      "
-                      @click="handleLocationToggle(loc, part)"
-                      :key="loc.id"
-                    >
-                      <span>
-                        {{
-                          loc.code
-                            .split("_")
-                            .map((word) => word[0]?.toUpperCase() || "")
-                            .join("")
-                        }}
-                      </span>
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-
-              <Button
-                variant="ghost"
-                type="button"
-                size="icon-sm"
-                @click="removePart(part)"
-                aria-label="Remove part"
-                class="group ml-auto"
-              >
-                <Icon name="trash" class="text-muted-foreground group-hover:text-destructive size-4 duration-200" />
-              </Button>
-            </div>
-            <div class="flex items-center gap-3">
-              <input
-                type="text"
-                placeholder="Add custom name / details"
-                name="customName"
-                id="customName"
-                class="text-foreground/80 mt-1 w-full rounded-none bg-transparent text-base outline-0 focus:ring-0"
-                :value="part.label"
-                @input="handleLabelChange($event, part)"
-              />
-            </div>
-            <div class="mt-4 flex flex-col" v-if="getPossibleLocations(part).length > 0">
-              <span class="text-muted-foreground text-sm"> Select locations:</span>
-              <div class="mt-2 flex justify-between gap-2">
+              <Badge v-else variant="outline" class="h-full cursor-pointer">
+                <span v-for="loc in part.locations" class="text-primary text-sm">
+                  {{
+                    loc.code
+                      .split("_")
+                      .map((word) => word[0]?.toUpperCase() || "")
+                      .join("")
+                  }}
+                </span>
+              </Badge>
+            </PopoverTrigger>
+            <PopoverContent class="p-2" side="bottom" align="start">
+              <div class="grid grid-cols-2 gap-2">
                 <Button
                   v-for="loc in getPossibleLocations(part)"
                   type="button"
@@ -301,11 +247,59 @@ watch(
                   </span>
                 </Button>
               </div>
-            </div>
+            </PopoverContent>
+          </Popover>
+
+          <Button
+            variant="ghost"
+            type="button"
+            size="icon-sm"
+            @click="removePart(part)"
+            aria-label="Remove part"
+            class="group ml-auto"
+          >
+            <Icon name="trash" class="text-muted-foreground group-hover:text-destructive size-4 duration-200" />
+          </Button>
+        </div>
+        <div class="flex items-center gap-3">
+          <input
+            type="text"
+            placeholder="Add custom name / details"
+            name="customName"
+            id="customName"
+            class="text-foreground/80 mt-1 w-full rounded-none bg-transparent text-base outline-0 focus:ring-0"
+            :value="part.label"
+            @input="handleLabelChange($event, part)"
+          />
+        </div>
+        <div class="mt-4 flex flex-col" v-if="getPossibleLocations(part).length > 0">
+          <span class="text-muted-foreground text-sm"> Select locations:</span>
+          <div class="mt-2 flex justify-between gap-2">
+            <Button
+              v-for="loc in getPossibleLocations(part)"
+              type="button"
+              variant="outline"
+              :class="
+                twMerge(
+                  'flex-1 justify-center',
+                  isLocationSelected(loc, part) ? 'bg-primary! text-primary-foreground!' : '',
+                )
+              "
+              @click="handleLocationToggle(loc, part)"
+              :key="loc.id"
+            >
+              <span>
+                {{
+                  loc.code
+                    .split("_")
+                    .map((word) => word[0]?.toUpperCase() || "")
+                    .join("")
+                }}
+              </span>
+            </Button>
           </div>
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -113,6 +113,15 @@ function addPart() {
   selectedPart.value = null;
   isDrawerOpen.value = false;
 }
+
+function handleCancel() {
+  // Wait for animation to finish before resetting
+  setTimeout(() => {
+    resetNewPart();
+    selectedCategory.value = null;
+    selectedPart.value = null;
+  }, 200);
+}
 </script>
 
 <template>
@@ -236,7 +245,7 @@ function addPart() {
       </section>
 
       <DrawerFooter class="">
-        <DrawerClose as-child>
+        <DrawerClose as-child @click="handleCancel">
           <Button variant="outline">Cancel</Button>
         </DrawerClose>
       </DrawerFooter>

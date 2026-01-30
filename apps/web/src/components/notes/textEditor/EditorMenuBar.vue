@@ -174,7 +174,7 @@ const menuOptions = computed<MenuOptions[]>(() => {
   <div
     v-if="props.editor"
     :class="
-      twMerge('bg-background scrollbar mb-1 flex items-center gap-2 overflow-x-auto rounded border p-1', props.class)
+      twMerge('bg-background scrollArea mb-1 flex items-center gap-2 overflow-x-auto rounded border p-1', props.class)
     "
   >
     <Toggle

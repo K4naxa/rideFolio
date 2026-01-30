@@ -79,7 +79,7 @@ function handleSelect(value: string) {
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent :class="contentClass" same-width align="start">
-      <div v-if="filteredVehicles.length > 0" class="scrollbar max-h-72 w-full space-y-1 overflow-y-auto">
+      <div v-if="filteredVehicles.length > 0" class="scrollArea max-h-72 w-full space-y-1 overflow-y-auto">
         <VehicleSelectItem
           v-for="vehicle in filteredVehicles"
           :is-active="vehicle.vehicleData.id === props.value"
@@ -141,7 +141,7 @@ function handleSelect(value: string) {
         class="bg-background w-full rounded border-none px-3 py-2 outline-none focus-visible:ring-0"
       />
       <Separator />
-      <div v-if="filteredVehicles.length > 0" class="scrollbar max-h-72 space-y-1 overflow-y-auto p-2">
+      <div v-if="filteredVehicles.length > 0" class="scrollArea max-h-72 space-y-1 overflow-y-auto p-2">
         <VehicleSelectItem
           v-for="vehicle in filteredVehicles"
           :key="vehicle.vehicleData.id"

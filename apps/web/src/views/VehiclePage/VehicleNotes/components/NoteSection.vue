@@ -9,7 +9,7 @@ import Icon from "@/components/icons/Icon.vue";
 import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch, useSlots } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -24,6 +24,14 @@ interface NoteSectionProps {
 }
 
 const props = defineProps<NoteSectionProps>();
+
+const emit = defineEmits<{
+  close: [];
+  deleted: [];
+  created: [noteId: string];
+}>();
+
+const slots = useSlots();
 const router = useRouter();
 
 // Queries and mutations
@@ -37,6 +45,7 @@ const { data: editableNote, isLoading } = useEditableNote(computed(() => props.n
 // Component state
 const currentNoteId = ref(props.noteId);
 const isNew = computed(() => props.noteId === "new");
+const hasHeaderSlot = computed(() => !!slots.header);
 const tagInput = ref("");
 const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
 
@@ -58,7 +67,6 @@ function initializeForm() {
     return;
   }
 
-  // Wait for data to be available
   if (isLoading.value || !editableNote.value) return;
 
   lastServerState.value = editableNote.value as NoteSchemaType;
@@ -70,11 +78,14 @@ async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
   if (noteId === "new") {
     const response = await createNote(data);
     currentNoteId.value = response.id;
+    emit("created", response.id);
 
-    // Update URL with new note ID
-    router.replace({
-      query: { ...router.currentRoute.value.query, note: response.id },
-    });
+    // Only update URL if no header slot (standalone mode)
+    if (!hasHeaderSlot.value) {
+      router.replace({
+        query: { ...router.currentRoute.value.query, note: response.id },
+      });
+    }
 
     return response;
   } else {
@@ -83,7 +94,6 @@ async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
   }
 }
 
-// Handle note ID changes from auto-save
 function handleNoteIdChange(newId: Note["id"]) {
   currentNoteId.value = newId;
 }
@@ -99,7 +109,7 @@ const { pendingSave, isSaving, handleBeforeUnload } = useNoteAutoSave({
 });
 
 // Status indicator
-const saveStatus = computed(() => {
+const saveStatus = computed<"saving" | "pending" | "saved">(() => {
   if (isCreating.value || isUpdating.value || isDeleting.value || isSaving.value) {
     return "saving";
   }
@@ -109,7 +119,7 @@ const saveStatus = computed(() => {
   return "saved";
 });
 
-// Delete handler
+// Action handlers
 async function handleDelete() {
   try {
     await deleteNote({
@@ -117,9 +127,13 @@ async function handleDelete() {
       vehicleId: values.vehicleId,
     });
 
-    router.replace({
-      query: { ...router.currentRoute.value.query, note: undefined },
-    });
+    emit("deleted");
+
+    if (!hasHeaderSlot.value) {
+      router.replace({
+        query: { ...router.currentRoute.value.query, note: undefined },
+      });
+    }
   } catch (error) {
     toast.error("Failed to delete note", {
       description: (error as Error)?.message || "Unknown error",
@@ -127,12 +141,18 @@ async function handleDelete() {
   }
 }
 
+function handleTogglePin() {
+  togglePinNote({ noteId: currentNoteId.value, pinned: !isPinned.value });
+}
+
+function handleClose() {
+  emit("close");
+}
+
 // Tag management
 function handleAddTag() {
   const trimmedTag = tagInput.value.trim().toLowerCase();
   const currentTags = values.tags || [];
-
-  // Case-insensitive duplicate check
   const tagExists = currentTags.some((tag) => tag.toLowerCase() === trimmedTag);
 
   if (trimmedTag && !tagExists) {
@@ -149,12 +169,11 @@ function handleRemoveTag(tagToRemove: string) {
   );
 }
 
-// Lifecycle hooks
+// Lifecycle
 onMounted(() => {
   initializeForm();
 });
 
-// Watch for prop changes
 watch(
   () => [props.noteId, isLoading.value, editableNote.value],
   () => {
@@ -163,19 +182,70 @@ watch(
   },
 );
 
-// Page unload handling
-window.addEventListener("beforeunload", handleBeforeUnload);
+// Only add beforeunload in standalone mode
+if (!hasHeaderSlot.value) {
+  window.addEventListener("beforeunload", handleBeforeUnload);
+  onUnmounted(() => {
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+  });
+}
 
-onUnmounted(() => {
-  window.removeEventListener("beforeunload", handleBeforeUnload);
+// Expose for parent if needed
+defineExpose({
+  currentNoteId,
+  saveStatus,
+  values,
 });
 </script>
 
 <template>
-  <div
-    class="bg-background absolute top-0 left-0 z-50 min-h-0 w-full flex-1 flex-col p-4 lg:relative lg:z-0 lg:flex lg:p-0"
-  >
+  <div class="bg-background flex min-h-0 w-full flex-1 flex-col p-0">
     <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
+      <!-- Header Slot with all controls/status exposed -->
+      <slot
+        name="header"
+        :is-new="isNew"
+        :is-pinned="isPinned"
+        :is-deleting="isDeleting"
+        :save-status="saveStatus"
+        :on-delete="handleDelete"
+        :on-toggle-pin="handleTogglePin"
+        :on-close="handleClose"
+      >
+        <header class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">{{ isNew ? "New Note" : "Edit Note" }}</h2>
+          <div class="flex items-center gap-4">
+            <!-- Status indicator -->
+            <div class="grid aspect-square w-9 place-items-center rounded-sm border">
+              <Spinner v-if="saveStatus === 'saving'" class="size-4" />
+              <SaveIcon v-else-if="saveStatus === 'pending'" class="stroke-warning size-4" />
+              <CheckIcon v-else class="stroke-success size-4" />
+            </div>
+
+            <!-- Control buttons -->
+            <template v-if="!isNew">
+              <Separator orientation="vertical" class="mx-2 h-6" />
+              <div class="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
+                  @click="handleDelete"
+                >
+                  <Icon name="trash" class="stroke-inherit" />
+                </Button>
+
+                <Button variant="outline" size="icon" class="group" @click="handleTogglePin">
+                  <Icon v-if="!isPinned" name="pin" class="group-hover:stroke-primary" />
+                  <Icon v-if="isPinned" name="pin" class="stroke-primary group-hover:hidden" />
+                  <Icon v-if="isPinned" name="pinOff" class="stroke-primary hidden group-hover:block" />
+                </Button>
+              </div>
+            </template>
+          </div>
+        </header>
+      </slot>
+
       <!-- Vehicle Selection -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
         <div v-if="isNew && !props.vehicleId">
@@ -183,44 +253,6 @@ onUnmounted(() => {
           <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
         </div>
       </Field>
-
-      <header class="flex items-center justify-between">
-        {{ !isNew ? "Edit Note" : "Create Note" }}
-        <div class="flex items-center gap-4">
-          <!-- Status indicator -->
-          <div class="grid aspect-square w-9 place-items-center rounded-sm border">
-            <Spinner v-if="saveStatus === 'saving'" class="size-4" />
-            <SaveIcon v-else-if="saveStatus === 'pending'" class="stroke-warning size-4" />
-            <CheckIcon v-else class="stroke-success size-4" />
-          </div>
-
-          <!-- Control buttons -->
-          <template v-if="!isNew">
-            <Separator orientation="vertical" class="mx-2 w-1" />
-            <div class="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
-                @click="handleDelete"
-              >
-                <Icon name="trash" className="stroke-inherit" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="icon"
-                class="group"
-                @click="togglePinNote({ noteId: currentNoteId, pinned: !isPinned })"
-              >
-                <Icon v-if="!isPinned" name="pin" class="group-hover:stroke-primary" />
-                <Icon v-if="isPinned" name="pin" class="stroke-primary group-hover:hidden" />
-                <Icon v-if="isPinned" name="pinOff" class="stroke-primary hidden group-hover:block" />
-              </Button>
-            </div>
-          </template>
-        </div>
-      </header>
 
       <!-- Editor -->
       <div class="flex min-h-0 flex-1 flex-col">
@@ -230,6 +262,7 @@ onUnmounted(() => {
           placeholder="Write your note here..."
           :editable="true"
           :error="errors.content ?? undefined"
+          class="min-h-40"
         >
           <div>
             <Input
@@ -238,7 +271,7 @@ onUnmounted(() => {
               placeholder="Title"
               maxlength="50"
               class="flex-1"
-              input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl"
+              input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl shadow-none"
               :validate-on-blur="false"
             />
           </div>

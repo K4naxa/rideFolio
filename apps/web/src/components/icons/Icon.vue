@@ -65,6 +65,7 @@ import {
   SaveIcon,
   Circle,
   CircleCheck,
+  ArrowLeftIcon,
   type LucideIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
@@ -123,6 +124,7 @@ type IconName =
   | "chevronDown"
   | "chevronRight"
   | "chevronLeft"
+  | "arrowLeft"
   | "close"
   | "dotsHorizontal"
   | "bell"
@@ -222,6 +224,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   edit: Edit,
   circle: Circle,
   circleCheck: CircleCheck,
+  arrowLeft: ArrowLeftIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
