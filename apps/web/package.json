@@ -23,6 +23,7 @@
     "lint": "run-s lint:*"
   },
   "dependencies": {
+    "@fontsource/roboto": "^5.2.9",
     "@formkit/auto-animate": "^0.9.0",
     "@internationalized/date": "^3.10.1",
     "@number-flow/vue": "^0.4.8",
