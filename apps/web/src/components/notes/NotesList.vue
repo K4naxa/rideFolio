@@ -50,7 +50,7 @@ const handleNewClick = () => {
 };
 </script>
 <template>
-  <div class="flex w-full min-w-60 flex-col gap-8 lg:max-w-96 lg:border-r">
+  <div class="flex w-full min-w-60 flex-col gap-4 lg:max-w-96 lg:border-r">
     <!-- controls -->
     <div class="flex flex-col gap-4 lg:pr-8">
       <Input
@@ -79,12 +79,12 @@ const handleNewClick = () => {
     </div>
 
     <div class="scrollbar flex overflow-y-auto lg:pr-8" v-if="!props.isLoading">
-      <ul v-auto-animate v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-6 lg:gap-2">
+      <ul v-auto-animate v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-4 lg:gap-2">
         <li
           v-for="note in filteredNotes"
           :key="note.id"
           :class="[
-            'bg-accent/50 hover:bg-accent/50 listHover group block cursor-pointer rounded border-transparent px-3 py-3',
+            'bg-accent/50 hover:bg-accent/50 listHover group block cursor-pointer rounded border px-3 py-3 lg:border-transparent',
             props.selectedNoteId === note.id ? 'bg-accent/60' : 'lg:bg-transparent',
           ]"
           @click="selectNote(note)"
