@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Vehicle } from 'prisma/generated/prisma/client';
-import { TOdometerData } from '@repo/validation';
+import { TConversionResult, TOdometerData } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
@@ -32,9 +32,9 @@ export class OdometerService {
 
       case 'MILE':
         return {
-          value: this.unitConversion.kmToMiles(vehicle.odometer_km),
-          lifeTimeTracked: this.unitConversion.kmToMiles(vehicle.lifetimeTotalTrackedUnits_km),
-          lastRefillValue: this.unitConversion.kmToMiles(vehicle.lastRefillOdometer_km ?? 0),
+          value: Number(this.unitConversion.kmToMiles(vehicle.odometer_km).toFixed(1)),
+          lifeTimeTracked: Number(this.unitConversion.kmToMiles(vehicle.lifetimeTotalTrackedUnits_km).toFixed(1)),
+          lastRefillValue: Number(this.unitConversion.kmToMiles(vehicle.lastRefillOdometer_km ?? 0).toFixed(1)),
           unit: 'mi',
           type: 'MILE',
         };
@@ -45,7 +45,7 @@ export class OdometerService {
     hourValue: number | null,
     kmValue: number | null,
     type: Vehicle['odometerType'],
-  ): { value: number; unit: string; type: Vehicle['odometerType'] } {
+  ): TConversionResult {
     switch (type) {
       case 'HOUR':
         return {
@@ -61,7 +61,7 @@ export class OdometerService {
         };
       case 'MILE':
         return {
-          value: this.unitConversion.kmToMiles(kmValue ?? 0),
+          value: Number(this.unitConversion.kmToMiles(kmValue ?? 0).toFixed(1)),
           unit: 'mi',
           type: 'MILE',
         };
