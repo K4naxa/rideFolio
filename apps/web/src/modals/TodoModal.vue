@@ -26,6 +26,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
+import Label from "@/components/ui/label/Label.vue";
 
 const { currentVehicle } = useCurrentVehicle();
 
@@ -128,7 +129,7 @@ const onSubmit = handleSubmit(async (values) => {
           <h3 v-else>Edit To-do</h3>
         </DialogTitle>
       </DialogHeader>
-      <form @submit="onSubmit" class="flex flex-col gap-5" data-cy="create-todo-form">
+      <form @submit="onSubmit" class="flex flex-col gap-4" data-cy="create-todo-form">
         <Field v-slot="{ value, handleChange }" name="vehicleId">
           <div v-if="!currentVehicle">
             <VehicleSelect
@@ -148,7 +149,7 @@ const onSubmit = handleSubmit(async (values) => {
           :maxlength="500"
         />
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Field v-slot="{ value, handleChange }" name="priority">
             <Select
               :model-value="value"
@@ -175,20 +176,20 @@ const onSubmit = handleSubmit(async (values) => {
             </Select>
           </Field>
 
-          <label class="flex items-center gap-3 font-semibold select-none" data-cy="due-checkbox-label">
+          <Label class="flex items-center gap-3 text-base select-none" data-cy="due-checkbox-label">
             <Checkbox
               :model-value="showDueOptions"
               @update:model-value="showDueOptions = !showDueOptions"
               class="size-6"
               data-cy="due-checkbox"
             />
-            <p>Set due information</p>
-          </label>
+            Set due information
+          </Label>
         </div>
 
         <Transition name="slide">
           <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
-            <div class="slide-content grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
               <DateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
               <Input
                 name="dueOdometer"
@@ -201,7 +202,7 @@ const onSubmit = handleSubmit(async (values) => {
           </div>
         </Transition>
 
-        <DialogFooter>
+        <DialogFooter class="">
           <Button type="submit" :disabled="isSubmitting" data-cy="submit-todo-btn">
             <span v-if="!isSubmitting">
               <p v-if="creatingNew">Create</p>

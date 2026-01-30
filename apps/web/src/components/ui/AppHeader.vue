@@ -76,7 +76,7 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
         v-for="button in headerButtons"
         :key="button.label"
         @click="button.onClick"
-        :class="twMerge('hover:bg-background hover:shadow-md', button.class)"
+        :class="twMerge('hover:bg-background font-medium hover:shadow-md', button.class)"
         :data-cy="button.cypressDataAttr"
       >
         <Icons :name="button.icon" />

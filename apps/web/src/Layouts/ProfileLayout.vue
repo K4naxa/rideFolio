@@ -11,11 +11,11 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const profileTabs: { value: string; icon: IconProps["name"]; url: string }[] = [
-  { value: "profile", icon: "user", url: "/profile" },
-  { value: "security", icon: "shield", url: "/profile/security" },
-  { value: "sessions", icon: "key", url: "/profile/sessions" },
-  { value: "accounts", icon: "link", url: "/profile/accounts" },
-  { value: "danger", icon: "trash", url: "/profile/danger" },
+  { value: "Profile", icon: "user", url: "/profile" },
+  { value: "Security", icon: "shield", url: "/profile/security" },
+  { value: "Sessions", icon: "key", url: "/profile/sessions" },
+  { value: "Accounts", icon: "link", url: "/profile/accounts" },
+  { value: "Danger", icon: "trash", url: "/profile/danger" },
 ];
 
 const { currentUser } = useCurrentUser();
@@ -23,7 +23,7 @@ const { currentUser } = useCurrentUser();
 const route = useRoute();
 const activeTab = computed(() => {
   const tab = profileTabs.find((t) => t.url === route.path);
-  return tab?.value || "profile";
+  return tab?.value || "Profile";
 });
 </script>
 <template>
@@ -36,7 +36,7 @@ const activeTab = computed(() => {
         </AvatarFallback>
       </Avatar>
       <div>
-        <h1 class="text-3xl font-semibold lg:text-3xl">
+        <h1 class="text-3xl font-medium lg:text-3xl">
           {{ currentUser?.name }}
         </h1>
 
@@ -55,7 +55,7 @@ const activeTab = computed(() => {
             active-class="text-foreground stroke-foreground"
           >
             <Icon :name="tab.icon" class="size-4 stroke-current text-current" aria-hidden="true" />
-            <p class="flex items-center text-base font-semibold text-current max-lg:hidden">{{ tab.value }}</p>
+            <p class="flex items-center text-base text-current max-lg:hidden">{{ tab.value }}</p>
           </RouterLink>
         </TabsTrigger>
       </TabsList>

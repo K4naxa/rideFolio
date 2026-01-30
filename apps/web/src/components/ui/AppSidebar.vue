@@ -23,12 +23,8 @@ import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import { twMerge } from "tailwind-merge";
 import { useUserQuery } from "@/lib/queries/user/user-queries";
-import Separator from "@/components/ui/separator/Separator.vue";
 import { computed } from "vue";
-import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
-import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
-import { TooltipComponent } from "echarts/components";
-import { TooltipContent } from "@/components/ui/tooltip";
+
 import { toast } from "vue-sonner";
 
 interface MainSideBarLinks {
@@ -102,7 +98,7 @@ const canCreateVehicle = computed(() => {
       <SidebarGroup>
         <SidebarGroupContent class="space-y-1">
           <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild class="text-base">
               <RouterLink :to="link.to" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
                 <Icon :name="link.icon" size="sm" />
                 {{ link.label }}
