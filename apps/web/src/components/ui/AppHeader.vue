@@ -17,7 +17,11 @@ const modalStore = useModalStore();
 const { currentVehicleName } = useCurrentVehicle();
 const { currentPoolName } = useCurrentPool();
 
-const title = computed(() => currentVehicleName.value || currentPoolName.value || route.name?.toString());
+const title = computed(() => {
+  if (currentVehicleName.value) return `${currentVehicleName.value} ${route.name?.toString()}`;
+  if (currentPoolName.value) return `${currentPoolName.value} ${route.name?.toString()}`;
+  return route.name?.toString() ?? "RideFolio";
+});
 
 type IconName = "refill" | "maintenance" | "notes" | "todo" | "bell";
 

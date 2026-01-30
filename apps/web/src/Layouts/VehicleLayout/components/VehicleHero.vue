@@ -90,6 +90,7 @@ const statsOpen = ref(false);
                 @click="handleDeleteClick"
                 aria-label="Delete Vehicle"
                 data-cy="delete-vehicle-btn"
+                class="font-medium"
               >
                 <Icon name="trash" />
                 Delete

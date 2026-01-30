@@ -69,6 +69,8 @@ import {
   ArrowLeftIcon,
   type LucideIcon,
   RouteIcon,
+  LayoutDashboard,
+  RotateCcwIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
@@ -143,6 +145,8 @@ type IconName =
   | "save"
   | "distance"
   | "circle"
+  | "overview"
+  | "retry"
   | "circleCheck";
 
 export interface IconProps {
@@ -231,6 +235,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   circleCheck: CircleCheck,
   arrowLeft: ArrowLeftIcon,
   distance: RouteIcon,
+  overview: LayoutDashboard,
+  retry: RotateCcwIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);

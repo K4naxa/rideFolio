@@ -15,20 +15,20 @@ const router = createRouter({
   routes: [
     {
       path: "/login",
-      name: "login",
+      name: "Login",
       component: LoginView,
       meta: { guestOnly: true },
     },
     {
       path: "/register",
-      name: "register",
+      name: "Register",
       component: RegisterView,
       meta: { guestOnly: true },
     },
 
     {
       path: "/verify-email",
-      name: "verify-email",
+      name: "Verify Email",
       component: () => import("@/views/Login-Register/verifyEmailView.vue"),
       meta: { guestOnly: true },
     },
@@ -40,31 +40,31 @@ const router = createRouter({
       children: [
         {
           path: "/dashboard",
-          name: "dashboard",
+          name: "Dashboard",
           component: DashboardView,
           meta: { requiresAuth: true },
         },
         {
           path: "/notes",
-          name: "notes",
+          name: "Notes",
           component: () => import("@/views/Notes/NotesView.vue"),
           meta: { requiresAuth: true },
         },
         {
           path: "/todos",
-          name: "todos",
+          name: "Todos",
           component: () => import("@/views/Todos/TodosView.vue"),
           meta: { requiresAuth: true },
         },
         {
           path: "/settings",
-          name: "settings layout",
+          name: "Settings Layout",
           component: () => import("@/Layouts/SettingsLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
               path: "",
-              name: "settings redirect",
+              name: "Settings Redirect",
               redirect: "/settings/preferences",
             },
             {
@@ -77,31 +77,31 @@ const router = createRouter({
         },
         {
           path: "/profile",
-          name: "profile layout",
+          name: "Profile Layout",
           component: () => import("@/Layouts/ProfileLayout.vue"),
           meta: { requiresAuth: true },
           children: [
             {
               path: "",
-              name: "profile",
+              name: "Profile",
               meta: { requiresAuth: true },
               component: () => import("@/views/Profile/ProfileView.vue"),
             },
             {
               path: "security",
-              name: "profile-security",
+              name: "Profile Security",
               meta: { requiresAuth: true },
               component: () => import("@/views/Profile/SecurityView.vue"),
             },
             {
               path: "sessions",
-              name: "profile-sessions",
+              name: "Profile Sessions",
               meta: { requiresAuth: true },
               component: () => import("@/views/Profile/SessionsView.vue"),
             },
             {
               path: "danger",
-              name: "profile-danger",
+              name: "Profile Danger",
               meta: { requiresAuth: true },
               component: () => import("@/views/Profile/DangerView.vue"),
             },
@@ -109,31 +109,37 @@ const router = createRouter({
         },
         {
           path: "/vehicles/:vehicleId",
-          name: "VehicleLayout",
+          name: "Vehicle Layout",
           meta: { requiresAuth: true },
           component: VehicleLayout,
           children: [
             {
               path: "",
-              name: "VehicleOverview",
+              name: "Overview",
               meta: { requiresAuth: true },
               component: VehicleOverview,
             },
             {
               path: "todos",
-              name: "Vehicle Todos",
+              name: "Todos",
               meta: { requiresAuth: true },
               component: VehicleTodosView,
             },
             {
+              path: "timelapse",
+              name: "Timelapse",
+              meta: { requiresAuth: true },
+              component: () => import("@/views/VehiclePage/Timelapse/TimelapseView.vue"),
+            },
+            {
               path: "shopping-list",
-              name: "Vehicle Shopping list",
+              name: "Shopping list",
               meta: { requiresAuth: true },
               component: VehicleShoppingView,
             },
             {
               path: "notes",
-              name: "Vehicle notes",
+              name: "Notes",
               meta: { requiresAuth: true },
               component: VehicleNotesView,
             },
@@ -141,12 +147,12 @@ const router = createRouter({
         },
         {
           path: "/pools",
-          name: "pools",
+          name: "Pools",
           meta: { requiresAuth: true },
           children: [
             {
               path: ":poolId",
-              name: "pool-view",
+              name: "Pool View",
               meta: { requiresAuth: true },
               component: () => import("@/views/Pool/PoolView.vue"),
             },
@@ -156,7 +162,7 @@ const router = createRouter({
     },
     {
       path: "/:pathMatch(.*)*",
-      name: "not-found",
+      name: "Not Found",
       component: () => import("@/views/NotFoundView.vue"),
     },
   ],
