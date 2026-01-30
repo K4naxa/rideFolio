@@ -98,7 +98,7 @@ const canCreateVehicle = computed(() => {
       <SidebarGroup>
         <SidebarGroupContent class="space-y-1">
           <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
-            <SidebarMenuButton asChild class="text-base">
+            <SidebarMenuButton asChild class="font-medium">
               <RouterLink :to="link.to" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
                 <Icon :name="link.icon" size="sm" />
                 {{ link.label }}
