@@ -37,7 +37,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 <template>
   <div class="flex min-w-0 flex-1 flex-col">
     <!-- Vehicle layout Hero -->
-    <div class="my-4 lg:my-6">
+    <div class="lg:my-6">
       <VehicleHero />
     </div>
 

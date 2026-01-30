@@ -65,8 +65,10 @@ import {
   SaveIcon,
   Circle,
   CircleCheck,
+  GaugeIcon,
   ArrowLeftIcon,
   type LucideIcon,
+  RouteIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
@@ -132,12 +134,14 @@ type IconName =
   | "trash"
   | "calendar"
   | "droplets"
+  | "consumption"
   | "camera"
   | "subscription"
   | "billing"
   | "stats"
   | "link"
   | "save"
+  | "distance"
   | "circle"
   | "circleCheck";
 
@@ -179,6 +183,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   pinOff: PinOff,
   refill: Fuel,
   maintenance: Wrench,
+  consumption: GaugeIcon,
   notes: StickyNote,
   todo: ListCheck,
   shoppingCart: ShoppingCart,
@@ -225,6 +230,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   circle: Circle,
   circleCheck: CircleCheck,
   arrowLeft: ArrowLeftIcon,
+  distance: RouteIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
