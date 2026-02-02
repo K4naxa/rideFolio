@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { twMerge } from "tailwind-merge";
 import AccountTab from "@/modals/Settings/tabs/AccountTab.vue";
+import StorageUsageTab from "@/modals/Settings/tabs/StorageUsageTab.vue";
 
 // Responsive check
 const isMobile = useIsMobile();
@@ -40,10 +41,11 @@ const tabs: Tab[] = [
   {
     id: "preferences",
     label: "Preferences",
-    icon: "stats",
+    icon: "preferences",
   },
   {
     id: "storage",
+    icon: "database",
     label: "Storage Usage",
   },
 ] as const;
@@ -155,21 +157,10 @@ const showTestDialog = ref(false);
               <div v-else-if="activeTab === 'preferences'">
                 <h3 class="mb-4 text-lg font-medium">Preferences</h3>
                 <p class="text-muted-foreground">Customize your application preferences and settings.</p>
-                <!-- Add your preferences form here -->
               </div>
-
-              <!-- Sessions Content -->
-              <div v-else-if="activeTab === 'sessions'">
-                <h3 class="mb-4 text-lg font-medium">Active Sessions</h3>
-                <p class="text-muted-foreground">View and manage your active sessions across devices.</p>
-                <!-- Add your sessions list here -->
-              </div>
-
               <!-- Storage Usage Content -->
               <div v-else-if="activeTab === 'storage'">
-                <h3 class="mb-4 text-lg font-medium">Storage Usage</h3>
-                <p class="text-muted-foreground">Monitor and manage your storage consumption.</p>
-                <!-- Add your storage usage display here -->
+                <StorageUsageTab />
               </div>
             </div>
           </div>

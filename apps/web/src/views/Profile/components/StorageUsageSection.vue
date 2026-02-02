@@ -120,64 +120,31 @@ const topCategoriesBreakdown = computed(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-8">
-    <Card>
-      <CardContent class="flex gap-6">
-        <!-- Gauge for storage usage -->
-        <div class="h-full w-full">
-          <Label class="text-muted-foreground mb-4">Storage Usage</Label>
-          <div class="relative h-48">
-            <div v-if="isLoading" class="flex h-full flex-1 items-center justify-center">
-              <Spinner class="stroke-muted-foreground size-20" />
-            </div>
-            <VChart v-else :option="gaugeOptions" autoresize />
+  <div class="flex flex-col gap-10">
+    <div class="flex gap-8">
+      <!-- Gauge for storage usage -->
+      <div class="flex h-full w-full flex-2 flex-col justify-start">
+        <Label class="text-muted-foreground mb-2">Storage Usage</Label>
+        <div class="relative h-48">
+          <div v-if="isLoading" class="flex h-full flex-1 items-center justify-center">
+            <Spinner class="stroke-muted-foreground size-20" />
           </div>
-          <div class="text-center">
-            <h3>{{ formatBytesToMB(props.storage?.usage) }} MB</h3>
-            <span class="text-muted-foreground text-sm">
-              <p v-if="props.storage?.isUnlimited" class="items-center">Unlimited Storage</p>
-              <span v-else>of {{ formatBytesToMB(props.storage?.limit) }} MB used</span>
-            </span>
-          </div>
+          <VChart v-else :option="gaugeOptions" autoresize />
         </div>
-
-        <!-- Break down by category -->
-        <div class="hidden h-full w-full lg:block">
-          <Label class="text-muted-foreground mb-6">Breakdown by Category</Label>
-          <div class="flex w-full flex-1 flex-col justify-between gap-6">
-            <div v-for="category in topCategoriesBreakdown" :key="category.category" class="space-y-1.5">
-              <!--  headerl -->
-              <div class="flex justify-between gap-6">
-                <div class="flex items-center gap-2 text-sm">
-                  <div :class="twMerge(categoryColors[category.category], 'aspect-square h-2 rounded-full')" />
-                  {{ capitalize(category.category) }}
-                </div>
-                <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(category.bytes) }} MB</span>
-              </div>
-
-              <!--  progress bar -->
-              <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
-                <div
-                  :class="twMerge(categoryColors[category.category], 'h-2 rounded-full')"
-                  :style="{
-                    width: props.storage?.usage
-                      ? ((category.bytes / props.storage.usage) * 100).toFixed(1) + '%'
-                      : '0%',
-                  }"
-                />
-              </div>
-            </div>
-          </div>
+        <div class="text-center">
+          <h3>{{ formatBytesToMB(props.storage?.usage) }} MB</h3>
+          <span class="text-muted-foreground text-sm">
+            <p v-if="props.storage?.isUnlimited" class="items-center">Unlimited Storage</p>
+            <span v-else>of {{ formatBytesToMB(props.storage?.limit) }} MB used</span>
+          </span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
 
-    <!-- Mobile card -->
-    <Card class="block h-full w-full lg:hidden">
-      <CardContent>
-        <Label class="text-muted-foreground mb-6">Breakdown by Category</Label>
-        <div class="flex h-full w-full flex-1 flex-col gap-5">
-          <div v-for="category in props.storage?.breakdown" :key="category.category" class="space-y-1">
+      <!-- Break down by category -->
+      <div class="hidden h-full w-full flex-3 flex-col justify-start lg:flex">
+        <Label class="text-muted-foreground mb-4">Breakdown by Category</Label>
+        <div class="flex w-full flex-1 flex-col gap-6">
+          <div v-for="category in topCategoriesBreakdown" :key="category.category" class="space-y-1.5">
             <!--  headerl -->
             <div class="flex justify-between gap-6">
               <div class="flex items-center gap-2 text-sm">
@@ -198,7 +165,34 @@ const topCategoriesBreakdown = computed(() => {
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
+
+    <!-- Mobile card -->
+    <div class="block h-full w-full lg:hidden">
+      <Label class="text-muted-foreground mb-4">Breakdown by Category</Label>
+      <div class="flex h-full w-full flex-1 flex-col gap-5">
+        <div v-for="category in props.storage?.breakdown" :key="category.category" class="space-y-1">
+          <!--  headerl -->
+          <div class="flex justify-between gap-6">
+            <div class="flex items-center gap-2 text-sm">
+              <div :class="twMerge(categoryColors[category.category], 'aspect-square h-2 rounded-full')" />
+              {{ capitalize(category.category) }}
+            </div>
+            <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(category.bytes) }} MB</span>
+          </div>
+
+          <!--  progress bar -->
+          <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
+            <div
+              :class="twMerge(categoryColors[category.category], 'h-2 rounded-full')"
+              :style="{
+                width: props.storage?.usage ? ((category.bytes / props.storage.usage) * 100).toFixed(1) + '%' : '0%',
+              }"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

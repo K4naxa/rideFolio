@@ -71,6 +71,8 @@ import {
   RouteIcon,
   LayoutDashboard,
   RotateCcwIcon,
+  DatabaseIcon,
+  Settings2Icon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
@@ -147,6 +149,8 @@ type IconName =
   | "circle"
   | "overview"
   | "retry"
+  | "database"
+  | "preferences"
   | "circleCheck";
 
 export interface IconProps {
@@ -237,6 +241,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   distance: RouteIcon,
   overview: LayoutDashboard,
   retry: RotateCcwIcon,
+  database: DatabaseIcon,
+  preferences: Settings2Icon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);
