@@ -86,7 +86,7 @@ const selectedVehicleIcon = computed(() => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="w-full max-w-2xl">
+    <DialogScrollContent class="w-full max-w-3xl">
       <DialogHeader>
         <DialogTitle>Create new vehicle</DialogTitle>
         <DialogDescription> Fill in the details below to add a new vehicle to your garage. </DialogDescription>
@@ -271,17 +271,17 @@ const selectedVehicleIcon = computed(() => {
             </Field>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button v-if="createPending" disabled variant="submit">
-            <Spinner class="mr-2" />
-            Creating...
-          </Button>
-          <Button v-else type="submit" variant="submit" data-cy="submit"> Create </Button>
-
-          <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Peruuta </Button>
-        </DialogFooter>
       </form>
+
+      <DialogFooter>
+        <Button v-if="createPending" disabled variant="submit">
+          <Spinner class="mr-2" />
+          Creating...
+        </Button>
+        <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit"> Create </Button>
+
+        <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Peruuta </Button>
+      </DialogFooter>
     </DialogScrollContent>
   </Dialog>
 </template>

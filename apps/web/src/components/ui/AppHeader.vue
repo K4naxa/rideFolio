@@ -11,6 +11,8 @@ import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import NotificationsPopover from "../NotificationsPopover.vue";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import Icon from "../icons/Icon.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();

@@ -16,6 +16,7 @@ import { authClient } from "@/lib/authClient";
 import { toast } from "vue-sonner";
 
 const { handleSubmit, setFieldError, resetForm } = useForm({
+  name: "changePasswordForm",
   validationSchema: toTypedSchema(passwordUpdateSchema),
   initialValues: {
     currentPassword: "",
@@ -28,9 +29,10 @@ const onSubmit = handleSubmit(async (values) => {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur();
   }
-  await authClient.changePassword(
+  const { data, error } = await authClient.changePassword(
     {
       ...values,
+      callbackURL: import.meta.env.VITE_FRONTEND_URL + "/dashboard",
     },
     {
       onError: (error) => {

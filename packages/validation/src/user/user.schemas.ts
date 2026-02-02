@@ -2,9 +2,15 @@ import { z } from "zod";
 import { consumptionUnitCodes_distance, consumptionUnitCodes_hour, currencyCodes, volumeUnitCodes } from "./user.types";
 import { odometerTypeCodes } from "../vehicle";
 
+export const nameSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "Username is required" })
+    .max(30, { message: "Username must be at most 30 characters" }),
+});
 export const RegisterSchema = z
   .object({
-    name: z.string().min(1, { message: "Username is required" }),
+    name: nameSchema.shape.name,
     email: z.email({ message: "Email has incorrect form" }),
     password: z.string().min(8, { message: "Password must be atleast 8 characters" }),
     image: z.string().nullable().optional(),
@@ -29,14 +35,22 @@ export const profileUpdateSchema = z.object({
 });
 export type ProfileUpdateValues = z.infer<typeof profileUpdateSchema>;
 
-export const passwordUpdateSchema = z.object({
-  currentPassword: z.string().min(1, { message: "Current password is required" }),
-  newPassword: z.string().min(8, { message: "New password must be at least 8 characters" }),
-  revokeOtherSessions: z.preprocess(
-    (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
-    z.boolean("Invalid value")
-  ),
-});
+export const passwordUpdateSchema = z
+  .object({
+    currentPassword: z.string().min(1, { message: "Current password is required" }),
+    newPassword: z.string().min(8, { message: "New password must be at least 8 characters" }),
+    newPasswordConfirmation: z.string().min(1, { message: "Please confirm your new password" }),
+  })
+  .refine((data) => data.newPassword === data.newPasswordConfirmation, {
+    message: "New password and confirmation do not match",
+    path: ["newPasswordConfirmation", "newPassword"],
+  })
+  .extend({
+    revokeOtherSessions: z.preprocess(
+      (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
+      z.boolean("Invalid value"),
+    ),
+  });
 export type PasswordUpdateValues = z.infer<typeof passwordUpdateSchema>;
 
 export const UpdatePreferenceSchema = z.discriminatedUnion("key", [
@@ -58,7 +72,7 @@ export const UpdatePreferenceSchema = z.discriminatedUnion("key", [
       currencyCodes.map((v) => v),
       {
         message: "Invalid currency type",
-      }
+      },
     ),
   }),
   z.object({

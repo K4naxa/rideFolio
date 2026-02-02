@@ -25,6 +25,10 @@ export const createAuth = (emailService: EmailService) =>
           type: 'number',
         },
       },
+
+      changeEmail: {
+        enabled: true,
+      },
       deleteUser: {
         enabled: true,
       },
@@ -57,11 +61,16 @@ export const createAuth = (emailService: EmailService) =>
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, token }) => {
-        await emailService.sendEmailVerification({
+      sendVerificationEmail: async ({ user, url, token }) => {
+        void emailService.sendEmailVerification({
+          user: user,
           userEmail: user.email,
           token: token,
+          url: url,
         });
+      },
+      async afterEmailVerification(user) {
+        console.log(`✅ User email verified: ${user.email}`);
       },
     },
 
@@ -88,4 +97,5 @@ export const createAuth = (emailService: EmailService) =>
     trustedOrigins:
       process.env.NODE_ENV === 'production' ? [process.env.FRONTEND_URL || 'http://localhost:5173'] : ['*'], // Allow all origins in development
     basePath: '/api/auth',
+    appName: 'RideFolio',
   });

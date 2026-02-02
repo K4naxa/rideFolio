@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DialogContentEmits, DialogContentProps } from "reka-ui";
-import { ref, watch, nextTick, type HTMLAttributes } from "vue";
-import { reactiveOmit, useWindowSize } from "@vueuse/core";
-import { DialogContent, DialogOverlay, DialogPortal, injectDialogRootContext, useForwardPropsEmits } from "reka-ui";
+import { type HTMLAttributes } from "vue";
+import { reactiveOmit } from "@vueuse/core";
+import { DialogContent, DialogOverlay, DialogPortal, useForwardPropsEmits } from "reka-ui";
 import { twMerge } from "tailwind-merge";
 
 const props = defineProps<DialogContentProps & { class?: HTMLAttributes["class"] }>();
@@ -18,7 +18,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     <DialogOverlay
       :class="
         twMerge(
-          'bottom-safe-area fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 backdrop-blur-sm',
+          'bottom-safe-area fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 backdrop-blur-sm md:p-4 lg:p-8',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:animate-in data-[state=closed]:animate-out duration-200 ease-in-out',
         )
       "
@@ -27,7 +27,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         ref="dialogContentRef"
         :class="
           twMerge(
-            'bg-background data relative isolate z-50 flex w-full min-w-0 flex-col gap-4 rounded border-0 p-4 shadow-lg sm:rounded-lg md:my-8 md:w-full lg:border lg:p-6',
+            'bg-background data relative isolate z-50 flex h-full w-full flex-1 flex-col gap-4 rounded border-0 p-4 shadow-lg sm:rounded-lg md:my-8 md:h-fit md:w-full md:border lg:p-6',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-250',
             props.class,
           )

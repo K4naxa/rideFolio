@@ -13,6 +13,7 @@ import PoolModal from "./modals/PoolModal.vue";
 import PoolInvitationModal from "./modals/PoolInvitationModal.vue";
 import QuickLinkModal from "@/modals/QuickLinkModal.vue";
 import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.vue";
+import SettingsModal from "@/modals/Settings/SettingsModal.vue";
 
 configure({});
 
@@ -45,6 +46,7 @@ const themeStore = useThemeStore();
   <PoolModal />
   <PoolInvitationModal />
   <QuickLinkModal />
+  <SettingsModal />
 </template>
 
 <style scoped></style>

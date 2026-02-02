@@ -57,10 +57,10 @@ function formatDate(date: Date) {
 </script>
 
 <template>
-  <div class="hover:bg-accent/50 space-y-2 rounded-md p-3">
+  <div class="hover:bg-accent/30 p-3">
     <div class="flex justify-between gap-3">
-      <h3 class="text-base">{{ browserInformation }}</h3>
-      <Badge v-if="props.isCurrent" variant="secondary">Current Session</Badge>
+      <span class="text-sm font-medium">{{ browserInformation }}</span>
+      <Badge v-if="props.isCurrent" variant="default">Current Session</Badge>
     </div>
     <div>
       <div class="flex items-center justify-between">
@@ -68,20 +68,21 @@ function formatDate(date: Date) {
           <SmartphoneIcon v-if="userAgentInfo?.device.type === 'mobile'" />
           <TabletIcon v-else-if="userAgentInfo?.device.type === 'tablet'" />
           <MonitorIcon v-else />
-          <div>
-            <p class="text-muted-foreground text-sm">Created: {{ formatDate(props.session.createdAt) }}</p>
-            <p class="text-muted-foreground text-sm">Expires: {{ formatDate(props.session.expiresAt) }}</p>
+          <div class="flex items-center gap-2">
+            <p class="text-muted-foreground text-sm">Last Active:</p>
+            <Badge class="bg-muted text-muted-foreground text-sm">
+              {{ formatDate(props.session.updatedAt) }}
+            </Badge>
           </div>
         </div>
         <Button
           v-if="!props.isCurrent"
-          variant="destructive"
-          size="icon"
+          variant="outline"
           type="button"
-          aria-label="Revoke session"
+          aria-label="Log out session"
           @click="emits('RevokeSession', props.session.token)"
         >
-          <Icon name="trash" />
+          <span class="text-sm">Log out</span>
         </Button>
       </div>
     </div>

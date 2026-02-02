@@ -1,6 +1,6 @@
 import type { NotificationModalType } from "@repo/validation";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export type ModalType =
   | NotificationModalType
@@ -11,6 +11,7 @@ export type ModalType =
   | "createTodo"
   | "alert"
   | "pool"
+  | "settings"
   | "quicklink";
 
 export const useModalStore = defineStore("modal", () => {
@@ -18,9 +19,16 @@ export const useModalStore = defineStore("modal", () => {
   const data = ref<unknown>(undefined);
   const isOpen = ref(false);
 
+  const isSettingsOpen = ref(false);
+
   const onOpen = (modaltype: ModalType, modalData?: unknown) => {
     ((type.value = modaltype), (data.value = modalData), (isOpen.value = true));
   };
+
+  watch(isSettingsOpen, (newVal) => {
+    console.log("isSettingsOpen changed:", newVal);
+    console.log("Update trace: ", console.trace());
+  });
 
   const onClose = () => {
     isOpen.value = false;
@@ -32,6 +40,7 @@ export const useModalStore = defineStore("modal", () => {
 
   return {
     type,
+    isSettingsOpen,
     data,
     isOpen,
     onOpen,

@@ -15,7 +15,7 @@ export function useAuth() {
     authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push({ name: "login" });
+          router.push({ name: "Login" });
           queryClient.clear();
         },
       },
@@ -23,7 +23,7 @@ export function useAuth() {
   }
 
   return {
-    seassion: session,
+    session: session,
     isAuthenticated,
 
     signOut,

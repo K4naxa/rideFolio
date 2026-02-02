@@ -15,6 +15,7 @@ import { toast } from "vue-sonner";
 import { z } from "zod";
 import LoginTabs from "./components/LoginTabs.vue";
 
+const redirectUrl = import.meta.env.VITE_FRONTEND_URL + "/dashboard";
 const clientSchema = toTypedSchema(
   RegisterSchema.safeExtend({
     confirmPassword: z.string().min(8, "Password must be at least 8 characters long"),
@@ -39,7 +40,7 @@ const { handleSubmit, setFieldError } = useForm({
 
 async function quickRegister(name: string, email: string, password: string) {
   await authClient.signUp.email(
-    { email, password, name },
+    { email, password, name, callbackURL: redirectUrl },
     {
       onSuccess() {
         toast.success(`Quick registration successful for ${name}!`, {
@@ -57,6 +58,7 @@ const onSubmit = handleSubmit(async (values) => {
       email: values.email,
       password: values.password,
       name: values.name,
+      callbackURL: redirectUrl,
     },
     {
       onError: ({ error }) => {

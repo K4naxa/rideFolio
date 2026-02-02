@@ -8,6 +8,7 @@ import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.
 import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
 import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
 import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
+import NotesView from "@/views/Notes/NotesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -47,12 +48,12 @@ const router = createRouter({
         {
           path: "/notes",
           name: "Notes",
-          component: () => import("@/views/Notes/NotesView.vue"),
+          component: NotesView,
           meta: { requiresAuth: true },
         },
         {
           path: "/todos",
-          name: "Todos",
+          name: "To-Dos",
           component: () => import("@/views/Todos/TodosView.vue"),
           meta: { requiresAuth: true },
         },
@@ -121,7 +122,7 @@ const router = createRouter({
             },
             {
               path: "todos",
-              name: "Todos",
+              name: "to-dos",
               meta: { requiresAuth: true },
               component: VehicleTodosView,
             },
@@ -139,7 +140,7 @@ const router = createRouter({
             },
             {
               path: "notes",
-              name: "Notes",
+              name: "Vehicle Notes",
               meta: { requiresAuth: true },
               component: VehicleNotesView,
             },
@@ -174,18 +175,18 @@ router.beforeEach(async (to, from, next) => {
     const isAuthenticated = sessionResult.data?.user !== undefined;
     if (to.meta.guestOnly) {
       if (!isAuthenticated) return next();
-      else return next({ name: "dashboard" });
+      else return next({ name: "Dashboard" });
     }
 
     if (to.meta.requiresAuth) {
       if (isAuthenticated) return next();
-      else return next({ name: "login" });
+      else return next({ name: "Login" });
     }
 
     // If no meta properties match, allow navigation
     return next();
   } catch (e) {
-    return next({ name: "login" });
+    return next({ name: "Login" });
   }
 });
 

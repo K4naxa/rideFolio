@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EmailTemplateService } from 'src/email/emailTemplate.service';
 import * as Brevo from '@getbrevo/brevo';
+import { UserSession } from '@thallesp/nestjs-better-auth';
 
 @Injectable()
 export class EmailService {
@@ -20,7 +21,17 @@ export class EmailService {
     this.emailApi.setApiKey(0, apiKey);
   }
 
-  async sendEmailVerification({ userEmail, token }: { userEmail: string; token: string }) {
+  async sendEmailVerification({
+    user,
+    userEmail,
+    token,
+    url,
+  }: {
+    user: UserSession['user'];
+    userEmail: string;
+    token: string;
+    url: string;
+  }) {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
     const verificationUrl = `${frontendUrl}/verify-email?token=${token}`;
 
@@ -28,7 +39,7 @@ export class EmailService {
       await this.sendEmail({
         to: userEmail,
         subject: 'Verify your email for RideFolio',
-        html: this.emailTemplates.getVerificationEmail(verificationUrl),
+        html: this.emailTemplates.getVerificationEmail(url, user.name),
         text: `Please verify your email by clicking the following link: ${verificationUrl}`,
       });
 

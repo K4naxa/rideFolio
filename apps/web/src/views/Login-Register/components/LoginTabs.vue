@@ -8,9 +8,9 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 
 const activeTab = computed(() => {
-  if (route.name === "login") {
+  if (route.name === "Login") {
     return "login";
-  } else if (route.name === "register") {
+  } else if (route.name === "Register") {
     return "register";
   }
   return "login";

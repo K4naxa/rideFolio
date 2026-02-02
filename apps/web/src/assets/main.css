@@ -65,13 +65,13 @@ html {
   --color-input: var(--color-neutral-50);
   --color-ring: var(--color-primary);
 
-  --color-primary: var(--color-amber-600); /* indigo-500 */
+  --color-primary: #ff8c00; /* indigo-500 */
   --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
 
   --color-secondary: var(--color-neutral-800);
   --color-secondary-foreground: var(--color-neutral-100);
 
-  --color-destructive: hsl(0, 72%, 51%); /* red-600 */
+  --color-destructive: hsl(10, 100%, 53%); /* red-600 */
   --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
 
   --color-success: hsl(142, 76%, 36%); /* green-600 */

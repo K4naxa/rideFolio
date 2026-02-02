@@ -136,7 +136,7 @@ watch(isModalOpen, (open) => {
         </DialogTitle>
         <DialogDescription class="text-start"> Log a new fuel refill for your vehicle </DialogDescription>
       </DialogHeader>
-      <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
+      <form class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
         <div class="flex flex-col gap-4 lg:gap-6">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
@@ -226,15 +226,15 @@ watch(isModalOpen, (open) => {
 
           <Textarea name="notes" placeholder="Refill notes.." data-cy="notes-input" />
         </div>
-
-        <DialogFooter class="pt-auto">
-          <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
-            <span v-if="!isSubmitting">Create</span>
-            <span v-else> <Spinner /> Creating.. </span>
-          </Button>
-          <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
-        </DialogFooter>
       </form>
+
+      <DialogFooter class="pt-auto mt-auto">
+        <Button type="button" @click="onSubmit" :disabled="isSubmitting" data-cy="submit-refill-btn">
+          <span v-if="!isSubmitting">Create</span>
+          <span v-else> <Spinner /> Creating.. </span>
+        </Button>
+        <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
+      </DialogFooter>
     </DialogScrollContent>
   </Dialog>
 </template>

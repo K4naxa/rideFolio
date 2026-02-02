@@ -98,8 +98,12 @@ const canCreateVehicle = computed(() => {
       <SidebarGroup>
         <SidebarGroupContent class="space-y-1">
           <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
-            <SidebarMenuButton asChild class="font-medium">
-              <RouterLink :to="link.to" class="hover:bg-accent! w-full" exact-active-class="bg-accent">
+            <SidebarMenuButton asChild class="">
+              <RouterLink
+                :to="link.to"
+                class="hover:bg-accent! text-foreground/80 w-full"
+                exact-active-class="bg-accent text-foreground!"
+              >
                 <Icon :name="link.icon" size="sm" />
                 {{ link.label }}
               </RouterLink>
@@ -111,7 +115,7 @@ const canCreateVehicle = computed(() => {
       <SidebarGroup>
         <SidebarGroupLabel class="text-sm">
           <span class="flex w-full items-center gap-3">
-            <Icon name="carFront" />
+            <Icon name="carFront" class="text-inherit" />
             Vehicles
             <Button
               class="ml-auto"
@@ -170,7 +174,7 @@ const canCreateVehicle = computed(() => {
       </SidebarGroup>
 
       <SidebarGroup class="mt-auto">
-        <SidebarGroupContent class="space-y-1">
+        <SidebarGroupContent class="space-y-4">
           <div v-if="user" class="space-y-1 px-2">
             <!--  headerl -->
             <div class="flex justify-between gap-6">
@@ -192,6 +196,19 @@ const canCreateVehicle = computed(() => {
               />
             </div>
           </div>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              @click="
+                setOpenMobile(false);
+                modalStore.onOpen('settings');
+              "
+              class="hover:bg-accent cursor-pointer"
+            >
+              <Icon name="settings" size="sm" />
+              Settings
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarGroupContent>
       </SidebarGroup>
     </SidebarContent>
