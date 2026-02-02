@@ -22,7 +22,7 @@ const { data: storageSummary, isLoading: isStorageLoading, isError: isStorageErr
       See how much storage space your files are using and manage your storage plan.
     </DialogDescription>
   </DialogHeader>
-  <section class="space-y-6 lg:space-y-8">
+  <section class="space-y-10">
     <div class="mb-4">
       <h3>Usage Summary</h3>
       <span class="text-muted-foreground text-sm">Your current plan limits</span>

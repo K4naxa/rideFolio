@@ -57,7 +57,7 @@ function formatDate(date: Date) {
 </script>
 
 <template>
-  <div class="hover:bg-accent/30 p-3">
+  <div class="hover:bg-accent/30 px-1 py-2">
     <div class="flex justify-between gap-3">
       <span class="text-sm font-medium">{{ browserInformation }}</span>
       <Badge v-if="props.isCurrent" variant="default">Current Session</Badge>
@@ -79,10 +79,12 @@ function formatDate(date: Date) {
           v-if="!props.isCurrent"
           variant="outline"
           type="button"
+          size="sm"
           aria-label="Log out session"
           @click="emits('RevokeSession', props.session.token)"
+          class="items-center"
         >
-          <span class="text-sm">Log out</span>
+          <Icon name="trash" /> <span class="hidden text-sm md:inline">Log out</span>
         </Button>
       </div>
     </div>

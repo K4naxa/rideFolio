@@ -15,6 +15,7 @@ import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { twMerge } from "tailwind-merge";
 import AccountTab from "@/modals/Settings/tabs/AccountTab.vue";
 import StorageUsageTab from "@/modals/Settings/tabs/StorageUsageTab.vue";
+import SessionsTab from "@/modals/Settings/tabs/SessionsTab.vue";
 
 // Responsive check
 const isMobile = useIsMobile();
@@ -42,6 +43,11 @@ const tabs: Tab[] = [
     id: "preferences",
     label: "Preferences",
     icon: "preferences",
+  },
+  {
+    id: "sessions",
+    label: "Sessions",
+    icon: "key",
   },
   {
     id: "storage",
@@ -77,7 +83,7 @@ const showTestDialog = ref(false);
                 v-for="tab in tabs"
                 :key="tab.id"
                 :value="tab.id"
-                class="flex items-center gap-2"
+                class="flex items-center gap-1.5 px-3 py-2"
                 @click="setActiveTab(tab.id)"
               >
                 <div class="size-5 w-5">
@@ -157,6 +163,10 @@ const showTestDialog = ref(false);
               <div v-else-if="activeTab === 'preferences'">
                 <h3 class="mb-4 text-lg font-medium">Preferences</h3>
                 <p class="text-muted-foreground">Customize your application preferences and settings.</p>
+              </div>
+              <!-- Sessions Content -->
+              <div v-else-if="activeTab === 'sessions'">
+                <SessionsTab />
               </div>
               <!-- Storage Usage Content -->
               <div v-else-if="activeTab === 'storage'">

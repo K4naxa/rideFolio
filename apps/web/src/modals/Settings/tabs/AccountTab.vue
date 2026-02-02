@@ -7,7 +7,6 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import AccountSection from "@/modals/Settings/components/AccountSection.vue";
 import DangerSection from "@/modals/Settings/components/DangerSection.vue";
 import SecuritySection from "@/modals/Settings/components/SecuritySection.vue";
-import SessionsSection from "@/modals/Settings/components/SessionsSection.vue";
 
 const { currentUser } = useCurrentUser();
 </script>
@@ -25,7 +24,6 @@ const { currentUser } = useCurrentUser();
       <AccountSection />
       <SecuritySection />
       <!-- TODO: Accounts section that lists linked accounts (google, facebook, etc..) -->
-      <SessionsSection />
       <DangerSection />
     </div>
   </div>
