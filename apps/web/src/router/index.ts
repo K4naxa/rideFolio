@@ -58,57 +58,6 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "/settings",
-          name: "Settings Layout",
-          component: () => import("@/Layouts/SettingsLayout.vue"),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: "",
-              name: "Settings Redirect",
-              redirect: "/settings/preferences",
-            },
-            {
-              path: "preferences",
-              name: "Preference Settings",
-              meta: { requiresAuth: true },
-              component: () => import("@/views/Settings/SettingsPreferenceView.vue"),
-            },
-          ],
-        },
-        {
-          path: "/profile",
-          name: "Profile Layout",
-          component: () => import("@/Layouts/ProfileLayout.vue"),
-          meta: { requiresAuth: true },
-          children: [
-            {
-              path: "",
-              name: "Profile",
-              meta: { requiresAuth: true },
-              component: () => import("@/views/Profile/ProfileView.vue"),
-            },
-            {
-              path: "security",
-              name: "Profile Security",
-              meta: { requiresAuth: true },
-              component: () => import("@/views/Profile/SecurityView.vue"),
-            },
-            {
-              path: "sessions",
-              name: "Profile Sessions",
-              meta: { requiresAuth: true },
-              component: () => import("@/views/Profile/SessionsView.vue"),
-            },
-            {
-              path: "danger",
-              name: "Profile Danger",
-              meta: { requiresAuth: true },
-              component: () => import("@/views/Profile/DangerView.vue"),
-            },
-          ],
-        },
-        {
           path: "/vehicles/:vehicleId",
           name: "Vehicle Layout",
           meta: { requiresAuth: true },

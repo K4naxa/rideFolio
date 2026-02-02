@@ -5,14 +5,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
-import AppHeaderProfileButton from "./AppHeaderProfileButton.vue";
 import { useModalStore } from "@/stores/modal";
 import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import NotificationsPopover from "../NotificationsPopover.vue";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import Icon from "../icons/Icon.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();
@@ -91,8 +88,6 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
     </div>
     <div class="ml-auto flex items-center gap-x-2.5">
       <NotificationsPopover />
-
-      <AppHeaderProfileButton />
     </div>
   </header>
 </template>

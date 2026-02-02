@@ -115,7 +115,7 @@ function fromSelectValue(value: string): T {
         variant="outline"
         :class="
           twMerge(
-            'w-full justify-between font-normal',
+            'w-full justify-between truncate font-normal',
             !modelValue && 'text-muted-foreground',
             inputStyle ? 'bg-input! border-border! h-fit border px-3 py-2! text-base' : '',
             triggerClass,

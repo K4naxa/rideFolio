@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
-type Theme = "light" | "dark" | "system";
+export type ThemeType = "light" | "dark" | "system";
 
 export const useThemeStore = defineStore("theme", () => {
-  const theme = ref<Theme>((localStorage.getItem("theme") as Theme) || "system");
+  const theme = ref<ThemeType>((localStorage.getItem("theme") as ThemeType) || "system");
 
   const resolvedTheme = ref<"light" | "dark">("light");
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -75,7 +75,7 @@ export const useThemeStore = defineStore("theme", () => {
     }
   };
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = (newTheme: ThemeType) => {
     theme.value = newTheme;
     localStorage.setItem("theme", newTheme);
     applyTheme(true); // WITH transition when user changes theme

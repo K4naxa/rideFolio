@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
-import Button from "@/components/ui/button/Button.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
@@ -8,11 +6,8 @@ import Label from "@/components/ui/label/Label.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import { authClient } from "@/lib/authClient";
 
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { useUserStorageSummary } from "@/lib/queries/user/user-queries";
 import SessionItem from "@/modals/Settings/components/SessionItem.vue";
-import StorageUsageSection from "@/views/Profile/components/StorageUsageSection.vue";
-import VehicleSlotElement from "@/views/Profile/components/VehicleSlotElement.vue";
+
 import { onMounted, ref } from "vue";
 import { toast } from "vue-sonner";
 

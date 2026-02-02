@@ -26,6 +26,8 @@ import { useUserQuery } from "@/lib/queries/user/user-queries";
 import { computed } from "vue";
 
 import { toast } from "vue-sonner";
+import Separator from "@/components/ui/separator/Separator.vue";
+import { useAuth } from "@/lib/authClient";
 
 interface MainSideBarLinks {
   label: string;
@@ -50,6 +52,7 @@ const mainSidebarLinks: MainSideBarLinks[] = [
     to: "/todos",
   },
 ];
+const { signOut } = useAuth();
 
 const { data: vehicles } = useVehiclesAll();
 const { currentVehicleId } = useCurrentVehicle();
@@ -174,10 +177,10 @@ const canCreateVehicle = computed(() => {
       </SidebarGroup>
 
       <SidebarGroup class="mt-auto">
-        <SidebarGroupContent class="space-y-4">
-          <div v-if="user" class="space-y-1 px-2">
+        <SidebarGroupContent class="space-y-1">
+          <div v-if="user" class="mb-2 space-y-1 px-2">
             <!--  headerl -->
-            <div class="flex justify-between gap-6">
+            <div class="flex items-end justify-between gap-6">
               <div class="flex items-center gap-2 text-sm">Storage usage</div>
               <span class="text-muted-foreground text-xs">
                 {{ ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + "%" }}</span
@@ -207,6 +210,14 @@ const canCreateVehicle = computed(() => {
             >
               <Icon name="settings" size="sm" />
               Settings
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <Separator />
+          <SidebarMenuItem>
+            <SidebarMenuButton @click="signOut()" class="hover:bg-accent cursor-pointer">
+              <Icon name="logout" />
+              <span>Log out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroupContent>

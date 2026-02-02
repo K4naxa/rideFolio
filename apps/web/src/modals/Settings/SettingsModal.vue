@@ -16,6 +16,7 @@ import { twMerge } from "tailwind-merge";
 import AccountTab from "@/modals/Settings/tabs/AccountTab.vue";
 import StorageUsageTab from "@/modals/Settings/tabs/StorageUsageTab.vue";
 import SessionsTab from "@/modals/Settings/tabs/SessionsTab.vue";
+import PreferencesTab from "@/modals/Settings/tabs/PreferencesTab.vue";
 
 // Responsive check
 const isMobile = useIsMobile();
@@ -161,8 +162,7 @@ const showTestDialog = ref(false);
 
               <!-- Preferences Content -->
               <div v-else-if="activeTab === 'preferences'">
-                <h3 class="mb-4 text-lg font-medium">Preferences</h3>
-                <p class="text-muted-foreground">Customize your application preferences and settings.</p>
+                <PreferencesTab />
               </div>
               <!-- Sessions Content -->
               <div v-else-if="activeTab === 'sessions'">

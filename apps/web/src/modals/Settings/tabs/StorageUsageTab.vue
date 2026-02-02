@@ -8,8 +8,8 @@ import Separator from "@/components/ui/separator/Separator.vue";
 
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useUserStorageSummary } from "@/lib/queries/user/user-queries";
-import StorageUsageSection from "@/views/Profile/components/StorageUsageSection.vue";
-import VehicleSlotElement from "@/views/Profile/components/VehicleSlotElement.vue";
+import StorageUsageSection from "@/modals/Settings/components/StorageUsageSection.vue";
+import VehicleSlotElement from "@/modals/Settings/components/VehicleSlotElement.vue";
 
 const { currentUser } = useCurrentUser();
 const { data: storageSummary, isLoading: isStorageLoading, isError: isStorageError } = useUserStorageSummary();

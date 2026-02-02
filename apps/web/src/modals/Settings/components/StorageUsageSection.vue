@@ -8,8 +8,6 @@ import { computed } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { capitalize, formatBytesToMB } from "@/lib/utils";
 import Label from "@/components/ui/label/Label.vue";
-import Card from "@/components/ui/card/Card.vue";
-import CardContent from "@/components/ui/card/CardContent.vue";
 import type { StorageUsageSummary } from "@repo/validation";
 import { twMerge } from "tailwind-merge";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
