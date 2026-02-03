@@ -43,7 +43,9 @@ const handleNewClick = () => {
 </script>
 
 <template>
-  <div class="flex flex-1 gap-8 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)]">
+  <div
+    class="flex flex-1 gap-8 lg:h-full lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)]"
+  >
     <!-- left side -->
     <NotesList
       :notes="vehicleNotes"

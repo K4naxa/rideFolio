@@ -7,6 +7,7 @@ import type { IconProps } from "@/components/icons/Icon.vue";
 import Icon from "@/components/icons/Icon.vue";
 import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 
 interface VehicleTab {
   to: string;
@@ -50,36 +51,37 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 <template>
   <div class="flex min-w-0 flex-1 flex-col">
     <!-- Vehicle layout Hero -->
-    <div class="lg:my-6">
-      <VehicleHero />
-    </div>
+
+    <VehicleHero class="" />
 
     <!-- Vehicle navigation tabs -->
     <div class="flex flex-1 flex-col">
-      <nav
-        class="bg-background sticky top-(--app-header-height) z-20 mb-0 h-(--vehicle-navbar-height) border-b pt-1 text-sm"
-      >
+      <nav class="bg-background sticky top-(--app-header-height) z-20 mb-0 h-(--vehicle-navbar-height) pt-1 text-sm">
         <!-- Mobile nav -->
-        <Tabs class="mx-1 lg:mx-8">
-          <TabsList class="bg-background w-full">
-            <TabsTrigger v-for="tab in VEHICLE_TABS" :key="tab.id" :value="tab.id" as-child>
-              <RouterLink
-                :to="tab.to"
-                exact-active-class="text-accent-foreground! bg-accent!"
-                class="text-muted-foreground hover:text-foreground flex w-full items-center gap-2 px-3 py-2 font-medium select-none"
-                draggable="false"
-              >
-                <Icon v-if="tab.icon" :name="tab.icon" class="h-4 w-4" />
-                <span class="hidden lg:block">{{ tab.label }}</span>
-              </RouterLink>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <MainContentWrapper>
+          <Tabs class="w-full">
+            <TabsList class="bg-muted/50 w-full">
+              <TabsTrigger v-for="tab in VEHICLE_TABS" :key="tab.id" :value="tab.id" as-child>
+                <RouterLink
+                  :to="tab.to"
+                  exact-active-class="text-accent-foreground! bg-background!"
+                  class="text-muted-foreground hover:text-foreground flex w-full items-center gap-2 px-3 py-2 font-medium select-none"
+                  draggable="false"
+                >
+                  <Icon v-if="tab.icon" :name="tab.icon" class="h-4 w-4" />
+                  <span class="hidden lg:block">{{ tab.label }}</span>
+                </RouterLink>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </MainContentWrapper>
       </nav>
 
       <!-- Vehicle pages -->
-      <main class="flex flex-1 flex-col p-2 pt-6 lg:p-8">
-        <RouterView />
+      <main class="mt-8 flex flex-1 flex-col pb-4">
+        <MainContentWrapper>
+          <RouterView />
+        </MainContentWrapper>
       </main>
     </div>
   </div>

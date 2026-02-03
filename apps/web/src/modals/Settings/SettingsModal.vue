@@ -25,7 +25,7 @@ const modalStore = useModalStore();
 const isOpen = computed(() => modalStore.isOpen && modalStore.type === "settings");
 
 // Active tab tracking
-const activeTab = ref("account");
+const activeTab = ref("preferences");
 
 // Tabs configuration
 interface Tab {

@@ -10,7 +10,15 @@ import NumberFlow from "@number-flow/vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { ChevronDownIcon, EditIcon, GaugeIcon, MoreVerticalIcon, RouteIcon } from "lucide-vue-next";
+import {
+  ChevronDownIcon,
+  EditIcon,
+  EllipsisVerticalIcon,
+  GaugeIcon,
+  MoreVerticalIcon,
+  RouteIcon,
+  UploadIcon,
+} from "lucide-vue-next";
 import { ref } from "vue";
 import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
 import Icon from "@/components/icons/Icon.vue";
@@ -21,6 +29,8 @@ import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries"
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
+import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
+import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 
 const router = useRouter();
 const modalStore = useModalStore();
@@ -55,227 +65,76 @@ const statsOpen = ref(false);
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-4 px-4 lg:flex-row lg:gap-8 lg:px-8" data-cy="vehicle-hero">
-    <!-- Vehicle image & placeholder -->
-    <div class="mt-4 flex aspect-video h-52 w-full shrink-0 justify-center lg:mt-0 lg:w-auto">
+  <div class="mb-4 w-full md:mb-6 lg:mb-8" data-cy="vehicle-hero">
+    <div class="relative h-52 overflow-hidden">
       <VehicleAvatar
         :src="currentVehicle?.vehicleData.image"
         :type="currentVehicle?.vehicleData.type.code"
-        class="h-full w-full max-w-sm rounded-lg lg:max-w-none"
+        class="absolute inset-0 h-52 w-full rounded-none"
       />
+      <div class="absolute inset-0 bg-black/40" />
     </div>
 
-    <!-- Info section -->
+    <div class="relative z-10 -mt-14">
+      <MainContentWrapper class="flex w-full justify-between">
+        <div class="flex w-full gap-8">
+          <VehicleAvatar
+            :src="currentVehicle?.vehicleData.image"
+            :type="currentVehicle?.vehicleData.type.code"
+            class="hidden aspect-video h-28 w-fit shrink-0 lg:block"
+          />
 
-    <div class="flex w-full flex-col gap-4">
-      <div class="space-y-1 lg:pr-10">
-        <div class="flex justify-between gap-2">
-          <h1 class="text-foreground text-2xl leading-tight font-bold text-balance sm:text-3xl">
-            {{ currentVehicle?.vehicleData.name }}
-          </h1>
-          <DropdownMenu :modal="false">
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="vehicle Actions" data-cy="actions-trigger">
-                <MoreVerticalIcon class="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem aria-label="Edit Vehicle" data-cy="edit-vehicle-btn">
-                <EditIcon />
-                Edit
-              </DropdownMenuItem>
-              <Separator class="my-1" />
-              <DropdownMenuItem
-                variant="destructive"
-                @click="handleDeleteClick"
-                aria-label="Delete Vehicle"
-                data-cy="delete-vehicle-btn"
-                class="font-medium"
-              >
-                <Icon name="trash" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+          <div class="grid h-24 w-full grid-cols-1 grid-rows-[3.5rem_1fr]">
+            <!-- Name -->
+            <div class="flex w-full place-items-end justify-between gap-4">
+              <h1 class="truncate text-3xl leading-tight">
+                {{ currentVehicle?.vehicleData.name || "Unnamed Vehicle" }}
+              </h1>
 
-        <div class="flex justify-between gap-2">
-          <p class="text-muted-foreground text-sm">
-            {{ currentVehicle?.vehicleData.make && `${currentVehicle?.vehicleData.make} •` }}
-            {{ currentVehicle?.vehicleData.model && `${currentVehicle?.vehicleData.model} •` }}
-            {{ currentVehicle?.vehicleData.year }}
-          </p>
-
-          <Button variant="ghost" size="icon" @click="statsOpen = !statsOpen" class="lg:hidden">
-            <ChevronDownIcon :class="['transition-transform duration-200 ease-in-out', { 'rotate-180': statsOpen }]" />
-          </Button>
-        </div>
-      </div>
-
-      <div class="hidden flex-col gap-2 lg:flex">
-        <div class="flex flex-wrap items-center gap-2 text-sm">
-          <Badge
-            v-if="currentVehicle?.vehicleData.licensePlate"
-            variant="outline"
-            class="rounded-full border px-2.5 py-1 text-xs font-medium"
-          >
-            {{ currentVehicle?.vehicleData.licensePlate }}
-          </Badge>
-
-          <Badge
-            variant="outline"
-            class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
-          >
-            <GaugeIcon class="size-3.5" />
-            <NumberFlow :value="currentVehicle?.vehicleData.odometerData.value || 0" :animated="true" />
-            {{ currentVehicle?.vehicleData.odometerData.unit || "N/A" }}
-          </Badge>
-        </div>
-        <Badge
-          v-if="currentVehicle?.vehicleData.vin"
-          variant="outline"
-          class="hidden rounded-full px-2.5 py-1 text-xs font-medium lg:block"
-        >
-          VIN: {{ currentVehicle.vehicleData.vin }}
-        </Badge>
-      </div>
-
-      <div class="hidden w-full gap-6 lg:flex">
-        <VehicleHeroStatCard
-          :icon="'consumption'"
-          label="Avg. Consumption"
-          :value="`${statCardData?.averageConsumption.value} `"
-          :suffix="`${statCardData?.averageConsumption.unit}`"
-          :is-loading="isLoading"
-        />
-
-        <VehicleHeroStatCard
-          :iconSymbol="preferredCurrencySymbol"
-          label="Montly Cost"
-          :value="`${statCardData?.monthlyRunningCost}`"
-          :is-loading="isLoading"
-        />
-        <VehicleHeroStatCard
-          icon="distance"
-          label="Total Distance"
-          :value="`${Number(statCardData?.trackedUnits.value).toLocaleString()}`"
-          :suffix="`${statCardData?.trackedUnits.unit}`"
-          :is-loading="isLoading"
-        />
-      </div>
-    </div>
-
-    <!-- Mobile Details Panel - Contains both badges and stat cards -->
-    <Transition name="slide-expand">
-      <div v-if="statsOpen" class="stats-panel w-full overflow-hidden pb-4 lg:hidden">
-        <div class="stats-content space-y-4">
-          <!-- Vehicle Info Badges -->
-          <div class="space-y-3">
-            <div class="flex flex-wrap gap-2">
-              <Badge
-                v-if="currentVehicle?.vehicleData.licensePlate"
-                variant="outline"
-                class="rounded-full border px-2.5 py-1 text-xs font-medium"
-              >
-                {{ currentVehicle?.vehicleData.licensePlate }}
-              </Badge>
-
-              <Badge
-                variant="outline"
-                class="text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
-              >
-                <GaugeIcon class="size-3.5" />
-                {{ currentVehicle?.vehicleData.odometerData.value }}
-                {{ currentVehicle?.vehicleData.odometerData.unit || "N/A" }}
-              </Badge>
-
-              <Badge
-                v-if="currentVehicle?.vehicleData.vin"
-                variant="outline"
-                class="rounded-full px-2.5 py-1 text-xs font-medium"
-              >
-                VIN: {{ currentVehicle.vehicleData.vin }}
-              </Badge>
+              <Button variant="ghost" size="icon-sm" class=""> <EllipsisVerticalIcon /> </Button>
             </div>
-          </div>
 
-          <!-- Statistics Cards -->
-          <div class="space-y-3">
-            <div class="grid grid-cols-1 gap-3">
-              <VehicleHeroStatCard
-                :icon="'consumption'"
-                label="Avg. Consumption"
-                :value="`${statCardData?.averageConsumption.value} `"
-                :suffix="`${statCardData?.averageConsumption.unit}`"
-                :is-loading="isLoading"
-              />
-              <div class="grid grid-cols-2 gap-3">
-                <VehicleHeroStatCard
-                  :iconSymbol="preferredCurrencySymbol"
-                  label="Montly Cost"
-                  :value="`${statCardData?.monthlyRunningCost}`"
-                  :is-loading="isLoading"
-                />
-                <VehicleHeroStatCard
-                  icon="distance"
-                  label="Total Distance"
-                  :value="`${Number(statCardData?.trackedUnits.value).toLocaleString()}`"
-                  :suffix="`${statCardData?.trackedUnits.unit}`"
-                  :is-loading="isLoading"
-                />
-              </div>
+            <!-- Details -->
+            <div class="mt-1 flex gap-4 lg:mt-0 lg:gap-8">
+              <!-- Make -->
+              <span class="text-muted-foreground flex items-center gap-2 text-base">
+                Make:
+                <Badge class="bg-muted h-fit rounded-md text-base font-normal">
+                  {{ currentVehicle?.vehicleData.make }}
+                </Badge>
+              </span>
+
+              <span class="text-muted-foreground flex items-center gap-2 text-base">
+                Model:
+                <Badge class="bg-muted h-fit rounded-md text-base font-normal">
+                  {{ currentVehicle?.vehicleData.model }}
+                </Badge>
+              </span>
+
+              <span class="text-muted-foreground flex items-center gap-2 text-base">
+                Year:
+                <Badge class="bg-muted h-fit rounded-md text-base font-normal">
+                  {{ currentVehicle?.vehicleData.year }}
+                </Badge>
+              </span>
+
+              <span class="text-muted-foreground hidden items-center gap-2 text-base lg:flex">
+                License:
+                <Badge class="bg-muted h-fit rounded-md text-base font-normal">
+                  {{ currentVehicle?.vehicleData.licensePlate }}
+                </Badge>
+              </span>
+
+              <span class="text-muted-foreground hidden items-center gap-2 text-base lg:flex">
+                VIN:
+                <Badge class="bg-muted h-fit rounded-md text-base font-normal">
+                  {{ currentVehicle?.vehicleData.vin }}
+                </Badge>
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </MainContentWrapper>
+    </div>
   </div>
 </template>
-<style scoped>
-/* Smooth slide-expand transition for mobile stats panel */
-.slide-expand-enter-active {
-  transition:
-    grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slide-expand-leave-active {
-  transition:
-    grid-template-rows 0.25s cubic-bezier(0.4, 0, 0.6, 1),
-    opacity 0.25s cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.slide-expand-enter-from {
-  opacity: 0;
-  display: grid;
-  grid-template-rows: 0fr;
-}
-
-.slide-expand-enter-to {
-  opacity: 1;
-  display: grid;
-  grid-template-rows: 1fr;
-}
-
-.slide-expand-leave-from {
-  opacity: 1;
-  display: grid;
-  grid-template-rows: 1fr;
-}
-
-.slide-expand-leave-to {
-  opacity: 0;
-  display: grid;
-  grid-template-rows: 0fr;
-}
-
-/* Ensure smooth performance and proper overflow handling */
-.stats-panel {
-  will-change: grid-template-rows, opacity;
-  backface-visibility: hidden;
-}
-
-.stats-content {
-  overflow: hidden;
-}
-</style>

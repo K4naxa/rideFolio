@@ -28,6 +28,7 @@ import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenu
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
 import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
+import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { data: todos, isLoading, isError } = useVehicleTodos(currentVehicleId);
@@ -45,16 +46,11 @@ const settingsStore = useTodoSettingsStore();
 const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
 </script>
 <template>
-  <div class="gap flex flex-col">
+  <div class="gap flex w-full flex-col gap-10">
     <!-- First row -->
-    <div class="gap grid grid-cols-1 lg:h-120 lg:grid-cols-3">
-      <div class="flex h-80 min-h-0 w-full lg:col-span-2 lg:h-full">
-        <VehicleConsumptionChart />
-      </div>
 
-      <div class="h-100 min-h-0 w-full lg:col-span-1 lg:h-full">
-        <VehicleRecentActivity />
-      </div>
+    <div class="flex h-80 min-h-0 w-full">
+      <VehicleConsumptionChart />
     </div>
 
     <!-- second row -->

@@ -142,10 +142,10 @@ const chartOptions = computed((): EChartsOption => {
 </script>
 
 <template>
-  <Card class="flex h-full w-full flex-col">
-    <CardHeader class="flex items-center gap-2 space-y-0 border-b sm:flex-row">
+  <div class="flex h-full w-full flex-col">
+    <header class="mb-4 flex items-center gap-2 space-y-0 sm:flex-row">
       <div class="grid flex-1 gap-1">
-        <CardTitle>Fuel consumption</CardTitle>
+        <Label class="text-base">Fuel consumption</Label>
         <CardDescription> Showing consumption trends for the last {{ timeRange }} days </CardDescription>
       </div>
       <Select v-model="timeRange">
@@ -158,10 +158,10 @@ const chartOptions = computed((): EChartsOption => {
           <SelectItem :value="7"> Last 7 days </SelectItem>
         </SelectContent>
       </Select>
-    </CardHeader>
+    </header>
 
     <!-- Chart -->
-    <CardContent class="relative flex h-full w-full flex-1 pb-2">
+    <div class="border-border/50 relative flex h-full w-full flex-1 border-b border-l pb-3 pl-4">
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
@@ -195,7 +195,7 @@ const chartOptions = computed((): EChartsOption => {
       <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
         <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 </template>
 <style scoped></style>
