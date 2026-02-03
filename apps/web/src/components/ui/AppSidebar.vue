@@ -28,6 +28,7 @@ import { computed } from "vue";
 import { toast } from "vue-sonner";
 import Separator from "@/components/ui/separator/Separator.vue";
 import { useAuth } from "@/lib/authClient";
+import { formatBytesToMB } from "@/lib/utils";
 
 interface MainSideBarLinks {
   label: string;
@@ -178,13 +179,17 @@ const canCreateVehicle = computed(() => {
 
       <SidebarGroup class="mt-auto">
         <SidebarGroupContent class="space-y-1">
-          <div v-if="user" class="mb-2 space-y-1 px-2">
+          <div v-if="user" class="space-y-1 px-2 py-1.5">
             <!--  headerl -->
             <div class="flex items-end justify-between gap-6">
               <div class="flex items-center gap-2 text-sm">Storage usage</div>
-              <span class="text-muted-foreground text-xs">
-                {{ ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + "%" }}</span
+
+              <span v-if="user.limits.storage.isUnlimited" class="text-muted-foreground text-xs"
+                >{{ formatBytesToMB(user.limits.storage.usage) }} MB</span
               >
+              <span v-else class="text-muted-foreground text-xs">
+                {{ ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + "%" }}
+              </span>
             </div>
 
             <!--  progress bar -->

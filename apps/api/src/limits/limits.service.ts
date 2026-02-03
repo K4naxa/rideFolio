@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { MaintenanceInput, VehicleSchemaType } from '@repo/validation';
+import { MaintenanceInput, type StorageUsageSummary, VehicleSchemaType } from '@repo/validation';
 import { Prisma } from 'prisma/generated/prisma/client';
 import { ROLE, StorageUsageCategory } from 'prisma/generated/prisma/enums';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
@@ -224,7 +224,7 @@ export class LimitsService {
   };
 
   // USAGE SUMMARY FOR FRONTEND
-  async getUsageSummary(userId: string) {
+  async getUsageSummary(userId: string): Promise<StorageUsageSummary> {
     const user = await this.getUserWithPlan(userId);
     const isAdmin = this.isAdmin(user.role);
     const isUnlimited = this.isUnlimited(user.plan.storageLimitBytes);

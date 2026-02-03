@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CurrencyCode, ProfileUpdateValues, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
+import { LimitsService } from 'src/limits/limits.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private limitsService: LimitsService,
+  ) {}
 
   // =================================================================
   // ==  GET USER PROFILE DATA ==
@@ -23,18 +27,6 @@ export class UsersService {
         consumptionUnitCode_distance: true,
         consumptionUnitCode_hour: true,
         currency: true,
-        storageUsageBytes: true,
-        plan: {
-          select: {
-            vehicleLimit: true,
-            storageLimitBytes: true,
-          },
-        },
-        _count: {
-          select: {
-            ownedVehicles: true,
-          },
-        },
       },
     });
 
@@ -49,18 +41,7 @@ export class UsersService {
       email: user.email,
       image: user.image,
       createdAt: user.createdAt,
-      limits: {
-        storage: {
-          usage: Number(user.storageUsageBytes),
-          limit: Number(user.plan.storageLimitBytes),
-          isUnlimited: Number(user.plan.storageLimitBytes) === -1,
-        },
-        vehicles: {
-          used: user._count.ownedVehicles,
-          limit: user.plan.vehicleLimit,
-          isUnlimited: user.plan.vehicleLimit === -1,
-        },
-      },
+      limits: await this.limitsService.getUsageSummary(user.id),
       preferences: {
         volumeUnit: user.volumeUnit,
         consumptionUnitCode_distance: user.consumptionUnitCode_distance,
