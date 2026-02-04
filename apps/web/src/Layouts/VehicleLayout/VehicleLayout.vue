@@ -89,6 +89,6 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 
 <style>
 :root {
-  --vehicle-navbar-height: 3.5rem;
+  --vehicle-navbar-height: 3rem;
 }
 </style>

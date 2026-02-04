@@ -12,7 +12,7 @@ const props = defineProps<SelectItemProps>();
 <template>
   <div :class="['flex h-14 w-full cursor-pointer items-center space-x-3 select-none', props.customClass]">
     <div class="bg-muted grid aspect-video h-full place-items-center overflow-hidden rounded-md">
-      <VehicleAvatar :src="props.vehicle.image" :type="props.vehicle.type.code" />
+      <VehicleAvatar :src="props.vehicle.image" :type="props.vehicle.type.code" class="" />
     </div>
 
     <!-- Vehicle info -->

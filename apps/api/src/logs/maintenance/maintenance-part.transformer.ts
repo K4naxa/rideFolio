@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MaintenancePartDisplay, MaintenancePartInput } from '@repo/validation';
+import { type MaintenancePartDisplay, MaintenancePartInput } from '@repo/validation';
 import { MaintenancePart, Vehicle, VehiclePart, VehiclePartLocation } from 'prisma/generated/prisma/client';
 
 type MaintenancePartWithRelations = MaintenancePart & {
@@ -30,7 +30,7 @@ export class MaintenancePartTransformer {
           partId: dbPart.part.id,
           partCode: dbPart.part.code,
           partNameKey: dbPart.part.nameKey,
-          customPartName: dbPart.customName,
+          customName: dbPart.customName,
           label: dbPart.label,
           description: dbPart.description,
           // Add location if exists

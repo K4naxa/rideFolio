@@ -404,11 +404,9 @@ model Maintenance {
   odometer_km   Float?
   odometer_hour Float?
 
-  typeId String
-  type   MaintenanceType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-
   costTotal       Float?
   serviceProvider String?
+  title           String
   notes           String?
   image           String?
 
@@ -426,21 +424,6 @@ model Maintenance {
   @@index([userId])
   @@index([vehicleId, date])
   @@index([date])
-}
-
-model MaintenanceType {
-  id      String  @id @default(cuid())
-  code    String  @unique // 'preventive', 'repair', etc.
-  nameKey String
-  icon    String?
-
-  sortOrder Int     @default(0)
-  isActive  Boolean @default(true)
-
-  maintenances Maintenance[]
-
-  @@index([isActive])
-  @@index([code])
 }
 
 model MaintenanceCategory {

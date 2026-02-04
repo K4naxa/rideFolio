@@ -1,124 +1,248 @@
 <script setup lang="ts">
 import VehicleConsumptionChart from "./components/VehicleConsumptionChart.vue";
-import VehicleRecentActivity from "./components/VehicleRecentActivity.vue";
-import TodoTable from "../VehicleTodos/components/TodoTable.vue";
-
-import { computed, ref } from "vue";
-import ShoppingTable from "../vehicleShopping/components/shoppingTable.vue";
-
-import Tabs from "@/components/ui/tabs/Tabs.vue";
-import TabsList from "@/components/ui/tabs/TabsList.vue";
-import TabsTrigger from "@/components/ui/tabs/TabsTrigger.vue";
-import TabsContent from "@/components/ui/tabs/TabsContent.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
+import { computed } from "vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import Card from "@/components/ui/card/Card.vue";
-import CardHeader from "@/components/ui/card/CardHeader.vue";
-import CardTitle from "@/components/ui/card/CardTitle.vue";
 import Icon from "@/components/icons/Icon.vue";
-import CardDescription from "@/components/ui/card/CardDescription.vue";
-import CardContent from "@/components/ui/card/CardContent.vue";
-import { useTodoSettingsStore } from "@/stores/todoSettings";
-import { storeToRefs } from "pinia";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Button from "@/components/ui/button/Button.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
-import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
-import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
-import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
+import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
+import { useTodoToggle } from "@/lib/queries/todos/todo-mutations";
+import Separator from "@/components/ui/separator/Separator.vue";
+import { EllipsisVertical } from "lucide-vue-next";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
+import { useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { useModalStore } from "@/stores/modal";
+import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
+import VehicleRecentActivity from "@/views/VehiclePage/vehicleOverview/components/VehicleRecentActivity.vue";
+import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import type { Note } from "@repo/validation";
+import { useRouter } from "vue-router";
+import NotesList from "@/components/notes/NotesList.vue";
+import { getTextSnippet } from "@/lib/utils/noteUtils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import Badge from "@/components/ui/badge/Badge.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
-const { data: todos, isLoading, isError } = useVehicleTodos(currentVehicleId);
-const activeTab = ref<"todos" | "shoppinglist">("todos");
-const pendingTodosCount = computed(() => {
-  return todos.value?.filter((todo) => !todo.isCompleted).length || 0;
-});
+const { preferredCurrencySymbol } = useCurrentUser();
+const router = useRouter();
+const isMobile = useIsMobile();
+const modalStore = useModalStore();
+const { data: todos, isLoading: isTodosLoading, isError: isTodosError } = useVehicleTodos(currentVehicleId);
+const uncompletedTodos = computed(() => todos.value?.filter((todo) => !todo.isCompleted) || []);
 
-const { data: vehicleShoppingList } = useShoppingVehicle(currentVehicleId);
-const ShoppingListCount = computed(() => {
-  return vehicleShoppingList.value?.length || 0;
-});
+const {
+  data: shoppingList,
+  isLoading: isShoppingLoading,
+  isError: isShoppingError,
+} = useVehicleShopping(currentVehicleId);
 
-const settingsStore = useTodoSettingsStore();
-const { showCompleted, showDueInfo, showPriority } = storeToRefs(settingsStore);
+const { data: notes, isLoading: isNotesLoading, isError: isNotesError } = useVehicleNotes(currentVehicleId);
+
+const { mutate: toggleTodo } = useTodoToggle();
+const { mutate: toggleItem } = useShoppingToggle();
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+function handleNoteClick(note: Note) {
+  if (isMobile.value) {
+    modalStore.onOpen("createNote", note);
+  } else {
+    router.push({
+      path: "/vehicles" + `/${currentVehicleId.value}/notes`,
+      query: { note: note.id },
+    });
+  }
+}
 </script>
 <template>
-  <div class="gap flex w-full flex-col gap-10">
+  <div class="mainGaps flex w-full flex-col">
     <!-- First row -->
 
-    <div class="flex h-80 min-h-0 w-full">
+    <div class="flex h-52 min-h-0 w-full md:h-80">
       <VehicleConsumptionChart />
     </div>
 
     <!-- second row -->
-    <div class="w-full">
-      <Tabs v-model="activeTab" class="3xl:hidden flex h-full w-full flex-1">
-        <div class="flex justify-between">
-          <TabsList
-            class="**:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1"
-          >
-            <TabsTrigger value="todos">
-              Todos <Badge variant="secondary">{{ pendingTodosCount }}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="shoppinglist">
-              Shopping List <Badge variant="accent">{{ ShoppingListCount }}</Badge>
-            </TabsTrigger>
-          </TabsList>
+    <div class="mainGaps grid w-full grid-cols-1 md:grid-cols-2">
+      <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
+        <VehicleRecentActivity />
+      </section>
 
-          <DropdownMenu :modal="false">
-            <DropdownMenuTrigger as-child>
-              <Button variant="outline" class="">
-                <Icon name="filter" /> <span class="hidden lg:flex">Customize columns</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent class="w-52">
-              <DropdownMenuCheckboxItem v-model:model-value="showPriority"> Show priority </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem v-model:model-value="showDueInfo"> Show due info </DropdownMenuCheckboxItem>
-
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem v-model:model-value="showCompleted"> Show completed </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
+        <header class="mb-4">
+          <div class="flex justify-between gap-4">
+            <h2 class="font-medium">Todos</h2>
+            <Button variant="ghost" size="icon-sm">
+              <EllipsisVertical />
+            </Button>
+          </div>
+          <Separator class="mt-1" />
+        </header>
+        <div v-if="isTodosLoading" class="grid flex-1 place-items-center">
+          <Spinner class="text-muted-foreground size-10" />
         </div>
-        <TabsContent value="todos">
-          <div class="flex max-h-92 min-h-0 rounded border">
-            <TodoTable :todos="todos" :isLoading="isLoading" :isError="isError" size="sm" />
-          </div>
-        </TabsContent>
-        <TabsContent value="shoppinglist">
-          <div class="flex max-h-96 min-h-0 rounded border">
-            <ShoppingTable :hide-purchased="true" size="sm" />
-          </div>
-        </TabsContent>
-      </Tabs>
+        <div v-else-if="isTodosError" class="grid flex-1 place-items-center">
+          <span class="text-destructive">Error loading todos.</span>
+        </div>
+        <Empty v-else-if="uncompletedTodos.length === 0">
+          <EmptyTitle>No pending todos</EmptyTitle>
+          <EmptyDescription class="text-center"> You have completed all your todos for this vehicle. </EmptyDescription>
+          <EmptyContent>
+            <Button variant="outline" @click="modalStore.onOpen('createTodo')"> Create new </Button>
+          </EmptyContent>
+        </Empty>
+        <ul v-else class="space-y-4">
+          <li v-for="todo in uncompletedTodos" :key="todo.id" class="group flex items-center gap-4">
+            <Checkbox
+              :model-value="todo.isCompleted"
+              @update:model-value="
+                toggleTodo({
+                  todoId: todo.id,
+                  complete: !todo.isCompleted,
+                })
+              "
+              class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
+            />
+            <div class="flex flex-col gap-0">
+              <span class="leading-tight">{{ todo.title }}</span>
+              <span class="text-muted-foreground text-sm">{{ todo.description }}</span>
+            </div>
 
-      <!-- Desktop view -->
-      <div class="gap 3xl:grid hidden min-h-0 w-full grid-cols-1 lg:grid-cols-2">
-        <Card class="flex h-100 w-full flex-col">
-          <CardHeader>
-            <CardTitle> <Icon name="todo" class="stroke-toDo" /> Todos </CardTitle>
-            <CardDescription> Overview of your vehicles todos </CardDescription>
-          </CardHeader>
-          <CardContent class="flex min-h-0 p-0">
-            <TodoTable :todos="todos" :isLoading="isLoading" :isError="isError" class="flex-1" size="sm" />
-          </CardContent>
-        </Card>
-        <Card class="flex h-100 w-full flex-col">
-          <CardHeader>
-            <CardTitle> <Icon name="shoppingCart" class="stroke-blue-400" /> Shopping List </CardTitle>
-            <CardDescription> Overview of your vehicles todos </CardDescription>
-          </CardHeader>
-          <CardContent class="flex min-h-0 p-0">
-            <ShoppingTable class="flex-1" size="sm" />
-          </CardContent>
-        </Card>
-      </div>
+            <!-- Due Info -->
+            <div class="ml-auto flex flex-col justify-center text-sm">
+              <div
+                v-if="todo.dueOdometer"
+                :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue && !todo.isCompleted }"
+              >
+                {{ todo.dueOdometer.value.toLocaleString() }} {{ todo.dueOdometer.unit }}
+              </div>
+              <div
+                v-if="todo.dueDate"
+                :class="{ 'text-destructive font-medium': todo.dueDate.overdue && !todo.isCompleted }"
+              >
+                {{ formatDate(String(todo.dueDate.date)) }}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
     </div>
 
-    <!-- second row -->
+    <!-- Third row -->
+    <div class="mainGaps grid w-full grid-cols-1 md:grid-cols-2">
+      <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
+        <header>
+          <div class="flex justify-between gap-4">
+            <h2 class="font-medium">Notes</h2>
+            <Button variant="ghost" size="icon-sm">
+              <EllipsisVertical />
+            </Button>
+          </div>
+          <Separator class="mt-1" />
+        </header>
+        <div v-if="isNotesLoading" class="grid flex-1 place-items-center">
+          <Spinner class="text-muted-foreground size-10" />
+        </div>
+        <div v-else-if="isNotesError" class="grid flex-1 place-items-center">
+          <span class="text-destructive">Error loading notes.</span>
+        </div>
+        <Empty v-else-if="notes && notes.length === 0">
+          <EmptyHeader>
+            <Icon name="circleCheck" class="text-muted-foreground size-8" />
+          </EmptyHeader>
+          <EmptyTitle>No pending notes</EmptyTitle>
+          <EmptyDescription class="text-center"> You have no notes for this vehicle. </EmptyDescription>
+        </Empty>
+        <ScrollArea v-else class="h-full w-full" as="ul">
+          <ul v-auto-animate class="flex w-full flex-col divide-y">
+            <li
+              v-for="note in notes"
+              :key="note.id"
+              :class="['group flex cursor-pointer justify-between gap-2 py-2.5']"
+              @click="handleNoteClick(note)"
+            >
+              <div class="flex w-full flex-col gap-1">
+                <span class="min-w-0 font-medium break-all">{{ note.title }}</span>
+                <span class="text-muted-foreground min-w-0 text-sm break-all">
+                  {{ getTextSnippet(String(note.content), 80) }}</span
+                >
+                <div class="truncate">
+                  <Badge v-for="tag in note.tags" variant="outline" :key="tag" class="mt-2 mr-1 px-2 py-1.5 text-xs">
+                    {{ tag }}
+                  </Badge>
+                </div>
+              </div>
+              <div class="text-muted-foreground mt-1 line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3"></div>
+
+              <div class="ml-auto flex flex-col items-center justify-center gap-1 text-sm">
+                <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
+                <button class="opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                  <Icon name="chevronRight" />
+                </button>
+              </div>
+            </li>
+          </ul>
+        </ScrollArea>
+      </section>
+
+      <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
+        <header>
+          <div class="flex justify-between gap-4">
+            <h2 class="font-medium">Shopping list</h2>
+            <Button variant="ghost" size="icon-sm">
+              <EllipsisVertical />
+            </Button>
+          </div>
+          <Separator class="mt-1" />
+        </header>
+        <div v-if="isShoppingLoading" class="grid flex-1 place-items-center">
+          <Spinner class="text-muted-foreground size-10" />
+        </div>
+        <div v-else-if="isShoppingError" class="grid flex-1 place-items-center">
+          <span class="text-destructive">Error loading shopping list.</span>
+        </div>
+        <Empty v-else-if="shoppingList && shoppingList.length === 0">
+          <EmptyHeader>
+            <Icon name="circleCheck" class="text-muted-foreground size-8" />
+          </EmptyHeader>
+          <EmptyTitle>No pending items</EmptyTitle>
+          <EmptyDescription class="text-center"> No pending items in your shopping list. </EmptyDescription>
+        </Empty>
+        <ul v-else class="space-y-4">
+          <li v-for="item in shoppingList" :key="item.id" class="group flex items-center gap-4">
+            <Checkbox
+              :model-value="item.isPurchased"
+              @update:model-value="
+                toggleItem({
+                  itemId: item.id,
+                  purchased: !item.isPurchased,
+                })
+              "
+              class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
+            />
+            <div class="flex flex-col gap-0">
+              <span class="leading-tight">{{ item.name }}</span>
+            </div>
+
+            <!-- Due Info -->
+            <span class="ml-auto"> {{ item.price }} {{ preferredCurrencySymbol }} </span>
+          </li>
+        </ul>
+      </section>
+    </div>
   </div>
 </template>
 <style scoped></style>

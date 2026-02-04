@@ -34,10 +34,10 @@ export const MaintenanceSchema = z.object({
     })
     .nullable(),
   odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
-  typeId: z.string().min(1, "Select maintenance type"),
+  title: z.string().max(100, "Max length 100 characters"),
   serviceProvider: z.string().max(255, "Max length 255 characters").nullable(),
   parts: z.array(MaintenancePartSchema),
   totalCost: z.coerce.number().nullable(),
-  notes: z.string().nullable(),
+  notes: z.string().max(1000, "Max length 1000 characters").nullable(),
 });
 export type MaintenanceInput = z.infer<typeof MaintenanceSchema>;

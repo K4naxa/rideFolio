@@ -1,7 +1,6 @@
 import { prisma } from 'src/lib/prisma';
 import { seedVehicleTypes } from './seeds/vehicle-types';
 import { seedVehiclePartLocations } from './seeds/vehicle-part-locations';
-import { seedMaintenanceTypes } from './seeds/maintenance-types';
 import { seedMaintenanceCategories } from './seeds/maintenance-categories';
 import { seedVehicleParts } from './seeds/vehicle-parts';
 import { seedSubscriptionPlans } from 'prisma/seeds/subscription-plans';
@@ -16,7 +15,6 @@ async function main() {
   await prisma.vehicleType.deleteMany();
   await prisma.vehiclePart.deleteMany();
   await prisma.maintenanceCategory.deleteMany();
-  await prisma.maintenanceType.deleteMany();
   await prisma.subscriptionPlan.deleteMany();
   console.log('✅ Database cleaned\n');
 
@@ -27,9 +25,6 @@ async function main() {
 
     // Seed vehicle part locations
     const locations = await seedVehiclePartLocations(tx, vehicleTypes);
-
-    // Seed maintenance types
-    await seedMaintenanceTypes(tx);
 
     // Seed maintenance categories
     const categories = await seedMaintenanceCategories(tx);

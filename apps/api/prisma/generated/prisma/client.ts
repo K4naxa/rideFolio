@@ -93,11 +93,6 @@ export type Refill = Prisma.RefillModel
  */
 export type Maintenance = Prisma.MaintenanceModel
 /**
- * Model MaintenanceType
- * 
- */
-export type MaintenanceType = Prisma.MaintenanceTypeModel
-/**
  * Model MaintenanceCategory
  * 
  */

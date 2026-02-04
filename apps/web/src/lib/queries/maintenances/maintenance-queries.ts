@@ -1,7 +1,7 @@
 import { fetchApi } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
-import type { MaintenanceType, MaintenanceCategoryWithParts } from "@repo/validation";
+import type { MaintenanceCategoryWithParts } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 
@@ -13,16 +13,5 @@ export function useMaintenancePartCategories(typeCode: MaybeRef<string | undefin
     },
     enabled: computed(() => !!unref(typeCode)),
     staleTime: 1000 * 60 * 30, // 30 minutes
-  });
-}
-
-export function useMaintenanceTypes(options?: { enabled?: MaybeRef<boolean> }) {
-  return useQuery({
-    queryKey: queryKeys.maintenances.types(),
-    queryFn: async () => {
-      return await fetchApi<MaintenanceType[]>(`/logs/maintenance/types`);
-    },
-    enabled: options?.enabled ?? true,
-    staleTime: 1000 * 60 * 60, // 1 hour
   });
 }

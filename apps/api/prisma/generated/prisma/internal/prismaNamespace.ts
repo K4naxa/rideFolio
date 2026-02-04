@@ -395,7 +395,6 @@ export const ModelName = {
   Vehicle: 'Vehicle',
   Refill: 'Refill',
   Maintenance: 'Maintenance',
-  MaintenanceType: 'MaintenanceType',
   MaintenanceCategory: 'MaintenanceCategory',
   MaintenancePart: 'MaintenancePart',
   Todo: 'Todo',
@@ -425,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "subscriptionPlan" | "subscription" | "user" | "storageUsage" | "quickLink" | "vehicleType" | "vehiclePartLocation" | "vehiclePart" | "vehicle" | "refill" | "maintenance" | "maintenanceType" | "maintenanceCategory" | "maintenancePart" | "todo" | "note" | "shoppingListItem" | "pool" | "poolMember" | "poolVehicle" | "poolInvite" | "vehicleMonthlyStatistics" | "notification" | "account" | "verification" | "session"
+    modelProps: "subscriptionPlan" | "subscription" | "user" | "storageUsage" | "quickLink" | "vehicleType" | "vehiclePartLocation" | "vehiclePart" | "vehicle" | "refill" | "maintenance" | "maintenanceCategory" | "maintenancePart" | "todo" | "note" | "shoppingListItem" | "pool" | "poolMember" | "poolVehicle" | "poolInvite" | "vehicleMonthlyStatistics" | "notification" | "account" | "verification" | "session"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1240,80 +1239,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MaintenanceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MaintenanceCountAggregateOutputType> | number
-        }
-      }
-    }
-    MaintenanceType: {
-      payload: Prisma.$MaintenanceTypePayload<ExtArgs>
-      fields: Prisma.MaintenanceTypeFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.MaintenanceTypeFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.MaintenanceTypeFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        findFirst: {
-          args: Prisma.MaintenanceTypeFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.MaintenanceTypeFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        findMany: {
-          args: Prisma.MaintenanceTypeFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>[]
-        }
-        create: {
-          args: Prisma.MaintenanceTypeCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        createMany: {
-          args: Prisma.MaintenanceTypeCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.MaintenanceTypeCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>[]
-        }
-        delete: {
-          args: Prisma.MaintenanceTypeDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        update: {
-          args: Prisma.MaintenanceTypeUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        deleteMany: {
-          args: Prisma.MaintenanceTypeDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.MaintenanceTypeUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.MaintenanceTypeUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>[]
-        }
-        upsert: {
-          args: Prisma.MaintenanceTypeUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTypePayload>
-        }
-        aggregate: {
-          args: Prisma.MaintenanceTypeAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateMaintenanceType>
-        }
-        groupBy: {
-          args: Prisma.MaintenanceTypeGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.MaintenanceTypeGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.MaintenanceTypeCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.MaintenanceTypeCountAggregateOutputType> | number
         }
       }
     }
@@ -2570,9 +2495,9 @@ export const MaintenanceScalarFieldEnum = {
   date: 'date',
   odometer_km: 'odometer_km',
   odometer_hour: 'odometer_hour',
-  typeId: 'typeId',
   costTotal: 'costTotal',
   serviceProvider: 'serviceProvider',
+  title: 'title',
   notes: 'notes',
   image: 'image',
   sizeBytes: 'sizeBytes',
@@ -2581,18 +2506,6 @@ export const MaintenanceScalarFieldEnum = {
 } as const
 
 export type MaintenanceScalarFieldEnum = (typeof MaintenanceScalarFieldEnum)[keyof typeof MaintenanceScalarFieldEnum]
-
-
-export const MaintenanceTypeScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  nameKey: 'nameKey',
-  icon: 'icon',
-  sortOrder: 'sortOrder',
-  isActive: 'isActive'
-} as const
-
-export type MaintenanceTypeScalarFieldEnum = (typeof MaintenanceTypeScalarFieldEnum)[keyof typeof MaintenanceTypeScalarFieldEnum]
 
 
 export const MaintenanceCategoryScalarFieldEnum = {
@@ -3239,7 +3152,6 @@ export type GlobalOmitConfig = {
   vehicle?: Prisma.VehicleOmit
   refill?: Prisma.RefillOmit
   maintenance?: Prisma.MaintenanceOmit
-  maintenanceType?: Prisma.MaintenanceTypeOmit
   maintenanceCategory?: Prisma.MaintenanceCategoryOmit
   maintenancePart?: Prisma.MaintenancePartOmit
   todo?: Prisma.TodoOmit

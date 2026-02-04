@@ -22,7 +22,6 @@ import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { toast } from "vue-sonner";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
-import { useMaintenanceTypes } from "@/lib/queries/maintenances/maintenance-queries";
 import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mutations";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
@@ -38,12 +37,6 @@ const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol } = useCurrentUser();
 // Maintenance queries
 const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
-
-const {
-  data: maintenanceTypes,
-  isLoading: isLoadingTypes,
-  error: maintenanceTypesError,
-} = useMaintenanceTypes({ enabled: isModalOpen });
 
 const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm({
   name: "Create Maintenance Form",
@@ -97,17 +90,6 @@ watch(isModalOpen, (open) => {
     });
   }
 });
-
-// TODO: Update maintenance types select to use T type ( removes formatting requirement )
-// Format maintenance types for ResponsiveSelect
-const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] => {
-  if (!maintenanceTypes.value) return [];
-  return maintenanceTypes.value?.map((type) => ({
-    value: type.id,
-    label: capitalize(type.code),
-    icon: type.icon as IconProps["name"] | null,
-  }));
-});
 </script>
 
 <template>
@@ -135,24 +117,17 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
             </div>
 
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <Field v-slot="{ value, handleChange }" name="typeId">
-                <div>
-                  <ResponsiveSelect
-                    :options="formattedMaintenanceTypes"
-                    :model-value="value"
-                    @update:model-value="handleChange"
-                    title="Select Maintenance Type"
-                    placeholder="Select maintenance type *"
-                    input-style
-                  />
-                  <ErrorMessage name="typeId" class="text-destructive mt-1 ml-1 text-sm" />
-                </div>
-              </Field>
-
+              <Input name="title" type="text" placeholder="Title" :maxlength="100" />
               <Input name="totalCost" type="number" :suffix="preferredCurrencySymbol" placeholder="Total cost" />
             </div>
 
-            <Input name="serviceProvider" type="text" placeholder="Service Provider" :validate-on-blur="false" />
+            <Input
+              name="serviceProvider"
+              type="text"
+              placeholder="Service Provider"
+              :validate-on-blur="false"
+              :maxlength="255"
+            />
 
             <div class="hidden space-y-3 lg:block">
               <Field v-slot="{ value, handleChange }" name="image">
@@ -161,7 +136,7 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
               </Field>
             </div>
 
-            <Textarea name="notes" class="hidden lg:flex" placeholder="Maintenance notes" />
+            <Textarea name="notes" class="hidden lg:flex" placeholder="Maintenance notes" :maxlength="1000" />
           </div>
 
           <!-- RIGHT COLUMN -->
@@ -182,7 +157,7 @@ const formattedMaintenanceTypes = computed((): ResponsiveSelectOption<string>[] 
             <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
           </Field>
 
-          <Textarea name="notes" class="" placeholder="Maintenance notes" />
+          <Textarea name="notes" class="" placeholder="Maintenance notes" :maxlength="1000" />
         </div>
         <DialogFooter class="pt-auto">
           <Button type="submit" :disabled="isSubmitting">

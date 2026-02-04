@@ -1,27 +1,12 @@
 <script setup lang="ts">
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
-import NumberFlow from "@number-flow/vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import {
-  ChevronDownIcon,
-  EditIcon,
-  EllipsisVerticalIcon,
-  GaugeIcon,
-  MoreVerticalIcon,
-  RouteIcon,
-  UploadIcon,
-} from "lucide-vue-next";
+import { EllipsisVerticalIcon } from "lucide-vue-next";
 import { ref } from "vue";
-import VehicleHeroStatCard from "./VehicleHeroStatCard.vue";
-import Icon from "@/components/icons/Icon.vue";
+
 import { useModalStore } from "@/stores/modal";
 import type { AlertModalData } from "@/modals/alertModal.vue";
 import { useRouter } from "vue-router";
@@ -29,7 +14,6 @@ import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries"
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
-import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 
 const router = useRouter();
@@ -95,7 +79,7 @@ const statsOpen = ref(false);
             </div>
 
             <!-- Details -->
-            <div class="mt-1 flex gap-4 lg:mt-0 lg:gap-8">
+            <div class="mt-2 flex gap-4 lg:gap-8">
               <!-- Make -->
               <span
                 v-if="currentVehicle?.vehicleData.make"

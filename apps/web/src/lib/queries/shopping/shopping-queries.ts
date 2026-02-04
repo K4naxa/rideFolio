@@ -15,7 +15,7 @@ export function useShoppingAll() {
   });
 }
 
-export function useShoppingVehicle(vehicleId: MaybeRef<string | undefined>) {
+export function useVehicleShopping(vehicleId: MaybeRef<string | undefined>) {
   return useQuery({
     queryKey: computed(() => queryKeys.shoppingList.byVehicle(handleEmpty(vehicleId))),
     queryFn: async () => await fetchApi<ShoppingItem[]>(`/shopping-list/${unref(vehicleId)}`),

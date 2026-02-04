@@ -20,19 +20,12 @@ export type PartLocation = {
   nameKey: string;
 };
 
-export type MaintenanceType = {
-  code: string;
-  nameKey: string;
-  icon: string | null;
-  id: string;
-};
-
 export type MaintenancePartDisplay = {
   groupId: string;
   partId: string;
   partCode: string;
   partNameKey: string;
-  customPartName?: string | null;
+  customName?: string | null;
   label?: string | null;
   description?: string | null;
   locations: PartLocation[];

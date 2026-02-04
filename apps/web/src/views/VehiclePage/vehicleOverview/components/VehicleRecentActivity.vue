@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Label from "@/components/ui/label/Label.vue";
 import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
-import { useTimeAgo } from "@vueuse/core";
+import { formatDate, useTimeAgo } from "@vueuse/core";
 import { computed, ref } from "vue";
 import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
-import { capitalize } from "@/lib/utils";
 import { useVehicleTimelineInfinite } from "@/lib/queries/vehicles/vehicle-queries";
+import Separator from "@/components/ui/separator/Separator.vue";
+import { EllipsisVertical } from "lucide-vue-next";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 const { currentVehicleId, currentVehicle } = useCurrentVehicle();
+const { preferredCurrencySymbol } = useCurrentUser();
 
 const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
   useVehicleTimelineInfinite(currentVehicleId);
@@ -31,14 +33,20 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <Card class="flex h-full min-w-72 flex-col">
-    <CardHeader>
-      <CardTitle> <Icon name="stats" class="stroke-primary" /> Recent activity</CardTitle>
-      <CardDescription> Latest activity for {{ currentVehicle?.vehicleData.name || "your vehicle" }} </CardDescription>
-    </CardHeader>
-    <CardContent class="@container min-h-0 flex-1 rounded px-0">
-      <ScrollArea ref="scrollAreaRef" class="h-full w-full">
-        <div class="flex flex-col gap-4" v-auto-animate>
+  <section class="flex flex-1 flex-col overflow-hidden">
+    <header class="">
+      <div class="flex justify-between gap-4">
+        <h2 class="font-medium">Recent activity</h2>
+        <Button variant="ghost" size="icon-sm">
+          <EllipsisVertical />
+        </Button>
+      </div>
+      <Separator class="mt-1" />
+    </header>
+
+    <div class="@container mt-2 min-h-0 flex-1 rounded px-0">
+      <ScrollArea class="h-full w-full">
+        <ul class="flex flex-col divide-y" v-auto-animate>
           <div v-if="isLoading" class="flex flex-col gap-8">
             <VehicleRecentActivitySkeleton />
             <VehicleRecentActivitySkeleton />
@@ -50,54 +58,71 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
           <template v-else>
             <div v-for="activity in allActivities" :key="activity.data.id">
               <!-- Refill activity -->
-              <div v-if="activity.type === 'refill'" class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5">
+              <div v-if="activity.type === 'refill'" class="flex items-center gap-4 rounded py-3">
                 <div class="bg-refill/30 grid size-10 place-content-center rounded">
                   <Icon name="refill" class="stroke-refill" size="sm" />
                 </div>
                 <div class="space-y-1">
                   <div class="flex gap-3">
-                    <Label>Refill</Label>
+                    <Label class="font-normal">Refill</Label>
                   </div>
-                  <div class="flex gap-2.5">
-                    <Badge variant="outline" class="px-2 py-1"
-                      >{{ activity.data.fuelAmount.value }}
-                      <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
-                    </Badge>
-                    <Badge variant="outline" class="px-2 py-1" v-if="activity.data.consumption.value">
-                      {{ activity.data.consumption.value }}
-                      <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
-                    </Badge>
+                  <div class="flex gap-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-muted-foreground text-sm">Amount: </span>
+                      <Badge variant="outline" class="px-2 py-1"
+                        >{{ activity.data.fuelAmount.value }}
+                        <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
+                      </Badge>
+                    </div>
+                    <div v-if="activity.data.consumption.value" class="flex items-center gap-2">
+                      <span class="text-muted-foreground text-sm">Avg: </span>
+                      <Badge class="bg-muted px-2 py-1" v-if="activity.data.consumption.value">
+                        {{ activity.data.consumption.value }}
+                        <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
+                      </Badge>
+                    </div>
                   </div>
                 </div>
-                <p class="text-muted-foreground ml-auto hidden text-sm @[300px]:block">
-                  {{ useTimeAgo(new Date(activity.data.date)) }}
-                </p>
+                <div class="text-muted-foreground ml-auto hidden text-end text-sm @[300px]:block">
+                  <p>{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
+                  <p>
+                    {{
+                      new Date(activity.data.date).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }}
+                  </p>
+                </div>
               </div>
 
               <!-- Maintenance activity -->
-              <div
-                v-if="activity.type === 'maintenance'"
-                class="hover:bg-accent/50 flex items-center gap-4 rounded p-2.5"
-              >
+              <div v-if="activity.type === 'maintenance'" class="flex items-center gap-4 rounded py-3">
                 <div class="bg-maintenance/30 grid size-10 place-content-center rounded">
                   <Icon name="maintenance" class="stroke-maintenance" size="sm" />
                 </div>
-                <div class="space-y-1">
-                  <Label>Maintenance</Label>
+                <div class="flex flex-col justify-center">
+                  <Label class="font-normal">{{ activity.data.title }}</Label>
                   <div class="text-muted-foreground flex items-center gap-4">
-                    <p class="flex items-center">
-                      <Icon :name="activity.data.type.icon as IconProps['name']" class="mr-1 inline-block size-4" />
-                      {{ capitalize(activity.data.type.code) }}
+                    <p class="flex text-center text-sm">
+                      {{ activity.data.notes }}
                     </p>
-                    <Badge v-if="activity.data.costTotal" variant="outline" class="px-2 py-1">
-                      {{ activity.data.costTotal }} €
-                    </Badge>
                   </div>
                 </div>
 
-                <p class="text-muted-foreground @[300px]-block ml-auto hidden text-sm text-ellipsis">
-                  {{ useTimeAgo(new Date(activity.data.date)) }}
-                </p>
+                <div class="text-muted-foreground ml-auto hidden text-end text-sm @[300px]:block">
+                  <p>{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
+                  <p>
+                    {{
+                      new Date(activity.data.date).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -114,8 +139,8 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
               <p v-else class="text-muted-foreground text-sm">No more activities</p>
             </div>
           </template>
-        </div>
+        </ul>
       </ScrollArea>
-    </CardContent>
-  </Card>
+    </div>
+  </section>
 </template>

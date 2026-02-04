@@ -11,7 +11,10 @@ interface Props {
   dataCy?: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  disabled: true,
+  className: "",
+});
 const emit = defineEmits<{ (e: "change", file: File | null): void }>();
 
 const previewUrl = ref<string | null>(null);

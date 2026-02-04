@@ -121,7 +121,7 @@ html {
     @apply text-foreground text-xl font-bold;
   }
   h2 {
-    @apply text-foreground text-lg font-semibold;
+    @apply text-foreground text-base font-semibold md:text-lg;
   }
   h3 {
     @apply text-foreground text-base font-medium;
@@ -211,12 +211,6 @@ html {
     @apply from-primary/10 to-primary/0 bg-linear-to-b backdrop-blur-md;
   }
 
-  .hide-mobile {
-    @media (max-width: 640px) {
-      display: none;
-    }
-  }
-
   .inputField {
     @apply file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-10 w-full min-w-0 appearance-none rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -226,8 +220,8 @@ html {
   ---break---
 */
 @layer utilities {
-  .gap {
-    @apply gap-6 lg:gap-8;
+  .mainGaps {
+    @apply gap-12 md:gap-14 lg:gap-16 xl:gap-18 2xl:gap-20;
   }
   .animate-collapsible-down {
     animation: collapsible-down 0.2s ease-out;

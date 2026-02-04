@@ -13,11 +13,12 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import Input from "@/components/ui/input/Input.vue";
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
+import { getTextSnippet } from "@/lib/utils/noteUtils";
 
 const props = defineProps<{
   notes: Note[] | undefined;
   isLoading: boolean;
-  selectedNoteId: string | null;
+  selectedNoteId?: string | null;
 }>();
 
 const searchQuery = ref("");
@@ -34,13 +35,6 @@ const emit = defineEmits<{
   (e: "selectNote", note: Note): void;
   (e: "createNewNote"): void;
 }>();
-
-const getTextSnippet = (html: string, maxLength: number = 100): string => {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  const text = div.textContent || div.innerText || "";
-  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-};
 
 const selectNote = (note: Note) => {
   emit("selectNote", note);

@@ -45,11 +45,7 @@ export interface RefillActivityData {
 export interface MaintenanceActivityData {
   id: string;
   date: Date;
-  type: {
-    code: string;
-    nameKey: string;
-    icon: string | null;
-  };
+  title: string;
   costTotal: number | null;
   notes: string | null;
   odometer: TConversionResult;

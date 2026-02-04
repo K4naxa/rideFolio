@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Maintenance, Prisma, VehicleType } from 'prisma/generated/prisma/client';
-import { MaintenanceType, MaintenanceInput, MaintenanceCategoryWithParts } from '@repo/validation';
+import { MaintenanceInput, MaintenanceCategoryWithParts } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -68,19 +68,6 @@ export class MaintenanceService {
     return categories;
   }
 
-  async getMaintenanceTypes(): Promise<MaintenanceType[]> {
-    return await this.prisma.maintenanceType.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' },
-      select: {
-        code: true,
-        nameKey: true,
-        icon: true,
-        id: true,
-      },
-    });
-  }
-
   async createMaintenance(userSession: UserSession, maintenanceData: MaintenanceInput) {
     // 1. Check if the user has permission to create logs for the vehicle
     const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
@@ -115,7 +102,7 @@ export class MaintenanceService {
           date: maintenanceData.date,
           odometer_km: isOdometerHourly ? null : normalizedOdometer,
           odometer_hour: isOdometerHourly ? normalizedOdometer : null,
-          typeId: maintenanceData.typeId,
+          title: maintenanceData.title,
           serviceProvider: maintenanceData.serviceProvider,
           costTotal: maintenanceData.totalCost,
           notes: maintenanceData.notes,

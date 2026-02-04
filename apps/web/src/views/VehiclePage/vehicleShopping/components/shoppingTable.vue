@@ -6,7 +6,7 @@ import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import { useShoppingVehicle } from "@/lib/queries/shopping/shopping-queries";
+import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
 import { useShoppingDelete, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import Button from "@/components/ui/button/Button.vue";
 import Label from "@/components/ui/label/Label.vue";
@@ -25,7 +25,7 @@ const props = defineProps<ShoppingTableProps>();
 
 const { currentVehicleId } = useCurrentVehicle();
 
-const { data: vehicleShoppingList, isLoading } = useShoppingVehicle(currentVehicleId);
+const { data: vehicleShoppingList, isLoading } = useVehicleShopping(currentVehicleId);
 const { mutate: toggleItem } = useShoppingToggle();
 const { mutateAsync: deleteItem } = useShoppingDelete();
 const isMobile = useMediaQuery("(max-width: 768px)");

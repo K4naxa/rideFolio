@@ -62,7 +62,6 @@ export const ModelName = {
   Vehicle: 'Vehicle',
   Refill: 'Refill',
   Maintenance: 'Maintenance',
-  MaintenanceType: 'MaintenanceType',
   MaintenanceCategory: 'MaintenanceCategory',
   MaintenancePart: 'MaintenancePart',
   Todo: 'Todo',
@@ -273,9 +272,9 @@ export const MaintenanceScalarFieldEnum = {
   date: 'date',
   odometer_km: 'odometer_km',
   odometer_hour: 'odometer_hour',
-  typeId: 'typeId',
   costTotal: 'costTotal',
   serviceProvider: 'serviceProvider',
+  title: 'title',
   notes: 'notes',
   image: 'image',
   sizeBytes: 'sizeBytes',
@@ -284,18 +283,6 @@ export const MaintenanceScalarFieldEnum = {
 } as const
 
 export type MaintenanceScalarFieldEnum = (typeof MaintenanceScalarFieldEnum)[keyof typeof MaintenanceScalarFieldEnum]
-
-
-export const MaintenanceTypeScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  nameKey: 'nameKey',
-  icon: 'icon',
-  sortOrder: 'sortOrder',
-  isActive: 'isActive'
-} as const
-
-export type MaintenanceTypeScalarFieldEnum = (typeof MaintenanceTypeScalarFieldEnum)[keyof typeof MaintenanceTypeScalarFieldEnum]
 
 
 export const MaintenanceCategoryScalarFieldEnum = {

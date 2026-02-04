@@ -14,6 +14,10 @@ import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useVehicleConsumptionChart } from "@/lib/queries/vehicles/vehicle-queries";
+import Icon from "@/components/icons/Icon.vue";
+import { EllipsisVerticalIcon } from "lucide-vue-next";
+import Button from "@/components/ui/button/Button.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
@@ -21,7 +25,7 @@ use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
 const themeStore = useThemeStore();
 
 const { currentVehicleId } = useCurrentVehicle();
-const timeRange = ref(30);
+const timeRange = ref(90); // days
 
 const {
   data: chartData,
@@ -79,6 +83,12 @@ const chartOptions = computed((): EChartsOption => {
         color: themeStore.colors.mutedForeground,
         fontSize: 10,
         margin: 12,
+        opacity: 0.8,
+        formatter: (value: string) =>
+          new Date(value).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          }),
       },
       axisTick: {
         show: false,
@@ -98,7 +108,10 @@ const chartOptions = computed((): EChartsOption => {
         axisLabel: {
           color: themeStore.colors.mutedForeground,
           fontSize: 10,
-          margin: 12,
+          opacity: 0.8,
+          margin: 20,
+          formatter: (value: number) => (Number.isInteger(value) ? value.toString() : ""),
+          align: "center",
         },
         splitLine: {
           lineStyle: {
@@ -124,13 +137,13 @@ const chartOptions = computed((): EChartsOption => {
       symbolSize: 6,
 
       lineStyle: {
-        width: 1,
-        color: "rgba(225, 113, 0, 0.5)",
+        width: 2,
+        color: "rgba(225, 113, 0, 0.8)",
       },
       areaStyle: {
         color: new graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "#e17100" },
-          { offset: 0.5, color: "rgba(225, 113, 0, 0.3)" }, // Semi-transparent orange
+          { offset: 0, color: "rgba(225, 113, 0, 0.7)" },
+          { offset: 0.5, color: "rgba(225, 113, 0, 0.3)" },
           { offset: 1, color: "rgba(225, 113, 0, 0)" },
         ]),
         origin: "start",
@@ -143,25 +156,28 @@ const chartOptions = computed((): EChartsOption => {
 
 <template>
   <div class="flex h-full w-full flex-col">
-    <header class="mb-4 flex items-center gap-2 space-y-0 sm:flex-row">
-      <div class="grid flex-1 gap-1">
-        <Label class="text-base">Fuel consumption</Label>
-        <CardDescription> Showing consumption trends for the last {{ timeRange }} days </CardDescription>
+    <header class="mb-4 flex items-center justify-between gap-4">
+      <div>
+        <h2 class="flex items-center gap-2 font-medium"><Icon name="refill" class="size-5" /> Fuel consumption</h2>
+        <CardDescription class="text-muted-foreground flex gap-2 text-sm md:hidden">
+          <span class="text-muted-foreground">Avg.</span>
+          <span>11.2 L/100km</span>
+        </CardDescription>
       </div>
-      <Select v-model="timeRange">
-        <SelectTrigger class="hidden w-40 sm:ml-auto sm:flex" aria-label="Select a value">
-          <SelectValue placeholder="Last 30 days" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem :value="90"> Last 3 months </SelectItem>
-          <SelectItem :value="30"> Last 30 days </SelectItem>
-          <SelectItem :value="7"> Last 7 days </SelectItem>
-        </SelectContent>
-      </Select>
+
+      <!-- TODO: Implement correct average for selected time -->
+      <div class="flex items-center gap-4">
+        <div class="hidden items-center gap-1 text-sm md:flex">
+          <span class="text-muted-foreground">Avg.</span>
+          <span class="font-medium">11.2 L/100km</span>
+        </div>
+
+        <Button variant="ghost" size="icon-sm" class=""><EllipsisVerticalIcon /></Button>
+      </div>
     </header>
 
     <!-- Chart -->
-    <div class="border-border/50 relative flex h-full w-full flex-1 border-b border-l pb-3 pl-4">
+    <div class="border-border/50 relative flex h-full w-full flex-1">
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
@@ -176,7 +192,7 @@ const chartOptions = computed((): EChartsOption => {
                 {{
                   new Date(data.itemData?.date).toLocaleDateString(undefined, {
                     year: "numeric",
-                    month: "numeric",
+                    month: "short",
                     day: "numeric",
                   })
                 }}
@@ -198,4 +214,3 @@ const chartOptions = computed((): EChartsOption => {
     </div>
   </div>
 </template>
-<style scoped></style>

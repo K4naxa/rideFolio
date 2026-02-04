@@ -1,11 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import {
-  MaintenanceSchema,
-  MaintenanceType,
-  RefillSchema,
-  RefillSchemaOutput,
-  MaintenanceInput,
-} from '@repo/validation';
+import { MaintenanceSchema, RefillSchema, RefillSchemaOutput, MaintenanceInput } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ZodType } from 'zod';
 
@@ -51,10 +45,6 @@ export class LogsController {
     return await this.maintenanceService.getCategoriesWithParts(vehicleType);
   }
 
-  @Get('maintenance/types')
-  async getMaintenanceTypes(): Promise<MaintenanceType[]> {
-    return await this.maintenanceService.getMaintenanceTypes();
-  }
   @Post('maintenance')
   async createMaintenance(
     @Session() SessionUser: UserSession,
