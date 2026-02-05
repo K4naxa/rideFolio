@@ -31,7 +31,7 @@ watch(
         class="text-muted-foreground hover:text-foreground router-link-active:text-primary flex flex-1 flex-col items-center justify-center px-1 py-2 text-xs font-medium transition-colors duration-200"
       >
         <Icon name="user" class="mb-1 size-5" />
-        <span class="text-xs">User</span>
+        <span class="text-xs">user</span>
       </div>
     </DrawerTrigger>
     <DrawerContent>
@@ -41,7 +41,7 @@ watch(
             <AvatarImage
               v-if="currentUser?.image"
               :src="currentUser?.image"
-              :alt="currentUser?.name || 'User Avatar'"
+              :alt="currentUser?.name || 'user Avatar'"
             />
             <AvatarFallback>
               <Icon name="user" class="stroke-muted-foreground size-6" aria-hidden="true" />

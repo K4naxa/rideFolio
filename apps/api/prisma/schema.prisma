@@ -32,25 +32,25 @@ enum StorageUsageCategory {
 }
 
 // ** VEHICLE ENUMS
-enum FuelTypes {
+enum FuelType {
   GASOLINE
   DIESEL
   HYBRID
 }
 
 // enum for users preferred measurement system
-enum OdometerTypes {
+enum OdometerType {
   KILOMETER
   MILE
   HOUR
 }
 
-enum VolumeUnitTypes {
+enum VolumeUnitType {
   LITER
   GALLON
 }
 
-enum DistanceConsumptionTypes {
+enum DistanceConsumptionType {
   KILOMETERS_PER_LITER
   LITERS_PER_100KM
   MILES_PER_LITER
@@ -97,7 +97,7 @@ enum PoolInviteStatus {
 }
 
 // ---- TODO ENUMS
-enum TodoDueTypes {
+enum TodoDueType {
   DATE
   ODOMETER
   HOUR
@@ -116,32 +116,33 @@ enum TodoPriority {
   CRITICAL
 }
 
-model SubscriptionPlan {
-  id      String @id @default(cuid())
-  code    String @unique // e.g. 'FREE', 'PRO', 'ENTERPRISE'
-  nameKey String // i18n key for plan name
+model subscriptionPlan {
+  id       String  @id @default(cuid())
+  code     String  @unique // e.g. 'FREE', 'PRO', 'ENTERPRISE'
+  nameKey  String // i18n key for plan name
+  isPublic Boolean @default(true) // Can users select this plan?
 
   // Pricing for display purposes
-  PriceCents Int    @default(0) // Price in cents
+  priceCents Int    @default(0) // Price in cents
   currency   String @default("EUR") // Currency code, e.g. "EUR", "USD"
   interval   String @default("MONTH") // e.g. "MONTH", "YEAR"
 
   // Limits
-  storageLimitBytes BigInt //  Use -1 for Unlimited.
-  vehicleLimit      Int // Use -1 for Unlimited.
+  maxStorageBytes BigInt //  Use -1 for Unlimited.
+  maxVehicles     Int // Use -1 for Unlimited.
 
   // PAYMENT PROVIDER MAPPING
   // ID To link DB to payment provider plans
   stripePriceId String? @unique
 
-  subscriptions Subscription[]
-  users         User[] // users on this plan
+  subscriptions subscription[]
+  users         user[] // users on this plan
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Subscription {
+model subscription {
   id     String @id @default(cuid())
   userId String @unique
   planId String
@@ -155,13 +156,13 @@ model Subscription {
   currentPeriodStart DateTime
   currentPeriodEnd   DateTime
 
-  // Did they click 'Cancel Subscription'? Access remains until period end.
+  // Did they click 'Cancel subscription'? Access remains until period end.
   cancelAtPeriodEnd Boolean          @default(false)
-  user              User             @relation(fields: [userId], references: [id])
-  plan              SubscriptionPlan @relation(fields: [planId], references: [id])
+  user              user             @relation(fields: [userId], references: [id])
+  plan              subscriptionPlan @relation(fields: [planId], references: [id])
 }
 
-model User {
+model user {
   id            String   @id @default(cuid())
   name          String
   email         String   @unique
@@ -173,18 +174,18 @@ model User {
   role ROLE @default(USER)
 
   planId       String
-  plan         SubscriptionPlan @relation(fields: [planId], references: [id])
-  subscription Subscription?
+  plan         subscriptionPlan @relation(fields: [planId], references: [id])
+  subscription subscription?
 
-  storageLimitBytes BigInt         @default(0) // synced from plan limits, but stored here for quick access
+  maxStorageBytes   BigInt         @default(0) // synced from plan limits, but stored here for quick access
   storageUsageBytes BigInt         @default(0)
   storageUsage      StorageUsage[]
 
-  volumeUnit VolumeUnitTypes @default(LITER)
+  volumeUnit VolumeUnitType @default(LITER)
 
-  consumptionUnitCode_distance DistanceConsumptionTypes @default(LITERS_PER_100KM)
-  consumptionUnitCode_hour     TimeConsumptionTypes     @default(LITERS_PER_HOUR)
-  currency                     String                   @default("EUR") // Default to Euro
+  consumptionUnitCode_distance DistanceConsumptionType @default(LITERS_PER_100KM)
+  consumptionUnitCode_hour     TimeConsumptionTypes    @default(LITERS_PER_HOUR)
+  currency                     String                  @default("EUR") // Default to Euro
 
   // A user can be a member of many pools.
   poolMemberships PoolMember[]
@@ -221,7 +222,7 @@ model StorageUsage {
 
   category StorageUsageCategory // e.g., "images", "notes", "logs"
   bytes    BigInt               @default(0) // Number of bytes used in this category
-  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     user                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, category])
 }
@@ -229,7 +230,7 @@ model StorageUsage {
 model QuickLink {
   id     String @id @default(cuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name        String
   url         String
@@ -308,15 +309,15 @@ model Vehicle {
   name String
 
   ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner   user   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   type        String
   vehicleType VehicleType @relation(fields: [type], references: [code], onDelete: Cascade)
 
-  fuelType     FuelTypes
-  odometerType OdometerTypes
-  make         String?       @default("")
-  model        String?       @default("")
+  fuelType     FuelType
+  odometerType OdometerType
+  make         String?      @default("")
+  model        String?      @default("")
   year         Int?
   vin          String?
   licensePlate String?
@@ -388,7 +389,7 @@ model Refill {
   updatedAt DateTime @updatedAt
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user    user?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([userId])
@@ -415,7 +416,7 @@ model Maintenance {
   updatedAt DateTime @updatedAt
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user    user?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   // Many-to-many relationship with parts
   parts MaintenancePart[]
@@ -449,7 +450,7 @@ model MaintenancePart {
   groupId       String
   // Where the parts / part was installed
   locationId    String?
-  // User given custom label & description for this part
+  // user given custom label & description for this part
   label         String? @default("")
   description   String? @default("")
   // This is used to store user's custom string
@@ -485,8 +486,8 @@ model Todo {
   completedById    String?
 
   sizeBytes   Int
-  createdBy   User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  completedBy User? @relation("CompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  createdBy   user? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  completedBy user? @relation("CompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([isCompleted])
@@ -501,7 +502,7 @@ model Note {
   tags      String[]
   pinned    Boolean  @default(false)
 
-  createdByUser User?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdByUser user?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedAt     DateTime @updatedAt
 
   sizeBytes   Int
@@ -524,7 +525,7 @@ model ShoppingListItem {
 
   sizeBytes   Int
   createdById String?
-  createdBy   User?   @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy   user?   @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([isPurchased])
@@ -560,7 +561,7 @@ model PoolMember {
   poolId    String
   pool      Pool           @relation(fields: [poolId], references: [id], onDelete: Cascade)
   userId    String
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user           @relation(fields: [userId], references: [id], onDelete: Cascade)
   // A member joins a pool at a specific time.
   createdAt DateTime       @default(now())
 
@@ -605,10 +606,10 @@ model PoolInvite {
   pool   Pool   @relation(fields: [poolId], references: [id], onDelete: Cascade)
 
   senderId String
-  sender   User   @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
+  sender   user   @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
 
   receiverId String
-  receiver   User   @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver   user   @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
 
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -652,7 +653,7 @@ model VehicleMonthlyStatistics {
 model Notification {
   id     String @id @default(cuid())
   userId String // Recipient user ID
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   type NotificationType
 
@@ -687,7 +688,7 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Verification {
@@ -710,5 +711,5 @@ model Session {
   userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

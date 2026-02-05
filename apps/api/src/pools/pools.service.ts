@@ -317,7 +317,7 @@ export class PoolsService {
       where: { email: inviteData.email },
       select: { id: true },
     });
-    if (!receiver) throw new NotFoundException(`User not found.`);
+    if (!receiver) throw new NotFoundException(`user not found.`);
 
     // 3. Create the pool invite
     const poolInvite = await this.prisma.poolInvite.create({
@@ -416,7 +416,7 @@ export class PoolsService {
         OR: [{ role: 'ADMIN' }, { role: 'OWNER' }],
       },
     });
-    console.log('User invite permissions:', user);
+    console.log('user invite permissions:', user);
     if (!user) throw new ForbiddenException('You do not have permission to invite users to this pool.');
   }
 

@@ -1,3 +1,5 @@
+import { ActiveSubscriptionPlan } from "../subscription";
+
 // Volume units
 export const VOLUME_UNITS = {
   LITER: { code: "LITER", label: "Liter", unit: "L", nameKey: "user.volumeUnits.liter" },
@@ -134,7 +136,9 @@ export type TBasicProfile = {
   email: string;
   image: string | null;
   createdAt: Date;
-  limits: StorageUsageSummary;
+  subscriptionPlan: ActiveSubscriptionPlan;
+  usedStorageBytes: number;
+  usedVehicles: number;
 
   preferences: {
     volumeUnit: VolumeUnitCode;
@@ -149,16 +153,7 @@ type StorageCategoryBreakdown = {
   bytes: number;
 };
 
-export type StorageUsageSummary = {
-  storage: {
-    usage: number;
-    limit: number;
-    isUnlimited: boolean;
-    breakdown: StorageCategoryBreakdown[];
-  };
-  vehicles: {
-    used: number;
-    limit: number;
-    isUnlimited: boolean;
-  };
+export type StorageBreakdown = {
+  usage: number;
+  breakdown: StorageCategoryBreakdown[];
 };

@@ -301,7 +301,7 @@ export type MaintenanceWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
   parts?: Prisma.MaintenancePartListRelationFilter
 }
 
@@ -321,7 +321,7 @@ export type MaintenanceOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
-  user?: Prisma.UserOrderByWithRelationInput
+  user?: Prisma.userOrderByWithRelationInput
   parts?: Prisma.MaintenancePartOrderByRelationAggregateInput
 }
 
@@ -344,7 +344,7 @@ export type MaintenanceWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Maintenance"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
   parts?: Prisma.MaintenancePartListRelationFilter
 }, "id">
 
@@ -404,7 +404,7 @@ export type MaintenanceCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutMaintenancesInput
-  user?: Prisma.UserCreateNestedOneWithoutCreatedMaintenancesInput
+  user?: Prisma.userCreateNestedOneWithoutCreatedMaintenancesInput
   parts?: Prisma.MaintenancePartCreateNestedManyWithoutMaintenanceInput
 }
 
@@ -440,7 +440,7 @@ export type MaintenanceUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutMaintenancesNestedInput
-  user?: Prisma.UserUpdateOneWithoutCreatedMaintenancesNestedInput
+  user?: Prisma.userUpdateOneWithoutCreatedMaintenancesNestedInput
   parts?: Prisma.MaintenancePartUpdateManyWithoutMaintenanceNestedInput
 }
 
@@ -782,7 +782,7 @@ export type MaintenanceCreateWithoutVehicleInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutCreatedMaintenancesInput
+  user?: Prisma.userCreateNestedOneWithoutCreatedMaintenancesInput
   parts?: Prisma.MaintenancePartCreateNestedManyWithoutMaintenanceInput
 }
 
@@ -843,7 +843,7 @@ export type MaintenanceCreateWithoutPartsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutMaintenancesInput
-  user?: Prisma.UserCreateNestedOneWithoutCreatedMaintenancesInput
+  user?: Prisma.userCreateNestedOneWithoutCreatedMaintenancesInput
 }
 
 export type MaintenanceUncheckedCreateWithoutPartsInput = {
@@ -893,7 +893,7 @@ export type MaintenanceUpdateWithoutPartsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutMaintenancesNestedInput
-  user?: Prisma.UserUpdateOneWithoutCreatedMaintenancesNestedInput
+  user?: Prisma.userUpdateOneWithoutCreatedMaintenancesNestedInput
 }
 
 export type MaintenanceUncheckedUpdateWithoutPartsInput = {
@@ -1008,7 +1008,7 @@ export type MaintenanceUpdateWithoutVehicleInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutCreatedMaintenancesNestedInput
+  user?: Prisma.userUpdateOneWithoutCreatedMaintenancesNestedInput
   parts?: Prisma.MaintenancePartUpdateManyWithoutMaintenanceNestedInput
 }
 
@@ -1172,7 +1172,7 @@ export type $MaintenancePayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "Maintenance"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs> | null
+    user: Prisma.$userPayload<ExtArgs> | null
     parts: Prisma.$MaintenancePartPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1585,7 +1585,7 @@ readonly fields: MaintenanceFieldRefs;
 export interface Prisma__MaintenanceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.Maintenance$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maintenance$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Maintenance$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maintenance$userArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   parts<T extends Prisma.Maintenance$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maintenance$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenancePartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2030,18 +2030,18 @@ export type MaintenanceDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
  */
 export type Maintenance$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**

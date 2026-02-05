@@ -29,6 +29,11 @@ export type StringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type BoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type IntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -98,6 +103,14 @@ export type StringWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedStringFilter<$PrismaModel>
   _max?: Prisma.NestedStringFilter<$PrismaModel>
+}
+
+export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -171,11 +184,6 @@ export type EnumSubscriptionStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
 }
 
-export type BoolFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
-}
-
 export type EnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SubscriptionStatus | Prisma.EnumSubscriptionStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SubscriptionStatus[] | Prisma.ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
@@ -186,14 +194,6 @@ export type EnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumSubscriptionStatusFilter<$PrismaModel>
 }
 
-export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolFilter<$PrismaModel>
-}
-
 export type EnumROLEFilter<$PrismaModel = never> = {
   equals?: $Enums.ROLE | Prisma.EnumROLEFieldRefInput<$PrismaModel>
   in?: $Enums.ROLE[] | Prisma.ListEnumROLEFieldRefInput<$PrismaModel>
@@ -201,18 +201,18 @@ export type EnumROLEFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumROLEFilter<$PrismaModel> | $Enums.ROLE
 }
 
-export type EnumVolumeUnitTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VolumeUnitTypes | Prisma.EnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel> | $Enums.VolumeUnitTypes
+export type EnumVolumeUnitTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VolumeUnitType | Prisma.EnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel> | $Enums.VolumeUnitType
 }
 
-export type EnumDistanceConsumptionTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.DistanceConsumptionTypes | Prisma.EnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel> | $Enums.DistanceConsumptionTypes
+export type EnumDistanceConsumptionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DistanceConsumptionType | Prisma.EnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel> | $Enums.DistanceConsumptionType
 }
 
 export type EnumTimeConsumptionTypesFilter<$PrismaModel = never> = {
@@ -232,24 +232,24 @@ export type EnumROLEWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumROLEFilter<$PrismaModel>
 }
 
-export type EnumVolumeUnitTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VolumeUnitTypes | Prisma.EnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVolumeUnitTypesWithAggregatesFilter<$PrismaModel> | $Enums.VolumeUnitTypes
+export type EnumVolumeUnitTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VolumeUnitType | Prisma.EnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVolumeUnitTypeWithAggregatesFilter<$PrismaModel> | $Enums.VolumeUnitType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel>
 }
 
-export type EnumDistanceConsumptionTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.DistanceConsumptionTypes | Prisma.EnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDistanceConsumptionTypesWithAggregatesFilter<$PrismaModel> | $Enums.DistanceConsumptionTypes
+export type EnumDistanceConsumptionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DistanceConsumptionType | Prisma.EnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDistanceConsumptionTypeWithAggregatesFilter<$PrismaModel> | $Enums.DistanceConsumptionType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel>
 }
 
 export type EnumTimeConsumptionTypesWithAggregatesFilter<$PrismaModel = never> = {
@@ -279,18 +279,18 @@ export type EnumStorageUsageCategoryWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumStorageUsageCategoryFilter<$PrismaModel>
 }
 
-export type EnumFuelTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelTypes | Prisma.EnumFuelTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel> | $Enums.FuelTypes
+export type EnumFuelTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel> | $Enums.FuelType
 }
 
-export type EnumOdometerTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OdometerTypes | Prisma.EnumOdometerTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel> | $Enums.OdometerTypes
+export type EnumOdometerTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.OdometerType | Prisma.EnumOdometerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel> | $Enums.OdometerType
 }
 
 export type IntNullableFilter<$PrismaModel = never> = {
@@ -315,24 +315,24 @@ export type FloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
-export type EnumFuelTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelTypes | Prisma.EnumFuelTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFuelTypesWithAggregatesFilter<$PrismaModel> | $Enums.FuelTypes
+export type EnumFuelTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel> | $Enums.FuelType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
 }
 
-export type EnumOdometerTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OdometerTypes | Prisma.EnumOdometerTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOdometerTypesWithAggregatesFilter<$PrismaModel> | $Enums.OdometerTypes
+export type EnumOdometerTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OdometerType | Prisma.EnumOdometerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOdometerTypeWithAggregatesFilter<$PrismaModel> | $Enums.OdometerType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel>
 }
 
 export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -569,6 +569,11 @@ export type NestedStringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type NestedBoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -631,6 +636,14 @@ export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedStringFilter<$PrismaModel>
   _max?: Prisma.NestedStringFilter<$PrismaModel>
+}
+
+export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -725,11 +738,6 @@ export type NestedEnumSubscriptionStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
 }
 
-export type NestedBoolFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
-}
-
 export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SubscriptionStatus | Prisma.EnumSubscriptionStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SubscriptionStatus[] | Prisma.ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
@@ -740,14 +748,6 @@ export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumSubscriptionStatusFilter<$PrismaModel>
 }
 
-export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolFilter<$PrismaModel>
-}
-
 export type NestedEnumROLEFilter<$PrismaModel = never> = {
   equals?: $Enums.ROLE | Prisma.EnumROLEFieldRefInput<$PrismaModel>
   in?: $Enums.ROLE[] | Prisma.ListEnumROLEFieldRefInput<$PrismaModel>
@@ -755,18 +755,18 @@ export type NestedEnumROLEFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumROLEFilter<$PrismaModel> | $Enums.ROLE
 }
 
-export type NestedEnumVolumeUnitTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VolumeUnitTypes | Prisma.EnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel> | $Enums.VolumeUnitTypes
+export type NestedEnumVolumeUnitTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VolumeUnitType | Prisma.EnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel> | $Enums.VolumeUnitType
 }
 
-export type NestedEnumDistanceConsumptionTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.DistanceConsumptionTypes | Prisma.EnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel> | $Enums.DistanceConsumptionTypes
+export type NestedEnumDistanceConsumptionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DistanceConsumptionType | Prisma.EnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel> | $Enums.DistanceConsumptionType
 }
 
 export type NestedEnumTimeConsumptionTypesFilter<$PrismaModel = never> = {
@@ -786,24 +786,24 @@ export type NestedEnumROLEWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumROLEFilter<$PrismaModel>
 }
 
-export type NestedEnumVolumeUnitTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VolumeUnitTypes | Prisma.EnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VolumeUnitTypes[] | Prisma.ListEnumVolumeUnitTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVolumeUnitTypesWithAggregatesFilter<$PrismaModel> | $Enums.VolumeUnitTypes
+export type NestedEnumVolumeUnitTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VolumeUnitType | Prisma.EnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VolumeUnitType[] | Prisma.ListEnumVolumeUnitTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVolumeUnitTypeWithAggregatesFilter<$PrismaModel> | $Enums.VolumeUnitType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumVolumeUnitTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVolumeUnitTypeFilter<$PrismaModel>
 }
 
-export type NestedEnumDistanceConsumptionTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.DistanceConsumptionTypes | Prisma.EnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DistanceConsumptionTypes[] | Prisma.ListEnumDistanceConsumptionTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDistanceConsumptionTypesWithAggregatesFilter<$PrismaModel> | $Enums.DistanceConsumptionTypes
+export type NestedEnumDistanceConsumptionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DistanceConsumptionType | Prisma.EnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DistanceConsumptionType[] | Prisma.ListEnumDistanceConsumptionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDistanceConsumptionTypeWithAggregatesFilter<$PrismaModel> | $Enums.DistanceConsumptionType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumDistanceConsumptionTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDistanceConsumptionTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumTimeConsumptionTypesWithAggregatesFilter<$PrismaModel = never> = {
@@ -833,18 +833,18 @@ export type NestedEnumStorageUsageCategoryWithAggregatesFilter<$PrismaModel = ne
   _max?: Prisma.NestedEnumStorageUsageCategoryFilter<$PrismaModel>
 }
 
-export type NestedEnumFuelTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelTypes | Prisma.EnumFuelTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel> | $Enums.FuelTypes
+export type NestedEnumFuelTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel> | $Enums.FuelType
 }
 
-export type NestedEnumOdometerTypesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OdometerTypes | Prisma.EnumOdometerTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel> | $Enums.OdometerTypes
+export type NestedEnumOdometerTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.OdometerType | Prisma.EnumOdometerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel> | $Enums.OdometerType
 }
 
 export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -858,24 +858,24 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
-export type NestedEnumFuelTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelTypes | Prisma.EnumFuelTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FuelTypes[] | Prisma.ListEnumFuelTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFuelTypesWithAggregatesFilter<$PrismaModel> | $Enums.FuelTypes
+export type NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FuelType[] | Prisma.ListEnumFuelTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel> | $Enums.FuelType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFuelTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
 }
 
-export type NestedEnumOdometerTypesWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OdometerTypes | Prisma.EnumOdometerTypesFieldRefInput<$PrismaModel>
-  in?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OdometerTypes[] | Prisma.ListEnumOdometerTypesFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOdometerTypesWithAggregatesFilter<$PrismaModel> | $Enums.OdometerTypes
+export type NestedEnumOdometerTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OdometerType | Prisma.EnumOdometerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OdometerType[] | Prisma.ListEnumOdometerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOdometerTypeWithAggregatesFilter<$PrismaModel> | $Enums.OdometerType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOdometerTypesFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOdometerTypeFilter<$PrismaModel>
 }
 
 export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {

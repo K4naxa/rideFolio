@@ -67,8 +67,8 @@ export type VehicleMinAggregateOutputType = {
   name: string | null
   ownerId: string | null
   type: string | null
-  fuelType: $Enums.FuelTypes | null
-  odometerType: $Enums.OdometerTypes | null
+  fuelType: $Enums.FuelType | null
+  odometerType: $Enums.OdometerType | null
   make: string | null
   model: string | null
   year: number | null
@@ -98,8 +98,8 @@ export type VehicleMaxAggregateOutputType = {
   name: string | null
   ownerId: string | null
   type: string | null
-  fuelType: $Enums.FuelTypes | null
-  odometerType: $Enums.OdometerTypes | null
+  fuelType: $Enums.FuelType | null
+  odometerType: $Enums.OdometerType | null
   make: string | null
   model: string | null
   year: number | null
@@ -378,8 +378,8 @@ export type VehicleGroupByOutputType = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make: string | null
   model: string | null
   year: number | null
@@ -432,8 +432,8 @@ export type VehicleWhereInput = {
   name?: Prisma.StringFilter<"Vehicle"> | string
   ownerId?: Prisma.StringFilter<"Vehicle"> | string
   type?: Prisma.StringFilter<"Vehicle"> | string
-  fuelType?: Prisma.EnumFuelTypesFilter<"Vehicle"> | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFilter<"Vehicle"> | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFilter<"Vehicle"> | $Enums.OdometerType
   make?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   year?: Prisma.IntNullableFilter<"Vehicle"> | number | null
@@ -456,7 +456,7 @@ export type VehicleWhereInput = {
   sizeBytes?: Prisma.IntFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
-  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
   vehicleType?: Prisma.XOR<Prisma.VehicleTypeScalarRelationFilter, Prisma.VehicleTypeWhereInput>
   pools?: Prisma.PoolVehicleListRelationFilter
   refills?: Prisma.RefillListRelationFilter
@@ -496,7 +496,7 @@ export type VehicleOrderByWithRelationInput = {
   sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  owner?: Prisma.UserOrderByWithRelationInput
+  owner?: Prisma.userOrderByWithRelationInput
   vehicleType?: Prisma.VehicleTypeOrderByWithRelationInput
   pools?: Prisma.PoolVehicleOrderByRelationAggregateInput
   refills?: Prisma.RefillOrderByRelationAggregateInput
@@ -515,8 +515,8 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Vehicle"> | string
   ownerId?: Prisma.StringFilter<"Vehicle"> | string
   type?: Prisma.StringFilter<"Vehicle"> | string
-  fuelType?: Prisma.EnumFuelTypesFilter<"Vehicle"> | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFilter<"Vehicle"> | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFilter<"Vehicle"> | $Enums.OdometerType
   make?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   year?: Prisma.IntNullableFilter<"Vehicle"> | number | null
@@ -539,7 +539,7 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   sizeBytes?: Prisma.IntFilter<"Vehicle"> | number
   createdAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vehicle"> | Date | string
-  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
   vehicleType?: Prisma.XOR<Prisma.VehicleTypeScalarRelationFilter, Prisma.VehicleTypeWhereInput>
   pools?: Prisma.PoolVehicleListRelationFilter
   refills?: Prisma.RefillListRelationFilter
@@ -594,8 +594,8 @@ export type VehicleScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   ownerId?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   type?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
-  fuelType?: Prisma.EnumFuelTypesWithAggregatesFilter<"Vehicle"> | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesWithAggregatesFilter<"Vehicle"> | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeWithAggregatesFilter<"Vehicle"> | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeWithAggregatesFilter<"Vehicle"> | $Enums.OdometerType
   make?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
   model?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
   year?: Prisma.IntNullableWithAggregatesFilter<"Vehicle"> | number | null
@@ -623,8 +623,8 @@ export type VehicleScalarWhereWithAggregatesInput = {
 export type VehicleCreateInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -647,7 +647,7 @@ export type VehicleCreateInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -663,8 +663,8 @@ export type VehicleUncheckedCreateInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -699,8 +699,8 @@ export type VehicleUncheckedCreateInput = {
 export type VehicleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -723,7 +723,7 @@ export type VehicleUpdateInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -739,8 +739,8 @@ export type VehicleUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -777,8 +777,8 @@ export type VehicleCreateManyInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -806,8 +806,8 @@ export type VehicleCreateManyInput = {
 export type VehicleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -837,8 +837,8 @@ export type VehicleUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1091,12 +1091,12 @@ export type VehicleUncheckedUpdateManyWithoutVehicleTypeNestedInput = {
   deleteMany?: Prisma.VehicleScalarWhereInput | Prisma.VehicleScalarWhereInput[]
 }
 
-export type EnumFuelTypesFieldUpdateOperationsInput = {
-  set?: $Enums.FuelTypes
+export type EnumFuelTypeFieldUpdateOperationsInput = {
+  set?: $Enums.FuelType
 }
 
-export type EnumOdometerTypesFieldUpdateOperationsInput = {
-  set?: $Enums.OdometerTypes
+export type EnumOdometerTypeFieldUpdateOperationsInput = {
+  set?: $Enums.OdometerType
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1216,8 +1216,8 @@ export type VehicleUpdateOneRequiredWithoutMonthlyStatisticsNestedInput = {
 export type VehicleCreateWithoutOwnerInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1254,8 +1254,8 @@ export type VehicleUncheckedCreateWithoutOwnerInput = {
   id?: string
   name: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1321,8 +1321,8 @@ export type VehicleScalarWhereInput = {
   name?: Prisma.StringFilter<"Vehicle"> | string
   ownerId?: Prisma.StringFilter<"Vehicle"> | string
   type?: Prisma.StringFilter<"Vehicle"> | string
-  fuelType?: Prisma.EnumFuelTypesFilter<"Vehicle"> | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFilter<"Vehicle"> | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFilter<"Vehicle"> | $Enums.OdometerType
   make?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   year?: Prisma.IntNullableFilter<"Vehicle"> | number | null
@@ -1350,8 +1350,8 @@ export type VehicleScalarWhereInput = {
 export type VehicleCreateWithoutVehicleTypeInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1374,7 +1374,7 @@ export type VehicleCreateWithoutVehicleTypeInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
   maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
@@ -1388,8 +1388,8 @@ export type VehicleUncheckedCreateWithoutVehicleTypeInput = {
   id?: string
   name: string
   ownerId: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1450,8 +1450,8 @@ export type VehicleUpdateManyWithWhereWithoutVehicleTypeInput = {
 export type VehicleCreateWithoutRefillsInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1474,7 +1474,7 @@ export type VehicleCreateWithoutRefillsInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
@@ -1489,8 +1489,8 @@ export type VehicleUncheckedCreateWithoutRefillsInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1540,8 +1540,8 @@ export type VehicleUpdateToOneWithWhereWithoutRefillsInput = {
 export type VehicleUpdateWithoutRefillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1564,7 +1564,7 @@ export type VehicleUpdateWithoutRefillsInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
@@ -1579,8 +1579,8 @@ export type VehicleUncheckedUpdateWithoutRefillsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1614,8 +1614,8 @@ export type VehicleUncheckedUpdateWithoutRefillsInput = {
 export type VehicleCreateWithoutMaintenancesInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1638,7 +1638,7 @@ export type VehicleCreateWithoutMaintenancesInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -1653,8 +1653,8 @@ export type VehicleUncheckedCreateWithoutMaintenancesInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1704,8 +1704,8 @@ export type VehicleUpdateToOneWithWhereWithoutMaintenancesInput = {
 export type VehicleUpdateWithoutMaintenancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1728,7 +1728,7 @@ export type VehicleUpdateWithoutMaintenancesInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -1743,8 +1743,8 @@ export type VehicleUncheckedUpdateWithoutMaintenancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1778,8 +1778,8 @@ export type VehicleUncheckedUpdateWithoutMaintenancesInput = {
 export type VehicleCreateWithoutTodosInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1802,7 +1802,7 @@ export type VehicleCreateWithoutTodosInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -1817,8 +1817,8 @@ export type VehicleUncheckedCreateWithoutTodosInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1868,8 +1868,8 @@ export type VehicleUpdateToOneWithWhereWithoutTodosInput = {
 export type VehicleUpdateWithoutTodosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1892,7 +1892,7 @@ export type VehicleUpdateWithoutTodosInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -1907,8 +1907,8 @@ export type VehicleUncheckedUpdateWithoutTodosInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1942,8 +1942,8 @@ export type VehicleUncheckedUpdateWithoutTodosInput = {
 export type VehicleCreateWithoutNotesInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -1966,7 +1966,7 @@ export type VehicleCreateWithoutNotesInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -1981,8 +1981,8 @@ export type VehicleUncheckedCreateWithoutNotesInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2032,8 +2032,8 @@ export type VehicleUpdateToOneWithWhereWithoutNotesInput = {
 export type VehicleUpdateWithoutNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2056,7 +2056,7 @@ export type VehicleUpdateWithoutNotesInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -2071,8 +2071,8 @@ export type VehicleUncheckedUpdateWithoutNotesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2106,8 +2106,8 @@ export type VehicleUncheckedUpdateWithoutNotesInput = {
 export type VehicleCreateWithoutShoppingListItemsInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2130,7 +2130,7 @@ export type VehicleCreateWithoutShoppingListItemsInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -2145,8 +2145,8 @@ export type VehicleUncheckedCreateWithoutShoppingListItemsInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2196,8 +2196,8 @@ export type VehicleUpdateToOneWithWhereWithoutShoppingListItemsInput = {
 export type VehicleUpdateWithoutShoppingListItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2220,7 +2220,7 @@ export type VehicleUpdateWithoutShoppingListItemsInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -2235,8 +2235,8 @@ export type VehicleUncheckedUpdateWithoutShoppingListItemsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2270,8 +2270,8 @@ export type VehicleUncheckedUpdateWithoutShoppingListItemsInput = {
 export type VehicleCreateWithoutPoolsInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2294,7 +2294,7 @@ export type VehicleCreateWithoutPoolsInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
   maintenances?: Prisma.MaintenanceCreateNestedManyWithoutVehicleInput
@@ -2309,8 +2309,8 @@ export type VehicleUncheckedCreateWithoutPoolsInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2360,8 +2360,8 @@ export type VehicleUpdateToOneWithWhereWithoutPoolsInput = {
 export type VehicleUpdateWithoutPoolsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2384,7 +2384,7 @@ export type VehicleUpdateWithoutPoolsInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
   maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
@@ -2399,8 +2399,8 @@ export type VehicleUncheckedUpdateWithoutPoolsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2434,8 +2434,8 @@ export type VehicleUncheckedUpdateWithoutPoolsInput = {
 export type VehicleCreateWithoutMonthlyStatisticsInput = {
   id?: string
   name: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2458,7 +2458,7 @@ export type VehicleCreateWithoutMonthlyStatisticsInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutOwnedVehiclesInput
+  owner: Prisma.userCreateNestedOneWithoutOwnedVehiclesInput
   vehicleType: Prisma.VehicleTypeCreateNestedOneWithoutVehiclesInput
   pools?: Prisma.PoolVehicleCreateNestedManyWithoutVehicleInput
   refills?: Prisma.RefillCreateNestedManyWithoutVehicleInput
@@ -2473,8 +2473,8 @@ export type VehicleUncheckedCreateWithoutMonthlyStatisticsInput = {
   name: string
   ownerId: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2524,8 +2524,8 @@ export type VehicleUpdateToOneWithWhereWithoutMonthlyStatisticsInput = {
 export type VehicleUpdateWithoutMonthlyStatisticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2548,7 +2548,7 @@ export type VehicleUpdateWithoutMonthlyStatisticsInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   vehicleType?: Prisma.VehicleTypeUpdateOneRequiredWithoutVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
@@ -2563,8 +2563,8 @@ export type VehicleUncheckedUpdateWithoutMonthlyStatisticsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2599,8 +2599,8 @@ export type VehicleCreateManyOwnerInput = {
   id?: string
   name: string
   type: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2628,8 +2628,8 @@ export type VehicleCreateManyOwnerInput = {
 export type VehicleUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2666,8 +2666,8 @@ export type VehicleUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2703,8 +2703,8 @@ export type VehicleUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2733,8 +2733,8 @@ export type VehicleCreateManyVehicleTypeInput = {
   id?: string
   name: string
   ownerId: string
-  fuelType: $Enums.FuelTypes
-  odometerType: $Enums.OdometerTypes
+  fuelType: $Enums.FuelType
+  odometerType: $Enums.OdometerType
   make?: string | null
   model?: string | null
   year?: number | null
@@ -2762,8 +2762,8 @@ export type VehicleCreateManyVehicleTypeInput = {
 export type VehicleUpdateWithoutVehicleTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2786,7 +2786,7 @@ export type VehicleUpdateWithoutVehicleTypeInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput
+  owner?: Prisma.userUpdateOneRequiredWithoutOwnedVehiclesNestedInput
   pools?: Prisma.PoolVehicleUpdateManyWithoutVehicleNestedInput
   refills?: Prisma.RefillUpdateManyWithoutVehicleNestedInput
   maintenances?: Prisma.MaintenanceUpdateManyWithoutVehicleNestedInput
@@ -2800,8 +2800,8 @@ export type VehicleUncheckedUpdateWithoutVehicleTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2837,8 +2837,8 @@ export type VehicleUncheckedUpdateManyWithoutVehicleTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  fuelType?: Prisma.EnumFuelTypesFieldUpdateOperationsInput | $Enums.FuelTypes
-  odometerType?: Prisma.EnumOdometerTypesFieldUpdateOperationsInput | $Enums.OdometerTypes
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  odometerType?: Prisma.EnumOdometerTypeFieldUpdateOperationsInput | $Enums.OdometerType
   make?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2977,7 +2977,7 @@ export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
   pools?: boolean | Prisma.Vehicle$poolsArgs<ExtArgs>
   refills?: boolean | Prisma.Vehicle$refillsArgs<ExtArgs>
@@ -3018,7 +3018,7 @@ export type VehicleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vehicle"]>
 
@@ -3051,7 +3051,7 @@ export type VehicleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vehicle"]>
 
@@ -3088,7 +3088,7 @@ export type VehicleSelectScalar = {
 
 export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "type" | "fuelType" | "odometerType" | "make" | "model" | "year" | "vin" | "licensePlate" | "image" | "initialOdometer_km" | "initialOdometer_hour" | "odometer_km" | "odometer_hour" | "lastRefillOdometer_km" | "lastRefillOdometer_hour" | "lifetimeTotalTrackedUnits_km" | "lifetimeTotalTrackedUnits_hour" | "lifetimeTotalFuelConsumed_L" | "lifetimeTotalCost" | "lifetimeTotalValidFuelForConsumption_L" | "lifetimeTotalValidUnitsForConsumption_km" | "lifetimeTotalValidUnitsForConsumption_hour" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
 export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
   pools?: boolean | Prisma.Vehicle$poolsArgs<ExtArgs>
   refills?: boolean | Prisma.Vehicle$refillsArgs<ExtArgs>
@@ -3100,18 +3100,18 @@ export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   _count?: boolean | Prisma.VehicleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VehicleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
 }
 export type VehicleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.userDefaultArgs<ExtArgs>
   vehicleType?: boolean | Prisma.VehicleTypeDefaultArgs<ExtArgs>
 }
 
 export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Vehicle"
   objects: {
-    owner: Prisma.$UserPayload<ExtArgs>
+    owner: Prisma.$userPayload<ExtArgs>
     vehicleType: Prisma.$VehicleTypePayload<ExtArgs>
     pools: Prisma.$PoolVehiclePayload<ExtArgs>[]
     refills: Prisma.$RefillPayload<ExtArgs>[]
@@ -3126,8 +3126,8 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     ownerId: string
     type: string
-    fuelType: $Enums.FuelTypes
-    odometerType: $Enums.OdometerTypes
+    fuelType: $Enums.FuelType
+    odometerType: $Enums.OdometerType
     make: string | null
     model: string | null
     year: number | null
@@ -3544,7 +3544,7 @@ readonly fields: VehicleFieldRefs;
  */
 export interface Prisma__VehicleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  owner<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vehicleType<T extends Prisma.VehicleTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleTypeClient<runtime.Types.Result.GetResult<Prisma.$VehicleTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   pools<T extends Prisma.Vehicle$poolsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$poolsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolVehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refills<T extends Prisma.Vehicle$refillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$refillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3586,8 +3586,8 @@ export interface VehicleFieldRefs {
   readonly name: Prisma.FieldRef<"Vehicle", 'String'>
   readonly ownerId: Prisma.FieldRef<"Vehicle", 'String'>
   readonly type: Prisma.FieldRef<"Vehicle", 'String'>
-  readonly fuelType: Prisma.FieldRef<"Vehicle", 'FuelTypes'>
-  readonly odometerType: Prisma.FieldRef<"Vehicle", 'OdometerTypes'>
+  readonly fuelType: Prisma.FieldRef<"Vehicle", 'FuelType'>
+  readonly odometerType: Prisma.FieldRef<"Vehicle", 'OdometerType'>
   readonly make: Prisma.FieldRef<"Vehicle", 'String'>
   readonly model: Prisma.FieldRef<"Vehicle", 'String'>
   readonly year: Prisma.FieldRef<"Vehicle", 'Int'>

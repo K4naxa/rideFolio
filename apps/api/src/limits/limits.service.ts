@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { MaintenanceInput, type StorageUsageSummary, VehicleSchemaType } from '@repo/validation';
+import { MaintenanceInput, StorageBreakdown, VehicleSchemaType } from '@repo/validation';
 import { Prisma } from 'prisma/generated/prisma/client';
 import { ROLE, StorageUsageCategory } from 'prisma/generated/prisma/enums';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
@@ -39,8 +39,8 @@ export class LimitsService {
         storageUsageBytes: true,
         plan: {
           select: {
-            storageLimitBytes: true,
-            vehicleLimit: true,
+            maxStorageBytes: true,
+            maxVehicles: true,
           },
         },
       },
@@ -58,16 +58,13 @@ export class LimitsService {
       },
     });
 
-    if (!user) throw new ForbiddenException('User not found');
+    if (!user) throw new ForbiddenException('user not found');
     return { ...user, vehicleCount };
   }
 
   // LIMIT CHECKING
   private isUnlimited(limit: bigint | number): boolean {
     return BigInt(limit) === BigInt(-1);
-  }
-  private isAdmin(role: ROLE): boolean {
-    return role === ROLE.ADMIN;
   }
 
   isUpdateExceedingSyncThreshold(oldSizeBytes: number, newSizeBytes: number): boolean {
@@ -81,12 +78,12 @@ export class LimitsService {
 
     const storageOwner = await this.getUserWithPlan(storageOwnerId);
     // Admin or unlimited plan === always allowed
-    if (this.isAdmin(storageOwner.role) || this.isUnlimited(storageOwner.plan.storageLimitBytes)) return;
+    if (this.isUnlimited(storageOwner.plan.maxStorageBytes)) return;
 
     const projectedUsage = storageOwner.storageUsageBytes + BigInt(bytesToAdd);
-    if (projectedUsage > storageOwner.plan.storageLimitBytes) {
+    if (projectedUsage > storageOwner.plan.maxStorageBytes) {
       const usedMB = this.unitConversion.getMBFromBytes(storageOwner.storageUsageBytes);
-      const limitMB = this.unitConversion.getMBFromBytes(storageOwner.plan.storageLimitBytes);
+      const limitMB = this.unitConversion.getMBFromBytes(storageOwner.plan.maxStorageBytes);
       throw new ForbiddenException({
         code: 'STORAGE_LIMIT_EXCEEDED',
         message: isStorageOwner
@@ -98,12 +95,12 @@ export class LimitsService {
 
   private async enforceVehicleLimit(userId: string): Promise<void> {
     const user = await this.getUserWithPlan(userId);
-    if (this.isAdmin(user.role) || this.isUnlimited(user.plan.vehicleLimit)) return;
+    if (this.isUnlimited(user.plan.maxVehicles)) return;
 
-    if (user.vehicleCount >= user.plan.vehicleLimit) {
+    if (user.vehicleCount >= user.plan.maxVehicles) {
       throw new ForbiddenException({
         code: 'VEHICLE_LIMIT_EXCEEDED',
-        message: `Vehicle limit reached (${user.vehicleCount}/${user.plan.vehicleLimit}). Please upgrade your plan.`,
+        message: `Vehicle limit reached (${user.vehicleCount}/${user.plan.maxVehicles}). Please upgrade your plan.`,
       });
     }
   }
@@ -224,10 +221,9 @@ export class LimitsService {
   };
 
   // USAGE SUMMARY FOR FRONTEND
-  async getUsageSummary(userId: string): Promise<StorageUsageSummary> {
+  async getStorageBreakdown(userId: string): Promise<StorageBreakdown> {
     const user = await this.getUserWithPlan(userId);
-    const isAdmin = this.isAdmin(user.role);
-    const isUnlimited = this.isUnlimited(user.plan.storageLimitBytes);
+    const isUnlimited = this.isUnlimited(user.plan.maxStorageBytes);
 
     const storageUsage = await this.prisma.storageUsage.findMany({
       where: { userId },
@@ -247,17 +243,8 @@ export class LimitsService {
       .sort((a, b) => b.bytes - a.bytes);
 
     return {
-      storage: {
-        usage: Number(user.storageUsageBytes),
-        limit: Number(user.plan.storageLimitBytes),
-        isUnlimited: isAdmin || isUnlimited,
-        breakdown: formattedUsage,
-      },
-      vehicles: {
-        used: user.vehicleCount,
-        limit: user.plan.vehicleLimit,
-        isUnlimited: isAdmin || this.isUnlimited(user.plan.vehicleLimit),
-      },
+      usage: Number(user.storageUsageBytes),
+      breakdown: formattedUsage,
     };
   }
 }

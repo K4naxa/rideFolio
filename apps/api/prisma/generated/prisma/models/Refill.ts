@@ -341,7 +341,7 @@ export type RefillWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }
 
 export type RefillOrderByWithRelationInput = {
@@ -363,7 +363,7 @@ export type RefillOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
-  user?: Prisma.UserOrderByWithRelationInput
+  user?: Prisma.userOrderByWithRelationInput
 }
 
 export type RefillWhereUniqueInput = Prisma.AtLeast<{
@@ -388,7 +388,7 @@ export type RefillWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refill"> | Date | string
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }, "id">
 
 export type RefillOrderByWithAggregationInput = {
@@ -456,7 +456,7 @@ export type RefillCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutRefillsInput
-  user?: Prisma.UserCreateNestedOneWithoutCreatedRefillsInput
+  user?: Prisma.userCreateNestedOneWithoutCreatedRefillsInput
 }
 
 export type RefillUncheckedCreateInput = {
@@ -496,7 +496,7 @@ export type RefillUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutRefillsNestedInput
-  user?: Prisma.UserUpdateOneWithoutCreatedRefillsNestedInput
+  user?: Prisma.userUpdateOneWithoutCreatedRefillsNestedInput
 }
 
 export type RefillUncheckedUpdateInput = {
@@ -864,7 +864,7 @@ export type RefillCreateWithoutVehicleInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutCreatedRefillsInput
+  user?: Prisma.userCreateNestedOneWithoutCreatedRefillsInput
 }
 
 export type RefillUncheckedCreateWithoutVehicleInput = {
@@ -1023,7 +1023,7 @@ export type RefillUpdateWithoutVehicleInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutCreatedRefillsNestedInput
+  user?: Prisma.userUpdateOneWithoutCreatedRefillsNestedInput
 }
 
 export type RefillUncheckedUpdateWithoutVehicleInput = {
@@ -1170,7 +1170,7 @@ export type $RefillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Refill"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs> | null
+    user: Prisma.$userPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1585,7 +1585,7 @@ readonly fields: RefillFieldRefs;
 export interface Prisma__RefillClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.Refill$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Refill$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Refill$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Refill$userArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2032,18 +2032,18 @@ export type RefillDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
  */
 export type Refill$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**

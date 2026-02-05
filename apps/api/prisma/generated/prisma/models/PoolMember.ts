@@ -183,7 +183,7 @@ export type PoolMemberWhereInput = {
   userId?: Prisma.StringFilter<"PoolMember"> | string
   createdAt?: Prisma.DateTimeFilter<"PoolMember"> | Date | string
   pool?: Prisma.XOR<Prisma.PoolScalarRelationFilter, Prisma.PoolWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }
 
 export type PoolMemberOrderByWithRelationInput = {
@@ -193,7 +193,7 @@ export type PoolMemberOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   pool?: Prisma.PoolOrderByWithRelationInput
-  user?: Prisma.UserOrderByWithRelationInput
+  user?: Prisma.userOrderByWithRelationInput
 }
 
 export type PoolMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -207,7 +207,7 @@ export type PoolMemberWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"PoolMember"> | string
   createdAt?: Prisma.DateTimeFilter<"PoolMember"> | Date | string
   pool?: Prisma.XOR<Prisma.PoolScalarRelationFilter, Prisma.PoolWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }, "id" | "poolId_userId">
 
 export type PoolMemberOrderByWithAggregationInput = {
@@ -237,7 +237,7 @@ export type PoolMemberCreateInput = {
   role?: $Enums.PoolMemberRole
   createdAt?: Date | string
   pool: Prisma.PoolCreateNestedOneWithoutMembersInput
-  user: Prisma.UserCreateNestedOneWithoutPoolMembershipsInput
+  user: Prisma.userCreateNestedOneWithoutPoolMembershipsInput
 }
 
 export type PoolMemberUncheckedCreateInput = {
@@ -253,7 +253,7 @@ export type PoolMemberUpdateInput = {
   role?: Prisma.EnumPoolMemberRoleFieldUpdateOperationsInput | $Enums.PoolMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pool?: Prisma.PoolUpdateOneRequiredWithoutMembersNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutPoolMembershipsNestedInput
+  user?: Prisma.userUpdateOneRequiredWithoutPoolMembershipsNestedInput
 }
 
 export type PoolMemberUncheckedUpdateInput = {
@@ -468,7 +468,7 @@ export type PoolMemberCreateWithoutPoolInput = {
   id?: string
   role?: $Enums.PoolMemberRole
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutPoolMembershipsInput
+  user: Prisma.userCreateNestedOneWithoutPoolMembershipsInput
 }
 
 export type PoolMemberUncheckedCreateWithoutPoolInput = {
@@ -543,7 +543,7 @@ export type PoolMemberUpdateWithoutPoolInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumPoolMemberRoleFieldUpdateOperationsInput | $Enums.PoolMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutPoolMembershipsNestedInput
+  user?: Prisma.userUpdateOneRequiredWithoutPoolMembershipsNestedInput
 }
 
 export type PoolMemberUncheckedUpdateWithoutPoolInput = {
@@ -569,7 +569,7 @@ export type PoolMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   userId?: boolean
   createdAt?: boolean
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["poolMember"]>
 
 export type PoolMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -579,7 +579,7 @@ export type PoolMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   createdAt?: boolean
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["poolMember"]>
 
 export type PoolMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -589,7 +589,7 @@ export type PoolMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   createdAt?: boolean
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["poolMember"]>
 
 export type PoolMemberSelectScalar = {
@@ -603,22 +603,22 @@ export type PoolMemberSelectScalar = {
 export type PoolMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "poolId" | "userId" | "createdAt", ExtArgs["result"]["poolMember"]>
 export type PoolMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type PoolMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type PoolMemberIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pool?: boolean | Prisma.PoolDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 
 export type $PoolMemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PoolMember"
   objects: {
     pool: Prisma.$PoolPayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$userPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1021,7 +1021,7 @@ readonly fields: PoolMemberFieldRefs;
 export interface Prisma__PoolMemberClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   pool<T extends Prisma.PoolDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PoolDefaultArgs<ExtArgs>>): Prisma.Prisma__PoolClient<runtime.Types.Result.GetResult<Prisma.$PoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

@@ -329,8 +329,8 @@ export type TodoWhereInput = {
   completedById?: Prisma.StringNullableFilter<"Todo"> | string | null
   sizeBytes?: Prisma.IntFilter<"Todo"> | number
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
+  completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }
 
 export type TodoOrderByWithRelationInput = {
@@ -352,8 +352,8 @@ export type TodoOrderByWithRelationInput = {
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
-  createdBy?: Prisma.UserOrderByWithRelationInput
-  completedBy?: Prisma.UserOrderByWithRelationInput
+  createdBy?: Prisma.userOrderByWithRelationInput
+  completedBy?: Prisma.userOrderByWithRelationInput
 }
 
 export type TodoWhereUniqueInput = Prisma.AtLeast<{
@@ -378,8 +378,8 @@ export type TodoWhereUniqueInput = Prisma.AtLeast<{
   completedById?: Prisma.StringNullableFilter<"Todo"> | string | null
   sizeBytes?: Prisma.IntFilter<"Todo"> | number
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
+  completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }, "id">
 
 export type TodoOrderByWithAggregationInput = {
@@ -446,8 +446,8 @@ export type TodoCreateInput = {
   completedAt_hour?: number | null
   sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
-  completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
+  createdBy?: Prisma.userCreateNestedOneWithoutCreatedTodosInput
+  completedBy?: Prisma.userCreateNestedOneWithoutCompletedTodosInput
 }
 
 export type TodoUncheckedCreateInput = {
@@ -486,8 +486,8 @@ export type TodoUpdateInput = {
   completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
-  completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
+  createdBy?: Prisma.userUpdateOneWithoutCreatedTodosNestedInput
+  completedBy?: Prisma.userUpdateOneWithoutCompletedTodosNestedInput
 }
 
 export type TodoUncheckedUpdateInput = {
@@ -803,7 +803,7 @@ export type TodoCreateWithoutCreatedByInput = {
   completedAt_hour?: number | null
   sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
-  completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
+  completedBy?: Prisma.userCreateNestedOneWithoutCompletedTodosInput
 }
 
 export type TodoUncheckedCreateWithoutCreatedByInput = {
@@ -851,7 +851,7 @@ export type TodoCreateWithoutCompletedByInput = {
   completedAt_hour?: number | null
   sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutTodosInput
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
+  createdBy?: Prisma.userCreateNestedOneWithoutCreatedTodosInput
 }
 
 export type TodoUncheckedCreateWithoutCompletedByInput = {
@@ -953,8 +953,8 @@ export type TodoCreateWithoutVehicleInput = {
   completedAt_km?: number | null
   completedAt_hour?: number | null
   sizeBytes: number
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTodosInput
-  completedBy?: Prisma.UserCreateNestedOneWithoutCompletedTodosInput
+  createdBy?: Prisma.userCreateNestedOneWithoutCreatedTodosInput
+  completedBy?: Prisma.userCreateNestedOneWithoutCompletedTodosInput
 }
 
 export type TodoUncheckedCreateWithoutVehicleInput = {
@@ -1056,7 +1056,7 @@ export type TodoUpdateWithoutCreatedByInput = {
   completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
-  completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
+  completedBy?: Prisma.userUpdateOneWithoutCompletedTodosNestedInput
 }
 
 export type TodoUncheckedUpdateWithoutCreatedByInput = {
@@ -1113,7 +1113,7 @@ export type TodoUpdateWithoutCompletedByInput = {
   completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutTodosNestedInput
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
+  createdBy?: Prisma.userUpdateOneWithoutCreatedTodosNestedInput
 }
 
 export type TodoUncheckedUpdateWithoutCompletedByInput = {
@@ -1188,8 +1188,8 @@ export type TodoUpdateWithoutVehicleInput = {
   completedAt_km?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt_hour?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedTodosNestedInput
-  completedBy?: Prisma.UserUpdateOneWithoutCompletedTodosNestedInput
+  createdBy?: Prisma.userUpdateOneWithoutCreatedTodosNestedInput
+  completedBy?: Prisma.userUpdateOneWithoutCompletedTodosNestedInput
 }
 
 export type TodoUncheckedUpdateWithoutVehicleInput = {
@@ -1342,8 +1342,8 @@ export type $TodoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Todo"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
-    createdBy: Prisma.$UserPayload<ExtArgs> | null
-    completedBy: Prisma.$UserPayload<ExtArgs> | null
+    createdBy: Prisma.$userPayload<ExtArgs> | null
+    completedBy: Prisma.$userPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1758,8 +1758,8 @@ readonly fields: TodoFieldRefs;
 export interface Prisma__TodoClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  createdBy<T extends Prisma.Todo$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Todo$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  completedBy<T extends Prisma.Todo$completedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Todo$completedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.Todo$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Todo$createdByArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  completedBy<T extends Prisma.Todo$completedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Todo$completedByArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2206,18 +2206,18 @@ export type TodoDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
  */
 export type Todo$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**
@@ -2225,18 +2225,18 @@ export type Todo$createdByArgs<ExtArgs extends runtime.Types.Extensions.Internal
  */
 export type Todo$completedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**

@@ -126,7 +126,7 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
       },
       {
         onSuccess: () => {
-          toast.success("User role updated successfully.");
+          toast.success("user role updated successfully.");
         },
         onError: () => {
           toast.error("Failed to update user role.");
@@ -181,10 +181,10 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
                     <Field v-slot="{ value, handleChange }" name="roleToGrant">
                       <Select :model-value="value" @update:model-value="handleChange">
                         <SelectTrigger class="h-fit w-full lg:w-32">
-                          <SelectValue placeholder="User role" />
+                          <SelectValue placeholder="user role" />
                         </SelectTrigger>
                         <SelectContent align="center">
-                          <SelectLabel>User Role</SelectLabel>
+                          <SelectLabel>user Role</SelectLabel>
 
                           <SelectItem
                             v-for="role in Object.values(POOL_MEMBER_ROLES).filter((r) => r.code !== 'OWNER')"
@@ -218,7 +218,7 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
                       :class="[canManagePool ? 'grid-cols-[auto_1fr_auto_auto]' : 'grid-cols-[auto_1fr_auto]']"
                     >
                       <Avatar class="h-8 w-8 rounded-lg">
-                        <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'User'" />
+                        <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
                         <AvatarFallback class="rounded-lg">{{ getInitials(member.user.name) }}</AvatarFallback>
                       </Avatar>
 
@@ -399,11 +399,11 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
                         <AvatarImage
                           v-if="vehicle.owner.image"
                           :src="vehicle.owner.image"
-                          :alt="vehicle.owner.name ?? 'User'"
+                          :alt="vehicle.owner.name ?? 'user'"
                         />
                         <AvatarFallback v-else class="rounded-lg">{{ getInitials(vehicle.owner.name) }}</AvatarFallback>
                       </Avatar>
-                      {{ vehicle.owner.name || "Unknown User" }}
+                      {{ vehicle.owner.name || "Unknown user" }}
                     </div>
 
                     <DropdownMenu v-if="canManagePool || vehicle.isCurrentUserOwner">

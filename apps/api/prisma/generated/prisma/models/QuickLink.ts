@@ -240,7 +240,7 @@ export type QuickLinkWhereInput = {
   sizeBytes?: Prisma.IntFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }
 
 export type QuickLinkOrderByWithRelationInput = {
@@ -252,7 +252,7 @@ export type QuickLinkOrderByWithRelationInput = {
   sizeBytes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
+  user?: Prisma.userOrderByWithRelationInput
 }
 
 export type QuickLinkWhereUniqueInput = Prisma.AtLeast<{
@@ -267,7 +267,7 @@ export type QuickLinkWhereUniqueInput = Prisma.AtLeast<{
   sizeBytes?: Prisma.IntFilter<"QuickLink"> | number
   createdAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"QuickLink"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }, "id">
 
 export type QuickLinkOrderByWithAggregationInput = {
@@ -308,7 +308,7 @@ export type QuickLinkCreateInput = {
   sizeBytes: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutQuickLinksInput
+  user: Prisma.userCreateNestedOneWithoutQuickLinksInput
 }
 
 export type QuickLinkUncheckedCreateInput = {
@@ -330,7 +330,7 @@ export type QuickLinkUpdateInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutQuickLinksNestedInput
+  user?: Prisma.userUpdateOneRequiredWithoutQuickLinksNestedInput
 }
 
 export type QuickLinkUncheckedUpdateInput = {
@@ -580,7 +580,7 @@ export type QuickLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quickLink"]>
 
 export type QuickLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -592,7 +592,7 @@ export type QuickLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quickLink"]>
 
 export type QuickLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -604,7 +604,7 @@ export type QuickLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   sizeBytes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quickLink"]>
 
 export type QuickLinkSelectScalar = {
@@ -620,19 +620,19 @@ export type QuickLinkSelectScalar = {
 
 export type QuickLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "url" | "description" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["quickLink"]>
 export type QuickLinkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type QuickLinkIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type QuickLinkIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 
 export type $QuickLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "QuickLink"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$userPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1037,7 +1037,7 @@ readonly fields: QuickLinkFieldRefs;
  */
 export interface Prisma__QuickLinkClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

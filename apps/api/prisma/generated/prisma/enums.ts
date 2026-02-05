@@ -42,33 +42,33 @@ export const StorageUsageCategory = {
 export type StorageUsageCategory = (typeof StorageUsageCategory)[keyof typeof StorageUsageCategory]
 
 
-export const FuelTypes = {
+export const FuelType = {
   GASOLINE: 'GASOLINE',
   DIESEL: 'DIESEL',
   HYBRID: 'HYBRID'
 } as const
 
-export type FuelTypes = (typeof FuelTypes)[keyof typeof FuelTypes]
+export type FuelType = (typeof FuelType)[keyof typeof FuelType]
 
 
-export const OdometerTypes = {
+export const OdometerType = {
   KILOMETER: 'KILOMETER',
   MILE: 'MILE',
   HOUR: 'HOUR'
 } as const
 
-export type OdometerTypes = (typeof OdometerTypes)[keyof typeof OdometerTypes]
+export type OdometerType = (typeof OdometerType)[keyof typeof OdometerType]
 
 
-export const VolumeUnitTypes = {
+export const VolumeUnitType = {
   LITER: 'LITER',
   GALLON: 'GALLON'
 } as const
 
-export type VolumeUnitTypes = (typeof VolumeUnitTypes)[keyof typeof VolumeUnitTypes]
+export type VolumeUnitType = (typeof VolumeUnitType)[keyof typeof VolumeUnitType]
 
 
-export const DistanceConsumptionTypes = {
+export const DistanceConsumptionType = {
   KILOMETERS_PER_LITER: 'KILOMETERS_PER_LITER',
   LITERS_PER_100KM: 'LITERS_PER_100KM',
   MILES_PER_LITER: 'MILES_PER_LITER',
@@ -78,7 +78,7 @@ export const DistanceConsumptionTypes = {
   GALLONS_PER_LITER: 'GALLONS_PER_LITER'
 } as const
 
-export type DistanceConsumptionTypes = (typeof DistanceConsumptionTypes)[keyof typeof DistanceConsumptionTypes]
+export type DistanceConsumptionType = (typeof DistanceConsumptionType)[keyof typeof DistanceConsumptionType]
 
 
 export const TimeConsumptionTypes = {
@@ -130,13 +130,13 @@ export const PoolInviteStatus = {
 export type PoolInviteStatus = (typeof PoolInviteStatus)[keyof typeof PoolInviteStatus]
 
 
-export const TodoDueTypes = {
+export const TodoDueType = {
   DATE: 'DATE',
   ODOMETER: 'ODOMETER',
   HOUR: 'HOUR'
 } as const
 
-export type TodoDueTypes = (typeof TodoDueTypes)[keyof typeof TodoDueTypes]
+export type TodoDueType = (typeof TodoDueType)[keyof typeof TodoDueType]
 
 
 export const TodoStatus = {

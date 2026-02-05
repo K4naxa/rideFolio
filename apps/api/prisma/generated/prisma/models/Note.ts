@@ -253,7 +253,7 @@ export type NoteWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Note"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }
 
 export type NoteOrderByWithRelationInput = {
@@ -268,7 +268,7 @@ export type NoteOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
-  createdByUser?: Prisma.UserOrderByWithRelationInput
+  createdByUser?: Prisma.userOrderByWithRelationInput
 }
 
 export type NoteWhereUniqueInput = Prisma.AtLeast<{
@@ -286,7 +286,7 @@ export type NoteWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Note"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdByUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }, "id">
 
 export type NoteOrderByWithAggregationInput = {
@@ -333,7 +333,7 @@ export type NoteCreateInput = {
   sizeBytes: number
   createdAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutNotesInput
-  createdByUser?: Prisma.UserCreateNestedOneWithoutNotesInput
+  createdByUser?: Prisma.userCreateNestedOneWithoutNotesInput
 }
 
 export type NoteUncheckedCreateInput = {
@@ -359,7 +359,7 @@ export type NoteUpdateInput = {
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutNotesNestedInput
-  createdByUser?: Prisma.UserUpdateOneWithoutNotesNestedInput
+  createdByUser?: Prisma.userUpdateOneWithoutNotesNestedInput
 }
 
 export type NoteUncheckedUpdateInput = {
@@ -643,7 +643,7 @@ export type NoteCreateWithoutVehicleInput = {
   updatedAt?: Date | string
   sizeBytes: number
   createdAt?: Date | string
-  createdByUser?: Prisma.UserCreateNestedOneWithoutNotesInput
+  createdByUser?: Prisma.userCreateNestedOneWithoutNotesInput
 }
 
 export type NoteUncheckedCreateWithoutVehicleInput = {
@@ -753,7 +753,7 @@ export type NoteUpdateWithoutVehicleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdByUser?: Prisma.UserUpdateOneWithoutNotesNestedInput
+  createdByUser?: Prisma.userUpdateOneWithoutNotesNestedInput
 }
 
 export type NoteUncheckedUpdateWithoutVehicleInput = {
@@ -858,7 +858,7 @@ export type $NotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Note"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
-    createdByUser: Prisma.$UserPayload<ExtArgs> | null
+    createdByUser: Prisma.$userPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1266,7 +1266,7 @@ readonly fields: NoteFieldRefs;
 export interface Prisma__NoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  createdByUser<T extends Prisma.Note$createdByUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Note$createdByUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  createdByUser<T extends Prisma.Note$createdByUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Note$createdByUserArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1706,18 +1706,18 @@ export type NoteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
  */
 export type Note$createdByUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**

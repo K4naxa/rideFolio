@@ -76,7 +76,7 @@ function handleNoteClick(note: Note) {
     </div>
 
     <!-- second row -->
-    <div class="mainGaps grid w-full grid-cols-1 md:grid-cols-2">
+    <div class="mainGaps grid w-full grid-cols-1 lg:grid-cols-2">
       <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
         <VehicleRecentActivity />
       </section>

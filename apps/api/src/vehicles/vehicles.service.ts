@@ -213,7 +213,7 @@ export class VehiclesService {
       where: { id: userSession.user.id },
       select: { volumeUnit: true, consumptionUnitCode_distance: true, consumptionUnitCode_hour: true },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('user not found');
 
     const year = new Date().getFullYear();
     const month = new Date().getMonth() + 1;
@@ -266,7 +266,7 @@ export class VehiclesService {
       where: { id: vehicleId },
       select: { odometerType: true },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('user not found');
     if (!vehicle) throw new NotFoundException('Vehicle not found');
     const isHourlyOdometer = vehicle.odometerType === 'HOUR';
     limit = Number(limit);

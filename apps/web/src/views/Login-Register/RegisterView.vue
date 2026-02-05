@@ -64,7 +64,7 @@ const onSubmit = handleSubmit(async (values) => {
       onError: ({ error }) => {
         console.log("Registration error:", error);
         if (error.status === 422 && error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
-          setFieldError("email", "User already exists. Use another email.");
+          setFieldError("email", "user already exists. Use another email.");
         } else toast.error(`Registration failed, please try again.`);
       },
       onSuccess() {

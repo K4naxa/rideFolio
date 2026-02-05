@@ -12,7 +12,7 @@ export const createAuth = (emailService: EmailService) =>
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
-      requireEmailVerification: true,
+      requireEmailVerification: process.env.NODE_ENV === 'production',
       minPasswordLength: 8,
       revokeSessionsOnPasswordReset: true,
     },
@@ -21,7 +21,7 @@ export const createAuth = (emailService: EmailService) =>
         planId: {
           type: 'string',
         },
-        storageLimitBytes: {
+        maxStorageBytes: {
           type: 'number',
         },
       },
@@ -48,7 +48,7 @@ export const createAuth = (emailService: EmailService) =>
                 data: {
                   ...user,
                   planId: freePlan.id,
-                  storageLimitBytes: Number(freePlan.storageLimitBytes),
+                  maxStorageBytes: Number(freePlan.maxStorageBytes),
                 },
               };
             } catch (error) {
@@ -70,7 +70,7 @@ export const createAuth = (emailService: EmailService) =>
         });
       },
       async afterEmailVerification(user) {
-        console.log(`✅ User email verified: ${user.email}`);
+        console.log(`✅ user email verified: ${user.email}`);
       },
     },
 

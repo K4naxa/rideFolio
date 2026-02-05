@@ -85,7 +85,7 @@ export class MaintenanceService {
     });
     if (!user) {
       // Should never happen, but just to satisfy TypeScript
-      throw new Error('User not found.');
+      throw new Error('user not found.');
     }
 
     // TODO: create create logic for image to bucket upload & image to db

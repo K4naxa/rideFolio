@@ -51,9 +51,9 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  SubscriptionPlan: 'SubscriptionPlan',
-  Subscription: 'Subscription',
-  User: 'User',
+  subscriptionPlan: 'subscriptionPlan',
+  subscription: 'subscription',
+  user: 'user',
   StorageUsage: 'StorageUsage',
   QuickLink: 'QuickLink',
   VehicleType: 'VehicleType',
@@ -98,11 +98,12 @@ export const SubscriptionPlanScalarFieldEnum = {
   id: 'id',
   code: 'code',
   nameKey: 'nameKey',
-  PriceCents: 'PriceCents',
+  isPublic: 'isPublic',
+  priceCents: 'priceCents',
   currency: 'currency',
   interval: 'interval',
-  storageLimitBytes: 'storageLimitBytes',
-  vehicleLimit: 'vehicleLimit',
+  maxStorageBytes: 'maxStorageBytes',
+  maxVehicles: 'maxVehicles',
   stripePriceId: 'stripePriceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -136,7 +137,7 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   role: 'role',
   planId: 'planId',
-  storageLimitBytes: 'storageLimitBytes',
+  maxStorageBytes: 'maxStorageBytes',
   storageUsageBytes: 'storageUsageBytes',
   volumeUnit: 'volumeUnit',
   consumptionUnitCode_distance: 'consumptionUnitCode_distance',

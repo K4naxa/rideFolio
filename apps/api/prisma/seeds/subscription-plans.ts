@@ -1,54 +1,56 @@
 import { Prisma } from 'prisma/generated/prisma/client';
 
 export async function seedSubscriptionPlans(tx: Prisma.TransactionClient): Promise<void> {
-  console.log(' Seeding Subscription plans...');
+  console.log(' Seeding subscription plans...');
 
-  // FREE plan
-  await tx.subscriptionPlan.upsert({
-    where: { code: 'FREE' },
-    update: {},
-    create: {
+  const SUBSCRIPTION_PLANS: Prisma.subscriptionPlanCreateInput[] = [
+    {
       code: 'FREE',
       nameKey: 'subscription.plans.free',
-      PriceCents: 0,
+      priceCents: 0,
       currency: 'EUR',
       interval: 'MONTH',
-
-      storageLimitBytes: 50 * 1024 * 1024, // 50 MB
-      vehicleLimit: 2,
+      maxStorageBytes: 1024 * 1024, // 1 MB
+      maxVehicles: 1,
     },
-  });
-
-  // Enthusiast plan
-  await tx.subscriptionPlan.upsert({
-    where: { code: 'ENTHUSIAST' },
-    update: {},
-    create: {
+    {
       code: 'ENTHUSIAST',
       nameKey: 'subscription.plans.enthusiast',
-      PriceCents: 299, // 2.99 EUR
+      priceCents: 299, // 2.99 EUR
       currency: 'EUR',
       interval: 'MONTH',
 
-      storageLimitBytes: 200 * 1024 * 1024, // 200 MB
-      vehicleLimit: 10,
+      maxStorageBytes: 100 * 1024 * 1024, // 100 MB
+      maxVehicles: 5,
     },
-  });
-
-  // PRO plan
-  await tx.subscriptionPlan.upsert({
-    where: { code: 'PRO' },
-    update: {},
-    create: {
+    {
       code: 'PRO',
       nameKey: 'subscription.plans.pro',
-      PriceCents: 599, // 5.99 EUR
+      priceCents: 599, // 5.99 EUR
       currency: 'EUR',
       interval: 'MONTH',
-      storageLimitBytes: 5 * 1024 * 1024 * 1024, // 5 GB
-      vehicleLimit: 50,
+      maxStorageBytes: 10 * 1024 * 1024 * 1024, // 10 GB
+      maxVehicles: 20,
     },
-  });
+    {
+      code: 'ADMIN',
+      nameKey: 'subscription.plans.admin',
+      priceCents: 0,
+      currency: 'EUR',
+      interval: 'MONTH',
+      maxStorageBytes: -1, // Unlimited
+      maxVehicles: -1, // Unlimited
+      isPublic: false,
+    },
+  ];
 
-  console.log('✅ Subscription plans seeded');
+  for (const plan of SUBSCRIPTION_PLANS) {
+    await tx.subscriptionPlan.upsert({
+      where: { code: plan.code },
+      create: plan,
+      update: plan,
+    });
+  }
+
+  console.log('✅ subscription plans seeded');
 }

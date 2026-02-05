@@ -6,37 +6,27 @@ import { GaugeChart } from "echarts/charts";
 import type { EChartsOption } from "echarts";
 import { computed } from "vue";
 import { useThemeStore } from "@/stores/theme";
-import { capitalize, formatBytesToMB } from "@/lib/utils";
+import { formatBytesToMB } from "@/lib/utils";
 import Label from "@/components/ui/label/Label.vue";
-import type { StorageUsageSummary } from "@repo/validation";
-import { twMerge } from "tailwind-merge";
+
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
-interface CircularProgressPrompts {
-  storage: StorageUsageSummary["storage"] | undefined;
-  isLoading: boolean;
-}
-
-const props = defineProps<CircularProgressPrompts>();
-
+const { currentUser, isLoading } = useCurrentUser();
 const themeStore = useThemeStore();
-
 use([CanvasRenderer, GaugeChart]);
 
 // Calculate percentage value
 const percentageValue = computed(() => {
-  if (!props.storage) return 0;
-  if (props.storage.isUnlimited || props.storage.limit === 0) return 0;
-  return Number(((props.storage.usage / props.storage.limit) * 100).toFixed(1));
+  if (!currentUser.value) return 0;
+  if (currentUser.value.subscriptionPlan.maxStorageBytes === -1) return 100;
+  return Number(
+    ((currentUser.value.usedStorageBytes / currentUser.value.subscriptionPlan.maxStorageBytes) * 100).toFixed(1),
+  );
 });
 
 // Build multi-layered gauge series for each category
 const gaugeOptions = computed<EChartsOption>(() => {
-  if (!props.storage || !props.storage.breakdown || props.storage.breakdown.length === 0 || props.storage.limit === 0)
-    return {};
-  // Sort sections by bytes descending for better visual stacking
-  const totalPercentage = Math.min((props.storage.usage / props.storage.limit) * 100, 100);
-
   return {
     series: {
       type: "gauge",
@@ -86,111 +76,35 @@ const gaugeOptions = computed<EChartsOption>(() => {
 
       data: [
         {
-          value: totalPercentage,
+          value: percentageValue.value,
         },
       ],
     },
   };
 });
-
-const categoryColors: Record<string, string> = {
-  VEHICLE: "bg-primary",
-  IMAGE: "bg-blue-500",
-  NOTE: "bg-notes",
-  REFILL: "bg-refill",
-  MAINTENANCE: "bg-maintenance",
-  TODO: "bg-todo",
-  SHOPPING_LIST: "bg-green-300",
-  QUICK_LINK: "bg-blue-300",
-  OTHER: "bg-muted-foreground",
-};
-
-const topCategoriesBreakdown = computed(() => {
-  const otherCategories = props.storage?.breakdown.slice(3) || [];
-  const topCategories = props.storage?.breakdown.slice(0, 3) || [];
-  return [
-    ...(topCategories || []),
-    {
-      category: "OTHER",
-      bytes: otherCategories.reduce((acc, curr) => acc + curr.bytes, 0),
-    },
-  ];
-});
 </script>
 <template>
-  <div class="flex flex-col gap-10">
-    <div class="flex gap-8">
-      <!-- Gauge for storage usage -->
-      <div class="flex h-full w-full flex-2 flex-col justify-start">
-        <Label class="text-muted-foreground mb-2">Storage Usage</Label>
-        <div class="relative h-48">
-          <div v-if="isLoading" class="flex h-full flex-1 items-center justify-center">
-            <Spinner class="stroke-muted-foreground size-20" />
-          </div>
-          <VChart v-else :option="gaugeOptions" autoresize />
+  <section v-if="currentUser && !isLoading" class="flex flex-col gap-10">
+    <!-- Gauge for storage usage -->
+    <div class="flex h-full w-full flex-2 flex-col justify-start">
+      <Label class="text-muted-foreground mb-2">Storage Usage</Label>
+      <div class="relative h-48">
+        <div v-if="isLoading" class="flex h-full flex-1 items-center justify-center">
+          <Spinner class="stroke-muted-foreground size-20" />
         </div>
-        <div class="text-center">
-          <h3>{{ formatBytesToMB(props.storage?.usage) }} MB</h3>
-          <span class="text-muted-foreground text-sm">
-            <p v-if="props.storage?.isUnlimited" class="items-center">Unlimited Storage</p>
-            <span v-else>of {{ formatBytesToMB(props.storage?.limit) }} MB used</span>
-          </span>
-        </div>
+        <VChart v-else :option="gaugeOptions" autoresize />
       </div>
-
-      <!-- Break down by category -->
-      <div class="hidden h-full w-full flex-3 flex-col justify-start lg:flex">
-        <Label class="text-muted-foreground mb-4">Breakdown by Category</Label>
-        <div class="flex w-full flex-1 flex-col gap-6">
-          <div v-for="category in topCategoriesBreakdown" :key="category.category" class="space-y-1.5">
-            <!--  headerl -->
-            <div class="flex justify-between gap-6">
-              <div class="flex items-center gap-2 text-sm">
-                <div :class="twMerge(categoryColors[category.category], 'aspect-square h-2 rounded-full')" />
-                {{ capitalize(category.category) }}
-              </div>
-              <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(category.bytes) }} MB</span>
-            </div>
-
-            <!--  progress bar -->
-            <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
-              <div
-                :class="twMerge(categoryColors[category.category], 'h-2 rounded-full')"
-                :style="{
-                  width: props.storage?.usage ? ((category.bytes / props.storage.usage) * 100).toFixed(1) + '%' : '0%',
-                }"
-              />
-            </div>
-          </div>
-        </div>
+      <div class="text-center">
+        <h3>{{ formatBytesToMB(currentUser.usedStorageBytes) }} MB</h3>
+        <span class="text-muted-foreground text-sm">
+          <p v-if="currentUser.subscriptionPlan.maxStorageBytes === -1" class="items-center">Unlimited Storage</p>
+          <span v-else>of {{ formatBytesToMB(currentUser.subscriptionPlan.maxStorageBytes) }} MB used</span>
+        </span>
       </div>
     </div>
+  </section>
 
-    <!-- Mobile card -->
-    <div class="block h-full w-full lg:hidden">
-      <Label class="text-muted-foreground mb-4">Breakdown by Category</Label>
-      <div class="flex h-full w-full flex-1 flex-col gap-5">
-        <div v-for="category in props.storage?.breakdown" :key="category.category" class="space-y-1">
-          <!--  headerl -->
-          <div class="flex justify-between gap-6">
-            <div class="flex items-center gap-2 text-sm">
-              <div :class="twMerge(categoryColors[category.category], 'aspect-square h-2 rounded-full')" />
-              {{ capitalize(category.category) }}
-            </div>
-            <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(category.bytes) }} MB</span>
-          </div>
-
-          <!--  progress bar -->
-          <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
-            <div
-              :class="twMerge(categoryColors[category.category], 'h-2 rounded-full')"
-              :style="{
-                width: props.storage?.usage ? ((category.bytes / props.storage.usage) * 100).toFixed(1) + '%' : '0%',
-              }"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <section v-else class="grid flex-1 place-items-center">
+    <Spinner class="stroke-muted-foreground size-20" />
+  </section>
 </template>

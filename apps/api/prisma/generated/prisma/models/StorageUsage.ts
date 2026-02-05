@@ -208,7 +208,7 @@ export type StorageUsageWhereInput = {
   userId?: Prisma.StringFilter<"StorageUsage"> | string
   category?: Prisma.EnumStorageUsageCategoryFilter<"StorageUsage"> | $Enums.StorageUsageCategory
   bytes?: Prisma.BigIntFilter<"StorageUsage"> | bigint | number
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }
 
 export type StorageUsageOrderByWithRelationInput = {
@@ -216,7 +216,7 @@ export type StorageUsageOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bytes?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
+  user?: Prisma.userOrderByWithRelationInput
 }
 
 export type StorageUsageWhereUniqueInput = Prisma.AtLeast<{
@@ -228,7 +228,7 @@ export type StorageUsageWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"StorageUsage"> | string
   category?: Prisma.EnumStorageUsageCategoryFilter<"StorageUsage"> | $Enums.StorageUsageCategory
   bytes?: Prisma.BigIntFilter<"StorageUsage"> | bigint | number
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
 }, "id" | "userId_category">
 
 export type StorageUsageOrderByWithAggregationInput = {
@@ -257,7 +257,7 @@ export type StorageUsageCreateInput = {
   id?: string
   category: $Enums.StorageUsageCategory
   bytes?: bigint | number
-  user: Prisma.UserCreateNestedOneWithoutStorageUsageInput
+  user: Prisma.userCreateNestedOneWithoutStorageUsageInput
 }
 
 export type StorageUsageUncheckedCreateInput = {
@@ -271,7 +271,7 @@ export type StorageUsageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumStorageUsageCategoryFieldUpdateOperationsInput | $Enums.StorageUsageCategory
   bytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  user?: Prisma.UserUpdateOneRequiredWithoutStorageUsageNestedInput
+  user?: Prisma.userUpdateOneRequiredWithoutStorageUsageNestedInput
 }
 
 export type StorageUsageUncheckedUpdateInput = {
@@ -470,7 +470,7 @@ export type StorageUsageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   userId?: boolean
   category?: boolean
   bytes?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["storageUsage"]>
 
 export type StorageUsageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -478,7 +478,7 @@ export type StorageUsageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   userId?: boolean
   category?: boolean
   bytes?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["storageUsage"]>
 
 export type StorageUsageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -486,7 +486,7 @@ export type StorageUsageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   userId?: boolean
   category?: boolean
   bytes?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["storageUsage"]>
 
 export type StorageUsageSelectScalar = {
@@ -498,19 +498,19 @@ export type StorageUsageSelectScalar = {
 
 export type StorageUsageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "category" | "bytes", ExtArgs["result"]["storageUsage"]>
 export type StorageUsageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type StorageUsageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 export type StorageUsageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.userDefaultArgs<ExtArgs>
 }
 
 export type $StorageUsagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StorageUsage"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$userPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -911,7 +911,7 @@ readonly fields: StorageUsageFieldRefs;
  */
 export interface Prisma__StorageUsageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

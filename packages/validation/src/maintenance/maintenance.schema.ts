@@ -33,8 +33,8 @@ export const MaintenanceSchema = z.object({
       message: "Images max size is 5MB.",
     })
     .nullable(),
-  odometer: z.coerce.number("required").min(0, "Odometer cannot be negative"),
-  title: z.string().max(100, "Max length 100 characters"),
+  odometer: z.coerce.number("odometer value required").min(0, "Odometer cannot be negative"),
+  title: z.string("Give a title").max(100, "Max length 100 characters"),
   serviceProvider: z.string().max(255, "Max length 255 characters").nullable(),
   parts: z.array(MaintenancePartSchema),
   totalCost: z.coerce.number().nullable(),

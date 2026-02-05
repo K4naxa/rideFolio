@@ -1,6 +1,6 @@
 import { UnitConversionService } from './../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, Refill, User, Vehicle } from 'prisma/generated/prisma/client';
+import { Prisma, Refill, user, Vehicle } from 'prisma/generated/prisma/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -36,10 +36,10 @@ export class RefillsService {
         where: { vehicleId: refillData.vehicleId },
         orderBy: { date: 'desc' },
       }),
-    ])) as [{ volumeUnit: User['volumeUnit'] } | null, Refill | null];
+    ])) as [{ volumeUnit: user['volumeUnit'] } | null, Refill | null];
     if (!user || !vehicle) {
       // Should never happen, but just to satisfy TypeScript
-      throw new Error('User or Vehicle not found');
+      throw new Error('user or Vehicle not found');
     }
 
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
@@ -170,9 +170,9 @@ export class RefillsService {
     ])) as [
       { odometerType: Vehicle['odometerType'] } | null,
       {
-        consumptionUnitCode_hour: User['consumptionUnitCode_hour'];
-        consumptionUnitCode_distance: User['consumptionUnitCode_distance'];
-        volumeUnit: User['volumeUnit'];
+        consumptionUnitCode_hour: user['consumptionUnitCode_hour'];
+        consumptionUnitCode_distance: user['consumptionUnitCode_distance'];
+        volumeUnit: user['volumeUnit'];
       } | null,
       Array<Extend<Refill, { user: { id: string; name: string; image: string | null } }>>,
     ];

@@ -32,7 +32,7 @@ async function main() {
     // Seed vehicle parts
     await seedVehicleParts(tx, vehicleTypes, locations, categories);
 
-    // Seed Subscription plans
+    // Seed subscription plans
     await seedSubscriptionPlans(tx);
   });
 

@@ -11,9 +11,9 @@ export class AuthValidationService {
       where: {
         id: vehicleId,
         OR: [
-          // Condition 1: User owns the vehicle
+          // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: User is in a pool that contains the vehicle
+          // Condition 2: user is in a pool that contains the vehicle
           {
             pools: {
               some: {
@@ -36,7 +36,7 @@ export class AuthValidationService {
 
     // If no vehicle is found, throw an exception.
     if (!vehicle) {
-      console.error('Access denied: User does not have access to the vehicle.');
+      console.error('Access denied: user does not have access to the vehicle.');
       throw new NotFoundException({
         code: 'NOT_FOUND_OR_ACCESS_DENIED',
         message: 'Vehicle not found or access denied.',
@@ -53,7 +53,7 @@ export class AuthValidationService {
     });
 
     if (count === 0) {
-      console.error('Access denied: User does not have access to the pool.');
+      console.error('Access denied: user does not have access to the pool.');
       throw new NotFoundException(`Pool not found or access denied.`);
     }
   }
@@ -66,9 +66,9 @@ export class AuthValidationService {
       where: {
         id: vehicleId,
         OR: [
-          // Condition 1: User owns the vehicle
+          // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: User is in a pool that contains the vehicle
+          // Condition 2: user is in a pool that contains the vehicle
           {
             pools: {
               some: {
@@ -83,7 +83,7 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: User is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
           {
             pools: {
               some: {
@@ -103,7 +103,7 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: User does not have permission to create logs for the vehicle.');
+      console.error('Permission denied: user does not have permission to create logs for the vehicle.');
       throw new NotFoundException('Vehicle not found or access denied.');
     }
     // If we reach here, the user has permission to create logs.
@@ -119,9 +119,9 @@ export class AuthValidationService {
       where: {
         id: vehicleId,
         OR: [
-          // Condition 1: User owns the vehicle
+          // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: User is in a pool that contains the vehicle
+          // Condition 2: user is in a pool that contains the vehicle
           {
             pools: {
               some: {
@@ -136,7 +136,7 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: User is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
           {
             pools: {
               some: {
@@ -156,7 +156,7 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: User does not have permission to edit logs for the vehicle.');
+      console.error('Permission denied: user does not have permission to edit logs for the vehicle.');
       throw new NotFoundException('Vehicle not found or access denied.');
     }
     // If we reach here, the user has permission to edit logs.
@@ -171,9 +171,9 @@ export class AuthValidationService {
       where: {
         id: vehicleId,
         OR: [
-          // Condition 1: User owns the vehicle
+          // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: User is in a pool that contains the vehicle
+          // Condition 2: user is in a pool that contains the vehicle
           {
             pools: {
               some: {
@@ -188,7 +188,7 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: User is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
           {
             pools: {
               some: {
@@ -208,7 +208,7 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: User does not have permission to delete logs for the vehicle.');
+      console.error('Permission denied: user does not have permission to delete logs for the vehicle.');
       throw new NotFoundException('Vehicle not found or access denied.');
     }
     // If we reach here, the user has permission to delete logs.

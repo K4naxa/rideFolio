@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Todo as PrismaTodo, Vehicle, User } from 'prisma/generated/prisma/client';
+import { Todo as PrismaTodo, Vehicle, user } from 'prisma/generated/prisma/client';
 import { Todo, TodoSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -9,9 +9,9 @@ import { VehicleRepository } from 'src/utils/vehicleRepository';
 import { LimitsService } from 'src/limits/limits.service';
 
 type TodoWithRelations = PrismaTodo & {
-  createdBy: Pick<User, 'name' | 'image'> | null;
+  createdBy: Pick<user, 'name' | 'image'> | null;
   vehicle: Vehicle;
-  completedBy: Pick<User, 'name' | 'image'> | null;
+  completedBy: Pick<user, 'name' | 'image'> | null;
 };
 
 @Injectable()
@@ -250,9 +250,9 @@ export class TodosService {
     };
   }
 
-  private formatCreatedData(createdBy: Pick<User, 'name' | 'image'> | null, createdAt: Date): Todo['createdData'] {
+  private formatCreatedData(createdBy: Pick<user, 'name' | 'image'> | null, createdAt: Date): Todo['createdData'] {
     return {
-      name: (createdBy?.name as string) ?? 'Unknown User',
+      name: (createdBy?.name as string) ?? 'Unknown user',
       image: (createdBy?.image as string) ?? null,
       date: createdAt,
     };
@@ -264,7 +264,7 @@ export class TodosService {
 
     return {
       user: {
-        name: todo.completedBy?.name ?? 'Unknown User',
+        name: todo.completedBy?.name ?? 'Unknown user',
         image: todo.completedBy?.image ?? null,
       },
       date: todo.completedAt_date,

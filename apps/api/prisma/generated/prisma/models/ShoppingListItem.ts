@@ -261,7 +261,7 @@ export type ShoppingListItemWhereInput = {
   sizeBytes?: Prisma.IntFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableFilter<"ShoppingListItem"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }
 
 export type ShoppingListItemOrderByWithRelationInput = {
@@ -276,7 +276,7 @@ export type ShoppingListItemOrderByWithRelationInput = {
   sizeBytes?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
-  createdBy?: Prisma.UserOrderByWithRelationInput
+  createdBy?: Prisma.userOrderByWithRelationInput
 }
 
 export type ShoppingListItemWhereUniqueInput = Prisma.AtLeast<{
@@ -294,7 +294,7 @@ export type ShoppingListItemWhereUniqueInput = Prisma.AtLeast<{
   sizeBytes?: Prisma.IntFilter<"ShoppingListItem"> | number
   createdById?: Prisma.StringNullableFilter<"ShoppingListItem"> | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
-  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.userWhereInput> | null
 }, "id">
 
 export type ShoppingListItemOrderByWithAggregationInput = {
@@ -341,7 +341,7 @@ export type ShoppingListItemCreateInput = {
   purchasedAt?: Date | string | null
   sizeBytes: number
   vehicle: Prisma.VehicleCreateNestedOneWithoutShoppingListItemsInput
-  createdBy?: Prisma.UserCreateNestedOneWithoutShoppingListItemsInput
+  createdBy?: Prisma.userCreateNestedOneWithoutShoppingListItemsInput
 }
 
 export type ShoppingListItemUncheckedCreateInput = {
@@ -367,7 +367,7 @@ export type ShoppingListItemUpdateInput = {
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutShoppingListItemsNestedInput
-  createdBy?: Prisma.UserUpdateOneWithoutShoppingListItemsNestedInput
+  createdBy?: Prisma.userUpdateOneWithoutShoppingListItemsNestedInput
 }
 
 export type ShoppingListItemUncheckedUpdateInput = {
@@ -638,7 +638,7 @@ export type ShoppingListItemCreateWithoutVehicleInput = {
   updatedAt?: Date | string
   purchasedAt?: Date | string | null
   sizeBytes: number
-  createdBy?: Prisma.UserCreateNestedOneWithoutShoppingListItemsInput
+  createdBy?: Prisma.userCreateNestedOneWithoutShoppingListItemsInput
 }
 
 export type ShoppingListItemUncheckedCreateWithoutVehicleInput = {
@@ -748,7 +748,7 @@ export type ShoppingListItemUpdateWithoutVehicleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdBy?: Prisma.UserUpdateOneWithoutShoppingListItemsNestedInput
+  createdBy?: Prisma.userUpdateOneWithoutShoppingListItemsNestedInput
 }
 
 export type ShoppingListItemUncheckedUpdateWithoutVehicleInput = {
@@ -853,7 +853,7 @@ export type $ShoppingListItemPayload<ExtArgs extends runtime.Types.Extensions.In
   name: "ShoppingListItem"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
-    createdBy: Prisma.$UserPayload<ExtArgs> | null
+    createdBy: Prisma.$userPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1261,7 +1261,7 @@ readonly fields: ShoppingListItemFieldRefs;
 export interface Prisma__ShoppingListItemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  createdBy<T extends Prisma.ShoppingListItem$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShoppingListItem$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.ShoppingListItem$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShoppingListItem$createdByArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1701,18 +1701,18 @@ export type ShoppingListItemDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type ShoppingListItem$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
+  include?: Prisma.userInclude<ExtArgs> | null
+  where?: Prisma.userWhereInput
 }
 
 /**

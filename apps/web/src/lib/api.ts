@@ -58,14 +58,14 @@ function handleApiError(error: AxiosError<ApiError>): boolean {
     case ErrorCodes.NOT_FOUND_OR_ACCESS_DENIED:
       const method = error.config?.method?.toUpperCase();
       if (method === "GET") {
-        // User was trying to view something — show 404
+        // user was trying to view something — show 404
         router.push({
           name: "not-found",
           params: { pathMatch: router.currentRoute.value.path.split("/").slice(1) },
           query: { reason: "not_found_or_denied" },
         });
       } else {
-        // User was trying to do something — just toast, don't redirect
+        // user was trying to do something — just toast, don't redirect
         toast.error("Not Found or Access Denied", {
           description: apiError.message || "The resource doesn't exist or you don't have access.",
         });

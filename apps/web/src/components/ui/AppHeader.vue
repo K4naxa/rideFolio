@@ -66,11 +66,11 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
 
 <template>
   <header
-    class="bg-background sticky top-0 z-20 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) lg:px-6"
+    class="bg-background sticky top-0 z-20 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
   >
     <div class="flex w-full items-center gap-1 overflow-hidden lg:gap-2">
-      <SidebarTrigger class="-ml-1" />
-      <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
+      <!-- <SidebarTrigger class="-ml-1" />
+      <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" /> -->
       <h3 class="truncate">{{ title }}</h3>
     </div>
     <div class="ml-auto hidden items-center gap-2 pr-4 text-sm md:flex lg:pr-6">

@@ -55,8 +55,8 @@ export class UsersController {
     return await this.usersService.updatePreferences(session.user.id, data);
   }
 
-  @Get('storageSummary')
-  async getStorageSummary(@Session() session: UserSession) {
-    return await this.limitsService.getUsageSummary(session.user.id);
+  @Get('storageBreakdown')
+  async getStorageBreakdown(@Session() session: UserSession) {
+    return await this.limitsService.getStorageBreakdown(session.user.id);
   }
 }

@@ -31,6 +31,8 @@ import { useAuth } from "@/lib/authClient";
 import { formatBytesToMB } from "@/lib/utils";
 import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import Progressbar from "@/components/ui/Progressbar.vue";
 
 interface MainSideBarLinks {
   label: string;
@@ -63,7 +65,7 @@ const { currentVehicleId } = useCurrentVehicle();
 const { data: pools } = usePoolsAll();
 const { currentPoolId } = useCurrentPool();
 
-const { data: user } = useUserQuery();
+const { currentUser: user, canCreateVehicle } = useCurrentUser();
 
 const modalStore = useModalStore();
 const { setOpenMobile } = useSidebar();
@@ -79,12 +81,6 @@ const handleCreateVehicleClick = () => {
   modalStore.onOpen("createVehicle");
   setOpenMobile(false);
 };
-
-const canCreateVehicle = computed(() => {
-  if (!user.value) return false;
-  if (user.value.limits.vehicles.isUnlimited) return true;
-  return user.value.limits.vehicles.used < user.value.limits.vehicles.limit;
-});
 </script>
 
 <template>
@@ -185,26 +181,15 @@ const canCreateVehicle = computed(() => {
             <!--  headerl -->
             <div class="flex items-end justify-between gap-4">
               <Label class="text-muted-foreground wfu">Current Plan </Label>
-              <Badge variant="secondary" class="ml-auto">Free</Badge>
+              <Badge variant="secondary" class="ml-auto capitalize">{{ user.subscriptionPlan.code }}</Badge>
             </div>
 
             <!--  progress bar -->
-            <div class="bg-muted h-2 w-full overflow-hidden rounded-full">
-              <div
-                :class="twMerge('bg-primary', 'h-2 rounded-full')"
-                :style="{
-                  width: user.limits.storage.usage
-                    ? ((user.limits.storage.usage / user.limits.storage.limit) * 100).toFixed(1) + '%'
-                    : '0%',
-                }"
-              />
-            </div>
+            <Progressbar :percent="(user.usedStorageBytes / user.subscriptionPlan.maxStorageBytes) * 100" />
             <div class="flex justify-between">
-              <span class="text-muted-foreground text-xs">
-                {{ formatBytesToMB(user.limits.storage.usage) }}MB used
-              </span>
-              <span v-if="!user.limits.storage.isUnlimited" class="text-muted-foreground text-xs">
-                {{ formatBytesToMB(user.limits.storage.limit) }}MB limit
+              <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(user.usedStorageBytes) }}MB used </span>
+              <span v-if="user.subscriptionPlan.maxStorageBytes !== -1" class="text-muted-foreground text-xs">
+                {{ formatBytesToMB(user.subscriptionPlan.maxStorageBytes) }}MB limit
               </span>
               <span v-else class="text-muted-foreground text-xs"> unlimited </span>
             </div>

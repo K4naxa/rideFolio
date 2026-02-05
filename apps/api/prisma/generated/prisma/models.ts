@@ -8,9 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/SubscriptionPlan'
-export type * from './models/Subscription'
-export type * from './models/User'
+export type * from './models/subscriptionPlan'
+export type * from './models/subscription'
+export type * from './models/user'
 export type * from './models/StorageUsage'
 export type * from './models/QuickLink'
 export type * from './models/VehicleType'

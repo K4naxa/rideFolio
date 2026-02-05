@@ -4,15 +4,25 @@ import Button from "@/components/ui/button/Button.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
+import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+import FetchError from "@/components/ui/FetchError.vue";
+import Label from "@/components/ui/label/Label.vue";
+import Progressbar from "@/components/ui/Progressbar.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
+import Skeleton from "@/components/ui/skeleton/Skeleton.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { useUserStorageSummary } from "@/lib/queries/user/user-queries";
+import { useStorageBreakdown } from "@/lib/queries/user/user-queries";
+import { capitalize, formatBytesToMB } from "@/lib/utils";
+import StorageBreakdownElement from "@/modals/Settings/components/StorageBreakdownElement.vue";
 import StorageUsageSection from "@/modals/Settings/components/StorageUsageSection.vue";
 import VehicleSlotElement from "@/modals/Settings/components/VehicleSlotElement.vue";
 
-const { currentUser } = useCurrentUser();
-const { data: storageSummary, isLoading: isStorageLoading, isError: isStorageError } = useUserStorageSummary();
+const { data, isLoading, isError, refetch, isFetching } = useStorageBreakdown();
 </script>
 
 <template>
@@ -29,8 +39,12 @@ const { data: storageSummary, isLoading: isStorageLoading, isError: isStorageErr
       <Separator class="mt-2" />
     </div>
 
-    <StorageUsageSection :storage="storageSummary?.storage" :isLoading="isStorageLoading" />
-    <VehicleSlotElement :used="storageSummary?.vehicles.used ?? 0" :limit="storageSummary?.vehicles.limit ?? 0" />
+    <div class="mainGaps grid grid-cols-1 lg:grid-cols-2">
+      <StorageUsageSection />
+
+      <StorageBreakdownElement />
+    </div>
+    <VehicleSlotElement />
 
     <div class="cardPrimaryBackground border-primary space-y-6 rounded border p-4 py-6">
       <div class="flex items-center gap-4">

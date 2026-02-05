@@ -180,8 +180,8 @@ const quickLogin = async (email: string, password: string) => {
         </div>
 
         <div class="flex gap-3">
-          <Button @click="quickLogin('user@example.com', 'password')"> User 1 </Button>
-          <Button @click="quickLogin('user2@example.com', 'password')"> User 2 </Button>
+          <Button @click="quickLogin('user@example.com', 'password')"> user 1 </Button>
+          <Button @click="quickLogin('user2@example.com', 'password')"> user 2 </Button>
         </div>
       </div>
     </div>

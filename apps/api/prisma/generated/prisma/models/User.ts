@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `User` model and its related types.
+ * This file exports the `user` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums"
 import type * as Prisma from "../internal/prismaNamespace"
 
 /**
- * Model User
+ * Model user
  * 
  */
-export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayload>
+export type userModel = runtime.Types.Result.DefaultSelection<Prisma.$userPayload>
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
@@ -27,12 +27,12 @@ export type AggregateUser = {
 }
 
 export type UserAvgAggregateOutputType = {
-  storageLimitBytes: number | null
+  maxStorageBytes: number | null
   storageUsageBytes: number | null
 }
 
 export type UserSumAggregateOutputType = {
-  storageLimitBytes: bigint | null
+  maxStorageBytes: bigint | null
   storageUsageBytes: bigint | null
 }
 
@@ -46,10 +46,10 @@ export type UserMinAggregateOutputType = {
   updatedAt: Date | null
   role: $Enums.ROLE | null
   planId: string | null
-  storageLimitBytes: bigint | null
+  maxStorageBytes: bigint | null
   storageUsageBytes: bigint | null
-  volumeUnit: $Enums.VolumeUnitTypes | null
-  consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes | null
+  volumeUnit: $Enums.VolumeUnitType | null
+  consumptionUnitCode_distance: $Enums.DistanceConsumptionType | null
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes | null
   currency: string | null
 }
@@ -64,10 +64,10 @@ export type UserMaxAggregateOutputType = {
   updatedAt: Date | null
   role: $Enums.ROLE | null
   planId: string | null
-  storageLimitBytes: bigint | null
+  maxStorageBytes: bigint | null
   storageUsageBytes: bigint | null
-  volumeUnit: $Enums.VolumeUnitTypes | null
-  consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes | null
+  volumeUnit: $Enums.VolumeUnitType | null
+  consumptionUnitCode_distance: $Enums.DistanceConsumptionType | null
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes | null
   currency: string | null
 }
@@ -82,7 +82,7 @@ export type UserCountAggregateOutputType = {
   updatedAt: number
   role: number
   planId: number
-  storageLimitBytes: number
+  maxStorageBytes: number
   storageUsageBytes: number
   volumeUnit: number
   consumptionUnitCode_distance: number
@@ -93,12 +93,12 @@ export type UserCountAggregateOutputType = {
 
 
 export type UserAvgAggregateInputType = {
-  storageLimitBytes?: true
+  maxStorageBytes?: true
   storageUsageBytes?: true
 }
 
 export type UserSumAggregateInputType = {
-  storageLimitBytes?: true
+  maxStorageBytes?: true
   storageUsageBytes?: true
 }
 
@@ -112,7 +112,7 @@ export type UserMinAggregateInputType = {
   updatedAt?: true
   role?: true
   planId?: true
-  storageLimitBytes?: true
+  maxStorageBytes?: true
   storageUsageBytes?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
@@ -130,7 +130,7 @@ export type UserMaxAggregateInputType = {
   updatedAt?: true
   role?: true
   planId?: true
-  storageLimitBytes?: true
+  maxStorageBytes?: true
   storageUsageBytes?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
@@ -148,7 +148,7 @@ export type UserCountAggregateInputType = {
   updatedAt?: true
   role?: true
   planId?: true
-  storageLimitBytes?: true
+  maxStorageBytes?: true
   storageUsageBytes?: true
   volumeUnit?: true
   consumptionUnitCode_distance?: true
@@ -159,37 +159,37 @@ export type UserCountAggregateInputType = {
 
 export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which User to aggregate.
+   * Filter which user to aggregate.
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Users to fetch.
+   * Determine the order of users to fetch.
    */
-  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  orderBy?: Prisma.userOrderByWithRelationInput | Prisma.userOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.UserWhereUniqueInput
+  cursor?: Prisma.userWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Users from the position of the cursor.
+   * Take `±n` users from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Users.
+   * Skip the first `n` users.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned Users
+   * Count returned users
   **/
   _count?: true | UserCountAggregateInputType
   /**
@@ -229,11 +229,11 @@ export type GetUserAggregateType<T extends UserAggregateArgs> = {
 
 
 
-export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.UserWhereInput
-  orderBy?: Prisma.UserOrderByWithAggregationInput | Prisma.UserOrderByWithAggregationInput[]
+export type userGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.userWhereInput
+  orderBy?: Prisma.userOrderByWithAggregationInput | Prisma.userOrderByWithAggregationInput[]
   by: Prisma.UserScalarFieldEnum[] | Prisma.UserScalarFieldEnum
-  having?: Prisma.UserScalarWhereWithAggregatesInput
+  having?: Prisma.userScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
@@ -253,10 +253,10 @@ export type UserGroupByOutputType = {
   updatedAt: Date
   role: $Enums.ROLE
   planId: string
-  storageLimitBytes: bigint
+  maxStorageBytes: bigint
   storageUsageBytes: bigint
-  volumeUnit: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes
+  volumeUnit: $Enums.VolumeUnitType
+  consumptionUnitCode_distance: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour: $Enums.TimeConsumptionTypes
   currency: string
   _count: UserCountAggregateOutputType | null
@@ -266,7 +266,7 @@ export type UserGroupByOutputType = {
   _max: UserMaxAggregateOutputType | null
 }
 
-type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+type GetUserGroupByPayload<T extends userGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<UserGroupByOutputType, T['by']> &
       {
@@ -281,27 +281,27 @@ type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
 
 
 
-export type UserWhereInput = {
-  AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  OR?: Prisma.UserWhereInput[]
-  NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  id?: Prisma.StringFilter<"User"> | string
-  name?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  emailVerified?: Prisma.BoolFilter<"User"> | boolean
-  image?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  role?: Prisma.EnumROLEFilter<"User"> | $Enums.ROLE
-  planId?: Prisma.StringFilter<"User"> | string
-  storageLimitBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  storageUsageBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFilter<"User"> | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFilter<"User"> | $Enums.DistanceConsumptionTypes
-  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"User"> | $Enums.TimeConsumptionTypes
-  currency?: Prisma.StringFilter<"User"> | string
-  plan?: Prisma.XOR<Prisma.SubscriptionPlanScalarRelationFilter, Prisma.SubscriptionPlanWhereInput>
-  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+export type userWhereInput = {
+  AND?: Prisma.userWhereInput | Prisma.userWhereInput[]
+  OR?: Prisma.userWhereInput[]
+  NOT?: Prisma.userWhereInput | Prisma.userWhereInput[]
+  id?: Prisma.StringFilter<"user"> | string
+  name?: Prisma.StringFilter<"user"> | string
+  email?: Prisma.StringFilter<"user"> | string
+  emailVerified?: Prisma.BoolFilter<"user"> | boolean
+  image?: Prisma.StringNullableFilter<"user"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  role?: Prisma.EnumROLEFilter<"user"> | $Enums.ROLE
+  planId?: Prisma.StringFilter<"user"> | string
+  maxStorageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  storageUsageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFilter<"user"> | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFilter<"user"> | $Enums.DistanceConsumptionType
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"user"> | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringFilter<"user"> | string
+  plan?: Prisma.XOR<Prisma.SubscriptionPlanScalarRelationFilter, Prisma.subscriptionPlanWhereInput>
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.subscriptionWhereInput> | null
   storageUsage?: Prisma.StorageUsageListRelationFilter
   poolMemberships?: Prisma.PoolMemberListRelationFilter
   ownedVehicles?: Prisma.VehicleListRelationFilter
@@ -319,7 +319,7 @@ export type UserWhereInput = {
   sessions?: Prisma.SessionListRelationFilter
 }
 
-export type UserOrderByWithRelationInput = {
+export type userOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -329,14 +329,14 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   planId?: Prisma.SortOrder
-  storageLimitBytes?: Prisma.SortOrder
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  plan?: Prisma.SubscriptionPlanOrderByWithRelationInput
-  subscription?: Prisma.SubscriptionOrderByWithRelationInput
+  plan?: Prisma.subscriptionPlanOrderByWithRelationInput
+  subscription?: Prisma.subscriptionOrderByWithRelationInput
   storageUsage?: Prisma.StorageUsageOrderByRelationAggregateInput
   poolMemberships?: Prisma.PoolMemberOrderByRelationAggregateInput
   ownedVehicles?: Prisma.VehicleOrderByRelationAggregateInput
@@ -354,27 +354,27 @@ export type UserOrderByWithRelationInput = {
   sessions?: Prisma.SessionOrderByRelationAggregateInput
 }
 
-export type UserWhereUniqueInput = Prisma.AtLeast<{
+export type userWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  OR?: Prisma.UserWhereInput[]
-  NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  name?: Prisma.StringFilter<"User"> | string
-  emailVerified?: Prisma.BoolFilter<"User"> | boolean
-  image?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  role?: Prisma.EnumROLEFilter<"User"> | $Enums.ROLE
-  planId?: Prisma.StringFilter<"User"> | string
-  storageLimitBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  storageUsageBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFilter<"User"> | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFilter<"User"> | $Enums.DistanceConsumptionTypes
-  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"User"> | $Enums.TimeConsumptionTypes
-  currency?: Prisma.StringFilter<"User"> | string
-  plan?: Prisma.XOR<Prisma.SubscriptionPlanScalarRelationFilter, Prisma.SubscriptionPlanWhereInput>
-  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+  AND?: Prisma.userWhereInput | Prisma.userWhereInput[]
+  OR?: Prisma.userWhereInput[]
+  NOT?: Prisma.userWhereInput | Prisma.userWhereInput[]
+  name?: Prisma.StringFilter<"user"> | string
+  emailVerified?: Prisma.BoolFilter<"user"> | boolean
+  image?: Prisma.StringNullableFilter<"user"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  role?: Prisma.EnumROLEFilter<"user"> | $Enums.ROLE
+  planId?: Prisma.StringFilter<"user"> | string
+  maxStorageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  storageUsageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFilter<"user"> | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFilter<"user"> | $Enums.DistanceConsumptionType
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"user"> | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringFilter<"user"> | string
+  plan?: Prisma.XOR<Prisma.SubscriptionPlanScalarRelationFilter, Prisma.subscriptionPlanWhereInput>
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.subscriptionWhereInput> | null
   storageUsage?: Prisma.StorageUsageListRelationFilter
   poolMemberships?: Prisma.PoolMemberListRelationFilter
   ownedVehicles?: Prisma.VehicleListRelationFilter
@@ -392,7 +392,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sessions?: Prisma.SessionListRelationFilter
 }, "id" | "email">
 
-export type UserOrderByWithAggregationInput = {
+export type userOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -402,41 +402,41 @@ export type UserOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   planId?: Prisma.SortOrder
-  storageLimitBytes?: Prisma.SortOrder
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
   consumptionUnitCode_hour?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  _count?: Prisma.UserCountOrderByAggregateInput
-  _avg?: Prisma.UserAvgOrderByAggregateInput
-  _max?: Prisma.UserMaxOrderByAggregateInput
-  _min?: Prisma.UserMinOrderByAggregateInput
-  _sum?: Prisma.UserSumOrderByAggregateInput
+  _count?: Prisma.userCountOrderByAggregateInput
+  _avg?: Prisma.userAvgOrderByAggregateInput
+  _max?: Prisma.userMaxOrderByAggregateInput
+  _min?: Prisma.userMinOrderByAggregateInput
+  _sum?: Prisma.userSumOrderByAggregateInput
 }
 
-export type UserScalarWhereWithAggregatesInput = {
-  AND?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
-  OR?: Prisma.UserScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"User"> | string
-  name?: Prisma.StringWithAggregatesFilter<"User"> | string
-  email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
-  image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  role?: Prisma.EnumROLEWithAggregatesFilter<"User"> | $Enums.ROLE
-  planId?: Prisma.StringWithAggregatesFilter<"User"> | string
-  storageLimitBytes?: Prisma.BigIntWithAggregatesFilter<"User"> | bigint | number
-  storageUsageBytes?: Prisma.BigIntWithAggregatesFilter<"User"> | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesWithAggregatesFilter<"User"> | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesWithAggregatesFilter<"User"> | $Enums.DistanceConsumptionTypes
-  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesWithAggregatesFilter<"User"> | $Enums.TimeConsumptionTypes
-  currency?: Prisma.StringWithAggregatesFilter<"User"> | string
+export type userScalarWhereWithAggregatesInput = {
+  AND?: Prisma.userScalarWhereWithAggregatesInput | Prisma.userScalarWhereWithAggregatesInput[]
+  OR?: Prisma.userScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.userScalarWhereWithAggregatesInput | Prisma.userScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"user"> | string
+  name?: Prisma.StringWithAggregatesFilter<"user"> | string
+  email?: Prisma.StringWithAggregatesFilter<"user"> | string
+  emailVerified?: Prisma.BoolWithAggregatesFilter<"user"> | boolean
+  image?: Prisma.StringNullableWithAggregatesFilter<"user"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"user"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"user"> | Date | string
+  role?: Prisma.EnumROLEWithAggregatesFilter<"user"> | $Enums.ROLE
+  planId?: Prisma.StringWithAggregatesFilter<"user"> | string
+  maxStorageBytes?: Prisma.BigIntWithAggregatesFilter<"user"> | bigint | number
+  storageUsageBytes?: Prisma.BigIntWithAggregatesFilter<"user"> | bigint | number
+  volumeUnit?: Prisma.EnumVolumeUnitTypeWithAggregatesFilter<"user"> | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeWithAggregatesFilter<"user"> | $Enums.DistanceConsumptionType
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesWithAggregatesFilter<"user"> | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringWithAggregatesFilter<"user"> | string
 }
 
-export type UserCreateInput = {
+export type userCreateInput = {
   id?: string
   name: string
   email: string
@@ -445,14 +445,14 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -470,7 +470,7 @@ export type UserCreateInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateInput = {
+export type userUncheckedCreateInput = {
   id?: string
   name: string
   email: string
@@ -480,13 +480,13 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -504,7 +504,7 @@ export type UserUncheckedCreateInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserUpdateInput = {
+export type userUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -513,14 +513,14 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -538,7 +538,7 @@ export type UserUpdateInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateInput = {
+export type userUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -548,13 +548,13 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -572,7 +572,7 @@ export type UserUncheckedUpdateInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateManyInput = {
+export type userCreateManyInput = {
   id?: string
   name: string
   email: string
@@ -582,15 +582,15 @@ export type UserCreateManyInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
 }
 
-export type UserUpdateManyMutationInput = {
+export type userUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -599,15 +599,15 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type UserUncheckedUpdateManyInput = {
+export type userUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -617,30 +617,30 @@ export type UserUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type UserListRelationFilter = {
-  every?: Prisma.UserWhereInput
-  some?: Prisma.UserWhereInput
-  none?: Prisma.UserWhereInput
+  every?: Prisma.userWhereInput
+  some?: Prisma.userWhereInput
+  none?: Prisma.userWhereInput
 }
 
-export type UserOrderByRelationAggregateInput = {
+export type userOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
+  is?: Prisma.userWhereInput
+  isNot?: Prisma.userWhereInput
 }
 
-export type UserCountOrderByAggregateInput = {
+export type userCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -650,7 +650,7 @@ export type UserCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   planId?: Prisma.SortOrder
-  storageLimitBytes?: Prisma.SortOrder
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
@@ -658,12 +658,12 @@ export type UserCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
 }
 
-export type UserAvgOrderByAggregateInput = {
-  storageLimitBytes?: Prisma.SortOrder
+export type userAvgOrderByAggregateInput = {
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
 }
 
-export type UserMaxOrderByAggregateInput = {
+export type userMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -673,7 +673,7 @@ export type UserMaxOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   planId?: Prisma.SortOrder
-  storageLimitBytes?: Prisma.SortOrder
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
@@ -681,7 +681,7 @@ export type UserMaxOrderByAggregateInput = {
   currency?: Prisma.SortOrder
 }
 
-export type UserMinOrderByAggregateInput = {
+export type userMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -691,7 +691,7 @@ export type UserMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   planId?: Prisma.SortOrder
-  storageLimitBytes?: Prisma.SortOrder
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
   volumeUnit?: Prisma.SortOrder
   consumptionUnitCode_distance?: Prisma.SortOrder
@@ -699,311 +699,311 @@ export type UserMinOrderByAggregateInput = {
   currency?: Prisma.SortOrder
 }
 
-export type UserSumOrderByAggregateInput = {
-  storageLimitBytes?: Prisma.SortOrder
+export type userSumOrderByAggregateInput = {
+  maxStorageBytes?: Prisma.SortOrder
   storageUsageBytes?: Prisma.SortOrder
 }
 
 export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
+  is?: Prisma.userWhereInput | null
+  isNot?: Prisma.userWhereInput | null
 }
 
-export type UserCreateNestedManyWithoutPlanInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput> | Prisma.UserCreateWithoutPlanInput[] | Prisma.UserUncheckedCreateWithoutPlanInput[]
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanInput | Prisma.UserCreateOrConnectWithoutPlanInput[]
-  createMany?: Prisma.UserCreateManyPlanInputEnvelope
-  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+export type userCreateNestedManyWithoutPlanInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput> | Prisma.userCreateWithoutPlanInput[] | Prisma.userUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPlanInput | Prisma.userCreateOrConnectWithoutPlanInput[]
+  createMany?: Prisma.userCreateManyPlanInputEnvelope
+  connect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
 }
 
-export type UserUncheckedCreateNestedManyWithoutPlanInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput> | Prisma.UserCreateWithoutPlanInput[] | Prisma.UserUncheckedCreateWithoutPlanInput[]
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanInput | Prisma.UserCreateOrConnectWithoutPlanInput[]
-  createMany?: Prisma.UserCreateManyPlanInputEnvelope
-  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+export type userUncheckedCreateNestedManyWithoutPlanInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput> | Prisma.userCreateWithoutPlanInput[] | Prisma.userUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPlanInput | Prisma.userCreateOrConnectWithoutPlanInput[]
+  createMany?: Prisma.userCreateManyPlanInputEnvelope
+  connect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
 }
 
-export type UserUpdateManyWithoutPlanNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput> | Prisma.UserCreateWithoutPlanInput[] | Prisma.UserUncheckedCreateWithoutPlanInput[]
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanInput | Prisma.UserCreateOrConnectWithoutPlanInput[]
-  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutPlanInput | Prisma.UserUpsertWithWhereUniqueWithoutPlanInput[]
-  createMany?: Prisma.UserCreateManyPlanInputEnvelope
-  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  update?: Prisma.UserUpdateWithWhereUniqueWithoutPlanInput | Prisma.UserUpdateWithWhereUniqueWithoutPlanInput[]
-  updateMany?: Prisma.UserUpdateManyWithWhereWithoutPlanInput | Prisma.UserUpdateManyWithWhereWithoutPlanInput[]
-  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+export type userUpdateManyWithoutPlanNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput> | Prisma.userCreateWithoutPlanInput[] | Prisma.userUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPlanInput | Prisma.userCreateOrConnectWithoutPlanInput[]
+  upsert?: Prisma.userUpsertWithWhereUniqueWithoutPlanInput | Prisma.userUpsertWithWhereUniqueWithoutPlanInput[]
+  createMany?: Prisma.userCreateManyPlanInputEnvelope
+  set?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  disconnect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  delete?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  connect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  update?: Prisma.userUpdateWithWhereUniqueWithoutPlanInput | Prisma.userUpdateWithWhereUniqueWithoutPlanInput[]
+  updateMany?: Prisma.userUpdateManyWithWhereWithoutPlanInput | Prisma.userUpdateManyWithWhereWithoutPlanInput[]
+  deleteMany?: Prisma.userScalarWhereInput | Prisma.userScalarWhereInput[]
 }
 
-export type UserUncheckedUpdateManyWithoutPlanNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput> | Prisma.UserCreateWithoutPlanInput[] | Prisma.UserUncheckedCreateWithoutPlanInput[]
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanInput | Prisma.UserCreateOrConnectWithoutPlanInput[]
-  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutPlanInput | Prisma.UserUpsertWithWhereUniqueWithoutPlanInput[]
-  createMany?: Prisma.UserCreateManyPlanInputEnvelope
-  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
-  update?: Prisma.UserUpdateWithWhereUniqueWithoutPlanInput | Prisma.UserUpdateWithWhereUniqueWithoutPlanInput[]
-  updateMany?: Prisma.UserUpdateManyWithWhereWithoutPlanInput | Prisma.UserUpdateManyWithWhereWithoutPlanInput[]
-  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+export type userUncheckedUpdateManyWithoutPlanNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput> | Prisma.userCreateWithoutPlanInput[] | Prisma.userUncheckedCreateWithoutPlanInput[]
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPlanInput | Prisma.userCreateOrConnectWithoutPlanInput[]
+  upsert?: Prisma.userUpsertWithWhereUniqueWithoutPlanInput | Prisma.userUpsertWithWhereUniqueWithoutPlanInput[]
+  createMany?: Prisma.userCreateManyPlanInputEnvelope
+  set?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  disconnect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  delete?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  connect?: Prisma.userWhereUniqueInput | Prisma.userWhereUniqueInput[]
+  update?: Prisma.userUpdateWithWhereUniqueWithoutPlanInput | Prisma.userUpdateWithWhereUniqueWithoutPlanInput[]
+  updateMany?: Prisma.userUpdateManyWithWhereWithoutPlanInput | Prisma.userUpdateManyWithWhereWithoutPlanInput[]
+  deleteMany?: Prisma.userScalarWhereInput | Prisma.userScalarWhereInput[]
 }
 
-export type UserCreateNestedOneWithoutSubscriptionInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutSubscriptionInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSubscriptionInput, Prisma.userUncheckedCreateWithoutSubscriptionInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSubscriptionInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSubscriptionNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionInput
-  upsert?: Prisma.UserUpsertWithoutSubscriptionInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubscriptionInput, Prisma.UserUpdateWithoutSubscriptionInput>, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
+export type userUpdateOneRequiredWithoutSubscriptionNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSubscriptionInput, Prisma.userUncheckedCreateWithoutSubscriptionInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSubscriptionInput
+  upsert?: Prisma.userUpsertWithoutSubscriptionInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutSubscriptionInput, Prisma.userUpdateWithoutSubscriptionInput>, Prisma.userUncheckedUpdateWithoutSubscriptionInput>
 }
 
 export type EnumROLEFieldUpdateOperationsInput = {
   set?: $Enums.ROLE
 }
 
-export type EnumVolumeUnitTypesFieldUpdateOperationsInput = {
-  set?: $Enums.VolumeUnitTypes
+export type EnumVolumeUnitTypeFieldUpdateOperationsInput = {
+  set?: $Enums.VolumeUnitType
 }
 
-export type EnumDistanceConsumptionTypesFieldUpdateOperationsInput = {
-  set?: $Enums.DistanceConsumptionTypes
+export type EnumDistanceConsumptionTypeFieldUpdateOperationsInput = {
+  set?: $Enums.DistanceConsumptionType
 }
 
 export type EnumTimeConsumptionTypesFieldUpdateOperationsInput = {
   set?: $Enums.TimeConsumptionTypes
 }
 
-export type UserCreateNestedOneWithoutStorageUsageInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutStorageUsageInput, Prisma.UserUncheckedCreateWithoutStorageUsageInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStorageUsageInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutStorageUsageInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutStorageUsageInput, Prisma.userUncheckedCreateWithoutStorageUsageInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutStorageUsageInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutStorageUsageNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutStorageUsageInput, Prisma.UserUncheckedCreateWithoutStorageUsageInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStorageUsageInput
-  upsert?: Prisma.UserUpsertWithoutStorageUsageInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStorageUsageInput, Prisma.UserUpdateWithoutStorageUsageInput>, Prisma.UserUncheckedUpdateWithoutStorageUsageInput>
+export type userUpdateOneRequiredWithoutStorageUsageNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutStorageUsageInput, Prisma.userUncheckedCreateWithoutStorageUsageInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutStorageUsageInput
+  upsert?: Prisma.userUpsertWithoutStorageUsageInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutStorageUsageInput, Prisma.userUpdateWithoutStorageUsageInput>, Prisma.userUncheckedUpdateWithoutStorageUsageInput>
 }
 
-export type UserCreateNestedOneWithoutQuickLinksInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuickLinksInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutQuickLinksInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutQuickLinksInput, Prisma.userUncheckedCreateWithoutQuickLinksInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutQuickLinksInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutQuickLinksNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuickLinksInput
-  upsert?: Prisma.UserUpsertWithoutQuickLinksInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutQuickLinksInput, Prisma.UserUpdateWithoutQuickLinksInput>, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
+export type userUpdateOneRequiredWithoutQuickLinksNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutQuickLinksInput, Prisma.userUncheckedCreateWithoutQuickLinksInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutQuickLinksInput
+  upsert?: Prisma.userUpsertWithoutQuickLinksInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutQuickLinksInput, Prisma.userUpdateWithoutQuickLinksInput>, Prisma.userUncheckedUpdateWithoutQuickLinksInput>
 }
 
-export type UserCreateNestedOneWithoutOwnedVehiclesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedVehiclesInput, Prisma.UserUncheckedCreateWithoutOwnedVehiclesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedVehiclesInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutOwnedVehiclesInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutOwnedVehiclesInput, Prisma.userUncheckedCreateWithoutOwnedVehiclesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutOwnedVehiclesInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutOwnedVehiclesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedVehiclesInput, Prisma.UserUncheckedCreateWithoutOwnedVehiclesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedVehiclesInput
-  upsert?: Prisma.UserUpsertWithoutOwnedVehiclesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedVehiclesInput, Prisma.UserUpdateWithoutOwnedVehiclesInput>, Prisma.UserUncheckedUpdateWithoutOwnedVehiclesInput>
+export type userUpdateOneRequiredWithoutOwnedVehiclesNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutOwnedVehiclesInput, Prisma.userUncheckedCreateWithoutOwnedVehiclesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutOwnedVehiclesInput
+  upsert?: Prisma.userUpsertWithoutOwnedVehiclesInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutOwnedVehiclesInput, Prisma.userUpdateWithoutOwnedVehiclesInput>, Prisma.userUncheckedUpdateWithoutOwnedVehiclesInput>
 }
 
-export type UserCreateNestedOneWithoutCreatedRefillsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedRefillsInput, Prisma.UserUncheckedCreateWithoutCreatedRefillsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedRefillsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutCreatedRefillsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedRefillsInput, Prisma.userUncheckedCreateWithoutCreatedRefillsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedRefillsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutCreatedRefillsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedRefillsInput, Prisma.UserUncheckedCreateWithoutCreatedRefillsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedRefillsInput
-  upsert?: Prisma.UserUpsertWithoutCreatedRefillsInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedRefillsInput, Prisma.UserUpdateWithoutCreatedRefillsInput>, Prisma.UserUncheckedUpdateWithoutCreatedRefillsInput>
+export type userUpdateOneWithoutCreatedRefillsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedRefillsInput, Prisma.userUncheckedCreateWithoutCreatedRefillsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedRefillsInput
+  upsert?: Prisma.userUpsertWithoutCreatedRefillsInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutCreatedRefillsInput, Prisma.userUpdateWithoutCreatedRefillsInput>, Prisma.userUncheckedUpdateWithoutCreatedRefillsInput>
 }
 
-export type UserCreateNestedOneWithoutCreatedMaintenancesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedCreateWithoutCreatedMaintenancesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedMaintenancesInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutCreatedMaintenancesInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedMaintenancesInput, Prisma.userUncheckedCreateWithoutCreatedMaintenancesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedMaintenancesInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutCreatedMaintenancesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedCreateWithoutCreatedMaintenancesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedMaintenancesInput
-  upsert?: Prisma.UserUpsertWithoutCreatedMaintenancesInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedMaintenancesInput, Prisma.UserUpdateWithoutCreatedMaintenancesInput>, Prisma.UserUncheckedUpdateWithoutCreatedMaintenancesInput>
+export type userUpdateOneWithoutCreatedMaintenancesNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedMaintenancesInput, Prisma.userUncheckedCreateWithoutCreatedMaintenancesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedMaintenancesInput
+  upsert?: Prisma.userUpsertWithoutCreatedMaintenancesInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutCreatedMaintenancesInput, Prisma.userUpdateWithoutCreatedMaintenancesInput>, Prisma.userUncheckedUpdateWithoutCreatedMaintenancesInput>
 }
 
-export type UserCreateNestedOneWithoutCreatedTodosInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTodosInput, Prisma.UserUncheckedCreateWithoutCreatedTodosInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTodosInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutCreatedTodosInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedTodosInput, Prisma.userUncheckedCreateWithoutCreatedTodosInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedTodosInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserCreateNestedOneWithoutCompletedTodosInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedTodosInput, Prisma.UserUncheckedCreateWithoutCompletedTodosInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedTodosInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutCompletedTodosInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCompletedTodosInput, Prisma.userUncheckedCreateWithoutCompletedTodosInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCompletedTodosInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutCreatedTodosNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTodosInput, Prisma.UserUncheckedCreateWithoutCreatedTodosInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTodosInput
-  upsert?: Prisma.UserUpsertWithoutCreatedTodosInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedTodosInput, Prisma.UserUpdateWithoutCreatedTodosInput>, Prisma.UserUncheckedUpdateWithoutCreatedTodosInput>
+export type userUpdateOneWithoutCreatedTodosNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCreatedTodosInput, Prisma.userUncheckedCreateWithoutCreatedTodosInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCreatedTodosInput
+  upsert?: Prisma.userUpsertWithoutCreatedTodosInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutCreatedTodosInput, Prisma.userUpdateWithoutCreatedTodosInput>, Prisma.userUncheckedUpdateWithoutCreatedTodosInput>
 }
 
-export type UserUpdateOneWithoutCompletedTodosNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedTodosInput, Prisma.UserUncheckedCreateWithoutCompletedTodosInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedTodosInput
-  upsert?: Prisma.UserUpsertWithoutCompletedTodosInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompletedTodosInput, Prisma.UserUpdateWithoutCompletedTodosInput>, Prisma.UserUncheckedUpdateWithoutCompletedTodosInput>
+export type userUpdateOneWithoutCompletedTodosNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutCompletedTodosInput, Prisma.userUncheckedCreateWithoutCompletedTodosInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutCompletedTodosInput
+  upsert?: Prisma.userUpsertWithoutCompletedTodosInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutCompletedTodosInput, Prisma.userUpdateWithoutCompletedTodosInput>, Prisma.userUncheckedUpdateWithoutCompletedTodosInput>
 }
 
-export type UserCreateNestedOneWithoutNotesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutNotesInput, Prisma.userUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutNotesInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutNotesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput
-  upsert?: Prisma.UserUpsertWithoutNotesInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotesInput, Prisma.UserUpdateWithoutNotesInput>, Prisma.UserUncheckedUpdateWithoutNotesInput>
+export type userUpdateOneWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutNotesInput, Prisma.userUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.userUpsertWithoutNotesInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutNotesInput, Prisma.userUpdateWithoutNotesInput>, Prisma.userUncheckedUpdateWithoutNotesInput>
 }
 
-export type UserCreateNestedOneWithoutShoppingListItemsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutShoppingListItemsInput, Prisma.UserUncheckedCreateWithoutShoppingListItemsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShoppingListItemsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutShoppingListItemsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutShoppingListItemsInput, Prisma.userUncheckedCreateWithoutShoppingListItemsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutShoppingListItemsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutShoppingListItemsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutShoppingListItemsInput, Prisma.UserUncheckedCreateWithoutShoppingListItemsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShoppingListItemsInput
-  upsert?: Prisma.UserUpsertWithoutShoppingListItemsInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutShoppingListItemsInput, Prisma.UserUpdateWithoutShoppingListItemsInput>, Prisma.UserUncheckedUpdateWithoutShoppingListItemsInput>
+export type userUpdateOneWithoutShoppingListItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutShoppingListItemsInput, Prisma.userUncheckedCreateWithoutShoppingListItemsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutShoppingListItemsInput
+  upsert?: Prisma.userUpsertWithoutShoppingListItemsInput
+  disconnect?: Prisma.userWhereInput | boolean
+  delete?: Prisma.userWhereInput | boolean
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutShoppingListItemsInput, Prisma.userUpdateWithoutShoppingListItemsInput>, Prisma.userUncheckedUpdateWithoutShoppingListItemsInput>
 }
 
-export type UserCreateNestedOneWithoutPoolMembershipsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPoolMembershipsInput, Prisma.UserUncheckedCreateWithoutPoolMembershipsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPoolMembershipsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutPoolMembershipsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPoolMembershipsInput, Prisma.userUncheckedCreateWithoutPoolMembershipsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPoolMembershipsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutPoolMembershipsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPoolMembershipsInput, Prisma.UserUncheckedCreateWithoutPoolMembershipsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPoolMembershipsInput
-  upsert?: Prisma.UserUpsertWithoutPoolMembershipsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPoolMembershipsInput, Prisma.UserUpdateWithoutPoolMembershipsInput>, Prisma.UserUncheckedUpdateWithoutPoolMembershipsInput>
+export type userUpdateOneRequiredWithoutPoolMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutPoolMembershipsInput, Prisma.userUncheckedCreateWithoutPoolMembershipsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutPoolMembershipsInput
+  upsert?: Prisma.userUpsertWithoutPoolMembershipsInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutPoolMembershipsInput, Prisma.userUpdateWithoutPoolMembershipsInput>, Prisma.userUncheckedUpdateWithoutPoolMembershipsInput>
 }
 
-export type UserCreateNestedOneWithoutSentPoolInvitesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSentPoolInvitesInput, Prisma.UserUncheckedCreateWithoutSentPoolInvitesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentPoolInvitesInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutSentPoolInvitesInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSentPoolInvitesInput, Prisma.userUncheckedCreateWithoutSentPoolInvitesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSentPoolInvitesInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserCreateNestedOneWithoutReceivedPoolInvitesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedCreateWithoutReceivedPoolInvitesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedPoolInvitesInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutReceivedPoolInvitesInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedCreateWithoutReceivedPoolInvitesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutReceivedPoolInvitesInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSentPoolInvitesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSentPoolInvitesInput, Prisma.UserUncheckedCreateWithoutSentPoolInvitesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentPoolInvitesInput
-  upsert?: Prisma.UserUpsertWithoutSentPoolInvitesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentPoolInvitesInput, Prisma.UserUpdateWithoutSentPoolInvitesInput>, Prisma.UserUncheckedUpdateWithoutSentPoolInvitesInput>
+export type userUpdateOneRequiredWithoutSentPoolInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSentPoolInvitesInput, Prisma.userUncheckedCreateWithoutSentPoolInvitesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSentPoolInvitesInput
+  upsert?: Prisma.userUpsertWithoutSentPoolInvitesInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutSentPoolInvitesInput, Prisma.userUpdateWithoutSentPoolInvitesInput>, Prisma.userUncheckedUpdateWithoutSentPoolInvitesInput>
 }
 
-export type UserUpdateOneRequiredWithoutReceivedPoolInvitesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedCreateWithoutReceivedPoolInvitesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedPoolInvitesInput
-  upsert?: Prisma.UserUpsertWithoutReceivedPoolInvitesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedPoolInvitesInput, Prisma.UserUpdateWithoutReceivedPoolInvitesInput>, Prisma.UserUncheckedUpdateWithoutReceivedPoolInvitesInput>
+export type userUpdateOneRequiredWithoutReceivedPoolInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedCreateWithoutReceivedPoolInvitesInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutReceivedPoolInvitesInput
+  upsert?: Prisma.userUpsertWithoutReceivedPoolInvitesInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutReceivedPoolInvitesInput, Prisma.userUpdateWithoutReceivedPoolInvitesInput>, Prisma.userUncheckedUpdateWithoutReceivedPoolInvitesInput>
 }
 
-export type UserCreateNestedOneWithoutNotificationsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutNotificationsInput, Prisma.userUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
-  upsert?: Prisma.UserUpsertWithoutNotificationsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+export type userUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutNotificationsInput, Prisma.userUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.userUpsertWithoutNotificationsInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutNotificationsInput, Prisma.userUpdateWithoutNotificationsInput>, Prisma.userUncheckedUpdateWithoutNotificationsInput>
 }
 
-export type UserCreateNestedOneWithoutAccountsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutAccountsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutAccountsInput, Prisma.userUncheckedCreateWithoutAccountsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutAccountsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput
-  upsert?: Prisma.UserUpsertWithoutAccountsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+export type userUpdateOneRequiredWithoutAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutAccountsInput, Prisma.userUncheckedCreateWithoutAccountsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutAccountsInput
+  upsert?: Prisma.userUpsertWithoutAccountsInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutAccountsInput, Prisma.userUpdateWithoutAccountsInput>, Prisma.userUncheckedUpdateWithoutAccountsInput>
 }
 
-export type UserCreateNestedOneWithoutSessionsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
-  connect?: Prisma.UserWhereUniqueInput
+export type userCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSessionsInput, Prisma.userUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.userWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
-  upsert?: Prisma.UserUpsertWithoutSessionsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+export type userUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutSessionsInput, Prisma.userUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.userUpsertWithoutSessionsInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutSessionsInput, Prisma.userUpdateWithoutSessionsInput>, Prisma.userUncheckedUpdateWithoutSessionsInput>
 }
 
-export type UserCreateWithoutPlanInput = {
+export type userCreateWithoutPlanInput = {
   id?: string
   name: string
   email: string
@@ -1012,13 +1012,13 @@ export type UserCreateWithoutPlanInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -1036,7 +1036,7 @@ export type UserCreateWithoutPlanInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutPlanInput = {
+export type userUncheckedCreateWithoutPlanInput = {
   id?: string
   name: string
   email: string
@@ -1045,13 +1045,13 @@ export type UserUncheckedCreateWithoutPlanInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -1069,54 +1069,54 @@ export type UserUncheckedCreateWithoutPlanInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutPlanInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput>
+export type userCreateOrConnectWithoutPlanInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput>
 }
 
-export type UserCreateManyPlanInputEnvelope = {
-  data: Prisma.UserCreateManyPlanInput | Prisma.UserCreateManyPlanInput[]
+export type userCreateManyPlanInputEnvelope = {
+  data: Prisma.userCreateManyPlanInput | Prisma.userCreateManyPlanInput[]
   skipDuplicates?: boolean
 }
 
-export type UserUpsertWithWhereUniqueWithoutPlanInput = {
-  where: Prisma.UserWhereUniqueInput
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPlanInput, Prisma.UserUncheckedUpdateWithoutPlanInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPlanInput, Prisma.UserUncheckedCreateWithoutPlanInput>
+export type userUpsertWithWhereUniqueWithoutPlanInput = {
+  where: Prisma.userWhereUniqueInput
+  update: Prisma.XOR<Prisma.userUpdateWithoutPlanInput, Prisma.userUncheckedUpdateWithoutPlanInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutPlanInput, Prisma.userUncheckedCreateWithoutPlanInput>
 }
 
-export type UserUpdateWithWhereUniqueWithoutPlanInput = {
-  where: Prisma.UserWhereUniqueInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPlanInput, Prisma.UserUncheckedUpdateWithoutPlanInput>
+export type userUpdateWithWhereUniqueWithoutPlanInput = {
+  where: Prisma.userWhereUniqueInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutPlanInput, Prisma.userUncheckedUpdateWithoutPlanInput>
 }
 
-export type UserUpdateManyWithWhereWithoutPlanInput = {
-  where: Prisma.UserScalarWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutPlanInput>
+export type userUpdateManyWithWhereWithoutPlanInput = {
+  where: Prisma.userScalarWhereInput
+  data: Prisma.XOR<Prisma.userUpdateManyMutationInput, Prisma.userUncheckedUpdateManyWithoutPlanInput>
 }
 
-export type UserScalarWhereInput = {
-  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
-  OR?: Prisma.UserScalarWhereInput[]
-  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
-  id?: Prisma.StringFilter<"User"> | string
-  name?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  emailVerified?: Prisma.BoolFilter<"User"> | boolean
-  image?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  role?: Prisma.EnumROLEFilter<"User"> | $Enums.ROLE
-  planId?: Prisma.StringFilter<"User"> | string
-  storageLimitBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  storageUsageBytes?: Prisma.BigIntFilter<"User"> | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFilter<"User"> | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFilter<"User"> | $Enums.DistanceConsumptionTypes
-  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"User"> | $Enums.TimeConsumptionTypes
-  currency?: Prisma.StringFilter<"User"> | string
+export type userScalarWhereInput = {
+  AND?: Prisma.userScalarWhereInput | Prisma.userScalarWhereInput[]
+  OR?: Prisma.userScalarWhereInput[]
+  NOT?: Prisma.userScalarWhereInput | Prisma.userScalarWhereInput[]
+  id?: Prisma.StringFilter<"user"> | string
+  name?: Prisma.StringFilter<"user"> | string
+  email?: Prisma.StringFilter<"user"> | string
+  emailVerified?: Prisma.BoolFilter<"user"> | boolean
+  image?: Prisma.StringNullableFilter<"user"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"user"> | Date | string
+  role?: Prisma.EnumROLEFilter<"user"> | $Enums.ROLE
+  planId?: Prisma.StringFilter<"user"> | string
+  maxStorageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  storageUsageBytes?: Prisma.BigIntFilter<"user"> | bigint | number
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFilter<"user"> | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFilter<"user"> | $Enums.DistanceConsumptionType
+  consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFilter<"user"> | $Enums.TimeConsumptionTypes
+  currency?: Prisma.StringFilter<"user"> | string
 }
 
-export type UserCreateWithoutSubscriptionInput = {
+export type userCreateWithoutSubscriptionInput = {
   id?: string
   name: string
   email: string
@@ -1125,13 +1125,13 @@ export type UserCreateWithoutSubscriptionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -1149,7 +1149,7 @@ export type UserCreateWithoutSubscriptionInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutSubscriptionInput = {
+export type userUncheckedCreateWithoutSubscriptionInput = {
   id?: string
   name: string
   email: string
@@ -1159,10 +1159,10 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
@@ -1182,23 +1182,23 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutSubscriptionInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
+export type userCreateOrConnectWithoutSubscriptionInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutSubscriptionInput, Prisma.userUncheckedCreateWithoutSubscriptionInput>
 }
 
-export type UserUpsertWithoutSubscriptionInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionInput, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutSubscriptionInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutSubscriptionInput, Prisma.userUncheckedUpdateWithoutSubscriptionInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutSubscriptionInput, Prisma.userUncheckedCreateWithoutSubscriptionInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutSubscriptionInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionInput, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
+export type userUpdateToOneWithWhereWithoutSubscriptionInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutSubscriptionInput, Prisma.userUncheckedUpdateWithoutSubscriptionInput>
 }
 
-export type UserUpdateWithoutSubscriptionInput = {
+export type userUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1207,13 +1207,13 @@ export type UserUpdateWithoutSubscriptionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -1231,7 +1231,7 @@ export type UserUpdateWithoutSubscriptionInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutSubscriptionInput = {
+export type userUncheckedUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1241,10 +1241,10 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -1264,7 +1264,7 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutStorageUsageInput = {
+export type userCreateWithoutStorageUsageInput = {
   id?: string
   name: string
   email: string
@@ -1273,14 +1273,14 @@ export type UserCreateWithoutStorageUsageInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
   createdRefills?: Prisma.RefillCreateNestedManyWithoutUserInput
@@ -1297,7 +1297,7 @@ export type UserCreateWithoutStorageUsageInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutStorageUsageInput = {
+export type userUncheckedCreateWithoutStorageUsageInput = {
   id?: string
   name: string
   email: string
@@ -1307,13 +1307,13 @@ export type UserUncheckedCreateWithoutStorageUsageInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
   createdRefills?: Prisma.RefillUncheckedCreateNestedManyWithoutUserInput
@@ -1330,23 +1330,23 @@ export type UserUncheckedCreateWithoutStorageUsageInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutStorageUsageInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutStorageUsageInput, Prisma.UserUncheckedCreateWithoutStorageUsageInput>
+export type userCreateOrConnectWithoutStorageUsageInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutStorageUsageInput, Prisma.userUncheckedCreateWithoutStorageUsageInput>
 }
 
-export type UserUpsertWithoutStorageUsageInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutStorageUsageInput, Prisma.UserUncheckedUpdateWithoutStorageUsageInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutStorageUsageInput, Prisma.UserUncheckedCreateWithoutStorageUsageInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutStorageUsageInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutStorageUsageInput, Prisma.userUncheckedUpdateWithoutStorageUsageInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutStorageUsageInput, Prisma.userUncheckedCreateWithoutStorageUsageInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutStorageUsageInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutStorageUsageInput, Prisma.UserUncheckedUpdateWithoutStorageUsageInput>
+export type userUpdateToOneWithWhereWithoutStorageUsageInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutStorageUsageInput, Prisma.userUncheckedUpdateWithoutStorageUsageInput>
 }
 
-export type UserUpdateWithoutStorageUsageInput = {
+export type userUpdateWithoutStorageUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1355,14 +1355,14 @@ export type UserUpdateWithoutStorageUsageInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
   createdRefills?: Prisma.RefillUpdateManyWithoutUserNestedInput
@@ -1379,7 +1379,7 @@ export type UserUpdateWithoutStorageUsageInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutStorageUsageInput = {
+export type userUncheckedUpdateWithoutStorageUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1389,13 +1389,13 @@ export type UserUncheckedUpdateWithoutStorageUsageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
   createdRefills?: Prisma.RefillUncheckedUpdateManyWithoutUserNestedInput
@@ -1412,7 +1412,7 @@ export type UserUncheckedUpdateWithoutStorageUsageInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutQuickLinksInput = {
+export type userCreateWithoutQuickLinksInput = {
   id?: string
   name: string
   email: string
@@ -1421,14 +1421,14 @@ export type UserCreateWithoutQuickLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -1445,7 +1445,7 @@ export type UserCreateWithoutQuickLinksInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutQuickLinksInput = {
+export type userUncheckedCreateWithoutQuickLinksInput = {
   id?: string
   name: string
   email: string
@@ -1455,13 +1455,13 @@ export type UserUncheckedCreateWithoutQuickLinksInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -1478,23 +1478,23 @@ export type UserUncheckedCreateWithoutQuickLinksInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutQuickLinksInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
+export type userCreateOrConnectWithoutQuickLinksInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutQuickLinksInput, Prisma.userUncheckedCreateWithoutQuickLinksInput>
 }
 
-export type UserUpsertWithoutQuickLinksInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutQuickLinksInput, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutQuickLinksInput, Prisma.UserUncheckedCreateWithoutQuickLinksInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutQuickLinksInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutQuickLinksInput, Prisma.userUncheckedUpdateWithoutQuickLinksInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutQuickLinksInput, Prisma.userUncheckedCreateWithoutQuickLinksInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutQuickLinksInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutQuickLinksInput, Prisma.UserUncheckedUpdateWithoutQuickLinksInput>
+export type userUpdateToOneWithWhereWithoutQuickLinksInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutQuickLinksInput, Prisma.userUncheckedUpdateWithoutQuickLinksInput>
 }
 
-export type UserUpdateWithoutQuickLinksInput = {
+export type userUpdateWithoutQuickLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1503,14 +1503,14 @@ export type UserUpdateWithoutQuickLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -1527,7 +1527,7 @@ export type UserUpdateWithoutQuickLinksInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutQuickLinksInput = {
+export type userUncheckedUpdateWithoutQuickLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1537,13 +1537,13 @@ export type UserUncheckedUpdateWithoutQuickLinksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1560,7 +1560,7 @@ export type UserUncheckedUpdateWithoutQuickLinksInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutOwnedVehiclesInput = {
+export type userCreateWithoutOwnedVehiclesInput = {
   id?: string
   name: string
   email: string
@@ -1569,14 +1569,14 @@ export type UserCreateWithoutOwnedVehiclesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   createdRefills?: Prisma.RefillCreateNestedManyWithoutUserInput
@@ -1593,7 +1593,7 @@ export type UserCreateWithoutOwnedVehiclesInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
+export type userUncheckedCreateWithoutOwnedVehiclesInput = {
   id?: string
   name: string
   email: string
@@ -1603,13 +1603,13 @@ export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   createdRefills?: Prisma.RefillUncheckedCreateNestedManyWithoutUserInput
@@ -1626,23 +1626,23 @@ export type UserUncheckedCreateWithoutOwnedVehiclesInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutOwnedVehiclesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedVehiclesInput, Prisma.UserUncheckedCreateWithoutOwnedVehiclesInput>
+export type userCreateOrConnectWithoutOwnedVehiclesInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutOwnedVehiclesInput, Prisma.userUncheckedCreateWithoutOwnedVehiclesInput>
 }
 
-export type UserUpsertWithoutOwnedVehiclesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedVehiclesInput, Prisma.UserUncheckedUpdateWithoutOwnedVehiclesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedVehiclesInput, Prisma.UserUncheckedCreateWithoutOwnedVehiclesInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutOwnedVehiclesInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutOwnedVehiclesInput, Prisma.userUncheckedUpdateWithoutOwnedVehiclesInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutOwnedVehiclesInput, Prisma.userUncheckedCreateWithoutOwnedVehiclesInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutOwnedVehiclesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedVehiclesInput, Prisma.UserUncheckedUpdateWithoutOwnedVehiclesInput>
+export type userUpdateToOneWithWhereWithoutOwnedVehiclesInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutOwnedVehiclesInput, Prisma.userUncheckedUpdateWithoutOwnedVehiclesInput>
 }
 
-export type UserUpdateWithoutOwnedVehiclesInput = {
+export type userUpdateWithoutOwnedVehiclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1651,14 +1651,14 @@ export type UserUpdateWithoutOwnedVehiclesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   createdRefills?: Prisma.RefillUpdateManyWithoutUserNestedInput
@@ -1675,7 +1675,7 @@ export type UserUpdateWithoutOwnedVehiclesInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
+export type userUncheckedUpdateWithoutOwnedVehiclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1685,13 +1685,13 @@ export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   createdRefills?: Prisma.RefillUncheckedUpdateManyWithoutUserNestedInput
@@ -1708,7 +1708,7 @@ export type UserUncheckedUpdateWithoutOwnedVehiclesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutCreatedRefillsInput = {
+export type userCreateWithoutCreatedRefillsInput = {
   id?: string
   name: string
   email: string
@@ -1717,14 +1717,14 @@ export type UserCreateWithoutCreatedRefillsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -1741,7 +1741,7 @@ export type UserCreateWithoutCreatedRefillsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutCreatedRefillsInput = {
+export type userUncheckedCreateWithoutCreatedRefillsInput = {
   id?: string
   name: string
   email: string
@@ -1751,13 +1751,13 @@ export type UserUncheckedCreateWithoutCreatedRefillsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -1774,23 +1774,23 @@ export type UserUncheckedCreateWithoutCreatedRefillsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutCreatedRefillsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedRefillsInput, Prisma.UserUncheckedCreateWithoutCreatedRefillsInput>
+export type userCreateOrConnectWithoutCreatedRefillsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedRefillsInput, Prisma.userUncheckedCreateWithoutCreatedRefillsInput>
 }
 
-export type UserUpsertWithoutCreatedRefillsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedRefillsInput, Prisma.UserUncheckedUpdateWithoutCreatedRefillsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedRefillsInput, Prisma.UserUncheckedCreateWithoutCreatedRefillsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutCreatedRefillsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutCreatedRefillsInput, Prisma.userUncheckedUpdateWithoutCreatedRefillsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedRefillsInput, Prisma.userUncheckedCreateWithoutCreatedRefillsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutCreatedRefillsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedRefillsInput, Prisma.UserUncheckedUpdateWithoutCreatedRefillsInput>
+export type userUpdateToOneWithWhereWithoutCreatedRefillsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutCreatedRefillsInput, Prisma.userUncheckedUpdateWithoutCreatedRefillsInput>
 }
 
-export type UserUpdateWithoutCreatedRefillsInput = {
+export type userUpdateWithoutCreatedRefillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1799,14 +1799,14 @@ export type UserUpdateWithoutCreatedRefillsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -1823,7 +1823,7 @@ export type UserUpdateWithoutCreatedRefillsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
+export type userUncheckedUpdateWithoutCreatedRefillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1833,13 +1833,13 @@ export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1856,7 +1856,7 @@ export type UserUncheckedUpdateWithoutCreatedRefillsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutCreatedMaintenancesInput = {
+export type userCreateWithoutCreatedMaintenancesInput = {
   id?: string
   name: string
   email: string
@@ -1865,14 +1865,14 @@ export type UserCreateWithoutCreatedMaintenancesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -1889,7 +1889,7 @@ export type UserCreateWithoutCreatedMaintenancesInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
+export type userUncheckedCreateWithoutCreatedMaintenancesInput = {
   id?: string
   name: string
   email: string
@@ -1899,13 +1899,13 @@ export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -1922,23 +1922,23 @@ export type UserUncheckedCreateWithoutCreatedMaintenancesInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutCreatedMaintenancesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedCreateWithoutCreatedMaintenancesInput>
+export type userCreateOrConnectWithoutCreatedMaintenancesInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedMaintenancesInput, Prisma.userUncheckedCreateWithoutCreatedMaintenancesInput>
 }
 
-export type UserUpsertWithoutCreatedMaintenancesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedUpdateWithoutCreatedMaintenancesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedCreateWithoutCreatedMaintenancesInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutCreatedMaintenancesInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutCreatedMaintenancesInput, Prisma.userUncheckedUpdateWithoutCreatedMaintenancesInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedMaintenancesInput, Prisma.userUncheckedCreateWithoutCreatedMaintenancesInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutCreatedMaintenancesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedMaintenancesInput, Prisma.UserUncheckedUpdateWithoutCreatedMaintenancesInput>
+export type userUpdateToOneWithWhereWithoutCreatedMaintenancesInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutCreatedMaintenancesInput, Prisma.userUncheckedUpdateWithoutCreatedMaintenancesInput>
 }
 
-export type UserUpdateWithoutCreatedMaintenancesInput = {
+export type userUpdateWithoutCreatedMaintenancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1947,14 +1947,14 @@ export type UserUpdateWithoutCreatedMaintenancesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -1971,7 +1971,7 @@ export type UserUpdateWithoutCreatedMaintenancesInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
+export type userUncheckedUpdateWithoutCreatedMaintenancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1981,13 +1981,13 @@ export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2004,7 +2004,7 @@ export type UserUncheckedUpdateWithoutCreatedMaintenancesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutCreatedTodosInput = {
+export type userCreateWithoutCreatedTodosInput = {
   id?: string
   name: string
   email: string
@@ -2013,14 +2013,14 @@ export type UserCreateWithoutCreatedTodosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2037,7 +2037,7 @@ export type UserCreateWithoutCreatedTodosInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutCreatedTodosInput = {
+export type userUncheckedCreateWithoutCreatedTodosInput = {
   id?: string
   name: string
   email: string
@@ -2047,13 +2047,13 @@ export type UserUncheckedCreateWithoutCreatedTodosInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2070,12 +2070,12 @@ export type UserUncheckedCreateWithoutCreatedTodosInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutCreatedTodosInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTodosInput, Prisma.UserUncheckedCreateWithoutCreatedTodosInput>
+export type userCreateOrConnectWithoutCreatedTodosInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedTodosInput, Prisma.userUncheckedCreateWithoutCreatedTodosInput>
 }
 
-export type UserCreateWithoutCompletedTodosInput = {
+export type userCreateWithoutCompletedTodosInput = {
   id?: string
   name: string
   email: string
@@ -2084,14 +2084,14 @@ export type UserCreateWithoutCompletedTodosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2108,7 +2108,7 @@ export type UserCreateWithoutCompletedTodosInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutCompletedTodosInput = {
+export type userUncheckedCreateWithoutCompletedTodosInput = {
   id?: string
   name: string
   email: string
@@ -2118,13 +2118,13 @@ export type UserUncheckedCreateWithoutCompletedTodosInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2141,23 +2141,23 @@ export type UserUncheckedCreateWithoutCompletedTodosInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutCompletedTodosInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCompletedTodosInput, Prisma.UserUncheckedCreateWithoutCompletedTodosInput>
+export type userCreateOrConnectWithoutCompletedTodosInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutCompletedTodosInput, Prisma.userUncheckedCreateWithoutCompletedTodosInput>
 }
 
-export type UserUpsertWithoutCreatedTodosInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTodosInput, Prisma.UserUncheckedUpdateWithoutCreatedTodosInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTodosInput, Prisma.UserUncheckedCreateWithoutCreatedTodosInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutCreatedTodosInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutCreatedTodosInput, Prisma.userUncheckedUpdateWithoutCreatedTodosInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutCreatedTodosInput, Prisma.userUncheckedCreateWithoutCreatedTodosInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutCreatedTodosInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTodosInput, Prisma.UserUncheckedUpdateWithoutCreatedTodosInput>
+export type userUpdateToOneWithWhereWithoutCreatedTodosInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutCreatedTodosInput, Prisma.userUncheckedUpdateWithoutCreatedTodosInput>
 }
 
-export type UserUpdateWithoutCreatedTodosInput = {
+export type userUpdateWithoutCreatedTodosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2166,14 +2166,14 @@ export type UserUpdateWithoutCreatedTodosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -2190,7 +2190,7 @@ export type UserUpdateWithoutCreatedTodosInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutCreatedTodosInput = {
+export type userUncheckedUpdateWithoutCreatedTodosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2200,13 +2200,13 @@ export type UserUncheckedUpdateWithoutCreatedTodosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2223,18 +2223,18 @@ export type UserUncheckedUpdateWithoutCreatedTodosInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserUpsertWithoutCompletedTodosInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCompletedTodosInput, Prisma.UserUncheckedUpdateWithoutCompletedTodosInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCompletedTodosInput, Prisma.UserUncheckedCreateWithoutCompletedTodosInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutCompletedTodosInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutCompletedTodosInput, Prisma.userUncheckedUpdateWithoutCompletedTodosInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutCompletedTodosInput, Prisma.userUncheckedCreateWithoutCompletedTodosInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutCompletedTodosInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCompletedTodosInput, Prisma.UserUncheckedUpdateWithoutCompletedTodosInput>
+export type userUpdateToOneWithWhereWithoutCompletedTodosInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutCompletedTodosInput, Prisma.userUncheckedUpdateWithoutCompletedTodosInput>
 }
 
-export type UserUpdateWithoutCompletedTodosInput = {
+export type userUpdateWithoutCompletedTodosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2243,14 +2243,14 @@ export type UserUpdateWithoutCompletedTodosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -2267,7 +2267,7 @@ export type UserUpdateWithoutCompletedTodosInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutCompletedTodosInput = {
+export type userUncheckedUpdateWithoutCompletedTodosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2277,13 +2277,13 @@ export type UserUncheckedUpdateWithoutCompletedTodosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2300,7 +2300,7 @@ export type UserUncheckedUpdateWithoutCompletedTodosInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutNotesInput = {
+export type userCreateWithoutNotesInput = {
   id?: string
   name: string
   email: string
@@ -2309,14 +2309,14 @@ export type UserCreateWithoutNotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2333,7 +2333,7 @@ export type UserCreateWithoutNotesInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutNotesInput = {
+export type userUncheckedCreateWithoutNotesInput = {
   id?: string
   name: string
   email: string
@@ -2343,13 +2343,13 @@ export type UserUncheckedCreateWithoutNotesInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2366,23 +2366,23 @@ export type UserUncheckedCreateWithoutNotesInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutNotesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
+export type userCreateOrConnectWithoutNotesInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutNotesInput, Prisma.userUncheckedCreateWithoutNotesInput>
 }
 
-export type UserUpsertWithoutNotesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutNotesInput, Prisma.UserUncheckedUpdateWithoutNotesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutNotesInput, Prisma.userUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutNotesInput, Prisma.userUncheckedCreateWithoutNotesInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutNotesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutNotesInput, Prisma.UserUncheckedUpdateWithoutNotesInput>
+export type userUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutNotesInput, Prisma.userUncheckedUpdateWithoutNotesInput>
 }
 
-export type UserUpdateWithoutNotesInput = {
+export type userUpdateWithoutNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2391,14 +2391,14 @@ export type UserUpdateWithoutNotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -2415,7 +2415,7 @@ export type UserUpdateWithoutNotesInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutNotesInput = {
+export type userUncheckedUpdateWithoutNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2425,13 +2425,13 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2448,7 +2448,7 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutShoppingListItemsInput = {
+export type userCreateWithoutShoppingListItemsInput = {
   id?: string
   name: string
   email: string
@@ -2457,14 +2457,14 @@ export type UserCreateWithoutShoppingListItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2481,7 +2481,7 @@ export type UserCreateWithoutShoppingListItemsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutShoppingListItemsInput = {
+export type userUncheckedCreateWithoutShoppingListItemsInput = {
   id?: string
   name: string
   email: string
@@ -2491,13 +2491,13 @@ export type UserUncheckedCreateWithoutShoppingListItemsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2514,23 +2514,23 @@ export type UserUncheckedCreateWithoutShoppingListItemsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutShoppingListItemsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutShoppingListItemsInput, Prisma.UserUncheckedCreateWithoutShoppingListItemsInput>
+export type userCreateOrConnectWithoutShoppingListItemsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutShoppingListItemsInput, Prisma.userUncheckedCreateWithoutShoppingListItemsInput>
 }
 
-export type UserUpsertWithoutShoppingListItemsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutShoppingListItemsInput, Prisma.UserUncheckedUpdateWithoutShoppingListItemsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutShoppingListItemsInput, Prisma.UserUncheckedCreateWithoutShoppingListItemsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutShoppingListItemsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutShoppingListItemsInput, Prisma.userUncheckedUpdateWithoutShoppingListItemsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutShoppingListItemsInput, Prisma.userUncheckedCreateWithoutShoppingListItemsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutShoppingListItemsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutShoppingListItemsInput, Prisma.UserUncheckedUpdateWithoutShoppingListItemsInput>
+export type userUpdateToOneWithWhereWithoutShoppingListItemsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutShoppingListItemsInput, Prisma.userUncheckedUpdateWithoutShoppingListItemsInput>
 }
 
-export type UserUpdateWithoutShoppingListItemsInput = {
+export type userUpdateWithoutShoppingListItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2539,14 +2539,14 @@ export type UserUpdateWithoutShoppingListItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -2563,7 +2563,7 @@ export type UserUpdateWithoutShoppingListItemsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
+export type userUncheckedUpdateWithoutShoppingListItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2573,13 +2573,13 @@ export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2596,7 +2596,7 @@ export type UserUncheckedUpdateWithoutShoppingListItemsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutPoolMembershipsInput = {
+export type userCreateWithoutPoolMembershipsInput = {
   id?: string
   name: string
   email: string
@@ -2605,14 +2605,14 @@ export type UserCreateWithoutPoolMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
   createdRefills?: Prisma.RefillCreateNestedManyWithoutUserInput
@@ -2629,7 +2629,7 @@ export type UserCreateWithoutPoolMembershipsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutPoolMembershipsInput = {
+export type userUncheckedCreateWithoutPoolMembershipsInput = {
   id?: string
   name: string
   email: string
@@ -2639,13 +2639,13 @@ export type UserUncheckedCreateWithoutPoolMembershipsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
   createdRefills?: Prisma.RefillUncheckedCreateNestedManyWithoutUserInput
@@ -2662,23 +2662,23 @@ export type UserUncheckedCreateWithoutPoolMembershipsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutPoolMembershipsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPoolMembershipsInput, Prisma.UserUncheckedCreateWithoutPoolMembershipsInput>
+export type userCreateOrConnectWithoutPoolMembershipsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutPoolMembershipsInput, Prisma.userUncheckedCreateWithoutPoolMembershipsInput>
 }
 
-export type UserUpsertWithoutPoolMembershipsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPoolMembershipsInput, Prisma.UserUncheckedUpdateWithoutPoolMembershipsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPoolMembershipsInput, Prisma.UserUncheckedCreateWithoutPoolMembershipsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutPoolMembershipsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutPoolMembershipsInput, Prisma.userUncheckedUpdateWithoutPoolMembershipsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutPoolMembershipsInput, Prisma.userUncheckedCreateWithoutPoolMembershipsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutPoolMembershipsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPoolMembershipsInput, Prisma.UserUncheckedUpdateWithoutPoolMembershipsInput>
+export type userUpdateToOneWithWhereWithoutPoolMembershipsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutPoolMembershipsInput, Prisma.userUncheckedUpdateWithoutPoolMembershipsInput>
 }
 
-export type UserUpdateWithoutPoolMembershipsInput = {
+export type userUpdateWithoutPoolMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2687,14 +2687,14 @@ export type UserUpdateWithoutPoolMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
   createdRefills?: Prisma.RefillUpdateManyWithoutUserNestedInput
@@ -2711,7 +2711,7 @@ export type UserUpdateWithoutPoolMembershipsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
+export type userUncheckedUpdateWithoutPoolMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2721,13 +2721,13 @@ export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
   createdRefills?: Prisma.RefillUncheckedUpdateManyWithoutUserNestedInput
@@ -2744,7 +2744,7 @@ export type UserUncheckedUpdateWithoutPoolMembershipsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutSentPoolInvitesInput = {
+export type userCreateWithoutSentPoolInvitesInput = {
   id?: string
   name: string
   email: string
@@ -2753,14 +2753,14 @@ export type UserCreateWithoutSentPoolInvitesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2777,7 +2777,7 @@ export type UserCreateWithoutSentPoolInvitesInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
+export type userUncheckedCreateWithoutSentPoolInvitesInput = {
   id?: string
   name: string
   email: string
@@ -2787,13 +2787,13 @@ export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2810,12 +2810,12 @@ export type UserUncheckedCreateWithoutSentPoolInvitesInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutSentPoolInvitesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSentPoolInvitesInput, Prisma.UserUncheckedCreateWithoutSentPoolInvitesInput>
+export type userCreateOrConnectWithoutSentPoolInvitesInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutSentPoolInvitesInput, Prisma.userUncheckedCreateWithoutSentPoolInvitesInput>
 }
 
-export type UserCreateWithoutReceivedPoolInvitesInput = {
+export type userCreateWithoutReceivedPoolInvitesInput = {
   id?: string
   name: string
   email: string
@@ -2824,14 +2824,14 @@ export type UserCreateWithoutReceivedPoolInvitesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -2848,7 +2848,7 @@ export type UserCreateWithoutReceivedPoolInvitesInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
+export type userUncheckedCreateWithoutReceivedPoolInvitesInput = {
   id?: string
   name: string
   email: string
@@ -2858,13 +2858,13 @@ export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -2881,23 +2881,23 @@ export type UserUncheckedCreateWithoutReceivedPoolInvitesInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutReceivedPoolInvitesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedCreateWithoutReceivedPoolInvitesInput>
+export type userCreateOrConnectWithoutReceivedPoolInvitesInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedCreateWithoutReceivedPoolInvitesInput>
 }
 
-export type UserUpsertWithoutSentPoolInvitesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSentPoolInvitesInput, Prisma.UserUncheckedUpdateWithoutSentPoolInvitesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSentPoolInvitesInput, Prisma.UserUncheckedCreateWithoutSentPoolInvitesInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutSentPoolInvitesInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutSentPoolInvitesInput, Prisma.userUncheckedUpdateWithoutSentPoolInvitesInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutSentPoolInvitesInput, Prisma.userUncheckedCreateWithoutSentPoolInvitesInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutSentPoolInvitesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSentPoolInvitesInput, Prisma.UserUncheckedUpdateWithoutSentPoolInvitesInput>
+export type userUpdateToOneWithWhereWithoutSentPoolInvitesInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutSentPoolInvitesInput, Prisma.userUncheckedUpdateWithoutSentPoolInvitesInput>
 }
 
-export type UserUpdateWithoutSentPoolInvitesInput = {
+export type userUpdateWithoutSentPoolInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2906,14 +2906,14 @@ export type UserUpdateWithoutSentPoolInvitesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -2930,7 +2930,7 @@ export type UserUpdateWithoutSentPoolInvitesInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
+export type userUncheckedUpdateWithoutSentPoolInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2940,13 +2940,13 @@ export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2963,18 +2963,18 @@ export type UserUncheckedUpdateWithoutSentPoolInvitesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserUpsertWithoutReceivedPoolInvitesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedUpdateWithoutReceivedPoolInvitesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedCreateWithoutReceivedPoolInvitesInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutReceivedPoolInvitesInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedUpdateWithoutReceivedPoolInvitesInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedCreateWithoutReceivedPoolInvitesInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutReceivedPoolInvitesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedPoolInvitesInput, Prisma.UserUncheckedUpdateWithoutReceivedPoolInvitesInput>
+export type userUpdateToOneWithWhereWithoutReceivedPoolInvitesInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutReceivedPoolInvitesInput, Prisma.userUncheckedUpdateWithoutReceivedPoolInvitesInput>
 }
 
-export type UserUpdateWithoutReceivedPoolInvitesInput = {
+export type userUpdateWithoutReceivedPoolInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2983,14 +2983,14 @@ export type UserUpdateWithoutReceivedPoolInvitesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -3007,7 +3007,7 @@ export type UserUpdateWithoutReceivedPoolInvitesInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
+export type userUncheckedUpdateWithoutReceivedPoolInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3017,13 +3017,13 @@ export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3040,7 +3040,7 @@ export type UserUncheckedUpdateWithoutReceivedPoolInvitesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutNotificationsInput = {
+export type userCreateWithoutNotificationsInput = {
   id?: string
   name: string
   email: string
@@ -3049,14 +3049,14 @@ export type UserCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -3073,7 +3073,7 @@ export type UserCreateWithoutNotificationsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutNotificationsInput = {
+export type userUncheckedCreateWithoutNotificationsInput = {
   id?: string
   name: string
   email: string
@@ -3083,13 +3083,13 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -3106,23 +3106,23 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutNotificationsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+export type userCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutNotificationsInput, Prisma.userUncheckedCreateWithoutNotificationsInput>
 }
 
-export type UserUpsertWithoutNotificationsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutNotificationsInput, Prisma.userUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutNotificationsInput, Prisma.userUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+export type userUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutNotificationsInput, Prisma.userUncheckedUpdateWithoutNotificationsInput>
 }
 
-export type UserUpdateWithoutNotificationsInput = {
+export type userUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3131,14 +3131,14 @@ export type UserUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -3155,7 +3155,7 @@ export type UserUpdateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutNotificationsInput = {
+export type userUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3165,13 +3165,13 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3188,7 +3188,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutAccountsInput = {
+export type userCreateWithoutAccountsInput = {
   id?: string
   name: string
   email: string
@@ -3197,14 +3197,14 @@ export type UserCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -3221,7 +3221,7 @@ export type UserCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutAccountsInput = {
+export type userUncheckedCreateWithoutAccountsInput = {
   id?: string
   name: string
   email: string
@@ -3231,13 +3231,13 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -3254,23 +3254,23 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutAccountsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
+export type userCreateOrConnectWithoutAccountsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutAccountsInput, Prisma.userUncheckedCreateWithoutAccountsInput>
 }
 
-export type UserUpsertWithoutAccountsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutAccountsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutAccountsInput, Prisma.userUncheckedUpdateWithoutAccountsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutAccountsInput, Prisma.userUncheckedCreateWithoutAccountsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutAccountsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+export type userUpdateToOneWithWhereWithoutAccountsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutAccountsInput, Prisma.userUncheckedUpdateWithoutAccountsInput>
 }
 
-export type UserUpdateWithoutAccountsInput = {
+export type userUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3279,14 +3279,14 @@ export type UserUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -3303,7 +3303,7 @@ export type UserUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutAccountsInput = {
+export type userUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3313,13 +3313,13 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3336,7 +3336,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutSessionsInput = {
+export type userCreateWithoutSessionsInput = {
   id?: string
   name: string
   email: string
@@ -3345,14 +3345,14 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  plan: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  plan: Prisma.subscriptionPlanCreateNestedOneWithoutUsersInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -3369,7 +3369,7 @@ export type UserCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutSessionsInput = {
+export type userUncheckedCreateWithoutSessionsInput = {
   id?: string
   name: string
   email: string
@@ -3379,13 +3379,13 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   role?: $Enums.ROLE
   planId: string
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUserInput
   storageUsage?: Prisma.StorageUsageUncheckedCreateNestedManyWithoutUserInput
   poolMemberships?: Prisma.PoolMemberUncheckedCreateNestedManyWithoutUserInput
   ownedVehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -3402,23 +3402,23 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutSessionsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+export type userCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutSessionsInput, Prisma.userUncheckedCreateWithoutSessionsInput>
 }
 
-export type UserUpsertWithoutSessionsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
-  where?: Prisma.UserWhereInput
+export type userUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutSessionsInput, Prisma.userUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutSessionsInput, Prisma.userUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.userWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutSessionsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+export type userUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutSessionsInput, Prisma.userUncheckedUpdateWithoutSessionsInput>
 }
 
-export type UserUpdateWithoutSessionsInput = {
+export type userUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3427,14 +3427,14 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  plan?: Prisma.SubscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  plan?: Prisma.subscriptionPlanUpdateOneRequiredWithoutUsersNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -3451,7 +3451,7 @@ export type UserUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutSessionsInput = {
+export type userUncheckedUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3461,13 +3461,13 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
   planId?: Prisma.StringFieldUpdateOperationsInput | string
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3484,7 +3484,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateManyPlanInput = {
+export type userCreateManyPlanInput = {
   id?: string
   name: string
   email: string
@@ -3493,15 +3493,15 @@ export type UserCreateManyPlanInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   role?: $Enums.ROLE
-  storageLimitBytes?: bigint | number
+  maxStorageBytes?: bigint | number
   storageUsageBytes?: bigint | number
-  volumeUnit?: $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: $Enums.DistanceConsumptionTypes
+  volumeUnit?: $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: $Enums.TimeConsumptionTypes
   currency?: string
 }
 
-export type UserUpdateWithoutPlanInput = {
+export type userUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3510,13 +3510,13 @@ export type UserUpdateWithoutPlanInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -3534,7 +3534,7 @@ export type UserUpdateWithoutPlanInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPlanInput = {
+export type userUncheckedUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3543,13 +3543,13 @@ export type UserUncheckedUpdateWithoutPlanInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUserNestedInput
   storageUsage?: Prisma.StorageUsageUncheckedUpdateManyWithoutUserNestedInput
   poolMemberships?: Prisma.PoolMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedVehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3567,7 +3567,7 @@ export type UserUncheckedUpdateWithoutPlanInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateManyWithoutPlanInput = {
+export type userUncheckedUpdateManyWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3576,10 +3576,10 @@ export type UserUncheckedUpdateManyWithoutPlanInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  storageLimitBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maxStorageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   storageUsageBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  volumeUnit?: Prisma.EnumVolumeUnitTypesFieldUpdateOperationsInput | $Enums.VolumeUnitTypes
-  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypesFieldUpdateOperationsInput | $Enums.DistanceConsumptionTypes
+  volumeUnit?: Prisma.EnumVolumeUnitTypeFieldUpdateOperationsInput | $Enums.VolumeUnitType
+  consumptionUnitCode_distance?: Prisma.EnumDistanceConsumptionTypeFieldUpdateOperationsInput | $Enums.DistanceConsumptionType
   consumptionUnitCode_hour?: Prisma.EnumTimeConsumptionTypesFieldUpdateOperationsInput | $Enums.TimeConsumptionTypes
   currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -3741,7 +3741,7 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
 }
 
 
-export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type userSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
@@ -3751,33 +3751,33 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   role?: boolean
   planId?: boolean
-  storageLimitBytes?: boolean
+  maxStorageBytes?: boolean
   storageUsageBytes?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
   currency?: boolean
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
-  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
-  storageUsage?: boolean | Prisma.User$storageUsageArgs<ExtArgs>
-  poolMemberships?: boolean | Prisma.User$poolMembershipsArgs<ExtArgs>
-  ownedVehicles?: boolean | Prisma.User$ownedVehiclesArgs<ExtArgs>
-  createdRefills?: boolean | Prisma.User$createdRefillsArgs<ExtArgs>
-  createdMaintenances?: boolean | Prisma.User$createdMaintenancesArgs<ExtArgs>
-  sentPoolInvites?: boolean | Prisma.User$sentPoolInvitesArgs<ExtArgs>
-  receivedPoolInvites?: boolean | Prisma.User$receivedPoolInvitesArgs<ExtArgs>
-  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
-  createdTodos?: boolean | Prisma.User$createdTodosArgs<ExtArgs>
-  completedTodos?: boolean | Prisma.User$completedTodosArgs<ExtArgs>
-  notes?: boolean | Prisma.User$notesArgs<ExtArgs>
-  shoppingListItems?: boolean | Prisma.User$shoppingListItemsArgs<ExtArgs>
-  quickLinks?: boolean | Prisma.User$quickLinksArgs<ExtArgs>
-  accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
-  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
+  subscription?: boolean | Prisma.user$subscriptionArgs<ExtArgs>
+  storageUsage?: boolean | Prisma.user$storageUsageArgs<ExtArgs>
+  poolMemberships?: boolean | Prisma.user$poolMembershipsArgs<ExtArgs>
+  ownedVehicles?: boolean | Prisma.user$ownedVehiclesArgs<ExtArgs>
+  createdRefills?: boolean | Prisma.user$createdRefillsArgs<ExtArgs>
+  createdMaintenances?: boolean | Prisma.user$createdMaintenancesArgs<ExtArgs>
+  sentPoolInvites?: boolean | Prisma.user$sentPoolInvitesArgs<ExtArgs>
+  receivedPoolInvites?: boolean | Prisma.user$receivedPoolInvitesArgs<ExtArgs>
+  notifications?: boolean | Prisma.user$notificationsArgs<ExtArgs>
+  createdTodos?: boolean | Prisma.user$createdTodosArgs<ExtArgs>
+  completedTodos?: boolean | Prisma.user$completedTodosArgs<ExtArgs>
+  notes?: boolean | Prisma.user$notesArgs<ExtArgs>
+  shoppingListItems?: boolean | Prisma.user$shoppingListItemsArgs<ExtArgs>
+  quickLinks?: boolean | Prisma.user$quickLinksArgs<ExtArgs>
+  accounts?: boolean | Prisma.user$accountsArgs<ExtArgs>
+  sessions?: boolean | Prisma.user$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
-export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type userSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
@@ -3787,16 +3787,16 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   role?: boolean
   planId?: boolean
-  storageLimitBytes?: boolean
+  maxStorageBytes?: boolean
   storageUsageBytes?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
   currency?: boolean
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
-export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type userSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
@@ -3806,16 +3806,16 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   role?: boolean
   planId?: boolean
-  storageLimitBytes?: boolean
+  maxStorageBytes?: boolean
   storageUsageBytes?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
   consumptionUnitCode_hour?: boolean
   currency?: boolean
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
-export type UserSelectScalar = {
+export type userSelectScalar = {
   id?: boolean
   name?: boolean
   email?: boolean
@@ -3825,7 +3825,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
   role?: boolean
   planId?: boolean
-  storageLimitBytes?: boolean
+  maxStorageBytes?: boolean
   storageUsageBytes?: boolean
   volumeUnit?: boolean
   consumptionUnitCode_distance?: boolean
@@ -3833,39 +3833,39 @@ export type UserSelectScalar = {
   currency?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "role" | "planId" | "storageLimitBytes" | "storageUsageBytes" | "volumeUnit" | "consumptionUnitCode_distance" | "consumptionUnitCode_hour" | "currency", ExtArgs["result"]["user"]>
-export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
-  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
-  storageUsage?: boolean | Prisma.User$storageUsageArgs<ExtArgs>
-  poolMemberships?: boolean | Prisma.User$poolMembershipsArgs<ExtArgs>
-  ownedVehicles?: boolean | Prisma.User$ownedVehiclesArgs<ExtArgs>
-  createdRefills?: boolean | Prisma.User$createdRefillsArgs<ExtArgs>
-  createdMaintenances?: boolean | Prisma.User$createdMaintenancesArgs<ExtArgs>
-  sentPoolInvites?: boolean | Prisma.User$sentPoolInvitesArgs<ExtArgs>
-  receivedPoolInvites?: boolean | Prisma.User$receivedPoolInvitesArgs<ExtArgs>
-  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
-  createdTodos?: boolean | Prisma.User$createdTodosArgs<ExtArgs>
-  completedTodos?: boolean | Prisma.User$completedTodosArgs<ExtArgs>
-  notes?: boolean | Prisma.User$notesArgs<ExtArgs>
-  shoppingListItems?: boolean | Prisma.User$shoppingListItemsArgs<ExtArgs>
-  quickLinks?: boolean | Prisma.User$quickLinksArgs<ExtArgs>
-  accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
-  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+export type userOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "role" | "planId" | "maxStorageBytes" | "storageUsageBytes" | "volumeUnit" | "consumptionUnitCode_distance" | "consumptionUnitCode_hour" | "currency", ExtArgs["result"]["user"]>
+export type userInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
+  subscription?: boolean | Prisma.user$subscriptionArgs<ExtArgs>
+  storageUsage?: boolean | Prisma.user$storageUsageArgs<ExtArgs>
+  poolMemberships?: boolean | Prisma.user$poolMembershipsArgs<ExtArgs>
+  ownedVehicles?: boolean | Prisma.user$ownedVehiclesArgs<ExtArgs>
+  createdRefills?: boolean | Prisma.user$createdRefillsArgs<ExtArgs>
+  createdMaintenances?: boolean | Prisma.user$createdMaintenancesArgs<ExtArgs>
+  sentPoolInvites?: boolean | Prisma.user$sentPoolInvitesArgs<ExtArgs>
+  receivedPoolInvites?: boolean | Prisma.user$receivedPoolInvitesArgs<ExtArgs>
+  notifications?: boolean | Prisma.user$notificationsArgs<ExtArgs>
+  createdTodos?: boolean | Prisma.user$createdTodosArgs<ExtArgs>
+  completedTodos?: boolean | Prisma.user$completedTodosArgs<ExtArgs>
+  notes?: boolean | Prisma.user$notesArgs<ExtArgs>
+  shoppingListItems?: boolean | Prisma.user$shoppingListItemsArgs<ExtArgs>
+  quickLinks?: boolean | Prisma.user$quickLinksArgs<ExtArgs>
+  accounts?: boolean | Prisma.user$accountsArgs<ExtArgs>
+  sessions?: boolean | Prisma.user$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
+export type userIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
 }
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  plan?: boolean | Prisma.SubscriptionPlanDefaultArgs<ExtArgs>
+export type userIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plan?: boolean | Prisma.subscriptionPlanDefaultArgs<ExtArgs>
 }
 
-export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "User"
+export type $userPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "user"
   objects: {
-    plan: Prisma.$SubscriptionPlanPayload<ExtArgs>
-    subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
+    plan: Prisma.$subscriptionPlanPayload<ExtArgs>
+    subscription: Prisma.$subscriptionPayload<ExtArgs> | null
     storageUsage: Prisma.$StorageUsagePayload<ExtArgs>[]
     poolMemberships: Prisma.$PoolMemberPayload<ExtArgs>[]
     ownedVehicles: Prisma.$VehiclePayload<ExtArgs>[]
@@ -3892,28 +3892,28 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updatedAt: Date
     role: $Enums.ROLE
     planId: string
-    storageLimitBytes: bigint
+    maxStorageBytes: bigint
     storageUsageBytes: bigint
-    volumeUnit: $Enums.VolumeUnitTypes
-    consumptionUnitCode_distance: $Enums.DistanceConsumptionTypes
+    volumeUnit: $Enums.VolumeUnitType
+    consumptionUnitCode_distance: $Enums.DistanceConsumptionType
     consumptionUnitCode_hour: $Enums.TimeConsumptionTypes
     currency: string
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
 
-export type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$UserPayload, S>
+export type userGetPayload<S extends boolean | null | undefined | userDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$userPayload, S>
 
-export type UserCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<UserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type userCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<userFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: UserCountAggregateInputType | true
   }
 
-export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['User'], meta: { name: 'User' } }
+export interface userDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['user'], meta: { name: 'user' } }
   /**
    * Find zero or one User that matches the filter.
-   * @param {UserFindUniqueArgs} args - Arguments to find a User
+   * @param {userFindUniqueArgs} args - Arguments to find a User
    * @example
    * // Get one User
    * const user = await prisma.user.findUnique({
@@ -3922,12 +3922,12 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findUnique<T extends UserFindUniqueArgs>(args: Prisma.SelectSubset<T, UserFindUniqueArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends userFindUniqueArgs>(args: Prisma.SelectSubset<T, userFindUniqueArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one User that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+   * @param {userFindUniqueOrThrowArgs} args - Arguments to find a User
    * @example
    * // Get one User
    * const user = await prisma.user.findUniqueOrThrow({
@@ -3936,13 +3936,13 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, UserFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends userFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, userFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first User that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserFindFirstArgs} args - Arguments to find a User
+   * @param {userFindFirstArgs} args - Arguments to find a User
    * @example
    * // Get one User
    * const user = await prisma.user.findFirst({
@@ -3951,14 +3951,14 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findFirst<T extends UserFindFirstArgs>(args?: Prisma.SelectSubset<T, UserFindFirstArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends userFindFirstArgs>(args?: Prisma.SelectSubset<T, userFindFirstArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first User that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+   * @param {userFindFirstOrThrowArgs} args - Arguments to find a User
    * @example
    * // Get one User
    * const user = await prisma.user.findFirstOrThrow({
@@ -3967,13 +3967,13 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, UserFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends userFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, userFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more Users that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {userFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all Users
    * const users = await prisma.user.findMany()
@@ -3985,11 +3985,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends UserFindManyArgs>(args?: Prisma.SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends userFindManyArgs>(args?: Prisma.SelectSubset<T, userFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a User.
-   * @param {UserCreateArgs} args - Arguments to create a User.
+   * @param {userCreateArgs} args - Arguments to create a User.
    * @example
    * // Create one User
    * const User = await prisma.user.create({
@@ -3999,11 +3999,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  create<T extends UserCreateArgs>(args: Prisma.SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends userCreateArgs>(args: Prisma.SelectSubset<T, userCreateArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many Users.
-   * @param {UserCreateManyArgs} args - Arguments to create many Users.
+   * @param {userCreateManyArgs} args - Arguments to create many Users.
    * @example
    * // Create many Users
    * const user = await prisma.user.createMany({
@@ -4013,11 +4013,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    *     
    */
-  createMany<T extends UserCreateManyArgs>(args?: Prisma.SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends userCreateManyArgs>(args?: Prisma.SelectSubset<T, userCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create many Users and returns the data saved in the database.
-   * @param {UserCreateManyAndReturnArgs} args - Arguments to create many Users.
+   * @param {userCreateManyAndReturnArgs} args - Arguments to create many Users.
    * @example
    * // Create many Users
    * const user = await prisma.user.createManyAndReturn({
@@ -4037,11 +4037,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+  createManyAndReturn<T extends userCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, userCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a User.
-   * @param {UserDeleteArgs} args - Arguments to delete one User.
+   * @param {userDeleteArgs} args - Arguments to delete one User.
    * @example
    * // Delete one User
    * const User = await prisma.user.delete({
@@ -4051,11 +4051,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  delete<T extends UserDeleteArgs>(args: Prisma.SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends userDeleteArgs>(args: Prisma.SelectSubset<T, userDeleteArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one User.
-   * @param {UserUpdateArgs} args - Arguments to update one User.
+   * @param {userUpdateArgs} args - Arguments to update one User.
    * @example
    * // Update one User
    * const user = await prisma.user.update({
@@ -4068,11 +4068,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  update<T extends UserUpdateArgs>(args: Prisma.SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends userUpdateArgs>(args: Prisma.SelectSubset<T, userUpdateArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more Users.
-   * @param {UserDeleteManyArgs} args - Arguments to filter Users to delete.
+   * @param {userDeleteManyArgs} args - Arguments to filter Users to delete.
    * @example
    * // Delete a few Users
    * const { count } = await prisma.user.deleteMany({
@@ -4082,13 +4082,13 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  deleteMany<T extends UserDeleteManyArgs>(args?: Prisma.SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends userDeleteManyArgs>(args?: Prisma.SelectSubset<T, userDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Users.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {userUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many Users
    * const user = await prisma.user.updateMany({
@@ -4101,11 +4101,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  updateMany<T extends UserUpdateManyArgs>(args: Prisma.SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends userUpdateManyArgs>(args: Prisma.SelectSubset<T, userUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Users and returns the data updated in the database.
-   * @param {UserUpdateManyAndReturnArgs} args - Arguments to update many Users.
+   * @param {userUpdateManyAndReturnArgs} args - Arguments to update many Users.
    * @example
    * // Update many Users
    * const user = await prisma.user.updateManyAndReturn({
@@ -4131,11 +4131,11 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+  updateManyAndReturn<T extends userUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, userUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one User.
-   * @param {UserUpsertArgs} args - Arguments to update or create a User.
+   * @param {userUpsertArgs} args - Arguments to update or create a User.
    * @example
    * // Update or create a User
    * const user = await prisma.user.upsert({
@@ -4150,14 +4150,14 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  upsert<T extends UserUpsertArgs>(args: Prisma.SelectSubset<T, UserUpsertArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends userUpsertArgs>(args: Prisma.SelectSubset<T, userUpsertArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of Users.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserCountArgs} args - Arguments to filter Users to count.
+   * @param {userCountArgs} args - Arguments to filter Users to count.
    * @example
    * // Count the number of Users
    * const count = await prisma.user.count({
@@ -4166,8 +4166,8 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
   **/
-  count<T extends UserCountArgs>(
-    args?: Prisma.Subset<T, UserCountArgs>,
+  count<T extends userCountArgs>(
+    args?: Prisma.Subset<T, userCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -4206,7 +4206,7 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * Group by User.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {UserGroupByArgs} args - Group by arguments.
+   * @param {userGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -4221,14 +4221,14 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * 
   **/
   groupBy<
-    T extends UserGroupByArgs,
+    T extends userGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: UserGroupByArgs['orderBy'] }
-      : { orderBy?: UserGroupByArgs['orderBy'] },
+      ? { orderBy: userGroupByArgs['orderBy'] }
+      : { orderBy?: userGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -4277,38 +4277,38 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, userGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the User model
+ * Fields of the user model
  */
-readonly fields: UserFieldRefs;
+readonly fields: userFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for User.
+ * The delegate class that acts as a "Promise-like" for user.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__userClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  plan<T extends Prisma.SubscriptionPlanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubscriptionPlanDefaultArgs<ExtArgs>>): Prisma.Prisma__SubscriptionPlanClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  storageUsage<T extends Prisma.User$storageUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$storageUsageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StorageUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  poolMemberships<T extends Prisma.User$poolMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$poolMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  ownedVehicles<T extends Prisma.User$ownedVehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedVehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdRefills<T extends Prisma.User$createdRefillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdRefillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdMaintenances<T extends Prisma.User$createdMaintenancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdMaintenancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  sentPoolInvites<T extends Prisma.User$sentPoolInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentPoolInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  receivedPoolInvites<T extends Prisma.User$receivedPoolInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedPoolInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdTodos<T extends Prisma.User$createdTodosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTodosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TodoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  completedTodos<T extends Prisma.User$completedTodosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedTodosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TodoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  notes<T extends Prisma.User$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  shoppingListItems<T extends Prisma.User$shoppingListItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shoppingListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShoppingListItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  quickLinks<T extends Prisma.User$quickLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quickLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuickLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  plan<T extends Prisma.subscriptionPlanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subscriptionPlanDefaultArgs<ExtArgs>>): Prisma.Prisma__subscriptionPlanClient<runtime.Types.Result.GetResult<Prisma.$subscriptionPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  subscription<T extends Prisma.user$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$subscriptionArgs<ExtArgs>>): Prisma.Prisma__subscriptionClient<runtime.Types.Result.GetResult<Prisma.$subscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  storageUsage<T extends Prisma.user$storageUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$storageUsageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StorageUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  poolMemberships<T extends Prisma.user$poolMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$poolMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedVehicles<T extends Prisma.user$ownedVehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$ownedVehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdRefills<T extends Prisma.user$createdRefillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$createdRefillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdMaintenances<T extends Prisma.user$createdMaintenancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$createdMaintenancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentPoolInvites<T extends Prisma.user$sentPoolInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$sentPoolInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedPoolInvites<T extends Prisma.user$receivedPoolInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$receivedPoolInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PoolInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.user$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdTodos<T extends Prisma.user$createdTodosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$createdTodosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TodoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  completedTodos<T extends Prisma.user$completedTodosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$completedTodosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TodoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.user$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shoppingListItems<T extends Prisma.user$shoppingListItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$shoppingListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShoppingListItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  quickLinks<T extends Prisma.user$quickLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$quickLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuickLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  accounts<T extends Prisma.user$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.user$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4335,442 +4335,442 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
 
 
 /**
- * Fields of the User model
+ * Fields of the user model
  */
-export interface UserFieldRefs {
-  readonly id: Prisma.FieldRef<"User", 'String'>
-  readonly name: Prisma.FieldRef<"User", 'String'>
-  readonly email: Prisma.FieldRef<"User", 'String'>
-  readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
-  readonly image: Prisma.FieldRef<"User", 'String'>
-  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly role: Prisma.FieldRef<"User", 'ROLE'>
-  readonly planId: Prisma.FieldRef<"User", 'String'>
-  readonly storageLimitBytes: Prisma.FieldRef<"User", 'BigInt'>
-  readonly storageUsageBytes: Prisma.FieldRef<"User", 'BigInt'>
-  readonly volumeUnit: Prisma.FieldRef<"User", 'VolumeUnitTypes'>
-  readonly consumptionUnitCode_distance: Prisma.FieldRef<"User", 'DistanceConsumptionTypes'>
-  readonly consumptionUnitCode_hour: Prisma.FieldRef<"User", 'TimeConsumptionTypes'>
-  readonly currency: Prisma.FieldRef<"User", 'String'>
+export interface userFieldRefs {
+  readonly id: Prisma.FieldRef<"user", 'String'>
+  readonly name: Prisma.FieldRef<"user", 'String'>
+  readonly email: Prisma.FieldRef<"user", 'String'>
+  readonly emailVerified: Prisma.FieldRef<"user", 'Boolean'>
+  readonly image: Prisma.FieldRef<"user", 'String'>
+  readonly createdAt: Prisma.FieldRef<"user", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"user", 'DateTime'>
+  readonly role: Prisma.FieldRef<"user", 'ROLE'>
+  readonly planId: Prisma.FieldRef<"user", 'String'>
+  readonly maxStorageBytes: Prisma.FieldRef<"user", 'BigInt'>
+  readonly storageUsageBytes: Prisma.FieldRef<"user", 'BigInt'>
+  readonly volumeUnit: Prisma.FieldRef<"user", 'VolumeUnitType'>
+  readonly consumptionUnitCode_distance: Prisma.FieldRef<"user", 'DistanceConsumptionType'>
+  readonly consumptionUnitCode_hour: Prisma.FieldRef<"user", 'TimeConsumptionTypes'>
+  readonly currency: Prisma.FieldRef<"user", 'String'>
 }
     
 
 // Custom InputTypes
 /**
- * User findUnique
+ * user findUnique
  */
-export type UserFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter, which User to fetch.
+   * Filter, which user to fetch.
    */
-  where: Prisma.UserWhereUniqueInput
+  where: Prisma.userWhereUniqueInput
 }
 
 /**
- * User findUniqueOrThrow
+ * user findUniqueOrThrow
  */
-export type UserFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter, which User to fetch.
+   * Filter, which user to fetch.
    */
-  where: Prisma.UserWhereUniqueInput
+  where: Prisma.userWhereUniqueInput
 }
 
 /**
- * User findFirst
+ * user findFirst
  */
-export type UserFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter, which User to fetch.
+   * Filter, which user to fetch.
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Users to fetch.
+   * Determine the order of users to fetch.
    */
-  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  orderBy?: Prisma.userOrderByWithRelationInput | Prisma.userOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Users.
+   * Sets the position for searching for users.
    */
-  cursor?: Prisma.UserWhereUniqueInput
+  cursor?: Prisma.userWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Users from the position of the cursor.
+   * Take `±n` users from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Users.
+   * Skip the first `n` users.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Users.
+   * Filter by unique combinations of users.
    */
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**
- * User findFirstOrThrow
+ * user findFirstOrThrow
  */
-export type UserFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter, which User to fetch.
+   * Filter, which user to fetch.
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Users to fetch.
+   * Determine the order of users to fetch.
    */
-  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  orderBy?: Prisma.userOrderByWithRelationInput | Prisma.userOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Users.
+   * Sets the position for searching for users.
    */
-  cursor?: Prisma.UserWhereUniqueInput
+  cursor?: Prisma.userWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Users from the position of the cursor.
+   * Take `±n` users from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Users.
+   * Skip the first `n` users.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Users.
+   * Filter by unique combinations of users.
    */
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**
- * User findMany
+ * user findMany
  */
-export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter, which Users to fetch.
+   * Filter, which users to fetch.
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Users to fetch.
+   * Determine the order of users to fetch.
    */
-  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  orderBy?: Prisma.userOrderByWithRelationInput | Prisma.userOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing Users.
+   * Sets the position for listing users.
    */
-  cursor?: Prisma.UserWhereUniqueInput
+  cursor?: Prisma.userWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Users from the position of the cursor.
+   * Take `±n` users from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Users.
+   * Skip the first `n` users.
    */
   skip?: number
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**
- * User create
+ * user create
  */
-export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * The data needed to create a User.
+   * The data needed to create a user.
    */
-  data: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.userCreateInput, Prisma.userUncheckedCreateInput>
 }
 
 /**
- * User createMany
+ * user createMany
  */
-export type UserCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many Users.
+   * The data used to create many users.
    */
-  data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
+  data: Prisma.userCreateManyInput | Prisma.userCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * User createManyAndReturn
+ * user createManyAndReturn
  */
-export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelectCreateManyAndReturn<ExtArgs> | null
+  select?: Prisma.userSelectCreateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
-   * The data used to create many Users.
+   * The data used to create many users.
    */
-  data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
+  data: Prisma.userCreateManyInput | Prisma.userCreateManyInput[]
   skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
+  include?: Prisma.userIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
- * User update
+ * user update
  */
-export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * The data needed to update a User.
+   * The data needed to update a user.
    */
-  data: Prisma.XOR<Prisma.UserUpdateInput, Prisma.UserUncheckedUpdateInput>
+  data: Prisma.XOR<Prisma.userUpdateInput, Prisma.userUncheckedUpdateInput>
   /**
-   * Choose, which User to update.
+   * Choose, which user to update.
    */
-  where: Prisma.UserWhereUniqueInput
+  where: Prisma.userWhereUniqueInput
 }
 
 /**
- * User updateMany
+ * user updateMany
  */
-export type UserUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update Users.
+   * The data used to update users.
    */
-  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.userUpdateManyMutationInput, Prisma.userUncheckedUpdateManyInput>
   /**
-   * Filter which Users to update
+   * Filter which users to update
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
-   * Limit how many Users to update.
+   * Limit how many users to update.
    */
   limit?: number
 }
 
 /**
- * User updateManyAndReturn
+ * user updateManyAndReturn
  */
-export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelectUpdateManyAndReturn<ExtArgs> | null
+  select?: Prisma.userSelectUpdateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
-   * The data used to update Users.
+   * The data used to update users.
    */
-  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.userUpdateManyMutationInput, Prisma.userUncheckedUpdateManyInput>
   /**
-   * Filter which Users to update
+   * Filter which users to update
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
-   * Limit how many Users to update.
+   * Limit how many users to update.
    */
   limit?: number
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
+  include?: Prisma.userIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
- * User upsert
+ * user upsert
  */
-export type UserUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * The filter to search for the User to update in case it exists.
+   * The filter to search for the user to update in case it exists.
    */
-  where: Prisma.UserWhereUniqueInput
+  where: Prisma.userWhereUniqueInput
   /**
-   * In case the User found by the `where` argument doesn't exist, create a new User with this data.
+   * In case the user found by the `where` argument doesn't exist, create a new user with this data.
    */
-  create: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
+  create: Prisma.XOR<Prisma.userCreateInput, Prisma.userUncheckedCreateInput>
   /**
-   * In case the User was found with the provided `where` argument, update it with this data.
+   * In case the user was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<Prisma.UserUpdateInput, Prisma.UserUncheckedUpdateInput>
+  update: Prisma.XOR<Prisma.userUpdateInput, Prisma.userUncheckedUpdateInput>
 }
 
 /**
- * User delete
+ * user delete
  */
-export type UserDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
   /**
-   * Filter which User to delete.
+   * Filter which user to delete.
    */
-  where: Prisma.UserWhereUniqueInput
+  where: Prisma.userWhereUniqueInput
 }
 
 /**
- * User deleteMany
+ * user deleteMany
  */
-export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which Users to delete
+   * Filter which users to delete
    */
-  where?: Prisma.UserWhereInput
+  where?: Prisma.userWhereInput
   /**
-   * Limit how many Users to delete.
+   * Limit how many users to delete.
    */
   limit?: number
 }
 
 /**
- * User.subscription
+ * user.subscription
  */
-export type User$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Subscription
+   * Select specific fields to fetch from the subscription
    */
-  select?: Prisma.SubscriptionSelect<ExtArgs> | null
+  select?: Prisma.subscriptionSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Subscription
+   * Omit specific fields from the subscription
    */
-  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
+  omit?: Prisma.subscriptionOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.SubscriptionInclude<ExtArgs> | null
-  where?: Prisma.SubscriptionWhereInput
+  include?: Prisma.subscriptionInclude<ExtArgs> | null
+  where?: Prisma.subscriptionWhereInput
 }
 
 /**
- * User.storageUsage
+ * user.storageUsage
  */
-export type User$storageUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$storageUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the StorageUsage
    */
@@ -4792,9 +4792,9 @@ export type User$storageUsageArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * User.poolMemberships
+ * user.poolMemberships
  */
-export type User$poolMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$poolMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the PoolMember
    */
@@ -4816,9 +4816,9 @@ export type User$poolMembershipsArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * User.ownedVehicles
+ * user.ownedVehicles
  */
-export type User$ownedVehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$ownedVehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Vehicle
    */
@@ -4840,9 +4840,9 @@ export type User$ownedVehiclesArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * User.createdRefills
+ * user.createdRefills
  */
-export type User$createdRefillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$createdRefillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Refill
    */
@@ -4864,9 +4864,9 @@ export type User$createdRefillsArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * User.createdMaintenances
+ * user.createdMaintenances
  */
-export type User$createdMaintenancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$createdMaintenancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Maintenance
    */
@@ -4888,9 +4888,9 @@ export type User$createdMaintenancesArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
- * User.sentPoolInvites
+ * user.sentPoolInvites
  */
-export type User$sentPoolInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$sentPoolInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the PoolInvite
    */
@@ -4912,9 +4912,9 @@ export type User$sentPoolInvitesArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * User.receivedPoolInvites
+ * user.receivedPoolInvites
  */
-export type User$receivedPoolInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$receivedPoolInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the PoolInvite
    */
@@ -4936,9 +4936,9 @@ export type User$receivedPoolInvitesArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
- * User.notifications
+ * user.notifications
  */
-export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Notification
    */
@@ -4960,9 +4960,9 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * User.createdTodos
+ * user.createdTodos
  */
-export type User$createdTodosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$createdTodosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Todo
    */
@@ -4984,9 +4984,9 @@ export type User$createdTodosArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * User.completedTodos
+ * user.completedTodos
  */
-export type User$completedTodosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$completedTodosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Todo
    */
@@ -5008,9 +5008,9 @@ export type User$completedTodosArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * User.notes
+ * user.notes
  */
-export type User$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Note
    */
@@ -5032,9 +5032,9 @@ export type User$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 }
 
 /**
- * User.shoppingListItems
+ * user.shoppingListItems
  */
-export type User$shoppingListItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$shoppingListItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the ShoppingListItem
    */
@@ -5056,9 +5056,9 @@ export type User$shoppingListItemsArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * User.quickLinks
+ * user.quickLinks
  */
-export type User$quickLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$quickLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the QuickLink
    */
@@ -5080,9 +5080,9 @@ export type User$quickLinksArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * User.accounts
+ * user.accounts
  */
-export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Account
    */
@@ -5104,9 +5104,9 @@ export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.sessions
+ * user.sessions
  */
-export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type user$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Session
    */
@@ -5128,19 +5128,19 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User without action
+ * user without action
  */
-export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type userDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the User
+   * Select specific fields to fetch from the user
    */
-  select?: Prisma.UserSelect<ExtArgs> | null
+  select?: Prisma.userSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the User
+   * Omit specific fields from the user
    */
-  omit?: Prisma.UserOmit<ExtArgs> | null
+  omit?: Prisma.userOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserInclude<ExtArgs> | null
+  include?: Prisma.userInclude<ExtArgs> | null
 }
