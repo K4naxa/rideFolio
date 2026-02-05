@@ -1,13 +1,13 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { VehicleSchemaType } from "@repo/validation";
+import type { VehicleInput } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
 export function useVehicleCreate() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: VehicleSchemaType) => {
+    mutationFn: async (data: VehicleInput) => {
       const response = await api.post("/vehicles", data);
       return response.data;
     },

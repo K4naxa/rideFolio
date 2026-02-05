@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { TAccessibleVehicle, VehicleSchema, VehicleSchemaType, VehicleType } from '@repo/validation';
+import { TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
 
@@ -20,8 +20,8 @@ export class VehiclesController {
   @Post('')
   async createVehicle(
     @Session() userSession: UserSession,
-    @Body(new ZodValidationPipe(VehicleSchema as ZodType))
-    vehicleDto: VehicleSchemaType,
+    @Body(new ZodValidationPipe(VehicleInputSchema as ZodType))
+    vehicleDto: VehicleInput,
   ) {
     return await this.vehiclesService.create(userSession, vehicleDto);
   }

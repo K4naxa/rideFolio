@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ref, onMounted, onUnmounted, useTemplateRef } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 
 interface Props {
@@ -11,7 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
   scrollAmount: 150,
 });
 
-const scrollContainer = ref<HTMLElement | null>(null);
+const scrollContainer = useTemplateRef("scrollContainer");
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
 
@@ -71,7 +70,7 @@ onUnmounted(() => {
     </Transition>
 
     <!-- Scrollable content -->
-    <div ref="scrollContainer" class="scrollbar-none overflow-x-auto scroll-smooth">
+    <div ref="scrollContainer" class="scrollbar-macos overflow-x-auto scroll-smooth pb-2">
       <slot />
     </div>
 
@@ -82,9 +81,7 @@ onUnmounted(() => {
         class="pointer-events-none absolute top-0 right-0 z-10 flex h-full items-center justify-end"
       >
         <!-- Gradient fade -->
-        <div
-          class="from-background via-background/80 absolute inset-y-0 right-0 w-12 bg-gradient-to-l to-transparent"
-        />
+        <div class="from-background via-background/80 absolute inset-y-0 right-0 w-12 bg-linear-to-l to-transparent" />
         <!-- Chevron button -->
         <Icon name="chevronRight" class="text-muted-foreground relative z-10 mr-1 size-5" />
       </div>
@@ -97,8 +94,10 @@ onUnmounted(() => {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
+
+.scrollbar-normal::-webkit-scrollbar {
+  display: block;
+  scrollbar-width: auto;
 }
 
 .fade-enter-active,

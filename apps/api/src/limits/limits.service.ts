@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { MaintenanceInput, StorageBreakdown, VehicleSchemaType } from '@repo/validation';
+import { MaintenanceInput, StorageBreakdown, VehicleInput } from '@repo/validation';
 import { Prisma } from 'prisma/generated/prisma/client';
 import { ROLE, StorageUsageCategory } from 'prisma/generated/prisma/enums';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
@@ -106,7 +106,7 @@ export class LimitsService {
   }
 
   // COMBINED VALIDATORS
-  async canCreateVehicle(userId: string, data: VehicleSchemaType): Promise<number> {
+  async canCreateVehicle(userId: string, data: VehicleInput): Promise<number> {
     await this.enforceVehicleLimit(userId);
     const sizeBytes = this.calculateSizeBytes(data) + CREATION_SYSTEM_OVERHEAD_BUFFER;
     await this.enforceStorageLimit(userId, userId, sizeBytes);

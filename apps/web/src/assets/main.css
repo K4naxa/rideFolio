@@ -12,6 +12,13 @@ html {
   min-width: 400px;
 }
 
+/* !IMPORTANT: Fixes pixelation from downscaled images with object-cover */
+img {
+  overflow-clip-margin: unset;
+  overflow: visible;
+  transform: translate3d(0, 0, 1px);
+}
+
 /* Define the keyframe animations */
 @keyframes fade-in {
   from {
@@ -108,6 +115,10 @@ html {
   /* Log - Todo */
   --color-todo: var(--color-violet-500); /* violet-500 */
   --color-todo-foreground: var(--color-violet-50); /* slate-50 */
+
+  --transition-property-width: width;
+  --transition-property-height: height;
+  --transition-property-size: width, height;
 }
 
 /*
@@ -219,6 +230,108 @@ html {
 /*
   ---break---
 */
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 9999px;
+    background: var(--color-scrollbar-track);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: 100vh;
+  }
+  &::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+}
+
+/* Scrollbar visible on hover */
+@utility scrollbar-hover {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+  }
+  &::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+  &:hover {
+    scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-scrollbar-thumb);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--color-scrollbar-thumb-hover);
+    }
+  }
+} /* ===== Gutter Stable (Prevents Layout Shift) ===== */
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+@utility scrollbar-macos {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+  &:hover {
+    scrollbar-color: oklch(0.6 0 0 / 0.5) transparent;
+    &::-webkit-scrollbar-thumb {
+      background: oklch(0.6 0 0 / 0.5);
+      background-clip: content-box;
+    }
+  }
+}
+
 @layer utilities {
   .mainGaps {
     @apply gap-12 md:gap-14 lg:gap-16 xl:gap-18 2xl:gap-20;
@@ -231,8 +344,11 @@ html {
   }
 
   .scrollArea::-webkit-scrollbar {
+    -ms-overflow-style: auto;
+
     width: 7px;
     height: 7px;
+    display: block;
   }
 
   .scrollArea::-webkit-scrollbar-track {

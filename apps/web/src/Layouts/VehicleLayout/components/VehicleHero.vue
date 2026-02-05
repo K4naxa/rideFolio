@@ -65,7 +65,7 @@ const statsOpen = ref(false);
           <VehicleAvatar
             :src="currentVehicle?.vehicleData.image"
             :type="currentVehicle?.vehicleData.type.code"
-            class="hidden aspect-video h-28 w-fit shrink-0 lg:block"
+            class="hidden aspect-video h-28 w-fit shrink-0 shadow-md shadow-black/30 lg:block"
           />
 
           <div class="grid h-24 w-full grid-cols-1 grid-rows-[3.5rem_1fr]">

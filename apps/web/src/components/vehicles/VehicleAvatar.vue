@@ -14,7 +14,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div :class="twMerge('bg-muted group relative h-full overflow-hidden rounded', props.class)">
+  <div :class="twMerge('bg-muted group relative h-full w-full overflow-hidden rounded', props.class)">
     <img
       v-if="props.src"
       :src="props.src"
@@ -24,7 +24,7 @@ const props = defineProps<{
       :class="
         twMerge(
           'h-full w-full object-cover object-center',
-          props.hoverEffect ? 'scale-105 transition-transform duration-250 ease-in-out group-hover:scale-100' : '',
+          props.hoverEffect ? 'scale-100 transition-transform duration-500 ease-in-out group-hover:scale-105' : '',
         )
       "
     />

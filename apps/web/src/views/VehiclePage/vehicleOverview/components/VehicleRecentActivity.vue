@@ -17,6 +17,7 @@ import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 
 import { useIntersectionObserver } from "@vueuse/core";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol } = useCurrentUser();

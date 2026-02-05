@@ -28,7 +28,7 @@ import { computed } from "vue";
 import { toast } from "vue-sonner";
 import Separator from "@/components/ui/separator/Separator.vue";
 import { useAuth } from "@/lib/authClient";
-import { formatBytesToMB } from "@/lib/utils";
+import { capitalize, formatBytesToMB } from "@/lib/utils";
 import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
@@ -181,7 +181,7 @@ const handleCreateVehicleClick = () => {
             <!--  headerl -->
             <div class="flex items-end justify-between gap-4">
               <Label class="text-muted-foreground wfu">Current Plan </Label>
-              <Badge variant="secondary" class="ml-auto capitalize">{{ user.subscriptionPlan.code }}</Badge>
+              <Badge variant="secondary" class="ml-auto capitalize">{{ capitalize(user.subscriptionPlan.code) }}</Badge>
             </div>
 
             <!--  progress bar -->

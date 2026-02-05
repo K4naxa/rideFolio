@@ -20,7 +20,7 @@ import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleCreate } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
-import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleSchema } from "@repo/validation";
+import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed } from "vue";
@@ -45,7 +45,7 @@ const { mutateAsync: createVehicleAsync, isPending: createPending } = useVehicle
 const { data: vehicles } = useVehiclesAll();
 const { data: vehicleTypes } = useVehicleTypes({ enabled: isModalOpen });
 
-const clientSchema = VehicleSchema.extend({
+const clientSchema = VehicleInputSchema.extend({
   licensePlate: z
     .string()
     .optional()

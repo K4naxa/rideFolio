@@ -17,7 +17,7 @@ import {
   RecentActivityItem,
   TAccessibleVehicle,
   TStatCardData,
-  VehicleSchemaType,
+  VehicleInput,
   VehicleType,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -39,7 +39,7 @@ export class VehiclesService {
 
   // ***       Management       ***
 
-  async create(userSession: UserSession, vehicleData: VehicleSchemaType): Promise<{ newVehicleId: string }> {
+  async create(userSession: UserSession, vehicleData: VehicleInput): Promise<{ newVehicleId: string }> {
     try {
       // Validate that the vehicle type exists
       const vehicleType = await this.prisma.vehicleType.findUnique({

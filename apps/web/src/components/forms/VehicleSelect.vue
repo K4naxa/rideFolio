@@ -79,7 +79,7 @@ function handleSelect(value: string) {
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent :class="contentClass" same-width align="start">
-      <div v-if="filteredVehicles.length > 0" class="scrollArea max-h-72 w-full space-y-1 overflow-y-auto">
+      <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
         <VehicleSelectItem
           v-for="vehicle in filteredVehicles"
           :is-active="vehicle.vehicleData.id === props.value"

@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { fuelTypeCodes, odometerTypeCodes } from "./vehicle.types";
 
-export const VehicleSchema = z.object({
+export const VehicleInputSchema = z.object({
   // Mandatory Name
   name: z.string().min(1, "Vehicle name is required").trim().max(50, "Name can be at most 50 characters long"),
 
   // Optional Make
-  make: z.string().max(20, "Manufacturer name can be at most 20 characters long").nullable().optional(),
+  make: z.string().max(50, "Manufacturer name can be at most 50 characters long").nullable().optional(),
 
   // Optional Model
-  model: z.string().max(20, "Model name can be at most 20 characters long").nullable().optional(),
+  model: z.string().max(50, "Model name can be at most 50 characters long").nullable().optional(),
 
   // Mandatory Vehicle Type
   type: z.string().min(1, "Vehicle type is required").trim(),
@@ -53,4 +53,4 @@ export const VehicleSchema = z.object({
     .optional(),
 });
 
-export type VehicleSchemaType = z.infer<typeof VehicleSchema>;
+export type VehicleInput = z.infer<typeof VehicleInputSchema>;
