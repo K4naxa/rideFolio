@@ -30,7 +30,7 @@ const props = defineProps<{
         :key="vehicle.vehicleData.id"
         :class="
           twMerge(
-            'group bg-card hover:border-primary/50 focus-visible:ring-ring/50 transition-size flex aspect-4/3 shrink-0 cursor-pointer flex-col overflow-hidden rounded border transition-shadow duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] dark:bg-transparent',
+            'group cardBackground focus-visible:ring-ring/50 transition-size flex aspect-4/3 shrink-0 cursor-pointer flex-col overflow-hidden rounded border transition-shadow duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] dark:bg-transparent',
             props.size === 'sm' && 'w-16',
             props.size === 'md' && 'w-42',
             props.size === 'lg' && 'h-40 lg:h-68',
@@ -43,21 +43,20 @@ const props = defineProps<{
           <VehicleAvatar
             :src="vehicle.vehicleData.image"
             :type="vehicle.vehicleData.type.code"
+            hover-effect
             class="bg-muted relative overflow-hidden rounded-b-none"
           />
           <div class="to-card dark:to-background absolute bottom-0 h-1/4 bg-linear-to-b from-transparent" />
         </div>
-        <div
-          class="flex flex-1 flex-col items-center justify-center gap-0.5 truncate overflow-hidden p-2 pt-0 text-center"
-        >
-          <span class="text-foreground block w-full truncate text-sm md:font-semibold">
+        <div class="flex flex-1 flex-col items-center justify-center truncate overflow-hidden p-2 text-center">
+          <h3 class="text-foreground block w-full truncate leading-tight">
             {{ vehicle.vehicleData.name }}
-          </span>
+          </h3>
           <span
             v-if="vehicle.vehicleData.make && vehicle.vehicleData.model"
-            class="text-muted-foreground hidden w-full truncate text-xs md:block"
+            class="text-muted-foreground hidden w-full truncate md:block"
           >
-            {{ vehicle.vehicleData.make }} {{ vehicle.vehicleData.model }}
+            {{ vehicle.vehicleData.make }} • {{ vehicle.vehicleData.model }}
           </span>
         </div>
       </RouterLink>

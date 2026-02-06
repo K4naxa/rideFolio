@@ -44,7 +44,7 @@ const handleNewClick = () => {
 };
 </script>
 <template>
-  <div class="flex w-full min-w-60 flex-col gap-4 lg:max-w-96 lg:border-r">
+  <div class="flex flex-1 flex-col gap-4 lg:max-w-96 lg:border-r">
     <!-- controls -->
     <div class="flex flex-col gap-4 lg:pr-8">
       <Input
@@ -72,7 +72,7 @@ const handleNewClick = () => {
       </div>
     </div>
 
-    <div class="scrollbar flex overflow-y-auto lg:pr-8" v-if="!props.isLoading">
+    <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!props.isLoading">
       <ul v-auto-animate v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-4 lg:gap-2">
         <li
           v-for="note in filteredNotes"

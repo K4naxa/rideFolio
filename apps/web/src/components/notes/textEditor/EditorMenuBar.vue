@@ -174,7 +174,10 @@ const menuOptions = computed<MenuOptions[]>(() => {
   <div
     v-if="props.editor"
     :class="
-      twMerge('bg-background scrollArea mb-1 flex items-center gap-2 overflow-x-auto rounded border p-1', props.class)
+      twMerge(
+        'bg-background scrollbar-macos mb-1 flex items-center gap-1.5 overflow-x-auto rounded border p-1',
+        props.class,
+      )
     "
   >
     <Toggle
@@ -184,6 +187,7 @@ const menuOptions = computed<MenuOptions[]>(() => {
       :aria-label="option.label"
       size="sm"
       type="button"
+      class="shrin flex-1"
     >
       <component :is="option.icon" />
     </Toggle>

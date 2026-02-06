@@ -48,7 +48,7 @@ useIntersectionObserver(loadMoreTrigger, ([entry]) => {
   <section class="flex flex-1 flex-col overflow-hidden">
     <header class="">
       <div class="flex justify-between gap-4">
-        <h2 class="font-medium">Recent activity</h2>
+        <h2 class="font-medium">Activity Log</h2>
         <Button variant="ghost" size="icon-sm">
           <EllipsisVertical />
         </Button>

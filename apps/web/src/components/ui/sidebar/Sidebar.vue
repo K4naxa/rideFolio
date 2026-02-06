@@ -6,6 +6,7 @@ import SheetDescription from "@/components/ui/sheet/SheetDescription.vue";
 import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
 import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from "./utils";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
 defineOptions({
   inheritAttrs: false,
@@ -17,16 +18,15 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "offcanvas",
 });
 
-const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+const { state, openMobile, setOpenMobile } = useSidebar();
+const isMobile = useIsMobile();
 </script>
 
 <template>
   <div
     v-if="collapsible === 'none'"
     data-slot="sidebar"
-    :class="
-      cn('bg-background text-foreground flex h-full w-(--sidebar-width) flex-col', props.class)
-    "
+    :class="cn('bg-background text-foreground flex h-full w-(--sidebar-width) flex-col', props.class)"
     v-bind="$attrs"
   >
     <slot />
@@ -66,7 +66,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
     <div
       :class="
         cn(
-          'relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear',
+          'transition-width relative w-(--sidebar-width) bg-transparent duration-200 ease-linear',
           'group-data-[collapsible=offcanvas]:w-0',
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'

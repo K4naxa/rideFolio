@@ -68,7 +68,7 @@ function handleNoteClick(note: Note) {
 }
 </script>
 <template>
-  <div class="mainGaps flex w-full flex-col">
+  <div class="gaps-big flex w-full flex-col">
     <!-- First row -->
 
     <div class="flex h-52 min-h-0 w-full md:h-80">
@@ -76,7 +76,7 @@ function handleNoteClick(note: Note) {
     </div>
 
     <!-- second row -->
-    <div class="mainGaps grid w-full grid-cols-1 lg:grid-cols-2">
+    <div class="gaps-big grid w-full grid-cols-1 lg:grid-cols-2">
       <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
         <VehicleRecentActivity />
       </section>
@@ -142,7 +142,7 @@ function handleNoteClick(note: Note) {
     </div>
 
     <!-- Third row -->
-    <div class="mainGaps grid w-full grid-cols-1 md:grid-cols-2">
+    <div class="gaps-big grid w-full grid-cols-1 md:grid-cols-2">
       <section class="flex h-full max-h-86 min-h-0 flex-col gap-4 lg:h-86">
         <header>
           <div class="flex justify-between gap-4">

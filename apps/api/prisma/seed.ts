@@ -16,6 +16,7 @@ async function main() {
   await prisma.vehiclePart.deleteMany();
   await prisma.maintenanceCategory.deleteMany();
   await prisma.subscriptionPlan.deleteMany();
+
   console.log('✅ Database cleaned\n');
 
   // Run all seed functions within a transaction

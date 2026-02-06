@@ -24,7 +24,7 @@ const props = defineProps<{
       :class="
         twMerge(
           'h-full w-full object-cover object-center',
-          props.hoverEffect ? 'scale-100 transition-transform duration-500 ease-in-out group-hover:scale-105' : '',
+          props.hoverEffect ? 'scale-100 transition-transform duration-500 group-hover:scale-105' : '',
         )
       "
     />

@@ -53,7 +53,7 @@ const editor = useEditor({
       placeholder: props.placeholder || "Start typing...",
       showOnlyWhenEditable: true,
       emptyEditorClass:
-        "flex-1 min-w-0 cursor-text before:content-[attr(data-placeholder)] before:absolute before:top-0 before:left-0 before:text-mauve-11 before:opacity-50",
+        "flex-1 cursor-text before:content-[attr(data-placeholder)] before:absolute before:top-0 before:left-0 before:text-mauve-11 before:opacity-50",
     }),
     CharacterCount.configure({
       limit: CHARACTER_LIMIT,
@@ -67,7 +67,7 @@ const editor = useEditor({
   },
   editorProps: {
     attributes: {
-      class: "flex-1 outline-none break-words whitespace-pre-wrap",
+      class: "flex-1 outline-none break-words whitespace-pre-wrap w-full",
     },
   },
 });
@@ -94,7 +94,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+  <div class="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-x-hidden">
     <EditorMenuBar v-if="editor" :editor="editor" />
 
     <!-- Character limit error message -->
@@ -111,7 +111,7 @@ watch(
     <div
       :class="
         twMerge(
-          'scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto px-1',
+          'scrollbar flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto px-1',
           characterCountIsAtLimit ? 'border-destructive rounded border' : '',
           props.class,
         )
@@ -120,7 +120,7 @@ watch(
       <!-- Free slot inside the editor container ( used for title ) -->
       <slot />
 
-      <editor-content :editor="editor" class="flex flex-1" />
+      <editor-content :editor="editor" class="flex w-full flex-1" />
       <span v-if="error" class="text-destructive mt-2 text-sm">{{ error }}</span>
     </div>
   </div>

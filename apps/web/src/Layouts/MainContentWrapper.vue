@@ -8,8 +8,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div data-slot="main-content-wrapper" class="flex w-full">
-    <div :class="[twMerge('mx-auto flex w-full max-w-370 px-4 sm:px-6 lg:px-8', props.class)]">
+  <div data-slot="main-content-wrapper" class="flex h-full w-full">
+    <div :class="[twMerge('mx-auto flex h-full w-full max-w-370 px-4 sm:px-6 lg:px-8', props.class)]">
       <slot />
     </div>
   </div>
