@@ -18,6 +18,7 @@ import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 
 import { useIntersectionObserver } from "@vueuse/core";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import CardHeader from "@/components/ui/card/CardHeader.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol } = useCurrentUser();
@@ -45,106 +46,107 @@ useIntersectionObserver(loadMoreTrigger, ([entry]) => {
 </script>
 
 <template>
-  <section class="flex flex-1 flex-col overflow-hidden">
-    <header class="">
-      <div class="flex justify-between gap-4">
-        <h2 class="font-medium">Activity Log</h2>
-        <Button variant="ghost" size="icon-sm">
-          <EllipsisVertical />
-        </Button>
-      </div>
-      <Separator class="mt-1" />
-    </header>
-
-    <div class="@container mt-2 min-h-0 flex-1 rounded px-0">
+  <section class="flex w-full flex-col overflow-hidden">
+    <div class="scrollbar-macos @container min-h-0 flex-1 overflow-y-auto rounded px-0">
       <div v-if="isLoading" class="flex flex-col gap-8">
         <VehicleRecentActivitySkeleton />
         <VehicleRecentActivitySkeleton />
         <VehicleRecentActivitySkeleton />
       </div>
       <p v-else-if="isError" class="text-destructive text-center text-sm">Error loading recent activity.</p>
-      <Empty v-else-if="isEmpty" class="">
+      <Empty v-else-if="isEmpty">
         <EmptyHeader><EmptyTitle> No recent activity. </EmptyTitle> </EmptyHeader>
         <p class="mt-2">Your recent vehicle activities will appear here.</p>
       </Empty>
-      <ScrollArea v-else class="h-full w-full">
-        <ul class="flex flex-col divide-y">
-          <li v-for="activity in allActivities" :key="activity.data.id">
-            <!-- Refill activity -->
-            <div v-if="activity.type === 'refill'" class="flex items-center gap-4 rounded py-3">
-              <div class="bg-refill/30 grid size-10 place-content-center rounded">
-                <Icon name="refill" class="stroke-refill" size="sm" />
-              </div>
-              <div class="space-y-1">
-                <div class="flex gap-3">
-                  <Label class="font-normal">Refill</Label>
-                </div>
-                <div class="flex gap-4">
-                  <div class="flex items-center gap-2">
-                    <span class="text-muted-foreground text-sm">Amount: </span>
-                    <Badge variant="outline" class="px-2 py-1"
-                      >{{ activity.data.fuelAmount.value }}
-                      <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
-                    </Badge>
-                  </div>
-                  <div v-if="activity.data.consumption.value" class="flex items-center gap-2">
-                    <span class="text-muted-foreground text-sm">Avg: </span>
-                    <Badge class="bg-muted px-2 py-1" v-if="activity.data.consumption.value">
-                      {{ activity.data.consumption.value }}
-                      <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              <div class="text-muted-foreground ml-auto hidden text-end text-sm @[300px]:block">
-                <p>{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
-                <p>
-                  {{
-                    new Date(activity.data.date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
-                </p>
+      <ul v-else class="relative flex flex-col gap-3">
+        <div class="absolute top-6 left-8 z-0 h-full border-l" />
+
+        <li
+          v-for="activity in allActivities"
+          :key="activity.data.id"
+          class="group hover:bg-accent/50 rounded px-2 py-2"
+        >
+          <!-- Refill activity -->
+          <div v-if="activity.type === 'refill'" class="flex items-center gap-4">
+            <div
+              class="bg-background shadow-refill/30 z-10 mr-2 flex size-12 overflow-hidden rounded-full group-hover:shadow-md"
+            >
+              <div class="bg-refill/30 grid flex-1 place-content-center">
+                <Icon name="refill" class="stroke-refill size-5" />
               </div>
             </div>
 
-            <!-- Maintenance activity -->
-            <div v-if="activity.type === 'maintenance'" class="flex items-center gap-4 rounded py-3">
-              <div class="bg-maintenance/30 grid size-10 place-content-center rounded">
-                <Icon name="maintenance" class="stroke-maintenance" size="sm" />
+            <div class="space-y-1">
+              <div class="flex gap-3">
+                <Label class="font-normal">Refill</Label>
               </div>
-              <div class="flex flex-col justify-center">
-                <Label class="font-normal">{{ activity.data.title }}</Label>
-                <div class="text-muted-foreground flex items-center gap-4">
-                  <p class="flex text-center text-sm">
-                    {{ activity.data.notes }}
-                  </p>
+              <div class="flex gap-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-muted-foreground text-sm">Amount: </span>
+                  <Badge variant="outline" class="px-2 py-1"
+                    >{{ activity.data.fuelAmount.value }}
+                    <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
+                  </Badge>
+                </div>
+                <div v-if="activity.data.consumption.value" class="flex items-center gap-2">
+                  <span class="text-muted-foreground text-sm">Avg: </span>
+                  <Badge class="bg-muted text-foreground px-2 py-1" v-if="activity.data.consumption.value">
+                    {{ activity.data.consumption.value }}
+                    <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
+                  </Badge>
                 </div>
               </div>
-
-              <div class="text-muted-foreground ml-auto hidden h-full text-end text-sm @[300px]:block">
-                <p v-if="activity.data.costTotal">{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
-                <p class="">
-                  {{
-                    new Date(activity.data.date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
-                </p>
-              </div>
             </div>
-          </li>
-
-          <div ref="loadMoreTrigger" class="py-4 text-center">
-            <Spinner v-if="isFetchingNextPage" class="stroke-muted-foreground size-12" />
-            <p v-else-if="!hasNextPage" class="text-muted-foreground text-sm">No more activity to load.</p>
+            <div class="text-muted-foreground ml-auto hidden text-end text-sm @[300px]:block">
+              <p>{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
+              <p>
+                {{
+                  new Date(activity.data.date).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              </p>
+            </div>
           </div>
-        </ul>
-      </ScrollArea>
+
+          <!-- Maintenance activity -->
+          <div v-if="activity.type === 'maintenance'" class="flex items-center gap-4">
+            <div
+              class="bg-background shadow-maintenance/30 z-10 mr-2 flex size-12 overflow-hidden rounded-full group-hover:shadow-md"
+            >
+              <div class="bg-maintenance/30 grid flex-1 place-content-center">
+                <Icon name="maintenance" class="stroke-maintenance size-5" />
+              </div>
+            </div>
+            <div class="flex flex-col justify-center">
+              <Label class="font-normal">{{ activity.data.title }}</Label>
+              <div class="text-muted-foreground flex items-center gap-4">
+                <p class="flex text-center text-sm">
+                  {{ activity.data.notes }}
+                </p>
+              </div>
+            </div>
+
+            <div class="text-muted-foreground ml-auto hidden h-full text-end text-sm @[300px]:block">
+              <p v-if="activity.data.costTotal">{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
+              <p class="">
+                {{
+                  new Date(activity.data.date).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div ref="loadMoreTrigger" class="py-4 text-center">
+        <Spinner v-if="isFetchingNextPage" class="stroke-muted-foreground size-12" />
+      </div>
     </div>
   </section>
 </template>

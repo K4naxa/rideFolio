@@ -330,14 +330,15 @@ img {
 @layer utilities {
   /* Used for main window gaps */
   .gaps-big {
-    @apply gap-12 md:gap-14 lg:gap-16 xl:gap-18 2xl:gap-20;
+    @apply gap-8 md:gap-10 lg:gap-12 xl:gap-14;
   }
   /* inside section gaps */
   .gaps-medium {
-    @apply gap-6 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14;
+    @apply gap-3 md:gap-4 lg:gap-6;
   }
-  .gaps-small {
-    @apply gap-3 md:gap-4 lg:gap-5 xl:gap-6 2xl:gap-7;
+
+  .card {
+    @apply from-background to-background-light rounded border bg-linear-to-t shadow-sm;
   }
 }
 

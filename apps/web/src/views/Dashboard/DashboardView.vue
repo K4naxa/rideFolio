@@ -31,7 +31,7 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
     </section>
 
     <!-- second row -->
-    <div class="gaps-medium grid grid-cols-[2fr_1fr]">
+    <div class="gaps-big grid grid-cols-[2fr_1fr]">
       <!-- left side -->
       <section class="gaps-big flex flex-col">
         <div>
@@ -43,7 +43,10 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
         </div>
 
         <div>
-          <VehicleRecentActivity />
+          <h2 class="mb-2">Recent Activity</h2>
+          <Card>
+            <VehicleRecentActivity />
+          </Card>
         </div>
       </section>
 
@@ -54,14 +57,14 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
             <h2>Overview</h2>
           </header>
 
-          <div class="gaps-small grid grid-cols-2">
-            <div class="cardBackground col-span-1 flex-1 gap-4 rounded border p-3">
+          <div class="gaps-medium grid grid-cols-2">
+            <div class="card gaps-small col-span-1 flex-1 rounded border p-3">
               <p class="text-muted-foreground text-sm">
                 <span> Monthly Spend </span>
               </p>
               <Label class="text-lg"> 450.00 {{ preferredCurrencySymbol }} </Label>
             </div>
-            <div class="cardBackground col-span-1 flex-1 gap-4 rounded border p-3">
+            <div class="card gaps-small col-span-1 flex-1 rounded border p-3">
               <p class="text-muted-foreground text-sm">
                 <span> Total distance tracked </span>
               </p>

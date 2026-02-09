@@ -10,6 +10,15 @@ import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import NotificationsPopover from "../NotificationsPopover.vue";
+import Popover from "@/components/ui/popover/Popover.vue";
+import PopoverAnchor from "@/components/ui/popover/PopoverAnchor.vue";
+import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
+import PopoverTrigger from "@/components/ui/popover/PopoverTrigger.vue";
+import Icon from "../icons/Icon.vue";
+import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
+import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
+import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 
 const route = useRoute();
 const modalStore = useModalStore();
@@ -73,22 +82,28 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
       <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
       <h3 class="truncate">{{ title }}</h3>
     </div>
-    <div class="ml-auto hidden items-center gap-2 pr-4 text-sm md:flex lg:pr-6">
-      <Button
-        variant="outline"
-        v-for="button in headerButtons"
-        :key="button.label"
-        @click="button.onClick"
-        :class="twMerge('hover:bg-background font-medium hover:shadow-md', button.class)"
-        :data-cy="button.cypressDataAttr"
-      >
-        <Icons :name="button.icon" />
-        <span class="hidden 2xl:block">{{ button.label }}</span>
-      </Button>
-    </div>
-    <div class="ml-auto flex items-center gap-x-2.5">
-      <NotificationsPopover />
-    </div>
+
+    <NotificationsPopover />
+
+    <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-5" />
+
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <Button variant="default"> <Icons name="plus" class="hidden lg:flex" /> Add Activity </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" class="">
+        <DropdownMenuItem
+          v-for="button in headerButtons"
+          :key="button.label"
+          size="sm"
+          @click="button.onClick"
+          :data-cy="button.cypressDataAttr"
+        >
+          <Icon :name="button.icon" />
+          {{ button.label }}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </header>
 </template>
 
