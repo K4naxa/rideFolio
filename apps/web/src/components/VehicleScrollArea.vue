@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { ScrollArea } from "./ui/scroll-area";
-import ScrollBar from "./ui/scroll-area/ScrollBar.vue";
-import VehicleTypeIcon from "./icons/VehicleTypeIcon.vue";
 import Button from "./ui/button/Button.vue";
 import { useModalStore } from "@/stores/modal";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
@@ -30,7 +27,7 @@ const props = defineProps<{
         :key="vehicle.vehicleData.id"
         :class="
           twMerge(
-            'group cardBackground focus-visible:ring-ring/50 transition-size flex aspect-4/3 shrink-0 cursor-pointer flex-col overflow-hidden rounded border transition-shadow duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] dark:bg-transparent',
+            'group cardBackground focus-visible:ring-ring/50 transition-[size, shadow] flex aspect-4/3 shrink-0 cursor-pointer flex-col overflow-hidden rounded border duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] dark:bg-transparent',
             props.size === 'sm' && 'w-16',
             props.size === 'md' && 'w-42',
             props.size === 'lg' && 'h-40 lg:h-68',

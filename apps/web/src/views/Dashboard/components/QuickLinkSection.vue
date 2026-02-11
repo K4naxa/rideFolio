@@ -73,11 +73,7 @@ async function handleDeleteQuicklink(id: string) {
       <!-- Quicklinks -->
       <Tooltip placement="top" v-else v-for="link in links" :key="link.id" :delay-duration="200">
         <TooltipTrigger>
-          <a
-            :href="link.url"
-            target="_blank"
-            class="listHover flex items-center justify-between gap-2.5 p-3 py-2.5 hover:shadow-md"
-          >
+          <a :href="link.url" target="_blank" class="listHover flex items-center justify-between gap-2.5 p-3 py-2.5">
             <div class="flex items-center gap-3">
               <img
                 v-if="link.url"
@@ -106,7 +102,7 @@ async function handleDeleteQuicklink(id: string) {
 
       <li
         v-if="!isEditing"
-        class="text-muted-foreground hover:text-primary-foreground flex cursor-pointer list-none items-center gap-3 px-3 py-2.5 transition-colors duration-100"
+        class="text-muted-foreground hover:text-foreground flex cursor-pointer list-none items-center gap-3 px-3 py-2.5 transition-colors duration-100"
         @click="handleNewQuickLink"
       >
         <Icon name="plus" class="size-4" />

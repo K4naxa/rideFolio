@@ -18,7 +18,6 @@ import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { formatBytesToMB } from "@/lib/utils";
 import QuickLinkSection from "@/views/Dashboard/components/QuickLinkSection.vue";
-import VehicleRecentActivity from "@/views/VehiclePage/vehicleOverview/components/VehicleRecentActivity.vue";
 
 const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
 </script>
@@ -31,7 +30,7 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
     </section>
 
     <!-- second row -->
-    <div class="gaps-big grid grid-cols-[2fr_1fr]">
+    <div class="gaps-big grid grid-cols-1 lg:grid-cols-[2fr_1fr]">
       <!-- left side -->
       <section class="gaps-big flex flex-col">
         <div>
@@ -42,19 +41,14 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
           </Empty>
         </div>
 
-        <div>
-          <h2 class="mb-2">Recent Activity</h2>
-          <Card>
-            <VehicleRecentActivity />
-          </Card>
-        </div>
+        <QuickLinkSection />
       </section>
 
       <!-- right side -->
       <section class="gaps-medium flex flex-col">
         <div>
           <header class="mb-2">
-            <h2>Overview</h2>
+            <h3>Overview</h3>
           </header>
 
           <div class="gaps-medium grid grid-cols-2">
@@ -103,8 +97,6 @@ const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
             </Card>
           </div>
         </div>
-
-        <QuickLinkSection />
       </section>
     </div>
   </MainContentWrapper>
