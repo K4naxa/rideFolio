@@ -21,9 +21,6 @@ import Button from "./button/Button.vue";
 import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
-import { twMerge } from "tailwind-merge";
-import { useUserQuery } from "@/lib/queries/user/user-queries";
-import { computed } from "vue";
 
 import { toast } from "vue-sonner";
 import Separator from "@/components/ui/separator/Separator.vue";
@@ -33,6 +30,8 @@ import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import Progressbar from "@/components/ui/Progressbar.vue";
+import NavUser from "@/components/NavUser.vue";
+import SidebarFooter from "@/components/ui/sidebar/SidebarFooter.vue";
 
 interface MainSideBarLinks {
   label: string;
@@ -175,48 +174,27 @@ const handleCreateVehicleClick = () => {
         </SidebarGroupContent>
       </SidebarGroup>
 
-      <SidebarGroup class="mt-auto">
-        <SidebarGroupContent class="space-y-1">
-          <div v-if="user" class="bg-card my-2 space-y-2 rounded border px-3 py-2">
-            <!--  headerl -->
-            <div class="flex items-end justify-between gap-4">
-              <Label class="text-muted-foreground wfu">Current Plan </Label>
-              <Badge variant="secondary" class="ml-auto capitalize">{{ capitalize(user.subscriptionPlan.code) }}</Badge>
-            </div>
-
-            <!--  progress bar -->
-            <Progressbar :percent="(user.usedStorageBytes / user.subscriptionPlan.maxStorageBytes) * 100" />
-            <div class="flex justify-between">
-              <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(user.usedStorageBytes) }}MB used </span>
-              <span v-if="user.subscriptionPlan.maxStorageBytes !== -1" class="text-muted-foreground text-xs">
-                {{ formatBytesToMB(user.subscriptionPlan.maxStorageBytes) }}MB limit
-              </span>
-              <span v-else class="text-muted-foreground text-xs"> unlimited </span>
-            </div>
+      <SidebarFooter class="mt-auto">
+        <div v-if="user" class="bg-card my-2 space-y-2 rounded border px-3 py-2">
+          <!--  headerl -->
+          <div class="flex items-end justify-between gap-4">
+            <Label class="text-muted-foreground wfu">Current Plan </Label>
+            <Badge variant="secondary" class="ml-auto capitalize">{{ capitalize(user.subscriptionPlan.code) }}</Badge>
           </div>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              @click="
-                setOpenMobile(false);
-                modalStore.onOpen('settings');
-              "
-              class="hover:bg-accent cursor-pointer"
-            >
-              <Icon name="settings" size="sm" />
-              Settings
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <!--  progress bar -->
+          <Progressbar :percent="(user.usedStorageBytes / user.subscriptionPlan.maxStorageBytes) * 100" />
+          <div class="flex justify-between">
+            <span class="text-muted-foreground text-xs"> {{ formatBytesToMB(user.usedStorageBytes) }}MB used </span>
+            <span v-if="user.subscriptionPlan.maxStorageBytes !== -1" class="text-muted-foreground text-xs">
+              {{ formatBytesToMB(user.subscriptionPlan.maxStorageBytes) }}MB limit
+            </span>
+            <span v-else class="text-muted-foreground text-xs"> unlimited </span>
+          </div>
+        </div>
 
-          <Separator />
-          <SidebarMenuItem>
-            <SidebarMenuButton @click="signOut()" class="hover:bg-accent cursor-pointer">
-              <Icon name="logout" />
-              <span>Log out</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarGroupContent>
-      </SidebarGroup>
+        <NavUser />
+      </SidebarFooter>
     </SidebarContent>
   </Sidebar>
 </template>

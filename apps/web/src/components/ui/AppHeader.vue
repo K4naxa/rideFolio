@@ -6,19 +6,16 @@ import { Button } from "@/components/ui/button";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
 import { useModalStore } from "@/stores/modal";
-import { twMerge } from "tailwind-merge";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import NotificationsPopover from "../NotificationsPopover.vue";
-import Popover from "@/components/ui/popover/Popover.vue";
-import PopoverAnchor from "@/components/ui/popover/PopoverAnchor.vue";
-import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
-import PopoverTrigger from "@/components/ui/popover/PopoverTrigger.vue";
+
 import Icon from "../icons/Icon.vue";
 import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
 const route = useRoute();
 const modalStore = useModalStore();
@@ -71,6 +68,8 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
     cypressDataAttr: "create-todo-button",
   },
 ]);
+
+const isMobile = useIsMobile();
 </script>
 
 <template>
@@ -85,11 +84,11 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
 
     <NotificationsPopover />
 
-    <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-5" />
+    <Separator v-if="!isMobile" orientation="vertical" class="mx-2 data-[orientation=vertical]:h-5" />
 
-    <DropdownMenu>
+    <DropdownMenu v-if="!isMobile">
       <DropdownMenuTrigger as-child>
-        <Button variant="default"> <Icons name="plus" class="hidden lg:flex" /> Add Activity </Button>
+        <Button variant="default"> <Icons name="plus" class="lg:flex" /> Add Activity </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" class="">
         <DropdownMenuItem
