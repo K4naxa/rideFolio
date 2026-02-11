@@ -1,9 +1,11 @@
-import { prisma } from 'src/lib/prisma';
 import { seedVehicleTypes } from './seeds/vehicle-types';
 import { seedVehiclePartLocations } from './seeds/vehicle-part-locations';
 import { seedMaintenanceCategories } from './seeds/maintenance-categories';
 import { seedVehicleParts } from './seeds/vehicle-parts';
 import { seedSubscriptionPlans } from 'prisma/seeds/subscription-plans';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+const prisma = new PrismaService();
 
 async function main() {
   console.log('🌱 Starting database seeding...\n');
