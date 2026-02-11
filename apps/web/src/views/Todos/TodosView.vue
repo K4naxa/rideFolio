@@ -7,6 +7,7 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
+import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useTodosAll } from "@/lib/queries/todos/todo-queries";
 import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
@@ -33,48 +34,50 @@ const { showCompleted, showDueInfo, showPriority, showCompletedInfo } = storeToR
 const { onOpen } = useModalStore();
 </script>
 <template>
-  <div class="flex h-full w-full flex-col p-4 lg:p-8">
-    <header class="mb-6 flex flex-col content-center justify-between gap-3 sm:flex-row">
-      <Input
-        v-model="searchQuery"
-        type="text"
-        name="search"
-        id="VehicleTodoSearch"
-        placeholder="Search todos..."
-        class="w-full sm:max-w-md sm:min-w-72"
-      />
-      <div class="flex content-center justify-evenly gap-4">
-        <DropdownMenu :modal="false">
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" class="flex-1">
-              <Icon name="filter" /> <span class="md:hidden">Filter</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-52">
-            <DropdownMenuCheckboxItem v-model:model-value="showPriority"> Show priority </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem v-model:model-value="showDueInfo"> Show due info </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem v-model:model-value="showCompletedInfo">
-              Show completed info
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem v-model:model-value="showCompleted"> Show completed </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+  <MainContentWrapper>
+    <div class="flex h-full w-full flex-col py-4 lg:py-8">
+      <header class="mb-6 flex flex-col content-center justify-between gap-3 sm:flex-row">
+        <Input
+          v-model="searchQuery"
+          type="text"
+          name="search"
+          id="VehicleTodoSearch"
+          placeholder="Search todos..."
+          class="w-full sm:max-w-md sm:min-w-72"
+        />
+        <div class="flex content-center justify-evenly gap-4">
+          <DropdownMenu :modal="false">
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" class="flex-1">
+                <Icon name="filter" /> <span class="md:hidden">Filter</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent class="w-52">
+              <DropdownMenuCheckboxItem v-model:model-value="showPriority"> Show priority </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem v-model:model-value="showDueInfo"> Show due info </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem v-model:model-value="showCompletedInfo">
+                Show completed info
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem v-model:model-value="showCompleted"> Show completed </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <Button variant="default" class="flex-1 sm:w-auto" @click="onOpen('createTodo')">
-          <Icon name="plus" className="stroke-white" />
-          Create To-do
-        </Button>
+          <Button variant="default" class="flex-1 sm:w-auto" @click="onOpen('createTodo')">
+            <Icon name="plus" className="stroke-white" />
+            Create To-do
+          </Button>
+        </div>
+      </header>
+      <div class="flex w-full rounded border">
+        <TodoTable
+          :todos="filteredTodos"
+          :isLoading="isLoading"
+          :isError="isError"
+          :search-query="searchQuery"
+          show-vehicle
+        />
       </div>
-    </header>
-    <div class="flex rounded border">
-      <TodoTable
-        :todos="filteredTodos"
-        :isLoading="isLoading"
-        :isError="isError"
-        :search-query="searchQuery"
-        show-vehicle
-      />
     </div>
-  </div>
+  </MainContentWrapper>
 </template>

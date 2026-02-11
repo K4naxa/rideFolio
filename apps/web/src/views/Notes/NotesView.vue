@@ -56,7 +56,7 @@ const handleNewClick = () => {
     />
 
     <div class="hidden flex-1 flex-col lg:flex">
-      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" vehicle-id="" />
+      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" vehicle-id="" class="" />
       <div v-else class="text-muted-foreground flex flex-1 items-center justify-center">
         Select a note to view or edit
 

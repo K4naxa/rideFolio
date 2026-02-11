@@ -199,7 +199,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="bg-background flex min-h-0 w-full flex-1 flex-col p-0">
+  <div class="bg-background mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col p-0">
     <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot

@@ -103,14 +103,14 @@ const formatDate = (dateString: string) => {
 };
 </script>
 <template>
-  <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
+  <div class="flex min-h-0 w-full flex-col">
     <div
       v-if="!isLoading && filteredTodos.length"
-      class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1"
+      class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1 overflow-auto"
       key="scrollArea"
     >
       <div
-        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t-lg border-b px-2 shadow-sm"
+        class="text-accent-foreground bg-muted sticky z-10 grid w-fit min-w-full items-center gap-x-3 rounded-t-lg border-b px-2 shadow-sm"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
         :style="{ gridTemplateColumns: tableColumns }"
       >
@@ -129,7 +129,7 @@ const formatDate = (dateString: string) => {
           v-for="todo in filteredTodos"
           :key="todo.id"
           :class="[
-            'listHover grid gap-x-3 px-2',
+            'listHover grid w-fit min-w-full gap-x-3 px-2',
             (todo.dueDate?.overdue || todo.dueOdometer?.overdue) &&
               !todo.isCompleted &&
               'border-l-destructive border-l-2',
