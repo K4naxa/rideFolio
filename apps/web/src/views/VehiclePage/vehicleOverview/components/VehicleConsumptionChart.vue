@@ -152,25 +152,33 @@ const chartOptions = computed((): EChartsOption => {
     },
   };
 });
+
+const avgConsumptionValue = computed(() => {
+  if (!chartData.value) return null;
+
+  const validConsumptions = chartData.value
+    .filter((item) => typeof item.consumption?.value === "number")
+    .map((item) => item.consumption!.value);
+
+  if (validConsumptions.length === 0) return null;
+
+  const sum = validConsumptions.reduce((acc, val) => acc + val, 0);
+  return (sum / validConsumptions.length).toFixed(1);
+});
 </script>
 
 <template>
   <div class="flex h-full w-full flex-col">
     <header class="mb-4 flex items-center justify-between gap-4">
-      <div>
-        <h2 class="flex items-center gap-2 font-medium"><Icon name="refill" class="size-5" /> Fuel consumption</h2>
-        <CardDescription class="text-muted-foreground flex gap-2 text-sm md:hidden">
-          <span class="text-muted-foreground">Avg.</span>
-          <span>11.2 L/100km</span>
-        </CardDescription>
-      </div>
-
+      <h2 class="flex items-center gap-2 font-medium"><Icon name="refill" class="size-5" /> Fuel consumption</h2>
       <!-- TODO: Implement correct average for selected time -->
-      <div class="flex items-center gap-4">
-        <div class="hidden items-center gap-1 text-sm md:flex">
-          <span class="text-muted-foreground">Avg.</span>
-          <span class="font-medium">11.2 L/100km</span>
-        </div>
+      <div class="flex items-center gap-2">
+        <span class="text-muted-foreground text-sm">Avg.</span>
+
+        <Badge variant="secondary" class="bg-muted items-center gap-1 text-sm">
+          <span class="text-foreground font-medium">{{ avgConsumptionValue }}</span>
+          <span class="text-muted-foreground text-xs"> L/100km</span>
+        </Badge>
 
         <Button variant="ghost" size="icon-sm" class=""><EllipsisVerticalIcon /></Button>
       </div>
