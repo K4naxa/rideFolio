@@ -6,11 +6,8 @@ import { toast } from "vue-sonner";
 
 function sortItems(items: ShoppingItem[]): ShoppingItem[] {
   return [...items].sort((a, b) => {
-    if (a.isPurchased && !b.isPurchased) return 1;
-    if (!a.isPurchased && b.isPurchased) return -1;
-    const aDate = new Date(a.updatedAt);
-    const bDate = new Date(b.updatedAt);
-    return bDate.getTime() - aDate.getTime();
+    //   sort by created At, oldest first
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
 }
 

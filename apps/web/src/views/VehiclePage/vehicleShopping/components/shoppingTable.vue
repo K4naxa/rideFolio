@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from "vue";
-import { useMediaQuery } from "@vueuse/core";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
@@ -10,32 +9,45 @@ import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
 import { useShoppingDelete, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import Button from "@/components/ui/button/Button.vue";
 import Label from "@/components/ui/label/Label.vue";
-import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import { BrushCleaningIcon } from "lucide-vue-next";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { computed } from "vue";
 import Icon from "@/components/icons/Icon.vue";
+import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 interface ShoppingTableProps {
   hidePurchased?: boolean;
   size?: "sm" | "md";
 }
 const props = defineProps<ShoppingTableProps>();
-
+const { preferredCurrencySymbol } = useCurrentUser();
 const { currentVehicleId } = useCurrentVehicle();
 
 const { data: vehicleShoppingList, isLoading } = useVehicleShopping(currentVehicleId);
 const { mutate: toggleItem } = useShoppingToggle();
 const { mutateAsync: deleteItem } = useShoppingDelete();
-const isMobile = useMediaQuery("(max-width: 768px)");
+const isMobile = useIsMobile();
 
 const filteredItems = computed(() => {
   if (!vehicleShoppingList.value) return [];
-  let filtered = vehicleShoppingList.value;
+  let filtered = [...vehicleShoppingList.value];
   if (props.hidePurchased) {
     filtered = filtered.filter((item) => !item.isPurchased);
   }
+
+  // sort unpurchased items first, followed by purchased items sorted by purchase date (newest first)
+  filtered = filtered.sort((a, b) => {
+    if (a.isPurchased === b.isPurchased) {
+      if (a.isPurchased && b.isPurchased) {
+        return new Date(b.purchasedAt || 0).getTime() - new Date(a.purchasedAt || 0).getTime();
+      }
+      return 0;
+    }
+    return a.isPurchased ? 1 : -1;
+  });
+
   return filtered;
 });
 
@@ -74,7 +86,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
     <!-- Table Header -->
-    <ScrollArea v-if="filteredItems.length && !isLoading" as-child class="min-h-0 w-full min-w-0 flex-1">
+    <div v-if="filteredItems.length && !isLoading" as-child class="scrollbar-thin min-h-0 w-full min-w-0 flex-1">
       <div
         class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t-lg border-b px-2 shadow-sm lg:gap-6"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
@@ -104,28 +116,16 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
         >
           <!-- Checkbox -->
           <div class="flex w-12 items-center justify-center">
-            <button
-              v-if="!item.isPurchased"
-              @click="
+            <Checkbox
+              :model-value="item.isPurchased"
+              @update:model-value="
                 toggleItem({
                   itemId: item.id,
                   purchased: !item.isPurchased,
                 })
               "
-              class="border-foreground/50 text-foreground/40 flex size-5 items-center justify-center rounded-full border hover:cursor-pointer hover:border-blue-500 hover:text-blue-500"
-            ></button>
-            <button
-              v-else
-              @click="
-                toggleItem({
-                  itemId: item.id,
-                  purchased: !item.isPurchased,
-                })
-              "
-              class="flex items-center justify-center rounded-full hover:cursor-pointer"
-            >
-              <Icon name="check" class="stroke-green-500" />
-            </button>
+              class="size-6"
+            />
           </div>
 
           <!-- Item Content -->
@@ -137,7 +137,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
 
           <!-- Price -->
           <span v-if="item.price" class="ShoppingItemPriceContainer my-auto truncate overflow-hidden">
-            {{ item.price }}
+            {{ item.price }} {{ preferredCurrencySymbol }}
           </span>
           <span v-else />
 
@@ -146,9 +146,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
           </Button>
         </div>
       </ul>
-      <ScrollBar orientation="vertical" />
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    </div>
 
     <!-- Empty State -->
     <div v-else class="grid flex-1 place-content-center">

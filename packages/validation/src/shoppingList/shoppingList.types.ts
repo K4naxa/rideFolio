@@ -4,7 +4,8 @@ export interface ShoppingItem {
   vehicleId: string;
   price: number | null;
   isPurchased: boolean;
-  updatedAt: Date;
+  purchasedAt: Date | null;
+  createdAt: Date;
 }
 export const ShoppingListDB_Select = {
   id: true,
@@ -12,6 +13,6 @@ export const ShoppingListDB_Select = {
   name: true,
   price: true,
   isPurchased: true,
-  updatedAt: true,
+  purchasedAt: true,
+  createdAt: true,
 };
-export const ShoppingListDB_OrderBy = [{ isPurchased: "asc" as const }, { updatedAt: "desc" as const }];

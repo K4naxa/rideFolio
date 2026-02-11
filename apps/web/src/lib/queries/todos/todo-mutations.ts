@@ -15,12 +15,12 @@ export function useTodoCreate() {
       // update vehicle todos cache
       queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(newTodo.vehicleData.id), (old) => {
         if (!old) return [newTodo];
-        return [newTodo, ...old];
+        return [...old, newTodo];
       });
       // update all todos cache
       queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
         if (!old) return [newTodo];
-        return [newTodo, ...old];
+        return [...old, newTodo];
       });
     },
     onError: (error) => {

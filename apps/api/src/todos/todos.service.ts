@@ -315,6 +315,6 @@ export class TodosService {
   }
 
   private getTodoOrderBy() {
-    return [{ isCompleted: 'asc' as const }, { createdAt: 'desc' as const }];
+    return [{ isCompleted: 'asc' as const }, { createdAt: 'asc' as const }];
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ShoppingItem, ShoppingItemValues, ShoppingListDB_OrderBy, ShoppingListDB_Select } from '@repo/validation';
+import { ShoppingItem, ShoppingItemValues, ShoppingListDB_Select } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { LimitsService } from 'src/limits/limits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -21,10 +21,7 @@ export class ShoppingListService {
       await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'SHOPPING_LIST', sizeBytes);
       return await tx.shoppingListItem.create({
         data: {
-          vehicleId: itemDto.vehicleId,
-          name: itemDto.name,
-          price: itemDto.price,
-          isPurchased: itemDto.isPurchased,
+          ...itemDto,
           createdById: userSession.user.id,
           sizeBytes,
         },
@@ -39,7 +36,7 @@ export class ShoppingListService {
     const items = await this.prisma.shoppingListItem.findMany({
       where: { vehicleId },
       select: ShoppingListDB_Select,
-      orderBy: ShoppingListDB_OrderBy,
+      orderBy: { createdAt: 'asc' },
     });
 
     return items;
@@ -96,18 +93,19 @@ export class ShoppingListService {
       mergedItem,
     );
 
-    await this.prisma.$transaction(async (tx) => {
+    return await this.prisma.$transaction(async (tx) => {
       await this.limitsService.syncStorageUsage(tx, vehicle.ownerId, 'SHOPPING_LIST', item.sizeBytes, newSize);
-    });
-    return await this.prisma.shoppingListItem.update({
-      where: { id: itemId },
-      data: {
-        vehicleId: itemDto.vehicleId,
-        name: itemDto.name,
-        price: itemDto.price,
-        isPurchased: itemDto.isPurchased,
-      },
-      select: ShoppingListDB_Select,
+      return await tx.shoppingListItem.update({
+        where: { id: itemId },
+        data: {
+          vehicleId: itemDto.vehicleId,
+          name: itemDto.name,
+          price: itemDto.price,
+          isPurchased: itemDto.isPurchased,
+          sizeBytes: newSize,
+        },
+        select: ShoppingListDB_Select,
+      });
     });
   }
 }

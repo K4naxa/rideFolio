@@ -12,7 +12,7 @@ import { nameSchema } from "@repo/validation";
 import { useQueryClient } from "@tanstack/vue-query";
 import { toTypedSchema } from "@vee-validate/zod";
 import { Form } from "vee-validate";
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { toast } from "vue-sonner";
 
 const user = useCurrentUser();
@@ -20,7 +20,7 @@ const queryClient = useQueryClient();
 const showUsernameChangeDialog = ref(false);
 
 const isUsernameChanging = ref(false);
-const usernameFormRef = ref<InstanceType<typeof Form> | null>(null);
+const usernameFormRef = useTemplateRef<InstanceType<typeof Form>>("usernameFormRef");
 async function onUsernameChangeSubmit(values: any) {
   console.log("Submitting username change with values:", values);
   isUsernameChanging.value = true;

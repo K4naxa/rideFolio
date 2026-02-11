@@ -3,7 +3,6 @@ import { ShoppingListController } from './shopping-list.controller';
 import { ShoppingListService } from './shopping-list.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LimitsService } from 'src/limits/limits.service';
 import { LimitsModule } from 'src/limits/limits.module';
 
 @Module({

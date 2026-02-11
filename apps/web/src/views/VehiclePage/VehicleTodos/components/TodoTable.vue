@@ -104,7 +104,11 @@ const formatDate = (dateString: string) => {
 </script>
 <template>
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
-    <ScrollArea v-if="!isLoading && filteredTodos.length" class="h-full min-h-0 w-full min-w-0 flex-1" key="scrollArea">
+    <div
+      v-if="!isLoading && filteredTodos.length"
+      class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1"
+      key="scrollArea"
+    >
       <div
         class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-x-3 rounded-t-lg border-b px-2 shadow-sm"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
@@ -216,9 +220,7 @@ const formatDate = (dateString: string) => {
           </div>
         </div>
       </ul>
-      <ScrollBar orientation="vertical" />
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    </div>
 
     <div v-else class="grid flex-1 place-content-center">
       <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
