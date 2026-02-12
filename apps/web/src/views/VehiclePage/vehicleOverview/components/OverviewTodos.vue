@@ -37,7 +37,7 @@ const displayedTodos = computed(
   <div class="flex h-full max-h-96 min-h-0 flex-col">
     <h2 class="mb-1">Todos</h2>
     <Separator class="mb-2" />
-    <div class="flex py-2 lg:h-full">
+    <div class="scrollbar-macos flex overflow-y-auto py-2 lg:h-full">
       <div v-if="isTodosLoading" class="grid flex-1 place-items-center">
         <Spinner class="text-muted-foreground size-10" />
       </div>

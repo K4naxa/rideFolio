@@ -38,7 +38,7 @@ const filteredTodos = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col">
+  <div class="flex w-full flex-1 flex-col overflow-hidden">
     <header class="mb-6 flex flex-col content-center justify-between gap-3 sm:flex-row">
       <Input
         v-model="searchQuery"

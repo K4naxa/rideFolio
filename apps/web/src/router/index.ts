@@ -10,6 +10,8 @@ import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShop
 import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
 import NotesView from "@/views/Notes/NotesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
+import TodosView from "@/views/Todos/TodosView.vue";
+import TimelapseView from "@/views/VehiclePage/Timelapse/TimelapseView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,7 +56,7 @@ const router = createRouter({
         {
           path: "/todos",
           name: "To-Dos",
-          component: () => import("@/views/Todos/TodosView.vue"),
+          component: TodosView,
           meta: { requiresAuth: true },
         },
         {
@@ -79,7 +81,7 @@ const router = createRouter({
               path: "timelapse",
               name: "Timelapse",
               meta: { requiresAuth: true },
-              component: () => import("@/views/VehiclePage/Timelapse/TimelapseView.vue"),
+              component: TimelapseView,
             },
             {
               path: "shopping-list",
