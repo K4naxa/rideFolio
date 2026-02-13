@@ -224,7 +224,7 @@ img {
 */
 
 @utility listHover {
-  @apply hover:border-border hover:bg-accent/50 transition-colors;
+  @apply hover:border-border hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors;
   transition-property: background-color, border-color;
   transition-duration: 75ms;
 }

@@ -45,6 +45,8 @@ import PoolErrorState from "./components/PoolErrorState.vue";
 import { useModalStore } from "@/stores/modal";
 import type { AlertModalData } from "@/modals/alertModal.vue";
 import CardDescription from "@/components/ui/card/CardDescription.vue";
+import VehicleItem from "@/components/vehicles/VehicleItem.vue";
+import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 
 const modalStore = useModalStore();
 const { currentUser } = useCurrentUser();
@@ -349,78 +351,28 @@ function handleRoleUpdate(poolId: string, userId: string, role: PoolMemberRoleCo
 
             <!-- Vehicle list -->
             <div class="">
-              <ScrollArea class="w-full overflow-hidden rounded border">
-                <ul class="">
-                  <li
-                    v-for="vehicle in data?.vehicles"
-                    :key="vehicle.data.id"
-                    class="listHover grid min-w-3xl grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_auto] items-center gap-6 rounded p-2.5 md:p-4"
+              <ul class="scrollbar-thin overflow-x-auto">
+                <li
+                  v-for="vehicle in data?.vehicles"
+                  :key="vehicle.data.id"
+                  class="listHover flex items-center justify-between gap-4 rounded p-2.5 md:p-4"
+                >
+                  <VehicleItem :vehicle="vehicle.data" />
+
+                  <ResponsiveDropdown
+                    :items="[
+                      {
+                        label: 'Remove vehicle',
+                        icon: 'logout',
+                        disabled: true,
+                        action: () => console.log('removed vehicle ', vehicle.data.name),
+                      },
+                    ]"
+                    v-if="canManagePool || vehicle.isCurrentUserOwner"
                   >
-                    <div class="bg-muted grid aspect-video h-16 place-items-center overflow-hidden rounded">
-                      <img
-                        v-if="vehicle.data.image"
-                        :src="vehicle.data.image"
-                        :alt="'Image of ' + vehicle.data.name"
-                        class="object-cover"
-                      />
-                      <Icon
-                        :name="vehicle.data.type.icon as IconProps['name']"
-                        v-else-if="vehicle.data.type.icon"
-                        class="stroke-muted-foreground"
-                      />
-                    </div>
-
-                    <div>
-                      <p class="font-semibold">{{ vehicle.data.name }}</p>
-                      <p class="text-muted-foreground text-sm">{{ vehicle.data.make }} {{ vehicle.data.model }}</p>
-                    </div>
-                    <div v-if="vehicle.data.licensePlate">
-                      <h4 class="text-muted-foreground">License Plate</h4>
-                      <p class="text-sm">{{ vehicle.data.licensePlate }}</p>
-                    </div>
-                    <div v-else />
-                    <div>
-                      <h4 class="text-muted-foreground">Odometer</h4>
-                      <p class="text-sm">
-                        {{ vehicle.data.odometerData.value }}
-                        <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
-                      </p>
-                    </div>
-                    <div>
-                      <h4 class="text-muted-foreground">Lifetime travel</h4>
-                      <p class="text-sm">
-                        {{ vehicle.data.odometerData.lifeTimeTracked }}
-                        <span class="text-muted-foreground">{{ vehicle.data.odometerData.unit }}</span>
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Avatar>
-                        <AvatarImage
-                          v-if="vehicle.owner.image"
-                          :src="vehicle.owner.image"
-                          :alt="vehicle.owner.name ?? 'user'"
-                        />
-                        <AvatarFallback v-else class="rounded-lg">{{ getInitials(vehicle.owner.name) }}</AvatarFallback>
-                      </Avatar>
-                      {{ vehicle.owner.name || "Unknown user" }}
-                    </div>
-
-                    <DropdownMenu v-if="canManagePool || vehicle.isCurrentUserOwner">
-                      <DropdownMenuTrigger>
-                        <Icon name="dotsHorizontal" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem variant="destructive">
-                          <Icon name="logout" /> Remove Vehicle
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </li>
-                </ul>
-                <ScrollBar orientation="horizontal" class="" />
-                <ScrollBar orientation="vertical" class="" />
-              </ScrollArea>
+                  </ResponsiveDropdown>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

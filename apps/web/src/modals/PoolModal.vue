@@ -91,8 +91,6 @@ const onSubmit = handleSubmit(async (values) => {
 watchEffect(() => {
   console.log("Selected vehicle IDs:", values.vehicleIds);
 });
-
-const isMobile = useIsMobile();
 </script>
 
 <template>
@@ -246,72 +244,12 @@ const isMobile = useIsMobile();
                   "
                   :class="
                     twMerge(
-                      'flex items-center gap-3 rounded border p-2',
-                      value?.includes(vehicleData.id) ? 'border-primary' : 'border-border',
+                      'listHover flex cursor-pointer items-center gap-3 rounded border p-2',
+                      value?.includes(vehicleData.id) ? 'border-primary!' : 'border-border',
                     )
                   "
                 >
-                  <!-- Mobile  -->
-                  <VehicleItem v-if="isMobile" :vehicle="vehicleData" variant="small" />
-
-                  <!-- Desktop -->
-                  <div v-else class="flex items-center gap-3">
-                    <VehicleAvatar
-                      :src="vehicleData.image"
-                      :type="vehicleData.type.code"
-                      :vehicle="vehicleData"
-                      class="aspect-video h-14 w-fit"
-                    />
-                    <div>
-                      <div class="flex">
-                        <h3 class="">
-                          {{ vehicleData.name }}
-                        </h3>
-
-                        <p class="ml-4 flex items-center">
-                          {{ vehicleData.make }}
-                          {{ vehicleData.model }}
-                        </p>
-                      </div>
-                      <div class="mt-1 flex gap-4">
-                        <span v-if="vehicleData.year" class="text-muted-foreground flex items-center gap-2 text-base">
-                          Year:
-                          <Badge class="bg-muted text-foreground rounded-md font-normal">
-                            {{ vehicleData.year }}
-                          </Badge>
-                        </span>
-
-                        <span
-                          v-if="vehicleData.licensePlate"
-                          class="text-muted-foreground flex items-center gap-2 text-base"
-                        >
-                          License:
-                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
-                            {{ vehicleData.licensePlate }}
-                          </Badge>
-                        </span>
-
-                        <span
-                          v-if="vehicleData.odometerData.value"
-                          class="text-muted-foreground flex items-center gap-1 text-base"
-                        >
-                          Odometer:
-                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
-                            {{ vehicleData.odometerData.value }} {{ vehicleData.odometerData.unit }}
-                          </Badge>
-                        </span>
-                        <span
-                          v-if="vehicleData.odometerData.value"
-                          class="text-muted-foreground flex items-center gap-1 text-base"
-                        >
-                          Tracked distance:
-                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
-                            {{ vehicleData.odometerData.lifeTimeTracked }} {{ vehicleData.odometerData.unit }}
-                          </Badge>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <VehicleItem :vehicle="vehicleData" variant="small" />
                   <Icon name="check" class="text-primary mr-2 ml-auto" v-show="value?.includes(vehicleData.id)" />
                 </li>
               </ul>
