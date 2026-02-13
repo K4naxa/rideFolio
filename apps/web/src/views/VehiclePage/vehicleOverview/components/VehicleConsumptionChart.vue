@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { computed, ref, watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import VChart from "vue-echarts";
@@ -18,12 +18,12 @@ import Icon from "@/components/icons/Icon.vue";
 import { EllipsisVerticalIcon } from "lucide-vue-next";
 import Button from "@/components/ui/button/Button.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
+import { onClickOutside } from "@vueuse/core";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
 
 const themeStore = useThemeStore();
-
 const { currentVehicleId } = useCurrentVehicle();
 const timeRange = ref(90); // days
 
@@ -34,13 +34,14 @@ const {
   isError,
 } = useVehicleConsumptionChart(currentVehicleId, timeRange);
 
+// Watch for changes in chart data
 watch(chartData, (newData) => {
   console.log("Chart data updated:", newData);
 });
 
 // Chart options
 const chartOptions = computed((): EChartsOption => {
-  if (!chartData.value) {
+  if (!chartData.value || chartData.value.length === 0) {
     return {};
   }
 
@@ -48,7 +49,6 @@ const chartOptions = computed((): EChartsOption => {
     .filter((item) => typeof item.consumption?.value === "number")
     .map((item) => {
       const date = new Date(item.date);
-
       return date.toLocaleDateString(undefined, {
         month: "numeric",
         day: "numeric",
@@ -57,7 +57,6 @@ const chartOptions = computed((): EChartsOption => {
 
   const yAxisData = chartData.value
     .filter((item) => typeof item.consumption?.value === "number")
-
     .map((item) => ({
       value: item.consumption?.value,
       itemData: item,
@@ -69,14 +68,13 @@ const chartOptions = computed((): EChartsOption => {
       backgroundColor: "transparent",
       borderWidth: 0,
       padding: 0,
-      extraCssText: "box-shadow: none;",
+      extraCssText: "box-shadow: none; z-index: 0; ",
       z: 0,
       zlevel: 0,
     },
 
     xAxis: {
       type: "category",
-
       boundaryGap: false,
       data: xAxisData,
       axisLabel: {
@@ -95,6 +93,9 @@ const chartOptions = computed((): EChartsOption => {
       },
       axisLine: {
         show: false,
+      },
+      axisPointer: {
+        show: true,
       },
     },
 
@@ -132,10 +133,11 @@ const chartOptions = computed((): EChartsOption => {
     series: {
       type: "line",
       smooth: true,
+      connectNulls: true,
+
       showSymbol: false,
       symbol: "circle",
       symbolSize: 6,
-
       lineStyle: {
         width: 2,
         color: "rgba(225, 113, 0, 0.8)",
@@ -165,13 +167,36 @@ const avgConsumptionValue = computed(() => {
   const sum = validConsumptions.reduce((acc, val) => acc + val, 0);
   return (sum / validConsumptions.length).toFixed(1);
 });
+
+const chart = useTemplateRef("chart");
+const chartContainer = useTemplateRef("chartContainer");
+
+// Handle click outside to dismiss tooltip on mobile
+onClickOutside(chartContainer, () => {
+  if (chart.value) {
+    const chartInstance = chart.value;
+    // Hide tooltip
+    chartInstance.dispatchAction({
+      type: "hideTip",
+    });
+    // Hide axis pointer and symbol by dispatching a showTip with an invalid index
+    chartInstance.dispatchAction({
+      type: "downplay",
+      seriesIndex: 0,
+    });
+    // Additional dispatch to clear axis pointer
+    chartInstance.dispatchAction({
+      type: "updateAxisPointer",
+      currTrigger: "leave",
+    });
+  }
+});
 </script>
 
 <template>
   <div class="flex h-full w-full flex-col">
     <header class="mb-4 flex items-center justify-between gap-4">
       <h2 class="flex items-center gap-2 font-medium"><Icon name="refill" class="size-5" /> Fuel consumption</h2>
-      <!-- TODO: Implement correct average for selected time -->
       <div class="flex items-center gap-2">
         <span class="text-muted-foreground text-sm">Avg.</span>
 
@@ -185,16 +210,16 @@ const avgConsumptionValue = computed(() => {
     </header>
 
     <!-- Chart -->
-    <div class="border-border/50 relative flex h-full w-full flex-1">
+    <div class="border-border/50 relative flex h-full w-full flex-1" ref="chartContainer">
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
       >
         <span class="text-muted-foreground animate-pulse"> <Spinner class="size-12" /> </span>
       </div>
-      <VChart :option="chartOptions" autoresize class="chart">
+      <VChart :option="chartOptions" autoresize class="chart h-full w-full" ref="chart">
         <template #tooltip="params: any">
-          <div class="bg-background/90 text-foreground z-0 rounded p-2 text-sm shadow-lg">
+          <div class="bg-background/90 text-foreground rounded p-2 text-sm shadow-lg">
             <div v-for="({ data }, i) in params" :key="i" class="flex flex-col gap-2">
               <Label class="text-muted-foreground">
                 {{
