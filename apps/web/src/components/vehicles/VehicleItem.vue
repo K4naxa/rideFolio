@@ -31,11 +31,15 @@ const props = withDefaults(
       :class="twMerge('aspect-video h-16 w-fit shrink-0', props.variant === 'small' && 'h-14')"
     />
     <div class="">
-      <h3 :class="twMerge('text-start text-lg leading-tight font-medium', props.variant === 'small' && 'text-sm')">
+      <h3
+        :class="
+          twMerge('truncate text-start text-lg leading-tight font-medium', props.variant === 'small' && 'text-sm')
+        "
+      >
         {{ props.vehicle?.name }}
       </h3>
       <div :class="twMerge('text-muted-foreground flex', props.variant === 'small' && 'text-xs')">
-        <span v-if="props.vehicle?.make"> {{ props.vehicle?.make }} </span>
+        <span v-if="props.vehicle?.make" class="truncate"> {{ props.vehicle?.make }} </span>
         <span v-if="props.vehicle?.model" class="beforeDot">
           {{ props.vehicle?.model }}
         </span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
@@ -23,12 +24,17 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
+import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { usePoolCreate } from "@/lib/queries/pools/pool-mutations";
 import { useModalStore } from "@/stores/modal";
 import { getPoolTypeIcon, POOL_TYPES, PoolSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
+import { Check } from "lucide-vue-next";
 import { AnimatePresence, Motion } from "motion-v";
+import { twMerge } from "tailwind-merge";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
@@ -85,6 +91,8 @@ const onSubmit = handleSubmit(async (values) => {
 watchEffect(() => {
   console.log("Selected vehicle IDs:", values.vehicleIds);
 });
+
+const isMobile = useIsMobile();
 </script>
 
 <template>
@@ -94,15 +102,17 @@ watchEffect(() => {
         <DialogTitle>Create a New Group</DialogTitle>
         <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
       </DialogHeader>
-      <form @submit.prevent="onSubmit" class="flex flex-col justify-between gap-6">
+      <form @submit.prevent="onSubmit" class="gaps-medium flex flex-col justify-between">
+        <!-- Group info -->
         <div>
-          <div class="mb-4 space-y-2 px-0">
+          <header class="mb-4 space-y-2 px-0">
             <Label class="text-muted-foreground">Group info</Label>
             <Separator />
-          </div>
+          </header>
 
-          <div class="space-y-6">
-            <div class="grid grid-cols-1 place-content-end items-end gap-8 md:grid-cols-2">
+          <div class="gaps-medium flex flex-col">
+            <!-- name / type -->
+            <div class="gaps-medium grid grid-cols-1 place-content-end items-end md:grid-cols-2">
               <Input name="name" type="text" label="Name" placeholder="Family Group" maxlength="50" required />
               <Field v-slot="{ value, handleChange }" name="type">
                 <Select :model-value="value" @update:model-value="handleChange">
@@ -126,10 +136,19 @@ watchEffect(() => {
                 <ErrorMessage name="typeId" class="text-destructive mt-1 ml-1 text-sm" />
               </Field>
             </div>
-            <Textarea name="description" placeholder="Describe your pool" :maxlength="200" label="Description" />
+
+            <!-- description -->
+            <Textarea
+              name="description"
+              placeholder="Describe your pool"
+              :maxlength="200"
+              label="Description"
+              class="mt-4 md:mt-2"
+            />
           </div>
         </div>
 
+        <!-- Member permissions -->
         <AnimatePresence>
           <Motion
             v-if="showMemberSettings"
@@ -196,11 +215,12 @@ watchEffect(() => {
           </Motion>
         </AnimatePresence>
 
-        <div class="">
-          <div class="mb-4 space-y-2 px-0">
+        <!-- Vehicles -->
+        <div class="mt-6">
+          <header class="mb-4 space-y-2 px-0">
             <Label class="text-muted-foreground">Add vehicles</Label>
             <Separator />
-          </div>
+          </header>
 
           <div class="min-h-36">
             <Empty v-if="usersOwnVehicles.length < 1" class="h-36">
@@ -210,83 +230,102 @@ watchEffect(() => {
               </EmptyDescription>
             </Empty>
 
-            <Field v-else v-slot="{ value, handleChange }" name="vehicleIds">
+            <Field v-else v-slot="{ value, handleChange }" name="vehicleIds" class="">
               <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
-              <ScrollArea class="w-full overflow-hidden">
-                <ul class="space-y-3 pb-3">
-                  <label
-                    v-for="{ vehicleData: vehicle } in usersOwnVehicles"
-                    :key="vehicle.id"
-                    class="listHover grid min-w-xl grid-cols-[auto_auto_1fr_1fr_1fr_1fr] items-center gap-6 rounded px-3 py-2 hover:cursor-pointer"
-                  >
-                    <Checkbox
-                      class="size-6"
-                      :model-value="value?.includes(vehicle.id) ?? false"
-                      @update:model-value="
-                        (checked: boolean | 'indeterminate') => {
-                          if (checked === true) {
-                            const currentValue = value || [];
-                            handleChange([...currentValue, vehicle.id]);
-                          } else if (checked === false) {
-                            const currentValue = value || [];
-                            handleChange(currentValue.filter((id: string) => id !== vehicle.id));
-                          }
-                        }
-                      "
-                    />
-                    <div class="bg-muted grid aspect-video h-12 place-items-center overflow-hidden rounded">
-                      <img
-                        v-if="vehicle.image"
-                        :src="vehicle.image"
-                        :alt="'Image of ' + vehicle.name"
-                        class="object-cover"
-                      />
-                      <Icon
-                        :name="vehicle.type.icon as IconProps['name']"
-                        v-else-if="vehicle.type.icon"
-                        class="stroke-muted-foreground"
-                      />
-                    </div>
+              <ul class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
+                <li
+                  for="selectedVehicle"
+                  v-for="{ vehicleData } in usersOwnVehicles"
+                  :key="vehicleData.id"
+                  @click="
+                    handleChange(
+                      value?.includes(vehicleData.id)
+                        ? value.filter((id: string) => id !== vehicleData.id)
+                        : [...(value || []), vehicleData.id],
+                    )
+                  "
+                  :class="
+                    twMerge(
+                      'flex items-center gap-3 rounded border p-2',
+                      value?.includes(vehicleData.id) ? 'border-primary' : 'border-border',
+                    )
+                  "
+                >
+                  <!-- Mobile  -->
+                  <VehicleItem v-if="isMobile" :vehicle="vehicleData" variant="small" />
 
+                  <!-- Desktop -->
+                  <div v-else class="flex items-center gap-3">
+                    <VehicleAvatar
+                      :src="vehicleData.image"
+                      :type="vehicleData.type.code"
+                      :vehicle="vehicleData"
+                      class="aspect-video h-14 w-fit"
+                    />
                     <div>
-                      <p class="font-semibold">{{ vehicle.name }}</p>
-                      <p class="text-muted-foreground text-sm">{{ vehicle.make }} {{ vehicle.model }}</p>
+                      <div class="flex">
+                        <h3 class="">
+                          {{ vehicleData.name }}
+                        </h3>
+
+                        <p class="ml-4 flex items-center">
+                          {{ vehicleData.make }}
+                          {{ vehicleData.model }}
+                        </p>
+                      </div>
+                      <div class="mt-1 flex gap-4">
+                        <span v-if="vehicleData.year" class="text-muted-foreground flex items-center gap-2 text-base">
+                          Year:
+                          <Badge class="bg-muted text-foreground rounded-md font-normal">
+                            {{ vehicleData.year }}
+                          </Badge>
+                        </span>
+
+                        <span
+                          v-if="vehicleData.licensePlate"
+                          class="text-muted-foreground flex items-center gap-2 text-base"
+                        >
+                          License:
+                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
+                            {{ vehicleData.licensePlate }}
+                          </Badge>
+                        </span>
+
+                        <span
+                          v-if="vehicleData.odometerData.value"
+                          class="text-muted-foreground flex items-center gap-1 text-base"
+                        >
+                          Odometer:
+                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
+                            {{ vehicleData.odometerData.value }} {{ vehicleData.odometerData.unit }}
+                          </Badge>
+                        </span>
+                        <span
+                          v-if="vehicleData.odometerData.value"
+                          class="text-muted-foreground flex items-center gap-1 text-base"
+                        >
+                          Tracked distance:
+                          <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
+                            {{ vehicleData.odometerData.lifeTimeTracked }} {{ vehicleData.odometerData.unit }}
+                          </Badge>
+                        </span>
+                      </div>
                     </div>
-                    <div v-if="vehicle.licensePlate">
-                      <h4 class="text-muted-foreground">License Plate</h4>
-                      <p class="text-sm">{{ vehicle.licensePlate }}</p>
-                    </div>
-                    <div v-else />
-                    <div>
-                      <h4 class="text-muted-foreground">Odometer</h4>
-                      <p class="text-sm">
-                        {{ vehicle.odometerData.value }}
-                        <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
-                      </p>
-                    </div>
-                    <div>
-                      <h4 class="text-muted-foreground">Lifetime travel</h4>
-                      <p class="text-sm">
-                        {{ vehicle.odometerData.lifeTimeTracked }}
-                        <span class="text-muted-foreground">{{ vehicle.odometerData.unit }}</span>
-                      </p>
-                    </div>
-                  </label>
-                </ul>
-                <ScrollBar orientation="horizontal" class="" />
-                <ScrollBar orientation="vertical" class="" />
-              </ScrollArea>
+                  </div>
+                  <Icon name="check" class="text-primary mr-2 ml-auto" v-show="value?.includes(vehicleData.id)" />
+                </li>
+              </ul>
             </Field>
           </div>
-
-          <DialogFooter class="pt-8">
-            <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
-              <span v-if="!isSubmitting">Create</span>
-              <span v-else> <Spinner /> Creating.. </span>
-            </Button>
-            <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
-          </DialogFooter>
         </div>
+
+        <DialogFooter class="pt-8">
+          <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
+            <span v-if="!isSubmitting">Create</span>
+            <span v-else> <Spinner /> Creating.. </span>
+          </Button>
+          <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
+        </DialogFooter>
       </form>
     </DialogScrollContent>
   </Dialog>

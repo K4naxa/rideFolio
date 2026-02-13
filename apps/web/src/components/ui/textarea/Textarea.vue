@@ -6,6 +6,7 @@ import Label from "../label/Label.vue";
 
 interface InputProps {
   class?: HTMLAttributes["class"];
+  textClass?: HTMLAttributes["class"];
   modelValue?: string;
   initialValue?: string | null;
 
@@ -49,7 +50,7 @@ async function handleBlur() {
 </script>
 
 <template>
-  <div :aria-invalid="!!errorMessage" class="group">
+  <div :aria-invalid="!!errorMessage" :class="cn('w-full', props.class)">
     <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
 
     <div class="relative">
@@ -64,7 +65,7 @@ async function handleBlur() {
         :class="
           cn(
             'placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-input flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 pb-4 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
-            props.class,
+            props.textClass,
           )
         "
       />
