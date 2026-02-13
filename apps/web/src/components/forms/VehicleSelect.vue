@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, type HTMLAttributes } from "vue";
-import Popover from "../ui/popover/Popover.vue";
-import PopoverTrigger from "../ui/popover/PopoverTrigger.vue";
 import Button from "../ui/button/Button.vue";
-import VehicleSelectItem from "@/components/forms/VehicleSelectItem.vue";
-import { ChevronsUpDown } from "lucide-vue-next";
-import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
-import Separator from "../ui/separator/Separator.vue";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
@@ -21,6 +15,9 @@ import DrawerContent from "@/components/ui/drawer/DrawerContent.vue";
 import DrawerHeader from "@/components/ui/drawer/DrawerHeader.vue";
 import DrawerTitle from "@/components/ui/drawer/DrawerTitle.vue";
 import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
+import VehicleItem from "@/components/vehicles/VehicleItem.vue";
+import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
+import DrawerClose from "@/components/ui/drawer/DrawerClose.vue";
 
 interface VehicleSelectProps {
   value?: string;
@@ -72,21 +69,25 @@ function handleSelect(value: string) {
 <template>
   <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
     <DropdownMenuTrigger class="w-full">
-      <Button type="button" variant="outline" :class="['h-fit w-full p-1!']">
-        <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
-        <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
-        <Icon name="chevronDown" class="text-muted-foreground mr-1.5" />
+      <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+        <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
+        <Icon name="chevronDown" class="text-muted-foreground mr-2" />
+      </Button>
+      <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+        <span class="text-muted-foreground py-2">{{ placeholder }}</span>
+        <Icon name="chevronDown" class="text-muted-foreground" />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent :class="contentClass" same-width align="start">
       <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
-        <VehicleSelectItem
+        <VehicleItem
           v-for="vehicle in filteredVehicles"
+          variant="small"
           :is-active="vehicle.vehicleData.id === props.value"
           :key="vehicle.vehicleData.id"
           :vehicle="vehicle.vehicleData"
           @click="handleSelect(vehicle.vehicleData.id)"
-          class="hover:bg-accent/50 rounded"
+          class="listHover"
         />
       </div>
       <Empty v-else class="p-12!">
@@ -97,9 +98,12 @@ function handleSelect(value: string) {
 
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger as-child>
-      <Button type="button" variant="outline" :class="['h-fit w-full p-1.5!']">
-        <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
-        <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
+      <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+        <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
+        <Icon name="chevronDown" class="text-muted-foreground mr-2" />
+      </Button>
+      <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+        <span class="text-muted-foreground py-2">{{ placeholder }}</span>
         <Icon name="chevronDown" class="text-muted-foreground" />
       </Button>
     </DrawerTrigger>
@@ -108,49 +112,24 @@ function handleSelect(value: string) {
         <DrawerTitle>Select a Vehicle</DrawerTitle>
         <DrawerDescription v-if="description"> {{ description }} </DrawerDescription>
       </DrawerHeader>
-      <div class="px-4 pb-4">
-        <div v-if="filteredVehicles.length > 0">
-          <VehicleSelectItem
-            v-for="vehicle in filteredVehicles"
-            :key="vehicle.vehicleData.id"
+      <ul v-if="filteredVehicles.length > 0" class="divide-y px-4 pb-4">
+        <div v-for="vehicle in filteredVehicles" class="flex items-center justify-between gap-2">
+          <VehicleItem
+            variant="small"
             :is-active="vehicle.vehicleData.id === props.value"
+            :key="vehicle.vehicleData.id"
             :vehicle="vehicle.vehicleData"
             @click="handleSelect(vehicle.vehicleData.id)"
-            class="hover:bg-accent/50 rounded"
+            class="listHover"
           />
+          <Icon name="check" v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id" class="text-primary" />
         </div>
-      </div>
+      </ul>
+      <DrawerFooter>
+        <DrawerClose as-child>
+          <Button variant="outline">Cancel</Button>
+        </DrawerClose>
+      </DrawerFooter>
     </DrawerContent>
   </Drawer>
-
-  <!-- <Popover :open="open" @update:open="(value) => (open = value)" key="VehicleSelect">
-    <PopoverTrigger asChild>
-      <Button variant="outline" role="combobox" class="h-fit w-full p-1!" :aria-expanded="open">
-        <VehicleSelectItem v-if="selectedVehicle" :vehicle="selectedVehicle.vehicleData" class="w-full" />
-        <span v-else class="text-muted-foreground py-2">{{ placeholder }}</span>
-        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
-    </PopoverTrigger>
-
-    <PopoverContent class="w-(--reka-popover-trigger-width) p-0" align="start" key="VehicleSelectContent">
-      <input
-        type="search"
-        v-model="search"
-        placeholder="Search"
-        autofocus="false"
-        class="bg-background w-full rounded border-none px-3 py-2 outline-none focus-visible:ring-0"
-      />
-      <Separator />
-      <div v-if="filteredVehicles.length > 0" class="scrollArea max-h-72 space-y-1 overflow-y-auto p-2">
-        <VehicleSelectItem
-          v-for="vehicle in filteredVehicles"
-          :key="vehicle.vehicleData.id"
-          :vehicle="vehicle.vehicleData"
-          @click="handleSelect(vehicle.vehicleData.id)"
-          class="hover:bg-accent/50 rounded"
-        />
-      </div>
-      <div v-else class="text-muted-foreground flex justify-center p-4">Vehicles not found</div>
-    </PopoverContent>
-  </Popover> -->
 </template>

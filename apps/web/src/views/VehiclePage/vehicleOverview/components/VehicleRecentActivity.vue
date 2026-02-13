@@ -19,6 +19,7 @@ import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import { useIntersectionObserver } from "@vueuse/core";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol } = useCurrentUser();
@@ -55,8 +56,7 @@ useIntersectionObserver(loadMoreTrigger, ([entry]) => {
       </div>
       <p v-else-if="isError" class="text-destructive text-center text-sm">Error loading recent activity.</p>
       <Empty v-else-if="isEmpty">
-        <EmptyHeader><EmptyTitle> No recent activity. </EmptyTitle> </EmptyHeader>
-        <p class="mt-2">Your recent vehicle activities will appear here.</p>
+        <EmptyDescription class="">Your recent vehicle activities will appear here.</EmptyDescription>
       </Empty>
       <ul v-else class="relative flex flex-col gap-3">
         <div class="absolute top-6 left-8 z-0 h-full border-l" />

@@ -4,7 +4,7 @@ import Button from "@/components/ui/button/Button.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { EllipsisVerticalIcon } from "lucide-vue-next";
+import { EllipsisVerticalIcon, icons } from "lucide-vue-next";
 import { ref } from "vue";
 
 import { useModalStore } from "@/stores/modal";
@@ -15,11 +15,14 @@ import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
+import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
+import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 
 const router = useRouter();
 const modalStore = useModalStore();
 const { mutateAsync: deleteVehicle } = useVehicleDelete();
-const { currentVehicle, currentVehicleId } = useCurrentVehicle();
+const { currentVehicle, currentVehicleId, isVehicleOwner } = useCurrentVehicle();
 const { data: statCardData, isLoading } = useVehicleHeroStatCards(currentVehicleId);
 const { preferredCurrencySymbol } = useCurrentUser();
 
@@ -75,7 +78,26 @@ const statsOpen = ref(false);
                 {{ currentVehicle?.vehicleData.name || "Unnamed Vehicle" }}
               </h1>
 
-              <Button variant="ghost" size="icon-sm" class=""> <EllipsisVerticalIcon /> </Button>
+              <ResponsiveDropdown
+                :items="[
+                  {
+                    label: 'Edit',
+                    action: () => modalStore.onOpen('createVehicle'),
+                    icon: 'edit',
+                    disabled: !isVehicleOwner || true,
+                  },
+                  {
+                    label: 'Delete',
+                    action: handleDeleteClick,
+                    icon: 'trash',
+                    disabled: !isVehicleOwner,
+                  },
+                ]"
+              >
+                <template #header>
+                  <VehicleItem :vehicle="currentVehicle?.vehicleData" />
+                </template>
+              </ResponsiveDropdown>
             </div>
 
             <!-- Details -->

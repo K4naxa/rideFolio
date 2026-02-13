@@ -330,6 +330,16 @@ img {
   }
 }
 
+@utility beforeDot {
+  &::before {
+    content: "•";
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    color: var(--color-muted-foreground);
+  }
+}
+
 @layer utilities {
   /* Used for main window gaps */
   .gaps-big {

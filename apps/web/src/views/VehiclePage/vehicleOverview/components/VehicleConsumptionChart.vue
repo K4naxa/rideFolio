@@ -176,7 +176,7 @@ const avgConsumptionValue = computed(() => {
         <span class="text-muted-foreground text-sm">Avg.</span>
 
         <Badge variant="secondary" class="bg-muted items-center gap-1 text-sm">
-          <span class="text-foreground font-medium">{{ avgConsumptionValue }}</span>
+          <span class="text-foreground font-medium">{{ avgConsumptionValue ?? "N/A" }}</span>
           <span class="text-muted-foreground text-xs"> L/100km</span>
         </Badge>
 

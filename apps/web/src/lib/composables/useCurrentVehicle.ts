@@ -21,11 +21,17 @@ export function useCurrentVehicle() {
     return vehicles.value.find((v) => v.vehicleData.id === currentVehicleId.value);
   });
 
+  const isVehicleOwner = computed(() => {
+    if (!currentVehicle.value) return false;
+    return currentVehicle.value.isOwnerUser;
+  });
+
   const currentVehicleName = computed(() => currentVehicle.value?.vehicleData.name);
   return {
     currentVehicleId,
     hasCurrentVehicle,
     currentVehicle,
     currentVehicleName,
+    isVehicleOwner,
   };
 }

@@ -90,11 +90,7 @@ function handleNoteClick(note: Note) {
               <span class="text-destructive">Error loading notes.</span>
             </div>
             <Empty v-else-if="notes && notes.length === 0">
-              <EmptyHeader>
-                <Icon name="circleCheck" class="text-muted-foreground size-8" />
-              </EmptyHeader>
-              <EmptyTitle>No pending notes</EmptyTitle>
-              <EmptyDescription class="text-center"> You have no notes for this vehicle. </EmptyDescription>
+              <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
             </Empty>
             <ul v-auto-animate class="flex w-full flex-col gap-6">
               <li

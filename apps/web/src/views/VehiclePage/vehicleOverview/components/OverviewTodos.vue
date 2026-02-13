@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
-import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
@@ -44,13 +39,6 @@ const displayedTodos = computed(
       <div v-else-if="isTodosError" class="grid flex-1 place-items-center">
         <span class="text-destructive">Error loading todos.</span>
       </div>
-      <Empty v-else-if="displayedTodos.length === 0">
-        <EmptyTitle>No pending todos</EmptyTitle>
-        <EmptyDescription class="text-center"> You have completed all your todos for this vehicle. </EmptyDescription>
-        <EmptyContent>
-          <Button variant="outline" @click="modalStore.onOpen('createTodo')"> Create new </Button>
-        </EmptyContent>
-      </Empty>
       <ul v-else class="flex w-full flex-col gap-4">
         <li v-for="todo in displayedTodos" :key="todo.id" class="group flex items-center gap-4">
           <Checkbox

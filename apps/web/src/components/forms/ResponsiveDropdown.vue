@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   Drawer,
   DrawerClose,
@@ -19,20 +13,19 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { ref, type Component, type HTMLAttributes } from "vue";
+import { ref, type HTMLAttributes } from "vue";
+import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 
-export interface DropdownAction {
-  key: string;
+interface DropdownItem {
   label: string;
-  icon?: Component;
-  variant?: "default" | "destructive";
+  icon?: IconProps["name"];
+  action: () => void;
   disabled?: boolean;
-  separator?: boolean; // Add separator before this item
 }
 
 interface Props {
-  actions: DropdownAction[];
   title?: string;
+  items: DropdownItem[];
   description?: string;
   triggerClass?: HTMLAttributes["class"];
   contentClass?: HTMLAttributes["class"];
@@ -40,8 +33,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: "Actions",
-  description: "",
   align: "end",
 });
 
@@ -51,11 +42,6 @@ const emit = defineEmits<{
 
 const isMobile = useIsMobile();
 const isOpen = ref(false);
-
-function handleAction(key: string) {
-  emit("action", key);
-  isOpen.value = false;
-}
 </script>
 
 <template>
@@ -70,17 +56,10 @@ function handleAction(key: string) {
       </slot>
     </DropdownMenuTrigger>
     <DropdownMenuContent :align="align" :class="contentClass">
-      <template v-for="action in actions" :key="action.key">
-        <DropdownMenuSeparator v-if="action.separator" />
-        <DropdownMenuItem
-          :disabled="action.disabled"
-          :class="action.variant === 'destructive' && 'text-destructive focus:text-destructive'"
-          @click="handleAction(action.key)"
-        >
-          <component :is="action.icon" v-if="action.icon" class="mr-2 h-4 w-4" />
-          {{ action.label }}
-        </DropdownMenuItem>
-      </template>
+      <DropdownMenuItem v-for="item in items" :key="item.label" @click="item.action" :disabled="item.disabled">
+        <Icon v-if="item.icon" :name="item.icon" />
+        {{ item.label }}
+      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 
@@ -88,35 +67,38 @@ function handleAction(key: string) {
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger as-child>
       <slot name="trigger">
-        <Button variant="ghost" size="icon" :class="triggerClass">
-          <Icon name="dotsHorizontal" class="h-4 w-4" />
+        <Button variant="ghost" size="icon-sm" :class="triggerClass">
+          <Icon name="dotsVertical" class="h-4 w-4" />
           <span class="sr-only">Open menu</span>
         </Button>
       </slot>
     </DrawerTrigger>
     <DrawerContent>
-      <DrawerHeader class="text-left">
-        <DrawerTitle>{{ title }}</DrawerTitle>
-        <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
+      <DrawerHeader>
+        <slot name="header">
+          <DrawerTitle>{{ title }}</DrawerTitle>
+          <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
+        </slot>
       </DrawerHeader>
-      <div class="px-4 pb-4">
-        <div class="flex flex-col gap-1">
-          <template v-for="action in actions" :key="action.key">
-            <div v-if="action.separator" class="bg-border my-2 h-px" />
-            <Button
-              variant="ghost"
-              :disabled="action.disabled"
-              :class="[
-                'h-12 justify-start text-base',
-                action.variant === 'destructive' && 'text-destructive hover:text-destructive hover:bg-destructive/10',
-              ]"
-              @click="handleAction(action.key)"
-            >
-              <component :is="action.icon" v-if="action.icon" class="mr-3 h-5 w-5" />
-              {{ action.label }}
-            </Button>
-          </template>
-        </div>
+
+      <div class="flex flex-col gap-2.5 px-4 pb-4">
+        <Button
+          variant="outline"
+          type="button"
+          v-for="item in items"
+          :key="item.label"
+          class="flex h-fit items-center justify-start text-start text-base font-medium"
+          @click="
+            () => {
+              item.action();
+              isOpen = false;
+            }
+          "
+          :disabled="item.disabled"
+        >
+          <Icon v-if="item.icon" :name="item.icon" class="mr-2 h-4 w-4" />
+          {{ item.label }}
+        </Button>
       </div>
       <DrawerFooter class="pt-2">
         <DrawerClose as-child>

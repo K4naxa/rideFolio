@@ -64,6 +64,7 @@ import {
   LinkIcon,
   SaveIcon,
   Circle,
+  EllipsisVerticalIcon,
   CircleCheck,
   GaugeIcon,
   ArrowLeftIcon,
@@ -73,6 +74,7 @@ import {
   RotateCcwIcon,
   DatabaseIcon,
   Settings2Icon,
+  HelpCircleIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
@@ -141,6 +143,7 @@ type IconName =
   | "consumption"
   | "camera"
   | "subscription"
+  | "dotsVertical"
   | "billing"
   | "stats"
   | "link"
@@ -150,6 +153,7 @@ type IconName =
   | "overview"
   | "retry"
   | "database"
+  | "help"
   | "preferences"
   | "circleCheck";
 
@@ -240,9 +244,11 @@ const iconMap: Record<IconName, LucideIcon> = {
   arrowLeft: ArrowLeftIcon,
   distance: RouteIcon,
   overview: LayoutDashboard,
+  dotsVertical: EllipsisVerticalIcon,
   retry: RotateCcwIcon,
   database: DatabaseIcon,
   preferences: Settings2Icon,
+  help: HelpCircleIcon,
 };
 
 const iconComponent = computed(() => iconMap[props.name]);

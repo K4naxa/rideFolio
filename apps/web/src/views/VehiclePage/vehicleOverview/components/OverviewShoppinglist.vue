@@ -8,7 +8,6 @@ import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useShoppingCreate, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
@@ -27,7 +26,6 @@ const {
   isLoading: isShoppingLoading,
   isError: isShoppingError,
 } = useVehicleShopping(currentVehicleId);
-const { preferredCurrencySymbol } = useCurrentUser();
 const { mutate: toggleItem } = useShoppingToggle();
 const { mutate: createItem } = useShoppingCreate();
 
@@ -78,14 +76,8 @@ const displayedItems = computed(() =>
       <div v-else-if="isShoppingError" class="grid flex-1 place-items-center">
         <span class="text-destructive">Error loading shopping list.</span>
       </div>
-      <Empty v-else-if="shoppingList && shoppingList.length === 0">
-        <EmptyHeader>
-          <Icon name="circleCheck" class="text-muted-foreground size-8" />
-        </EmptyHeader>
-        <EmptyTitle>No pending items</EmptyTitle>
-        <EmptyDescription class="text-center"> No pending items in your shopping list. </EmptyDescription>
-      </Empty>
-      <ul v-else class="">
+
+      <ul v-else>
         <li v-for="item in displayedItems" :key="item.id" class="group flex items-center gap-4 py-2">
           <Checkbox
             :model-value="item.isPurchased"
