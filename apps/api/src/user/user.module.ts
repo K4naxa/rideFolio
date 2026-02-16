@@ -4,11 +4,12 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { NotificationService } from 'src/notifications/notification.service';
 import { UsersController } from 'src/user/user.controller';
 import { LimitsModule } from 'src/limits/limits.module';
+import { VehiclesModule } from 'src/vehicles/vehicles.module';
 
 @Module({
-  imports: [PrismaModule, LimitsModule],
+  imports: [PrismaModule, LimitsModule, VehiclesModule],
   providers: [UsersService, NotificationService],
-  exports: [UsersService],
+  exports: [UsersService, NotificationService],
   controllers: [UsersController],
 })
 export class UsersModule {}

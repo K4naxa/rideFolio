@@ -1,3 +1,5 @@
+import { TodoDueDate, TodoDueOdometer } from "../todo";
+
 // Vehicle Fuel Types
 export const FUEL_TYPES = {
   GASOLINE: { code: "GASOLINE", label: "Gasoline", nameKey: "vehicle.fuelTypes.gasoline" },
@@ -104,4 +106,16 @@ export type TVehicleInfo = {
   lifetimeStats: {
     totalTrackedUnits: TConversionResult;
   };
+};
+
+export type UpcomingEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  vehicle: {
+    name: string;
+    image: string | null;
+  };
+  dueDate: TodoDueDate;
+  dueOdometer: TodoDueOdometer;
 };

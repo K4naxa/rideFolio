@@ -8,6 +8,7 @@ import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { LimitsModule } from 'src/limits/limits.module';
+import { TodosService } from 'src/todos/todos.service';
 
 @Module({
   imports: [PrismaModule, LimitsModule],
@@ -18,8 +19,9 @@ import { LimitsModule } from 'src/limits/limits.module';
     OdometerService,
     UnitConversionService,
     AuthValidationService,
+    TodosService,
   ],
-  exports: [VehiclesService],
+  exports: [VehiclesService, VehicleRepository],
   controllers: [VehiclesController],
 })
 export class VehiclesModule {}

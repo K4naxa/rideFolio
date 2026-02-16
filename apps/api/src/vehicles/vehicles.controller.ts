@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post } from '@nestjs/common';
 
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
@@ -6,6 +6,7 @@ import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { log } from 'console';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -53,5 +54,15 @@ export class VehiclesController {
   ) {
     console.log(`Fetching vehicle activities for vehicleId: ${vehicleId} with cursor: ${cursor} and limit: ${limit}`);
     return await this.vehiclesService.getVehicleActivities(userSession, vehicleId, cursor, limit);
+  }
+
+  @Get('upcoming-events')
+  async getUpcomingEventsAll(@Session() userSession: UserSession) {
+    return await this.vehiclesService.getUpcomingEvents(userSession);
+  }
+
+  @Get('upcoming-events/:vehicleId')
+  async getUpcomingEvents(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
+    return await this.vehiclesService.getUpcomingEvents(userSession, vehicleId);
   }
 }

@@ -342,12 +342,16 @@ img {
 
 @layer utilities {
   /* Used for main window gaps */
-  .gaps-big {
-    @apply gap-8 md:gap-10 lg:gap-12 xl:gap-14;
+  .gaps-lg {
+    @apply gap-10 md:gap-12 lg:gap-12 xl:gap-14;
+  }
+
+  .gaps-md {
+    @apply gap-6;
   }
   /* inside section gaps */
-  .gaps-medium {
-    @apply gap-3 md:gap-4 lg:gap-6;
+  .gaps-sm {
+    @apply gap-3 md:gap-4;
   }
 
   .card {

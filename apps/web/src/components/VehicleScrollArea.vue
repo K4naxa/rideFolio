@@ -5,6 +5,8 @@ import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import { twMerge } from "tailwind-merge";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
+import Label from "@/components/ui/label/Label.vue";
 
 const { data: vehicles } = useVehiclesAll();
 const modalStore = useModalStore();
@@ -30,7 +32,7 @@ const props = defineProps<{
             'group cardBackground focus-visible:ring-ring/50 transition-[size, shadow] flex aspect-4/3 shrink-0 cursor-pointer flex-col overflow-hidden rounded border duration-200 outline-none hover:shadow-md focus-visible:ring-[3px] dark:bg-transparent',
             props.size === 'sm' && 'w-16',
             props.size === 'md' && 'w-42',
-            props.size === 'lg' && 'h-40 lg:h-68',
+            props.size === 'lg' && 'h-48 lg:h-68',
             props.class,
           )
         "
@@ -45,16 +47,23 @@ const props = defineProps<{
           />
           <div class="to-card dark:to-background absolute bottom-0 h-1/4 bg-linear-to-b from-transparent" />
         </div>
-        <div class="flex flex-1 flex-col items-center justify-center truncate overflow-hidden p-2 text-center">
-          <h3 class="text-foreground block w-full truncate leading-tight">
-            {{ vehicle.vehicleData.name }}
-          </h3>
-          <span
-            v-if="vehicle.vehicleData.make && vehicle.vehicleData.model"
-            class="text-muted-foreground hidden w-full truncate md:block"
-          >
-            {{ vehicle.vehicleData.make }} • {{ vehicle.vehicleData.model }}
-          </span>
+
+        <!-- text -->
+        <div class="flex h-fit gap-2 p-2">
+          <div class="flex flex-1 flex-col items-center justify-center truncate overflow-hidden">
+            <Label class="text-foreground block w-full truncate leading-tight md:text-base lg:text-lg">
+              {{ vehicle.vehicleData.name }}
+            </Label>
+            <span
+              v-if="vehicle.vehicleData.make && vehicle.vehicleData.model"
+              class="text-muted-foreground mt-auto block w-full truncate text-sm leading-tight md:text-sm lg:text-base"
+            >
+              {{ vehicle.vehicleData.make }} • {{ vehicle.vehicleData.model }}
+            </span>
+          </div>
+
+          <!-- Group badge-->
+          <Badge variant="accent" class="h-fit" v-if="vehicle.isOwnerUser"> Owned </Badge>
         </div>
       </RouterLink>
     </nav>

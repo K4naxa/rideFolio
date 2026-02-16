@@ -71,7 +71,10 @@ const isMobile = useIsMobile();
           </h3>
         </div>
         <div class="flex gap-4">
-          <p v-if="props.vehicle?.make || props.vehicle?.model" class="flex items-center">
+          <p
+            v-if="props.vehicle?.make || props.vehicle?.model"
+            :class="twMerge('flex items-center', props.variant === 'small' && 'text-sm')"
+          >
             {{ props.vehicle?.make }}
             {{ props.vehicle?.model }}
           </p>
@@ -82,7 +85,10 @@ const isMobile = useIsMobile();
             </Badge>
           </span>
 
-          <span v-if="props.vehicle?.licensePlate" class="text-muted-foreground flex items-center gap-2 text-base">
+          <span
+            v-if="props.vehicle?.licensePlate && props.variant !== 'small'"
+            class="text-muted-foreground flex items-center gap-2 text-base"
+          >
             License:
             <Badge class="bg-muted text-foreground h-fit rounded-md font-normal">
               {{ props.vehicle?.licensePlate }}
@@ -90,7 +96,7 @@ const isMobile = useIsMobile();
           </span>
 
           <span
-            v-if="props.vehicle?.odometerData?.value"
+            v-if="props.vehicle?.odometerData?.value && props.variant !== 'small'"
             class="text-muted-foreground flex items-center gap-1 text-base"
           >
             Odometer:
@@ -99,7 +105,7 @@ const isMobile = useIsMobile();
             </Badge>
           </span>
           <span
-            v-if="props.vehicle?.odometerData?.lifeTimeTracked"
+            v-if="props.vehicle?.odometerData?.lifeTimeTracked && props.variant !== 'small'"
             class="text-muted-foreground flex items-center gap-1 text-base"
           >
             Tracked distance:

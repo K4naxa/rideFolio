@@ -53,7 +53,7 @@ function handleNoteClick(note: Note) {
 }
 </script>
 <template>
-  <div class="gaps-big mb-8 flex w-full flex-col">
+  <div class="gaps-lg mb-8 flex w-full flex-col">
     <!-- First row -->
 
     <div class="flex h-52 min-h-0 w-full md:h-80">
@@ -62,7 +62,7 @@ function handleNoteClick(note: Note) {
 
     <!-- second row -->
     <div
-      class="gaps-big grid min-h-0 w-full grid-cols-1 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)] lg:grid-cols-2"
+      class="gaps-lg grid min-h-0 w-full grid-cols-1 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)] lg:grid-cols-2"
     >
       <!-- Left column ( full heigth) -->
       <div class="flex max-h-96 min-h-0 flex-1 flex-col lg:max-h-none">
@@ -74,7 +74,7 @@ function handleNoteClick(note: Note) {
       </div>
 
       <!-- Right column -->
-      <section class="gaps-big grid min-h-0 grid-cols-1 lg:grid-cols-2">
+      <section class="gaps-lg grid min-h-0 grid-cols-1 lg:grid-cols-2">
         <OverviewTodos />
         <OverviewShoppinglist />
 

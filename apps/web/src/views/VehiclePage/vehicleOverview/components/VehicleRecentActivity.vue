@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
-import Button from "@/components/ui/button/Button.vue";
 import Label from "@/components/ui/label/Label.vue";
-import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { type RecentActivityInfiniteResponse } from "@repo/validation";
-import { computed, ref, useTemplateRef } from "vue";
+import { computed, useTemplateRef } from "vue";
 import VehicleRecentActivitySkeleton from "./VehicleRecentActivitySkeleton.vue";
 import { useVehicleTimelineInfinite } from "@/lib/queries/vehicles/vehicle-queries";
-import Separator from "@/components/ui/separator/Separator.vue";
-import { EllipsisVertical } from "lucide-vue-next";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 
 import { useIntersectionObserver } from "@vueuse/core";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import CardHeader from "@/components/ui/card/CardHeader.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
@@ -81,25 +74,21 @@ useIntersectionObserver(loadMoreTrigger, ([entry]) => {
                 <Label class="font-normal">Refill</Label>
               </div>
               <div class="flex gap-4">
-                <div class="flex items-center gap-2">
-                  <span class="text-muted-foreground text-sm">Amount: </span>
-                  <Badge variant="outline" class="px-2 py-1"
-                    >{{ activity.data.fuelAmount.value }}
-                    <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
-                  </Badge>
-                </div>
-                <div v-if="activity.data.consumption.value" class="flex items-center gap-2">
-                  <span class="text-muted-foreground text-sm">Avg: </span>
-                  <Badge class="bg-muted text-foreground px-2 py-1" v-if="activity.data.consumption.value">
-                    {{ activity.data.consumption.value }}
-                    <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
-                  </Badge>
-                </div>
+                <Badge variant="accent" class="px-2 py-1" v-if="activity.data.fuelAmount.value">
+                  {{ activity.data.fuelAmount.value }}
+                  <p class="text-muted-foreground text-xs">{{ activity.data.fuelAmount.unit }}</p>
+                </Badge>
+                <Badge variant="accent" class="px-2 py-1" v-if="activity.data.consumption.value">
+                  {{ activity.data.consumption.value }}
+                  <p class="text-muted-foreground text-xs">{{ activity.data.consumption.unit }}</p>
+                </Badge>
               </div>
             </div>
-            <div class="text-muted-foreground ml-auto hidden text-end text-sm @[300px]:block">
-              <p>{{ activity.data.costTotal }} {{ preferredCurrencySymbol }}</p>
-              <p>
+            <div class="text-muted-foreground ml-auto text-end text-sm">
+              <Badge v-if="activity.data.costTotal" variant="muted">
+                {{ activity.data.costTotal }} {{ preferredCurrencySymbol }}
+              </Badge>
+              <p class="mt-auto text-sm">
                 {{
                   new Date(activity.data.date).toLocaleDateString(undefined, {
                     year: "numeric",

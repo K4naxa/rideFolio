@@ -1,10 +1,11 @@
 import { TConversionResult, TLogVehicle } from "../vehicle";
 
-type TodoDueOdometer = TConversionResult & {
+export type TodoDueOdometer = TConversionResult & {
   overdue: boolean;
+  remaining: number | null;
 };
 
-type TodoDueDate = {
+export type TodoDueDate = {
   date: Date;
   overdue: boolean;
 };

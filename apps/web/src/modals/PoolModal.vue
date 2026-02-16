@@ -100,7 +100,7 @@ watchEffect(() => {
         <DialogTitle>Create a New Group</DialogTitle>
         <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
       </DialogHeader>
-      <form @submit.prevent="onSubmit" class="gaps-medium flex flex-col justify-between">
+      <form @submit.prevent="onSubmit" class="gaps-md flex flex-col justify-between">
         <!-- Group info -->
         <div>
           <header class="mb-4 space-y-2 px-0">
@@ -108,9 +108,9 @@ watchEffect(() => {
             <Separator />
           </header>
 
-          <div class="gaps-medium flex flex-col">
+          <div class="gaps-md flex flex-col">
             <!-- name / type -->
-            <div class="gaps-medium grid grid-cols-1 place-content-end items-end md:grid-cols-2">
+            <div class="gaps-md grid grid-cols-1 place-content-end items-end md:grid-cols-2">
               <Input name="name" type="text" label="Name" placeholder="Family Group" maxlength="50" required />
               <Field v-slot="{ value, handleChange }" name="type">
                 <Select :model-value="value" @update:model-value="handleChange">

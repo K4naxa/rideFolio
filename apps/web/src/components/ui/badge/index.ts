@@ -11,6 +11,7 @@ export const badgeVariants = cva(
         default: "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
         accent: "border-transparent bg-accent text-accent-foreground [a&]:hover:bg-accent/90",
         secondary: "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+        muted: "border-transparent bg-muted text-muted-foreground [a&]:hover:bg-muted/80",
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",

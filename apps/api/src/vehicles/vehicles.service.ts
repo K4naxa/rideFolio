@@ -25,6 +25,7 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { Extend } from 'zod/v4/core/util.cjs';
 import { LimitsService } from 'src/limits/limits.service';
+import { TodosService } from 'src/todos/todos.service';
 
 @Injectable()
 export class VehiclesService {
@@ -35,6 +36,7 @@ export class VehiclesService {
     private vehicleTransformer: VehicleTransformerService,
     private authValidationService: AuthValidationService,
     private limitsService: LimitsService,
+    private todoService: TodosService,
   ) {}
 
   // ***       Management       ***
@@ -411,5 +413,40 @@ export class VehiclesService {
       items: activities,
       nextCursor,
     };
+  }
+
+  async getUpcomingEvents(userSession: UserSession, vehicleId?: string) {
+    // If vehicleId is provided, validate access to that vehicle
+    // If no vehicleId is provided, fetch upcoming events for all accessible vehicles
+    const vehicles = vehicleId
+      ? await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId)
+      : await this.vehicleRepository.findAccessibleVehicles(userSession.user.id);
+
+    if (!vehicles || vehicles.length === 0) return [];
+
+    const vehicleIds = vehicles.map((v) => v.id);
+
+    const upcomingTodos = await this.prisma.todo.findMany({
+      where: {
+        vehicleId: { in: vehicleIds },
+        isCompleted: false,
+      },
+      orderBy: { dueDate: 'asc' },
+      include: {
+        vehicle: { select: { name: true, image: true } },
+      },
+    });
+
+    return upcomingTodos.map((todo) => ({
+      id: todo.id,
+      title: todo.title,
+      description: todo.description,
+      dueDate: this.todoService.formatDueDate(todo.dueDate),
+      dueOdometer: this.todoService.formatDueOdometer(todo, vehicles.find((v) => v.id === todo.vehicleId) as Vehicle),
+      vehicle: {
+        name: todo.vehicle.name,
+        image: todo.vehicle.image,
+      },
+    }));
   }
 }

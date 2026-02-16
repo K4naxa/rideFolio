@@ -226,7 +226,7 @@ export class TodosService {
   private getTodoBaseOdometer(todo: PrismaTodo, vehicle: Vehicle): number {
     return vehicle.odometerType === 'HOUR' ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
   }
-  private formatDueDate(dueDate: Date | null): Todo['dueDate'] {
+  formatDueDate(dueDate: Date | null): Todo['dueDate'] {
     if (!dueDate) return null;
 
     return {
@@ -235,7 +235,7 @@ export class TodosService {
     };
   }
 
-  private formatDueOdometer(todo: PrismaTodo, vehicle: Vehicle): Todo['dueOdometer'] {
+  formatDueOdometer(todo: PrismaTodo, vehicle: Vehicle): Todo['dueOdometer'] {
     // Check if todo has any odometer value set
     if (!todo.dueOdometer_hour && !todo.dueOdometer_km) {
       return null;
@@ -247,6 +247,7 @@ export class TodosService {
     return {
       ...this.unitConversion.getOdometerDataByType(todoBaseOdometer, vehicle.odometerType),
       overdue: vehicleBaseOdometer >= todoBaseOdometer,
+      remaining: todoBaseOdometer - vehicleBaseOdometer,
     };
   }
 

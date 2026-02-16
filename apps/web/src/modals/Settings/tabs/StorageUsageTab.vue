@@ -39,7 +39,7 @@ const { data, isLoading, isError, refetch, isFetching } = useStorageBreakdown();
       <Separator class="mt-2" />
     </div>
 
-    <div class="gaps-big grid grid-cols-1 lg:grid-cols-2">
+    <div class="gaps-lg grid grid-cols-1 lg:grid-cols-2">
       <StorageUsageSection />
 
       <StorageBreakdownElement />

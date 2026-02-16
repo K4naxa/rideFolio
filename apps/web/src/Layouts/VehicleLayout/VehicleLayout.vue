@@ -5,7 +5,6 @@ import { computed } from "vue";
 import VehicleHero from "./components/VehicleHero.vue";
 import type { IconProps } from "@/components/icons/Icon.vue";
 import Icon from "@/components/icons/Icon.vue";
-import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 
@@ -38,12 +37,6 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
     icon: "shoppingCart",
     label: "Shopping list",
     id: "shopping-list",
-  },
-  {
-    to: `/vehicles/${currentVehicleId.value}/timelapse`,
-    icon: "distance",
-    label: "Timelapse",
-    id: "timelapse",
   },
 ]);
 </script>

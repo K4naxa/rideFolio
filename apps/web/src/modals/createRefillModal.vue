@@ -136,8 +136,8 @@ watch(isModalOpen, (open) => {
         </DialogTitle>
         <DialogDescription class="text-start"> Log a new fuel refill for your vehicle </DialogDescription>
       </DialogHeader>
-      <form class="flex flex-col justify-between gap-6" data-cy="create-refill-form">
-        <div class="flex flex-col gap-4 lg:gap-6">
+      <form class="flex flex-col justify-between" data-cy="create-refill-form">
+        <div class="gaps-md flex flex-col">
           <Field v-slot="{ value, handleChange }" name="vehicleId">
             <div>
               <VehicleSelect
@@ -152,9 +152,9 @@ watch(isModalOpen, (open) => {
           </Field>
 
           <!-- Date & Odometer -->
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
+          <div class="gaps-sm grid md:grid-cols-2">
             <DateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
-            <div class="relative pb-3">
+            <div class="relative">
               <Input
                 name="odometer"
                 type="number"
@@ -171,10 +171,10 @@ watch(isModalOpen, (open) => {
           </div>
 
           <!-- Fill Type -->
-          <div class="grid grid-cols-2 gap-6">
+          <div class="gaps-sm grid grid-cols-2">
             <Field v-slot="{ value, handleChange }" name="fullRefill">
               <Label
-                class="text flex items-center gap-4 rounded border px-4 py-3 leading-none font-semibold select-none"
+                class="text flex items-center gap-4 rounded border px-3 py-3 leading-none select-none"
                 data-cy="full-refill-switch"
               >
                 <Switch :model-value="value" @update:model-value="handleChange" />
@@ -183,7 +183,7 @@ watch(isModalOpen, (open) => {
             </Field>
             <Field v-slot="{ value, handleChange }" name="skippedRefill">
               <label
-                class="flex items-center space-x-2 rounded border px-4 py-3 font-semibold select-none"
+                class="flex items-center space-x-2 rounded border px-3 py-3 select-none"
                 data-cy="skipped-refill-switch"
               >
                 <Switch :model-value="value" @update:model-value="handleChange" />
@@ -194,7 +194,7 @@ watch(isModalOpen, (open) => {
           </div>
 
           <!-- Cost fields  -->
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
+          <div class="gaps-sm grid grid-cols-2 md:grid-cols-3">
             <Input
               name="fuelAmount"
               type="number"
@@ -203,6 +203,7 @@ watch(isModalOpen, (open) => {
               placeholder="Amount"
               :onValueChange="handleFuelAmountChange"
               data-cy="fuel-amount-input"
+              class="col-span-2 md:col-span-1"
             />
             <Input
               name="pricePerUnit"
