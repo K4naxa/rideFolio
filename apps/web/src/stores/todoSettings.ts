@@ -9,21 +9,6 @@ export const useTodoSettingsStore = defineStore("todoSettings", {
   }),
 
   actions: {
-    toggleCompleted() {
-      this.showCompleted = !this.showCompleted;
-    },
-
-    togglePriority() {
-      this.showPriority = !this.showPriority;
-    },
-
-    toggleDueInfo() {
-      this.showDueInfo = !this.showDueInfo;
-    },
-    toggleCompletedInfo() {
-      this.showCompletedInfo = !this.showCompletedInfo;
-    },
-    // Or a more flexible approach:
     setSetting(key: keyof typeof this.$state, value: boolean) {
       this[key] = value;
     },
@@ -32,6 +17,7 @@ export const useTodoSettingsStore = defineStore("todoSettings", {
       this.showCompleted = false;
       this.showPriority = false;
       this.showDueInfo = false;
+      this.showCompletedInfo = false;
     },
   },
   persist: true,
