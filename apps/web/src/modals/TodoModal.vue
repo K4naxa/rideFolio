@@ -27,6 +27,7 @@ import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import Label from "@/components/ui/label/Label.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 
 const { currentVehicle } = useCurrentVehicle();
 
@@ -128,6 +129,10 @@ const onSubmit = handleSubmit(async (values) => {
           <h3 v-if="creatingNew">Create To-do</h3>
           <h3 v-else>Edit To-do</h3>
         </DialogTitle>
+        <DialogDescription v-show="false">
+          Create new to-do for your vehicle or edit existing one. You can set a title, description, priority and due
+          information for the to-do.
+        </DialogDescription>
       </DialogHeader>
       <form @submit="onSubmit" class="flex flex-col gap-4" data-cy="create-todo-form">
         <Field v-slot="{ value, handleChange }" name="vehicleId">

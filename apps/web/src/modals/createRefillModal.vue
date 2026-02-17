@@ -129,7 +129,7 @@ watch(isModalOpen, (open) => {
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal" size="full">
+    <DialogScrollContent class="w-full max-w-xl" key="CreateRefillModal">
       <DialogHeader>
         <DialogTitle>
           <div class="flex items-center gap-2"><Icons name="refill" /> Create new refill</div>
