@@ -10,6 +10,8 @@ import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import DrawerHeader from "@/components/ui/drawer/DrawerHeader.vue";
 import DrawerTitle from "@/components/ui/drawer/DrawerTitle.vue";
 import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
+import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
+import DrawerClose from "@/components/ui/drawer/DrawerClose.vue";
 
 const modalStore = useModalStore();
 
@@ -69,7 +71,7 @@ const isMobile = useIsMobile();
             <DrawerTitle> Create new </DrawerTitle>
             <DrawerDescription> Select an option below to create a new item. </DrawerDescription>
           </DrawerHeader>
-          <div class="flex flex-col gap-4 p-4">
+          <div class="gaps-sm grid grid-cols-2 p-4">
             <Button
               variant="outline"
               v-for="button in headerButtons"
@@ -78,13 +80,18 @@ const isMobile = useIsMobile();
                 button.onClick();
                 isDrawerOpen = false;
               "
-              :class="twMerge('h-fit w-full rounded py-3 text-base font-medium shadow', button.class)"
+              :class="twMerge('aspect-video h-fit w-full rounded py-3 text-base font-medium shadow', button.class)"
               :data-cy="button.cypressDataAttr"
             >
               <Icon :name="button.icon" />
               <span class="">{{ button.label }}</span>
             </Button>
           </div>
+          <DrawerFooter>
+            <DrawerClose>
+              <Button variant="outline" class="w-full"> Cancel </Button>
+            </DrawerClose>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>

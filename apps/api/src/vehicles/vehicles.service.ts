@@ -429,6 +429,11 @@ export class VehiclesService {
     const upcomingTodos = await this.prisma.todo.findMany({
       where: {
         vehicleId: { in: vehicleIds },
+        OR: [
+          { dueDate: { not: null } }, // either dueDate is set
+          { dueOdometer_hour: { not: null, gt: 0 } }, // or dueOdometer_hour is set and greater than 0
+          { dueOdometer_km: { not: null, gt: 0 } }, // or dueOdometer_km is set and greater than 0
+        ],
         isCompleted: false,
       },
       orderBy: { dueDate: 'asc' },

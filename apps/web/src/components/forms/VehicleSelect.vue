@@ -61,75 +61,99 @@ const { data: vehicles } = useVehiclesAll();
 const selectedVehicle = computed(() => vehicles?.value?.find((vehicle) => vehicle.vehicleData.id === props.value));
 
 function handleSelect(value: string) {
+  console.log("Selected vehicle ID:", value);
   emit("valueChange", value);
   isOpen.value = false;
 }
 </script>
 
 <template>
-  <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
-    <DropdownMenuTrigger class="w-full">
-      <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
-        <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
-        <Icon name="chevronDown" class="text-muted-foreground mr-2" />
-      </Button>
-      <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
-        <span class="text-muted-foreground py-2">{{ placeholder }}</span>
-        <Icon name="chevronDown" class="text-muted-foreground" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent :class="contentClass" same-width align="start">
-      <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
-        <VehicleItem
-          v-for="vehicle in filteredVehicles"
-          variant="small"
-          :is-active="vehicle.vehicleData.id === props.value"
-          :key="vehicle.vehicleData.id"
-          :vehicle="vehicle.vehicleData"
-          @click="handleSelect(vehicle.vehicleData.id)"
-          class="listHover"
-        />
-      </div>
-      <Empty v-else class="p-12!">
-        <EmptyDescription class="">Vehicles not found</EmptyDescription>
-      </Empty>
-    </DropdownMenuContent>
-  </DropdownMenu>
+  <!-- Desktop Dropdown-->
+  <template v-if="!isMobile">
+    <DropdownMenu v-model:open="isOpen">
+      <DropdownMenuTrigger class="w-full">
+        <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+          <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
+          <Icon name="chevronDown" class="text-muted-foreground mr-2" />
+        </Button>
+        <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+          <span class="text-muted-foreground py-2">{{ placeholder }}</span>
+          <Icon name="chevronDown" class="text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
 
-  <Drawer v-else v-model:open="isOpen">
-    <DrawerTrigger as-child>
-      <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
-        <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
-        <Icon name="chevronDown" class="text-muted-foreground mr-2" />
-      </Button>
-      <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
-        <span class="text-muted-foreground py-2">{{ placeholder }}</span>
-        <Icon name="chevronDown" class="text-muted-foreground" />
-      </Button>
-    </DrawerTrigger>
-    <DrawerContent>
-      <DrawerHeader class="text-left">
-        <DrawerTitle>Select a Vehicle</DrawerTitle>
-        <DrawerDescription v-if="description"> {{ description }} </DrawerDescription>
-      </DrawerHeader>
-      <ul v-if="filteredVehicles.length > 0" class="divide-y px-4 pb-4">
-        <div v-for="vehicle in filteredVehicles" class="flex items-center justify-between gap-2">
-          <VehicleItem
-            variant="small"
-            :is-active="vehicle.vehicleData.id === props.value"
-            :key="vehicle.vehicleData.id"
-            :vehicle="vehicle.vehicleData"
+      <DropdownMenuContent :class="contentClass" same-width align="start">
+        <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
+          <div
+            v-for="vehicle in filteredVehicles"
             @click="handleSelect(vehicle.vehicleData.id)"
-            class="listHover"
-          />
-          <Icon name="check" v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id" class="text-primary" />
+            class="listHover flex cursor-pointer items-center justify-between rounded select-none"
+          >
+            <VehicleItem
+              variant="small"
+              :is-active="vehicle.vehicleData.id === props.value"
+              :key="vehicle.vehicleData.id"
+              :vehicle="vehicle.vehicleData"
+              class=""
+            />
+            <Icon
+              name="check"
+              v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id"
+              class="text-muted-foreground mr-2"
+            />
+          </div>
         </div>
-      </ul>
-      <DrawerFooter>
-        <DrawerClose as-child>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
-      </DrawerFooter>
-    </DrawerContent>
-  </Drawer>
+        <Empty v-else class="p-12!">
+          <EmptyDescription class="">Vehicles not found</EmptyDescription>
+        </Empty>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </template>
+
+  <!-- Mobile Drawer -->
+  <template v-else>
+    <Drawer v-model:open="isOpen">
+      <DrawerTrigger as-child>
+        <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+          <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
+          <Icon name="chevronDown" class="text-muted-foreground mr-2" />
+        </Button>
+        <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+          <span class="text-muted-foreground py-2">{{ placeholder }}</span>
+          <Icon name="chevronDown" class="text-muted-foreground" />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader class="text-left">
+          <DrawerTitle>Select a Vehicle</DrawerTitle>
+          <DrawerDescription v-if="description"> {{ description }} </DrawerDescription>
+        </DrawerHeader>
+        <ul v-if="filteredVehicles.length > 0" class="divide-y px-4 pb-4">
+          <div
+            v-for="vehicle in filteredVehicles"
+            @click="handleSelect(vehicle.vehicleData.id)"
+            class="flex cursor-pointer items-center justify-between gap-2"
+          >
+            <VehicleItem
+              variant="small"
+              :is-active="vehicle.vehicleData.id === props.value"
+              :key="vehicle.vehicleData.id"
+              :vehicle="vehicle.vehicleData"
+              class=""
+            />
+            <Icon
+              name="check"
+              v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id"
+              class="text-muted-foreground mr-2"
+            />
+          </div>
+        </ul>
+        <DrawerFooter>
+          <DrawerClose as-child>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  </template>
 </template>

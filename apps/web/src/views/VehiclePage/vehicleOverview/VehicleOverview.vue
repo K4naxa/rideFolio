@@ -61,71 +61,54 @@ function handleNoteClick(note: Note) {
     </div>
 
     <!-- second row -->
-    <div
-      class="gaps-lg grid min-h-0 w-full grid-cols-1 lg:max-h-[calc(100vh-var(--app-header-height)-var(--vehicle-navbar-height)-4rem)] lg:grid-cols-2"
-    >
-      <!-- Left column ( full heigth) -->
-      <div class="flex max-h-96 min-h-0 flex-1 flex-col lg:max-h-none">
-        <h2 class="mb-1">Recent Activity</h2>
-        <Separator class="mb-2" />
-        <div class="flex h-full flex-col overflow-hidden">
-          <VehicleRecentActivity />
+    <div class="gaps-lg grid min-h-0 w-full lg:grid-cols-2">
+      <!-- Right column -->
+      <OverviewTodos />
+      <OverviewShoppinglist />
+
+      <div class="flex h-full max-h-96 min-h-0 flex-col lg:col-span-2">
+        <h2 class="mb-2">Notes</h2>
+        <Separator class="mb-4" />
+
+        <div class="scrollbar-macos overflow-y-auto">
+          <div v-if="isNotesLoading" class="grid flex-1 place-items-center">
+            <Spinner class="text-muted-foreground size-10" />
+          </div>
+          <div v-else-if="isNotesError" class="grid flex-1 place-items-center">
+            <span class="text-destructive">Error loading notes.</span>
+          </div>
+          <Empty v-else-if="notes && notes.length === 0">
+            <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
+          </Empty>
+          <ul v-auto-animate class="flex w-full flex-col gap-6">
+            <li
+              v-for="note in notes"
+              :key="note.id"
+              :class="['group flex cursor-pointer justify-between gap-2 border-l pl-4']"
+              @click="handleNoteClick(note)"
+            >
+              <div class="flex w-full flex-col gap-1">
+                <span class="min-w-0 break-all">{{ note.title }}</span>
+                <span class="text-muted-foreground min-w-0 text-sm break-all">
+                  {{ getTextSnippet(String(note.content), 200) }}</span
+                >
+                <div class="truncate">
+                  <Badge v-for="tag in note.tags" variant="outline" :key="tag" class="mt-2 mr-1 px-2 py-1.5 text-xs">
+                    {{ tag }}
+                  </Badge>
+                </div>
+              </div>
+
+              <div class="ml-auto flex flex-col items-center justify-center gap-1 text-sm">
+                <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
+                <button class="opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                  <Icon name="chevronRight" />
+                </button>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
-
-      <!-- Right column -->
-      <section class="gaps-lg grid min-h-0 grid-cols-1 lg:grid-cols-2">
-        <OverviewTodos />
-        <OverviewShoppinglist />
-
-        <div class="flex h-full max-h-96 min-h-0 flex-col lg:col-span-2">
-          <h2 class="mb-2">Notes</h2>
-          <Separator class="mb-4" />
-
-          <div class="scrollbar-macos overflow-y-auto">
-            <div v-if="isNotesLoading" class="grid flex-1 place-items-center">
-              <Spinner class="text-muted-foreground size-10" />
-            </div>
-            <div v-else-if="isNotesError" class="grid flex-1 place-items-center">
-              <span class="text-destructive">Error loading notes.</span>
-            </div>
-            <Empty v-else-if="notes && notes.length === 0">
-              <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
-            </Empty>
-            <ul v-auto-animate class="flex w-full flex-col gap-6">
-              <li
-                v-for="note in notes"
-                :key="note.id"
-                :class="['group flex cursor-pointer justify-between gap-2 border-l pl-4']"
-                @click="handleNoteClick(note)"
-              >
-                <div class="flex w-full flex-col gap-1">
-                  <span class="min-w-0 break-all">{{ note.title }}</span>
-                  <span class="text-muted-foreground min-w-0 text-sm break-all">
-                    {{ getTextSnippet(String(note.content), 200) }}</span
-                  >
-                  <div class="truncate">
-                    <Badge v-for="tag in note.tags" variant="outline" :key="tag" class="mt-2 mr-1 px-2 py-1.5 text-xs">
-                      {{ tag }}
-                    </Badge>
-                  </div>
-                </div>
-                <div class="text-muted-foreground mt-1 line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3"></div>
-
-                <div class="ml-auto flex flex-col items-center justify-center gap-1 text-sm">
-                  <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
-                  <button class="opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                    <Icon name="chevronRight" />
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
     </div>
-
-    <!-- Third row -->
   </div>
 </template>
-<style scoped></style>

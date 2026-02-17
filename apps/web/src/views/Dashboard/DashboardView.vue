@@ -56,22 +56,28 @@ const { data: upcomingEvents } = useUpcomingEventsQuery();
               :key="event.id"
               :class="
                 twMerge(
-                  'listHover bg-card flex h-28 w-80 flex-col space-y-1 rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full md:space-y-2',
-                  (event.dueDate.overdue || event.dueOdometer?.overdue) && 'border-l-destructive!',
+                  'listHover bg-card flex w-80 flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
+                  (event.dueDate?.overdue || event.dueOdometer?.overdue) && 'border-l-destructive!',
                 )
               "
             >
               <div class="flex justify-between gap-4">
                 <Label class="truncate text-base">{{ event.title }}</Label>
-                <Badge variant="muted" class="text-sm">{{ event.vehicle.name }}</Badge>
+                <Badge variant="muted" class="text-xs">{{ event.vehicle.name }}</Badge>
               </div>
-              <span class="text-muted-foreground line-clamp-1 text-sm">{{ event.description }}</span>
-              <div class="mt-auto flex items-center gap-2 text-sm">
-                <Badge v-if="event.dueOdometer?.overdue || event.dueDate?.overdue" variant="destructive">Overdue</Badge>
-                <p class="ml-auto text-end">
-                  Due <span class="font-medium">{{ useTimeAgoIntl(new Date(event.dueDate.date)) }}</span>
+              <div
+                class="text-muted-foreground mt-auto flex items-center gap-1 text-sm"
+                v-if="event.dueDate?.date || event.dueOdometer?.remaining"
+              >
+                Due
+                <p v-if="event.dueDate?.date" class=" ">
+                  <span :class="twMerge(event.dueDate?.overdue && 'text-destructive')">{{
+                    useTimeAgoIntl(new Date(event.dueDate.date))
+                  }}</span>
                 </p>
-                <p v-if="event.dueOdometer">/ {{ event.dueOdometer?.remaining }} {{ event.dueOdometer?.unit }}</p>
+                <p v-if="event.dueOdometer?.remaining">
+                  / {{ event.dueOdometer?.remaining }} {{ event.dueOdometer?.unit }}
+                </p>
               </div>
             </div>
           </div>

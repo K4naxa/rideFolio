@@ -16,12 +16,17 @@ const props = withDefaults(
   },
 );
 
+defineEmits<{
+  click: [event: MouseEvent];
+}>();
+
 const isMobile = useIsMobile();
 </script>
 
 <template>
+  <!-- Mobile template -->
   <template v-if="isMobile">
-    <div v-if="!props.vehicle" class="flex items-center gap-4">
+    <div v-if="!props.vehicle" class="flex w-full items-center gap-4" v-bind="$attrs">
       <Skeleton :class="twMerge('aspect-video h-16 w-fit shrink-0 rounded-md', props.variant === 'small' && 'h-12')" />
       <div>
         <Skeleton class="mb-2 h-4 w-32 rounded-md" />
@@ -29,7 +34,7 @@ const isMobile = useIsMobile();
       </div>
     </div>
 
-    <div v-else class="flex w-full items-center gap-4">
+    <div v-else class="flex w-full items-center gap-4" v-bind="$attrs">
       <VehicleAvatar
         :src="props.vehicle?.image"
         :type="props.vehicle?.type.code"
@@ -56,8 +61,9 @@ const isMobile = useIsMobile();
     </div>
   </template>
 
+  <!-- Desktop template -->
   <template v-else>
-    <div class="flex items-center gap-3">
+    <div class="flex w-full items-center gap-3" v-bind="$attrs">
       <VehicleAvatar
         :src="props.vehicle?.image"
         :type="props.vehicle?.type.code"
