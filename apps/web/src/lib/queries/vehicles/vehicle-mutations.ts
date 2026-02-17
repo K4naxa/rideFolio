@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { VehicleInput } from "@repo/validation";
+import { VehicleInputSchema, type VehicleInput } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
@@ -21,6 +21,24 @@ export function useVehicleCreate() {
   });
 }
 
+export function useVehicleUpdate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updateVehicle"],
+    mutationFn: async ({ vehicleId, data }: { vehicleId: string; data: VehicleInput }) => {
+      const response = await api.put(`/vehicles/${vehicleId}`, data);
+      return response.data;
+    },
+    onError: (error) => {
+      toast.error("Error updating the Vehicle");
+      console.error("Update vehicle error:", error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
 export function useVehicleDelete() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -30,7 +48,7 @@ export function useVehicleDelete() {
     },
     onSuccess: () => {
       toast.success("Vehicle deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["vehicles"], exact: true });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
     },
     onError: (error) => {
       toast.error("Failed to delete vehicle");

@@ -1,7 +1,7 @@
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleTransformerService } from './../utils/vehicleTransformer.service';
 import { VehicleRepository } from './../utils/vehicleRepository';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
   Maintenance,
   MaintenancePart,
@@ -44,15 +44,7 @@ export class VehiclesService {
   async create(userSession: UserSession, vehicleData: VehicleInput): Promise<{ newVehicleId: string }> {
     try {
       // Validate that the vehicle type exists
-      const vehicleType = await this.prisma.vehicleType.findUnique({
-        where: { code: vehicleData.type, isActive: true },
-      });
-      if (!vehicleType) {
-        throw new BadRequestException({
-          message: 'Invalid vehicle type provided',
-          field: 'type',
-        });
-      }
+      await this.validateVehicleType(vehicleData.type);
 
       // Validate that user can create more vehicles
       const byteSize = await this.limitsService.canCreateVehicle(userSession.user.id, vehicleData);
@@ -98,20 +90,40 @@ export class VehiclesService {
 
       // Link the vehicle to the user's private pool
     } catch (error) {
-      console.error('Error creating vehicle:', error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        const target = error.meta?.target as string;
-
-        if (target?.includes('name')) {
-          throw new BadRequestException({
-            message: 'Ajoneuvon nimi on jo käytössä',
-            field: 'name',
-          });
-        }
-      }
-      console.error('Error creating vehicle:', error);
+      Logger.error('Error creating vehicle:', error);
       throw new BadRequestException({
-        message: 'Ajoneuvon luonti epäonnistui',
+        message: 'Unexpected error',
+      });
+    }
+  }
+
+  async update(userSession: UserSession, vehicleId: string, vehicleData: VehicleInput) {
+    // validate rights
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: vehicleId, ownerId: userSession.user.id },
+    });
+
+    if (!vehicle) {
+      throw new NotFoundException({
+        message: 'Vehicle not found or access denied',
+      });
+    }
+
+    await this.validateVehicleType(vehicleData.type);
+
+    try {
+      // Extract image to handle separately
+      const { image, odometer, odometerType, ...updateData } = vehicleData;
+
+      await this.prisma.vehicle.update({
+        where: { id: vehicleId },
+        data: updateData,
+      });
+
+      // TODO: Handle image upload separately if provided
+    } catch (error) {
+      throw new BadRequestException({
+        message: 'Failed to update vehicle',
       });
     }
   }
@@ -453,5 +465,17 @@ export class VehiclesService {
         image: todo.vehicle.image,
       },
     }));
+  }
+
+  private async validateVehicleType(typeCode: string): Promise<void> {
+    const vehicleType = await this.prisma.vehicleType.findUnique({
+      where: { code: typeCode, isActive: true },
+    });
+    if (!vehicleType) {
+      throw new BadRequestException({
+        message: 'Invalid vehicle type provided',
+        field: 'type',
+      });
+    }
   }
 }

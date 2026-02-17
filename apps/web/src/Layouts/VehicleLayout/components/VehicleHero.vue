@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import Badge from "@/components/ui/badge/Badge.vue";
-import Button from "@/components/ui/button/Button.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { EllipsisVerticalIcon, icons } from "lucide-vue-next";
 import { ref } from "vue";
 
 import { useModalStore } from "@/stores/modal";
 import type { AlertModalData } from "@/modals/alertModal.vue";
 import { useRouter } from "vue-router";
-import { useVehicleHeroStatCards } from "@/lib/queries/vehicles/vehicle-queries";
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 
 const router = useRouter();
 const modalStore = useModalStore();
 const { mutateAsync: deleteVehicle } = useVehicleDelete();
 const { currentVehicle, currentVehicleId, isVehicleOwner } = useCurrentVehicle();
-const { data: statCardData, isLoading } = useVehicleHeroStatCards(currentVehicleId);
-const { preferredCurrencySymbol } = useCurrentUser();
 
 function handleDeleteClick() {
   modalStore.onOpen("alert", {
@@ -82,9 +75,9 @@ const statsOpen = ref(false);
                 :items="[
                   {
                     label: 'Edit',
-                    action: () => modalStore.onOpen('createVehicle'),
+                    action: () => modalStore.onOpen('createVehicle', currentVehicle?.vehicleData),
                     icon: 'edit',
-                    disabled: !isVehicleOwner || true,
+                    disabled: !isVehicleOwner,
                   },
                   {
                     label: 'Delete',

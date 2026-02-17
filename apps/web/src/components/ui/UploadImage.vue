@@ -4,7 +4,7 @@ import Button from "./button/Button.vue";
 import Icon from "../icons/Icon.vue";
 
 interface Props {
-  value?: File | string | null;
+  value?: File | string | null | undefined;
   title: string;
   disabled?: boolean;
   className?: string;
@@ -14,6 +14,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   disabled: true,
   className: "",
+  placeholderImageUrl: undefined,
 });
 const emit = defineEmits<{ (e: "change", file: File | null): void }>();
 

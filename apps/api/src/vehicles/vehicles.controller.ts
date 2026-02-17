@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs/common';
 
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
@@ -25,6 +25,15 @@ export class VehiclesController {
     vehicleDto: VehicleInput,
   ) {
     return await this.vehiclesService.create(userSession, vehicleDto);
+  }
+
+  @Put(':vehicleId')
+  async updateVehicle(
+    @Session() userSession: UserSession,
+    @Param('vehicleId') vehicleId: string,
+    @Body(new ZodValidationPipe(VehicleInputSchema as ZodType)) vehicleDTO: VehicleInput,
+  ) {
+    return await this.vehiclesService.update(userSession, vehicleId, vehicleDTO);
   }
 
   @Delete(':vehicleId')

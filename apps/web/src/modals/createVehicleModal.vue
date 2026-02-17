@@ -17,13 +17,13 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
-import { useVehicleCreate } from "@/lib/queries/vehicles/vehicle-mutations";
+import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
-import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema } from "@repo/validation";
+import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema, type BasicVehicle } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import z from "zod";
@@ -32,16 +32,15 @@ const router = useRouter();
 
 // Modal logic
 const modalStore = useModalStore();
+const modalData = computed(() => modalStore.data as BasicVehicle | undefined);
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
+const isEditing = computed(() => !!modalData.value?.id);
 function handleClose() {
   modalStore.onClose();
-  // Reset form after modal closes to ensure proper state
-  setTimeout(() => {
-    resetForm({});
-  }, 100);
 }
 
 const { mutateAsync: createVehicleAsync, isPending: createPending } = useVehicleCreate();
+const { mutateAsync: updateVehicleAsync, isPending: updatePending } = useVehicleUpdate();
 const { data: vehicles } = useVehiclesAll();
 const { data: vehicleTypes } = useVehicleTypes({ enabled: isModalOpen });
 
@@ -54,27 +53,46 @@ const clientSchema = VehicleInputSchema.extend({
         if (!value) return true;
 
         if (!vehicles) return true;
-        return !vehicles.value?.find(({ vehicleData }) => vehicleData.licensePlate === value);
+        return !vehicles.value?.find(
+          ({ vehicleData }) => vehicleData.licensePlate === value && vehicleData.id !== modalData.value?.id,
+        );
       },
       { message: "License plate already exists" },
     ),
 });
 
 // Form logic
-const { handleSubmit, resetForm, values } = useForm({
+const { handleSubmit, values, resetForm } = useForm({
+  name: "Vehicle form",
   validationSchema: toTypedSchema(clientSchema),
 });
 
 const onSubmit = handleSubmit(async (data) => {
-  createVehicleAsync(data, {
-    onSuccess: (data) => {
-      toast.success("Vehicle created succesfully");
-      handleClose();
-      setTimeout(() => {
-        router.push(`/vehicles/${data.newVehicleId}`);
-      }, 100);
-    },
-  });
+  // if there's no modalData, we're creating a new vehicle.
+  if (!modalData.value || !modalData.value.id) {
+    createVehicleAsync(data, {
+      onSuccess: (data) => {
+        toast.success("Vehicle created succesfully");
+        handleClose();
+        setTimeout(() => {
+          router.push(`/vehicles/${data.newVehicleId}`);
+        }, 100);
+      },
+    });
+  } else {
+    updateVehicleAsync(
+      { vehicleId: modalData.value.id, data },
+      {
+        onSuccess: () => {
+          toast.success("Vehicle updated succesfully");
+          handleClose();
+        },
+        onError: () => {
+          toast.error("Failed to update vehicle. Please try again.");
+        },
+      },
+    );
+  }
 });
 
 const selectedVehicleIcon = computed(() => {
@@ -82,24 +100,54 @@ const selectedVehicleIcon = computed(() => {
   const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
   return vehicleType?.icon as IconProps["name"];
 });
+
+watch(
+  () => isModalOpen.value,
+  (open) => {
+    if (open && modalData.value) {
+      resetForm({
+        values: {
+          name: modalData.value.name,
+          type: modalData.value.type.code,
+          make: modalData.value.make || "",
+          model: modalData.value.model || "",
+          year: modalData.value.year || undefined,
+          odometerType: modalData.value.odometerData.type || undefined,
+          vin: modalData.value.vin || "",
+          odometer: modalData.value.odometerData.value || undefined,
+          licensePlate: modalData.value.licensePlate || "",
+          fuelType: modalData.value.fuelType || undefined,
+          // TODO: add image support
+        },
+      });
+    }
+  },
+);
 </script>
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="w-full max-w-3xl">
       <DialogHeader>
-        <DialogTitle>Create new vehicle</DialogTitle>
-        <DialogDescription> Fill in the details below to add a new vehicle to your garage. </DialogDescription>
+        <DialogTitle>{{ isEditing ? "Edit vehicle" : "Create new vehicle" }}</DialogTitle>
+        <DialogDescription>
+          {{
+            isEditing
+              ? "Edit the details of your vehicle."
+              : "Fill in the details below to add a new vehicle to your garage."
+          }}
+        </DialogDescription>
       </DialogHeader>
 
       <form @submit="onSubmit" class="space-y-8">
         <!-- Image Upload -->
         <Field v-slot="{ value, handleChange }" name="image">
           <UploadImage
+            disabled
             title="Upload a picture"
             :value="value"
+            :placeholder-image-url="modalData?.image || undefined"
             @change="handleChange"
-            :disabled="createPending"
             data-cy="image"
           />
           <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
@@ -120,7 +168,7 @@ const selectedVehicleIcon = computed(() => {
             <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
+                <Select :model-value="value" @update:model-value="handleChange" :disabled="isEditing">
                   <SelectTrigger class="w-full" data-cy="type-trigger">
                     <div class="flex items-center gap-3">
                       <Icon v-if="selectedVehicleIcon" :name="selectedVehicleIcon" class="h-4 w-4" />
@@ -172,7 +220,7 @@ const selectedVehicleIcon = computed(() => {
 
             <Field v-slot="{ value, handleChange }" name="odometerType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
+                <Select :model-value="value" @update:model-value="handleChange" :disabled="isEditing">
                   <SelectTrigger class="w-full" data-cy="odometer-type-trigger">
                     <SelectValue placeholder="Odometer type" />
                   </SelectTrigger>
@@ -236,6 +284,7 @@ const selectedVehicleIcon = computed(() => {
             <!-- Odometer -->
 
             <Input
+              :disabled="isEditing"
               placeholder="Odometer"
               name="odometer"
               type="number"
@@ -276,11 +325,13 @@ const selectedVehicleIcon = computed(() => {
       <DialogFooter>
         <Button v-if="createPending" disabled variant="submit">
           <Spinner class="mr-2" />
-          Creating...
+          {{ isEditing ? "Updating..." : "Creating..." }}
         </Button>
-        <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit"> Create </Button>
+        <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit">
+          {{ isEditing ? "Update" : "Create" }}
+        </Button>
 
-        <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Peruuta </Button>
+        <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Cancel </Button>
       </DialogFooter>
     </DialogScrollContent>
   </Dialog>
