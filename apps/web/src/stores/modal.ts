@@ -17,6 +17,7 @@ export type ModalType =
 export const useModalStore = defineStore("modal", () => {
   const type = ref<ModalType | null>(null);
   const data = ref<unknown>(undefined);
+  const activityId = ref<string | null>(null);
   const isOpen = ref(false);
 
   const isSettingsOpen = ref(false);

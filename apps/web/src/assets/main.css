@@ -144,10 +144,10 @@ img {
     --color-background: hsl(0, 0%, 1%); /* slate-950 */
     --color-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-card: hsl(0, 0%, 2.5%); /* slate-900 */
+    --color-card: var(--color-neutral-950); /* slate-900 */
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-background-light: hsl(0, 0%, 3%); /* slate-900 */
+    --color-background-light: var(--color-neutral-950); /* slate-900 */
 
     --color-muted: oklch(20.9% 0 0);
     --color-muted-foreground: var(--color-neutral-400);

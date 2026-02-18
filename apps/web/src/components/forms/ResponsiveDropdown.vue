@@ -15,6 +15,9 @@ import {
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { ref, type HTMLAttributes } from "vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.vue";
+import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
 
 interface DropdownItem {
   label: string;
@@ -56,6 +59,8 @@ const isOpen = ref(false);
       </slot>
     </DropdownMenuTrigger>
     <DropdownMenuContent :align="align" :class="contentClass">
+      <DropdownMenuLabel v-if="title">{{ title }}</DropdownMenuLabel>
+      <DropdownMenuSeparator v-if="title && items.length > 0" />
       <DropdownMenuItem v-for="item in items" :key="item.label" @click="item.action" :disabled="item.disabled">
         <Icon v-if="item.icon" :name="item.icon" />
         {{ item.label }}
@@ -75,19 +80,28 @@ const isOpen = ref(false);
     </DrawerTrigger>
     <DrawerContent>
       <DrawerHeader>
-        <slot name="header">
-          <DrawerTitle>{{ title }}</DrawerTitle>
-          <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
-        </slot>
+        <div class="flex justify-between gap-2">
+          <slot name="header">
+            <DrawerTitle>{{ title || "Options" }}</DrawerTitle>
+            <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
+          </slot>
+          <DrawerClose as-child>
+            <Button variant="outline" class="mb-auto ml-auto" size="icon-sm">
+              <Icon name="close" class="h-4 w-4" />
+              <span class="sr-only">Close</span>
+            </Button>
+          </DrawerClose>
+        </div>
+        <Separator class="mt-2" />
       </DrawerHeader>
 
-      <div class="flex flex-col gap-2.5 px-4 pb-4">
+      <div class="px-2">
         <Button
-          variant="outline"
+          variant="ghost"
           type="button"
           v-for="item in items"
           :key="item.label"
-          class="flex h-fit items-center justify-start text-start text-base font-medium"
+          class="text-foreground flex h-fit items-center justify-start text-start text-base font-normal"
           @click="
             () => {
               item.action();
@@ -100,11 +114,6 @@ const isOpen = ref(false);
           {{ item.label }}
         </Button>
       </div>
-      <DrawerFooter class="pt-2">
-        <DrawerClose as-child>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
-      </DrawerFooter>
     </DrawerContent>
   </Drawer>
 </template>

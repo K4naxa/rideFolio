@@ -1,13 +1,14 @@
 import { fetchApi } from "@/lib/api";
-import type { UpcomingEvent } from "@repo/validation";
+import { queryKeys } from "@/lib/queries/queryKeys";
+import type { ActivityItem } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { unref, type MaybeRef } from "vue";
 
-export const useUpcomingEventsQuery = (vehicleId?: MaybeRef<string>) => {
+export const useUpcomingActivityQuery = (vehicleId?: MaybeRef<string>) => {
   const id = unref(vehicleId);
 
   return useQuery({
-    queryKey: ["upcoming Events", id],
-    queryFn: async () => await fetchApi<UpcomingEvent[]>(`vehicles/upcoming-events/${id || ""}`),
+    queryKey: queryKeys.user.upcomingActivity,
+    queryFn: async () => await fetchApi<ActivityItem[]>(`vehicles/upcoming-activity/${id || ""}`),
   });
 };

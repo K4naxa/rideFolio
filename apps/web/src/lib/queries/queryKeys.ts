@@ -62,5 +62,6 @@ export const queryKeys = {
     basicProfile: ["user", "basic-profile"] as const,
     limits: ["user", "limits"] as const,
     storageSummary: ["user", "storage-summary"] as const,
+    upcomingActivity: ["user", "upcoming-activity"] as const,
   },
 };

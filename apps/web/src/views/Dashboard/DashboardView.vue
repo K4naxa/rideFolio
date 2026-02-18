@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
+import ResponsiveActivityPreview from "@/components/previews/ResponsiveActivityPreview.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Card from "@/components/ui/card/Card.vue";
@@ -9,19 +10,21 @@ import CardFooter from "@/components/ui/card/CardFooter.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
 import Label from "@/components/ui/label/Label.vue";
+
 import Progressbar from "@/components/ui/Progressbar.vue";
 import VehicleScrollArea from "@/components/VehicleScrollArea.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { useUpcomingEventsQuery } from "@/lib/queries/upcomingEvents-query";
+import { useUpcomingActivityQuery } from "@/lib/queries/upcomingEvents-query";
 import { formatBytesToMB } from "@/lib/utils";
+
 import QuickLinkSection from "@/views/Dashboard/components/QuickLinkSection.vue";
 import { useTimeAgoIntl } from "@vueuse/core";
 import { twMerge } from "tailwind-merge";
 
 const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
 
-const { data: upcomingEvents } = useUpcomingEventsQuery();
+const { data: upcomingActivity } = useUpcomingActivityQuery();
 </script>
 
 <template>
@@ -34,7 +37,7 @@ const { data: upcomingEvents } = useUpcomingEventsQuery();
       <section class="gaps-lg flex flex-col">
         <div class="flex flex-col overflow-hidden md:max-h-96">
           <h3 class="mb-2">Up Next</h3>
-          <Card v-if="!upcomingEvents || upcomingEvents.length === 0" class="rounded border">
+          <Card v-if="!upcomingActivity || upcomingActivity.length === 0" class="rounded border">
             <CardContent class="flex flex-col items-center gap-4 py-4 text-center lg:p-12">
               <Icon name="calendar" class="text-muted-foreground size-6" />
               <div class="space-y-1">
@@ -51,35 +54,42 @@ const { data: upcomingEvents } = useUpcomingEventsQuery();
             v-else
             class="gaps-sm scrollbar-macos grid flex-1 grid-flow-col grid-rows-2 overflow-x-auto pb-2 md:grid-flow-row md:grid-cols-2 md:grid-rows-none"
           >
-            <div
-              v-for="event in upcomingEvents"
-              :key="event.id"
-              :class="
-                twMerge(
-                  'listHover bg-card flex w-80 flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
-                  (event.dueDate?.overdue || event.dueOdometer?.overdue) && 'border-l-destructive!',
-                )
-              "
+            <ResponsiveActivityPreview
+              v-for="event in upcomingActivity"
+              :item="event"
+              :key="event.data.id"
+              :activity="event"
             >
-              <div class="flex justify-between gap-4">
-                <Label class="truncate text-base">{{ event.title }}</Label>
-                <Badge variant="muted" class="text-xs">{{ event.vehicle.name }}</Badge>
-              </div>
-              <div
-                class="text-muted-foreground mt-auto flex items-center gap-1 text-sm"
-                v-if="event.dueDate?.date || event.dueOdometer?.remaining"
-              >
-                Due
-                <p v-if="event.dueDate?.date" class=" ">
-                  <span :class="twMerge(event.dueDate?.overdue && 'text-destructive')">{{
-                    useTimeAgoIntl(new Date(event.dueDate.date))
-                  }}</span>
-                </p>
-                <p v-if="event.dueOdometer?.remaining">
-                  / {{ event.dueOdometer?.remaining }} {{ event.dueOdometer?.unit }}
-                </p>
-              </div>
-            </div>
+              <template #trigger v-if="event.type === 'todo'">
+                <button
+                  :class="
+                    twMerge(
+                      'listHover bg-card flex h-fit w-80 cursor-pointer flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
+                      (event.data.dueDate?.overdue || event.data.dueOdometer?.overdue) && 'border-l-destructive!',
+                    )
+                  "
+                >
+                  <div class="flex justify-between gap-4">
+                    <Label class="truncate text-base">{{ event.data.title }}</Label>
+                    <Badge variant="muted" class="text-xs">{{ event.vehicle.name }}</Badge>
+                  </div>
+                  <div
+                    class="text-muted-foreground mt-auto flex items-center gap-1 text-sm"
+                    v-if="event.data.dueDate?.date || event.data.dueOdometer?.remaining"
+                  >
+                    Due
+                    <p v-if="event.data.dueDate?.date" class=" ">
+                      <span :class="twMerge(event.data.dueDate?.overdue && 'text-destructive')">{{
+                        useTimeAgoIntl(new Date(event.data.dueDate.date))
+                      }}</span>
+                    </p>
+                    <p v-if="event.data.dueOdometer?.remaining">
+                      / {{ event.data.dueOdometer?.remaining }} {{ event.data.dueOdometer?.unit }}
+                    </p>
+                  </div>
+                </button>
+              </template>
+            </ResponsiveActivityPreview>
           </div>
         </div>
 
@@ -119,7 +129,7 @@ const { data: upcomingEvents } = useUpcomingEventsQuery();
             />
           </CardContent>
           <CardFooter>
-            <Button variant="outline" class="text-muted-foreground w-full"> Manage Plan </Button>
+            <Button variant="secondary" class="w-full"> Manage Plan </Button>
           </CardFooter>
         </Card>
       </section>

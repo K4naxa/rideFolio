@@ -1,6 +1,7 @@
+import Sonner from "@/components/ui/sonner/Sonner.vue";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import { type Todo, type TodoSchemaType } from "@repo/validation";
+import { type ActivityItem, type Todo, type TodoSchemaType } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
@@ -22,6 +23,11 @@ export function useTodoCreate() {
         if (!old) return [newTodo];
         return [...old, newTodo];
       });
+
+      // update upcoming activity cache if the new todo has a due info
+      if (newTodo.dueDate || newTodo.dueOdometer) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
+      }
     },
     onError: (error) => {
       console.error("Todo API: Creation Error  ", error);
@@ -48,6 +54,21 @@ export function useTodoUpdate() {
         if (!old) return old;
         return old.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
       });
+      // update upcoming activity cache if the updated todo has a due info
+      if (updatedTodo.dueDate || updatedTodo.dueOdometer) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
+      } else {
+        // if the updated todo no longer has due info, remove it from upcoming activity
+        queryClient.setQueryData<ActivityItem[]>(queryKeys.user.upcomingActivity, (old) => {
+          if (!old) return old;
+          return old.filter((activity) => {
+            if (activity.type === "todo" && activity.data.id === updatedTodo.id) {
+              return false; // remove from upcoming activity
+            }
+            return true;
+          });
+        });
+      }
     },
     onError: (error) => {
       console.error("Todo API: Update Error  ", error);
@@ -74,6 +95,11 @@ export function useTodoToggle() {
         if (!old) return old;
         return old.map((todo) => (todo.id === data.id ? data : todo));
       });
+
+      // update upcoming activity cache if the toggled todo is part of it
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
+
+      toast.success(`Todo marked as ${data.isCompleted ? "complete" : "incomplete"}`);
     },
     onError: (error) => {
       console.error("Todo API: Toggle Error  ", error);
@@ -90,6 +116,7 @@ export function useTodoDelete() {
       return response.data;
     },
     onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
       queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(variables.vehicleId), (old) => {
         if (!old) return old;
         return old.filter((todo) => todo.id !== variables.todoId);
@@ -98,6 +125,8 @@ export function useTodoDelete() {
         if (!old) return old;
         return old.filter((todo) => todo.id !== variables.todoId);
       });
+
+      toast.success("Todo deleted successfully");
     },
     onError: (error) => {
       console.error("Todo API: Delete Error  ", error);

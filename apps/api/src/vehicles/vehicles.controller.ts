@@ -65,13 +65,13 @@ export class VehiclesController {
     return await this.vehiclesService.getVehicleActivities(userSession, vehicleId, cursor, limit);
   }
 
-  @Get('upcoming-events')
-  async getUpcomingEventsAll(@Session() userSession: UserSession) {
-    return await this.vehiclesService.getUpcomingEvents(userSession);
+  @Get('upcoming-activity')
+  async getUpcomingActivity(@Session() userSession: UserSession) {
+    return await this.vehiclesService.getUpcomingActivity(userSession);
   }
 
-  @Get('upcoming-events/:vehicleId')
-  async getUpcomingEvents(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
-    return await this.vehiclesService.getUpcomingEvents(userSession, vehicleId);
+  @Get('upcoming-activity/:vehicleId')
+  async getUpcomingActivityForVehicle(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
+    return await this.vehiclesService.getUpcomingActivity(userSession, vehicleId);
   }
 }

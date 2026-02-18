@@ -12,13 +12,14 @@ import {
   VehiclePartLocation,
 } from 'prisma/generated/prisma/client';
 import {
-  MaintenanceActivityData,
   RecentActivityInfiniteResponse,
-  RecentActivityItem,
+  ActivityItem,
   TAccessibleVehicle,
   TStatCardData,
   VehicleInput,
   VehicleType,
+  MaintenanceActivity,
+  RefillActivity,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -341,7 +342,7 @@ export class VehiclesService {
       });
 
       // Normalize refills
-      const normalizedRefills: RecentActivityItem[] = refillActivities.map((r) => ({
+      const normalizedRefills: RefillActivity[] = refillActivities.map((r) => ({
         type: 'refill',
         date: r.date,
         vehicle: r.vehicle,
@@ -367,9 +368,9 @@ export class VehiclesService {
       }));
 
       // Normalize maintenance
-      const normalizedMaintenance: RecentActivityItem[] = maintenanceActivities.map((m) => {
+      const normalizedMaintenance: (RefillActivity | MaintenanceActivity)[] = maintenanceActivities.map((m) => {
         // combine parts into their partGroups
-        const partGroups: Record<string, MaintenanceActivityData['parts'][0]> = {};
+        const partGroups: Record<string, MaintenanceActivity['data']['parts'][0]> = {};
 
         m.parts.forEach((p) => {
           const existing = partGroups[p.groupId];
@@ -391,7 +392,7 @@ export class VehiclesService {
         });
         const partGroupArray = Object.values(partGroups);
 
-        const data: MaintenanceActivityData = {
+        const data = {
           id: m.id,
           date: m.date,
           title: m.title,
@@ -414,7 +415,7 @@ export class VehiclesService {
 
       // Combine, sort by date desc and limit to requested count
       const combinedActivities = [...normalizedRefills, ...normalizedMaintenance]
-        .sort((a, b) => b.date.getTime() - a.date.getTime())
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
         .slice(0, limit);
 
       return combinedActivities;
@@ -427,7 +428,7 @@ export class VehiclesService {
     };
   }
 
-  async getUpcomingEvents(userSession: UserSession, vehicleId?: string) {
+  async getUpcomingActivity(userSession: UserSession, vehicleId?: string): Promise<ActivityItem[]> {
     // If vehicleId is provided, validate access to that vehicle
     // If no vehicleId is provided, fetch upcoming events for all accessible vehicles
     const vehicles = vehicleId
@@ -450,18 +451,23 @@ export class VehiclesService {
       },
       orderBy: { dueDate: 'asc' },
       include: {
-        vehicle: { select: { name: true, image: true } },
+        vehicle: { select: { name: true, image: true, type: true } },
       },
     });
 
     return upcomingTodos.map((todo) => ({
-      id: todo.id,
-      title: todo.title,
-      description: todo.description,
-      dueDate: this.todoService.formatDueDate(todo.dueDate),
-      dueOdometer: this.todoService.formatDueOdometer(todo, vehicles.find((v) => v.id === todo.vehicleId) as Vehicle),
+      type: 'todo' as const,
+      data: {
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        dueDate: this.todoService.formatDueDate(todo.dueDate),
+        dueOdometer: this.todoService.formatDueOdometer(todo, vehicles.find((v) => v.id === todo.vehicleId) as Vehicle),
+      },
       vehicle: {
+        id: todo.vehicleId,
         name: todo.vehicle.name,
+        type: todo.vehicle.type,
         image: todo.vehicle.image,
       },
     }));
