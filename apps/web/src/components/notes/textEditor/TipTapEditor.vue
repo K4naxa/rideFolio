@@ -29,6 +29,10 @@ const props = withDefaults(
   },
 );
 
+defineSlots<{
+  default?: (props: { focus: () => void }) => any;
+}>();
+
 const editor = useEditor({
   extensions: [
     StarterKit.configure({
@@ -91,6 +95,15 @@ watch(
     }
   },
 );
+
+// Expose methods for parent components
+function focus() {
+  editor.value?.commands.focus();
+}
+
+defineExpose({
+  focus,
+});
 </script>
 
 <template>
@@ -118,7 +131,7 @@ watch(
       "
     >
       <!-- Free slot inside the editor container ( used for title ) -->
-      <slot />
+      <slot :focus="focus" />
 
       <editor-content :editor="editor" class="flex w-full flex-1" />
       <span v-if="error" class="text-destructive mt-2 text-sm">{{ error }}</span>

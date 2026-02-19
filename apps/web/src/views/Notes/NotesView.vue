@@ -20,18 +20,22 @@ const { data: notes, isLoading } = useAllNotes();
 
 const selectedNoteId = ref<string | null>(null);
 
-const { data: editableNote } = useNoteByIdQuery(
-  computed(() => (selectedNoteId.value ? selectedNoteId.value : undefined)),
-);
-
+const editableNote = ref<Note | undefined>();
 const handleSelectNote = (note: Note) => {
   selectedNoteId.value = note.id;
+  editableNote.value = note;
   if (isMobile.value) onOpen("createNote", note.id);
 };
 
 const handleNewClick = () => {
   selectedNoteId.value = null;
+  editableNote.value = undefined;
   if (isMobile.value) onOpen("createNote");
+};
+
+const handleNoteCreated = (note: Note) => {
+  selectedNoteId.value = note.id;
+  editableNote.value = note;
 };
 </script>
 
@@ -47,8 +51,8 @@ const handleNewClick = () => {
       @create-new-note="handleNewClick"
     />
 
-    <div class="hidden flex-1 flex-col lg:flex">
-      <NoteSection :note="editableNote" />
+    <div class="hidden min-w-0 flex-1 flex-col lg:flex">
+      <NoteSection :note="editableNote" @created="handleNoteCreated" />
     </div>
   </div>
 </template>

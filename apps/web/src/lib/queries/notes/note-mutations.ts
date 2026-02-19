@@ -14,7 +14,6 @@ export function useCreateNote() {
     },
     onSuccess: (data) => {
       syncNewNoteToCache(data);
-      toast.success("Note created successfully");
     },
   });
 }
@@ -29,7 +28,6 @@ export function useUpdateNote() {
     },
     onSuccess: (data) => {
       syncNoteToCache(data);
-      toast.success("Note updated successfully");
     },
   });
 }
@@ -65,7 +63,6 @@ export function useTogglePinNote() {
     },
     onSuccess: (data) => {
       syncNoteToCache(data);
-      toast.success(`Note ${data.pinned ? "pinned" : "unpinned"}`);
     },
     onError: (error) => {
       toast.error("Error toggling pin on the Note");

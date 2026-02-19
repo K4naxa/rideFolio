@@ -14,7 +14,7 @@ interface AutoSaveOptions {
 export function useNoteAutoSave(options: AutoSaveOptions) {
   const { formValues, serverState, isFormDirty, onSave } = options;
 
-  const pendingSave = ref<{ noteId: string | undefined; data: NoteSchemaType } | null>(null);
+  const pendingSaves = ref(new Map<string | undefined, NoteSchemaType>());
   const isSaving = ref(false);
 
   // Check if note has actual changes worth saving
@@ -45,28 +45,28 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
 
   // Perform the actual save
   async function executeSave() {
-    if (!pendingSave.value || isSaving.value) return;
+    if (!pendingSaves.value.size || isSaving.value) return;
 
     isSaving.value = true;
-    const saveData = pendingSave.value;
+    for (const [noteId, data] of pendingSaves.value.entries()) {
+      try {
+        const result = await onSave(noteId, data);
 
-    try {
-      const result = await onSave(saveData.noteId, saveData.data);
-
-      // Update server state to match what we just saved
-      serverState.value = result;
-      pendingSave.value = null;
-    } catch (error) {
-      toast.error("Failed to save note", {
-        description: (error as Error)?.message || "Unknown error",
-        action: {
-          label: "Retry",
-          onClick: () => executeSave(),
-        },
-      });
-      console.error("Auto-save failed:", error);
-    } finally {
-      isSaving.value = false;
+        // Update server state to match what we just saved
+        serverState.value = result;
+        pendingSaves.value.delete(noteId);
+      } catch (error) {
+        toast.error("Failed to save note", {
+          description: (error as Error)?.message || "Unknown error",
+          action: {
+            label: "Retry",
+            onClick: () => executeSave(),
+          },
+        });
+        console.error("Auto-save failed:", error);
+      } finally {
+        isSaving.value = false;
+      }
     }
   }
 
@@ -78,36 +78,35 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     () => [formValues.value.title, formValues.value.content, formValues.value.tags, formValues.value.vehicleId],
     () => {
       if (shouldAutoSave()) {
-        pendingSave.value = {
-          noteId: serverState.value?.id || undefined,
-          data: { ...formValues.value },
-        };
+        pendingSaves.value.set(serverState.value?.id || undefined, { ...formValues.value });
         debouncedSave();
       } else {
-        pendingSave.value = null;
+        pendingSaves.value.delete(serverState.value?.id || undefined);
       }
     },
   );
 
   // Handle page unload - save any pending changes
   function handleBeforeUnload() {
-    if (!pendingSave.value) return;
+    if (!pendingSaves.value.size) return;
 
-    const endpoint = pendingSave.value.noteId === "new" ? "/api/notes" : `/api/notes/${pendingSave.value.noteId}`;
+    for (const [noteId, data] of pendingSaves.value.entries()) {
+      const endpoint = noteId === "new" ? "/api/notes" : `/api/notes/${noteId}`;
 
-    const method = pendingSave.value.noteId === "new" ? "POST" : "PATCH";
+      const method = noteId === "new" ? "POST" : "PATCH";
 
-    // Use keepalive to ensure request completes
-    fetch(endpoint, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pendingSave.value.data),
-      keepalive: true,
-    });
+      // Use keepalive to ensure request completes
+      fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        keepalive: true,
+      });
+    }
   }
 
   return {
-    pendingSave,
+    pendingSaves,
     isSaving,
     debouncedSave,
     handleBeforeUnload,

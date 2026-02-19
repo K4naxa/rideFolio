@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import NoteSection from "./components/NoteSection.vue";
 import { useModalStore } from "@/stores/modal";
 import { type Note } from "@repo/validation";
-import { useNoteByIdQuery, useVehicleNotes } from "@/lib/queries/notes/note-queries";
+import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
 import NotesList from "@/components/notes/NotesList.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
@@ -19,18 +19,22 @@ const { data: vehicleNotes, isLoading: vehicleNotesLoading } = useVehicleNotes(c
 
 const selectedNoteId = ref<string | null>(null);
 
-const { data: editableNote } = useNoteByIdQuery(
-  computed(() => (selectedNoteId.value ? selectedNoteId.value : undefined)),
-);
-
+const editableNote = ref<Note | undefined>();
 const handleSelectNote = (note: Note) => {
   selectedNoteId.value = note.id;
+  editableNote.value = note;
   if (isMobile.value) onOpen("createNote", note.id);
 };
 
 const handleNewClick = () => {
   selectedNoteId.value = null;
+  editableNote.value = undefined;
   if (isMobile.value) onOpen("createNote");
+};
+
+const handleNoteCreated = (note: Note) => {
+  selectedNoteId.value = note.id;
+  editableNote.value = note;
 };
 </script>
 
@@ -46,7 +50,7 @@ const handleNewClick = () => {
     />
 
     <div class="hidden min-w-0 flex-1 flex-col lg:flex">
-      <NoteSection :note="editableNote" />
+      <NoteSection :note="editableNote" @created="handleNoteCreated" />
     </div>
   </div>
 </template>

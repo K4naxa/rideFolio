@@ -9,7 +9,7 @@ import Icon from "@/components/icons/Icon.vue";
 import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type NoteSchemaType, type Note, NoteSchema } from "@repo/validation";
-import { computed, onMounted, onUnmounted, ref, watch, useSlots } from "vue";
+import { computed, onUnmounted, ref, watch, useSlots } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -26,6 +26,7 @@ const props = defineProps<NoteSectionProps>();
 const emit = defineEmits<{
   close: [];
   deleted: [];
+  created: [Note];
 }>();
 
 const { currentVehicleId } = useCurrentVehicle();
@@ -48,7 +49,7 @@ const tagInput = ref("");
 // This gets updated on every successful save, and is used to compare against form values to determine if there are changes worth saving
 const lastServerState = ref<Note | undefined>(props.note);
 
-const isPinned = computed(() => props.note?.pinned || false);
+const isPinned = computed(() => lastServerState.value?.pinned || false);
 
 // Form setup
 const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
@@ -63,17 +64,26 @@ const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaTyp
 
 // Save handler for auto-save
 async function handleSave(noteId: string | undefined, data: NoteSchemaType): Promise<Note> {
+  let savedNote: Note;
+
   // We have no previous server state, so this must be a new note - create it
   if (!noteId) {
-    return await createNote(data);
+    savedNote = await createNote(data);
+    // Update local state with the newly created note
+    lastServerState.value = savedNote;
+    // Notify parent that a note was created
+    emit("created", savedNote);
   } else {
     // Otherwise, update the existing note
-    return await updateNote({ noteId, data });
+    savedNote = await updateNote({ noteId, data });
+    lastServerState.value = savedNote;
   }
+
+  return savedNote;
 }
 
 // Auto-save setup
-const { pendingSave, isSaving, handleBeforeUnload } = useNoteAutoSave({
+const { pendingSaves, isSaving, handleBeforeUnload } = useNoteAutoSave({
   formValues: computed(() => values),
   serverState: lastServerState,
   isFormDirty: computed(() => meta.value.dirty),
@@ -81,12 +91,13 @@ const { pendingSave, isSaving, handleBeforeUnload } = useNoteAutoSave({
 });
 
 // Status indicator
-const saveStatus = computed<"saving" | "pending" | "saved">(() => {
+const saveStatus = computed<"saving" | "pending" | "saved" | "invalid">(() => {
   if (isCreating.value || isUpdating.value || isDeleting.value || isSaving.value) {
     return "saving";
-  }
-  if (pendingSave.value) {
+  } else if (pendingSaves.value.has(lastServerState.value?.id)) {
     return "pending";
+  } else if (errors.value && Object.keys(errors.value).length > 0) {
+    return "invalid";
   }
   return "saved";
 });
@@ -114,9 +125,10 @@ async function handleDelete() {
   }
 }
 
-function handleTogglePin() {
+async function handleTogglePin() {
   if (!lastServerState.value) return;
-  togglePinNote({ noteId: lastServerState.value?.id, pinned: !isPinned.value });
+  const updatedNote = await togglePinNote({ noteId: lastServerState.value?.id, pinned: !isPinned.value });
+  lastServerState.value = updatedNote;
 }
 
 function handleClose() {
@@ -188,8 +200,8 @@ watch(
 </script>
 
 <template>
-  <div class="bg-background mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col p-0">
-    <form class="flex min-h-0 flex-1 flex-col space-y-4" @submit.prevent>
+  <div class="bg-background mx-auto flex min-h-0 w-full max-w-5xl min-w-0 flex-1 flex-col p-0">
+    <form class="flex min-h-0 min-w-0 flex-1 flex-col space-y-4" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot
         name="header"
@@ -244,8 +256,9 @@ watch(
       </Field>
 
       <!-- Editor -->
-      <div class="flex min-h-0 flex-1 flex-col">
+      <div class="flex min-h-0 min-w-0 flex-1 flex-col">
         <TipTapEditor
+          v-slot="{ focus }"
           :value="values.content"
           @update:value="(value: string) => setFieldValue('content', value)"
           placeholder="Write your note here..."
@@ -262,6 +275,7 @@ watch(
               class="flex-1"
               input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl shadow-none"
               :validate-on-blur="false"
+              @keydown.enter.prevent="focus()"
             />
           </div>
         </TipTapEditor>

@@ -18,6 +18,7 @@ import {
   ListOrdered,
   Strikethrough,
 } from "lucide-vue-next";
+import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 
 interface MenuOptions {
   icon: Component;
@@ -171,25 +172,22 @@ const menuOptions = computed<MenuOptions[]>(() => {
 });
 </script>
 <template>
-  <div
-    v-if="props.editor"
-    :class="
-      twMerge(
-        'bg-background scrollbar-macos mb-1 flex items-center gap-1.5 overflow-x-auto rounded border p-1',
-        props.class,
-      )
-    "
-  >
-    <Toggle
-      v-for="(option, index) in menuOptions"
-      v-model="option.isActive"
-      @mousedown.prevent="option.onClick"
-      :aria-label="option.label"
-      size="sm"
-      type="button"
-      class="shrin flex-1"
+  <ScrollableNav class="mb-1">
+    <div
+      v-if="props.editor"
+      :class="twMerge('bg-background flex w-full min-w-fit items-center gap-1.5 rounded border p-1', props.class)"
     >
-      <component :is="option.icon" />
-    </Toggle>
-  </div>
+      <Toggle
+        v-for="(option, index) in menuOptions"
+        v-model="option.isActive"
+        @mousedown.prevent="option.onClick"
+        :aria-label="option.label"
+        size="sm"
+        type="button"
+        class="flex-1 shrink-0"
+      >
+        <component :is="option.icon" />
+      </Toggle>
+    </div>
+  </ScrollableNav>
 </template>
