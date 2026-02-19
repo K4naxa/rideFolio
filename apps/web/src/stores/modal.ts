@@ -14,37 +14,25 @@ export type ModalType =
   | "settings"
   | "quicklink";
 
-export const useModalStore = defineStore("modal", () => {
-  const type = ref<ModalType | null>(null);
-  const data = ref<unknown>(undefined);
-  const activityId = ref<string | null>(null);
-  const isOpen = ref(false);
+export const useModalStore = defineStore("modal", {
+  state: () => ({
+    type: ref<ModalType | null>(null),
+    itemId: ref<string | undefined>(undefined),
+    isOpen: ref(false),
+  }),
 
-  const isSettingsOpen = ref(false);
-
-  const onOpen = (modaltype: ModalType, modalData?: unknown) => {
-    ((type.value = modaltype), (data.value = modalData), (isOpen.value = true));
-  };
-
-  watch(isSettingsOpen, (newVal) => {
-    console.log("isSettingsOpen changed:", newVal);
-    console.log("Update trace: ", console.trace());
-  });
-
-  const onClose = () => {
-    isOpen.value = false;
-    setTimeout(() => {
-      type.value = null;
-      data.value = undefined;
-    }, 200);
-  };
-
-  return {
-    type,
-    isSettingsOpen,
-    data,
-    isOpen,
-    onOpen,
-    onClose,
-  };
+  actions: {
+    onOpen(modalType: ModalType, itemId?: string) {
+      this.type = modalType;
+      this.itemId = itemId;
+      this.isOpen = true;
+    },
+    onClose() {
+      this.isOpen = false;
+      setTimeout(() => {
+        this.type = null;
+        this.itemId = undefined;
+      }, 200);
+    },
+  },
 });

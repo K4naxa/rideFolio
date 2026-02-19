@@ -28,13 +28,16 @@ import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
+import { useEditableTodo } from "@/lib/queries/todos/todo-queries";
 
 const { currentVehicle } = useCurrentVehicle();
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createTodo");
-const initialData = computed<Todo | undefined>(() => modalStore.data as Todo | undefined);
-const creatingNew = computed(() => !initialData.value);
+
+const { data: editableTodo } = useEditableTodo(computed(() => (isModalOpen.value ? modalStore.itemId : undefined)));
+
+const creatingNew = computed(() => !editableTodo.value);
 const handleClose = () => {
   modalStore.onClose();
 };
@@ -54,37 +57,36 @@ const { handleSubmit, resetForm, isSubmitting, values } = useForm({
 
 const { selectedVehicleOdometerUnit } = useSelectedVehicle(computed(() => values.vehicleId));
 
-watch(isModalOpen, (open) => {
-  if (open) {
-    if (initialData.value) {
+watch([isModalOpen, editableTodo], ([open, todo]) => {
+  if (!open) return;
+
+  console.log("TodoModal opened. Editable todo ID: ", modalStore.itemId);
+  if (todo) {
+    // wait for editableTodo to be fetched before resetting the form
+
+    if (todo) {
+      console.log("Editable todo data: ", todo);
       resetForm({
         values: {
-          vehicleId: initialData.value.vehicleData.id,
-          title: initialData.value.title || "",
-          description: initialData.value.description || "",
-          priority: initialData.value.priority || undefined,
-          dueDate: initialData.value.dueDate ? initialData.value.dueDate : null,
-          dueOdometer: initialData.value.dueOdometer,
+          vehicleId: todo.vehicleData.id,
+          title: todo.title,
+          description: todo.description,
+          priority: todo.priority,
+          dueDate: todo.dueDate?.date,
+          dueOdometer: todo.dueOdometer?.value,
         },
       });
-      if (initialData.value.dueDate || initialData.value.dueOdometer) {
-        showDueOptions.value = true;
-      } else {
-        showDueOptions.value = false;
-      }
-      return;
+
+      // Show or hide due options based on whether the editable todo has due information
+      showDueOptions.value = !!(todo.dueDate || todo.dueOdometer);
     }
-  }
-  if (open && currentVehicle.value) {
+  } else {
     showDueOptions.value = false;
     resetForm({
       values: {
-        vehicleId: currentVehicle.value.vehicleData.id,
+        vehicleId: currentVehicle.value?.vehicleData.id || "",
       },
     });
-  } else {
-    resetForm();
-    showDueOptions.value = false;
   }
 });
 
@@ -102,9 +104,9 @@ const onSubmit = handleSubmit(async (values) => {
     });
   } else {
     // Updating existing todo
-    if (!initialData.value?.id) return;
+    if (!editableTodo.value?.id) return toast.error("Error updating todo: Missing todo ID");
     updateTodo(
-      { todoId: initialData.value?.id, data: values },
+      { todoId: editableTodo.value?.id, data: values },
       {
         onSuccess: () => {
           toast.success("Todo updated succesfully");

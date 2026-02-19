@@ -32,7 +32,7 @@ async function handleDelete() {
           {
             label: 'Edit',
             icon: 'edit',
-            action: () => onOpen('createTodo', props.activity.data),
+            action: () => onOpen('createTodo', props.activity.data.id),
           },
           {
             label: 'Delete',

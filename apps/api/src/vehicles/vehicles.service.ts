@@ -289,7 +289,7 @@ export class VehiclesService {
     const cursorDate = cursor === 'initial' ? new Date() : new Date(cursor);
 
     const activities = await this.prisma.$transaction(async (tx) => {
-      type DBVehicleSelect = { name: Vehicle['name']; image: Vehicle['image']; type: Vehicle['type'] };
+      type DBVehicleSelect = { name: Vehicle['name']; image: Vehicle['image']; type: Vehicle['type']; id: string };
       type RefillDBSelect = Extend<Refill, { vehicle: DBVehicleSelect }>;
       type MaintenanceDBSelect = Extend<
         Maintenance,
@@ -312,7 +312,7 @@ export class VehiclesService {
           date: { lt: cursorDate },
         },
         include: {
-          vehicle: { select: { name: true, type: true, image: true } },
+          vehicle: { select: { name: true, type: true, image: true, id: true } },
         },
         orderBy: { date: 'desc' },
         take: limit,
@@ -325,7 +325,7 @@ export class VehiclesService {
           date: { lt: cursorDate },
         },
         include: {
-          vehicle: { select: { name: true, type: true, image: true, vehicleType: true } },
+          vehicle: { select: { name: true, type: true, image: true, vehicleType: true, id: true } },
           parts: {
             select: {
               label: true,

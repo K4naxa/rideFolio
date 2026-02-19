@@ -208,7 +208,7 @@ const formatDate = (dateString: string) => {
                 <Button size="icon" variant="ghost"> <Icon name="dotsHorizontal" /></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem @click="onOpen('createTodo', todo)"> Edit </DropdownMenuItem>
+                <DropdownMenuItem @click="onOpen('createTodo', todo.id)"> Edit </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
                   @click="deleteTodo({ todoId: todo.id, vehicleId: todo.vehicleData.id })"

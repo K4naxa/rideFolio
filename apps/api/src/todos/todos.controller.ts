@@ -23,7 +23,12 @@ export class TodosController {
     return await this.todoservice.getAllTodosForUser(userSession);
   }
 
-  @Get(':vehicleId')
+  @Get(':todoId')
+  async getTodoById(@Session() userSession: UserSession, @Param('todoId') todoId: string) {
+    return await this.todoservice.getTodoById(userSession, todoId);
+  }
+
+  @Get('vehicle/:vehicleId')
   async getTodos(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
     return await this.todoservice.getTodosForVehicle(userSession, vehicleId);
   }

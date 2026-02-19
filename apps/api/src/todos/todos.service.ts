@@ -85,6 +85,18 @@ export class TodosService {
     return this.formatTodos(todos);
   }
 
+  async getTodoById(userSession: UserSession, todoId: string): Promise<Todo> {
+    const todo = await this.prisma.todo.findUnique({
+      where: { id: todoId },
+      include: this.getTodoInclude(),
+    });
+    if (!todo) {
+      throw new Error('Todo not found');
+    }
+    await this.authValidation.hasAccessToVehicle(userSession.user.id, todo.vehicleId);
+    return this.formatTodo(todo);
+  }
+
   async getTodosForVehicle(userSession: UserSession, vehicleId: string): Promise<Todo[]> {
     await this.authValidation.hasAccessToVehicle(userSession.user.id, vehicleId);
     const vehicle = await this.vehicleRepo.findVehicleById(vehicleId);

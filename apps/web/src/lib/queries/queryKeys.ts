@@ -2,6 +2,7 @@ export const queryKeys = {
   // ============ VEHICLES DOMAIN ============
   vehicles: {
     all: ["vehicles"] as const,
+    byId: (vehicleId: string) => ["vehicles", "id", vehicleId] as const,
     lists: () => ["vehicles", "list"] as const,
     details: () => ["vehicles", "details"] as const,
     detailsForVehicle: (vehicleId: string) => ["vehicles", "details", vehicleId] as const,
@@ -35,6 +36,7 @@ export const queryKeys = {
   // ============ TODOS DOMAIN ============
   todos: {
     all: ["todos"] as const,
+    byId: (todoId: string) => ["todos", "id", todoId] as const,
     byVehicle: (vehicleId: string) => ["todos", "vehicle", vehicleId] as const,
   },
 
