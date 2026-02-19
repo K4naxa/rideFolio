@@ -18,7 +18,7 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehicle-mutations";
-import { useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
+import { useVehicleByIdQuery, useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
 import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema, type BasicVehicle } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -32,9 +32,9 @@ const router = useRouter();
 
 // Modal logic
 const modalStore = useModalStore();
-const modalData = computed(() => modalStore.data as BasicVehicle | undefined);
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
-const isEditing = computed(() => !!modalData.value?.id);
+const { data: editableVehicle } = useVehicleByIdQuery(computed(() => modalStore.itemId));
+const isCreatingNew = computed(() => !modalStore.itemId);
 function handleClose() {
   modalStore.onClose();
 }
@@ -54,7 +54,7 @@ const clientSchema = VehicleInputSchema.extend({
 
         if (!vehicles) return true;
         return !vehicles.value?.find(
-          ({ vehicleData }) => vehicleData.licensePlate === value && vehicleData.id !== modalData.value?.id,
+          ({ vehicleData }) => vehicleData.licensePlate === value && vehicleData.id !== editableVehicle.value?.id,
         );
       },
       { message: "License plate already exists" },
@@ -69,7 +69,7 @@ const { handleSubmit, values, resetForm } = useForm({
 
 const onSubmit = handleSubmit(async (data) => {
   // if there's no modalData, we're creating a new vehicle.
-  if (!modalData.value || !modalData.value.id) {
+  if (isCreatingNew.value) {
     createVehicleAsync(data, {
       onSuccess: (data) => {
         toast.success("Vehicle created succesfully");
@@ -80,8 +80,13 @@ const onSubmit = handleSubmit(async (data) => {
       },
     });
   } else {
+    if (!editableVehicle.value?.id) {
+      toast.error("Failed to update vehicle. Please try again.");
+      console.log("Editable vehicle ID is missing. Vehicle data: ", editableVehicle.value);
+      return;
+    }
     updateVehicleAsync(
-      { vehicleId: modalData.value.id, data },
+      { vehicleId: editableVehicle.value.id, data },
       {
         onSuccess: () => {
           toast.success("Vehicle updated succesfully");
@@ -101,40 +106,52 @@ const selectedVehicleIcon = computed(() => {
   return vehicleType?.icon as IconProps["name"];
 });
 
-watch(
-  () => isModalOpen.value,
-  (open) => {
-    if (open && modalData.value) {
-      resetForm({
-        values: {
-          name: modalData.value.name,
-          type: modalData.value.type.code,
-          make: modalData.value.make || "",
-          model: modalData.value.model || "",
-          year: modalData.value.year || undefined,
-          odometerType: modalData.value.odometerData.type || undefined,
-          vin: modalData.value.vin || "",
-          odometer: modalData.value.odometerData.value || undefined,
-          licensePlate: modalData.value.licensePlate || "",
-          fuelType: modalData.value.fuelType || undefined,
-          // TODO: add image support
-        },
-      });
-    }
-  },
-);
+watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
+  if (open && vehicle) {
+    resetForm({
+      values: {
+        name: vehicle.name,
+        type: vehicle.type.code,
+        make: vehicle.make || "",
+        model: vehicle.model || "",
+        year: vehicle.year || undefined,
+        odometerType: vehicle.odometerData?.type || undefined,
+        vin: vehicle.vin || "",
+        odometer: vehicle.odometerData?.value || undefined,
+        licensePlate: vehicle.licensePlate || "",
+        fuelType: vehicle.fuelType || undefined,
+        // TODO: add image support
+      },
+    });
+  } else {
+    resetForm({
+      values: {
+        name: "",
+        type: "",
+        make: "",
+        model: "",
+        year: undefined,
+        odometerType: undefined,
+        vin: "",
+        odometer: undefined,
+        licensePlate: "",
+        fuelType: undefined,
+      },
+    });
+  }
+});
 </script>
 
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="w-full max-w-3xl">
       <DialogHeader>
-        <DialogTitle>{{ isEditing ? "Edit vehicle" : "Create new vehicle" }}</DialogTitle>
+        <DialogTitle>{{ isCreatingNew ? "Create new vehicle" : "Edit vehicle" }}</DialogTitle>
         <DialogDescription>
           {{
-            isEditing
-              ? "Edit the details of your vehicle."
-              : "Fill in the details below to add a new vehicle to your garage."
+            isCreatingNew
+              ? "Fill in the details below to add a new vehicle to your garage."
+              : "Edit the details of your vehicle."
           }}
         </DialogDescription>
       </DialogHeader>
@@ -142,14 +159,7 @@ watch(
       <form @submit="onSubmit" class="space-y-8">
         <!-- Image Upload -->
         <Field v-slot="{ value, handleChange }" name="image">
-          <UploadImage
-            disabled
-            title="Upload a picture"
-            :value="value"
-            :placeholder-image-url="modalData?.image || undefined"
-            @change="handleChange"
-            data-cy="image"
-          />
+          <UploadImage disabled title="Upload a picture" :value="value" @change="handleChange" data-cy="image" />
           <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
         </Field>
 
@@ -168,7 +178,7 @@ watch(
             <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange" :disabled="isEditing">
+                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
                   <SelectTrigger class="w-full" data-cy="type-trigger">
                     <div class="flex items-center gap-3">
                       <Icon v-if="selectedVehicleIcon" :name="selectedVehicleIcon" class="h-4 w-4" />
@@ -220,7 +230,7 @@ watch(
 
             <Field v-slot="{ value, handleChange }" name="odometerType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange" :disabled="isEditing">
+                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
                   <SelectTrigger class="w-full" data-cy="odometer-type-trigger">
                     <SelectValue placeholder="Odometer type" />
                   </SelectTrigger>
@@ -284,7 +294,7 @@ watch(
             <!-- Odometer -->
 
             <Input
-              :disabled="isEditing"
+              :disabled="!isCreatingNew"
               placeholder="Odometer"
               name="odometer"
               type="number"
@@ -297,7 +307,7 @@ watch(
             <!-- Fuel Type -->
             <Field v-slot="{ value, handleChange }" name="fuelType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
+                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
                   <SelectTrigger class="w-full" data-cy="fuel-type-trigger">
                     <SelectValue placeholder="Fuel type" />
                   </SelectTrigger>
@@ -325,10 +335,10 @@ watch(
       <DialogFooter>
         <Button v-if="createPending" disabled variant="submit">
           <Spinner class="mr-2" />
-          {{ isEditing ? "Updating..." : "Creating..." }}
+          {{ isCreatingNew ? "Creating..." : "Updating..." }}
         </Button>
         <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit">
-          {{ isEditing ? "Update" : "Create" }}
+          {{ isCreatingNew ? "Create" : "Update" }}
         </Button>
 
         <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Cancel </Button>

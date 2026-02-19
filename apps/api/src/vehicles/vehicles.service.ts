@@ -20,6 +20,7 @@ import {
   VehicleType,
   MaintenanceActivity,
   RefillActivity,
+  BasicVehicle,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -214,6 +215,13 @@ export class VehiclesService {
       console.error('Error fetching accessible vehicles:', error);
       throw new BadRequestException({ message: 'Failed to fetch vehicles.' });
     }
+  }
+
+  async getVehicleById(userSession: UserSession, vehicleId: string): Promise<BasicVehicle> {
+    await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
+
+    const vehicle = await this.vehicleRepository.findVehicleById(vehicleId);
+    return this.vehicleTransformer.toBasicVehicle(vehicle!);
   }
 
   async getStatCardData(userSession: UserSession, vehicleId: string): Promise<TStatCardData> {

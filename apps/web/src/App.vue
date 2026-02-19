@@ -2,7 +2,7 @@
 import { RouterView } from "vue-router";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
-import CreateVehicleModal from "./modals/createVehicleModal.vue";
+import VehicleFormModal from "./modals/VehicleFormModal.vue";
 import { configure } from "vee-validate";
 import { useThemeStore } from "./stores/theme";
 import CreateRefillModal from "./modals/createRefillModal.vue";
@@ -38,7 +38,7 @@ const themeStore = useThemeStore();
 
   <!-- Modals -->
   <AlertModal />
-  <CreateVehicleModal />
+  <VehicleFormModal />
   <CreateRefillModal />
   <TodoModal />
   <NoteModal />

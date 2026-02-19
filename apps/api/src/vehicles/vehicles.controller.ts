@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
+import { BasicVehicle, TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { log } from 'console';
@@ -43,13 +43,21 @@ export class VehiclesController {
     return await this.vehiclesService.delete(userSession, vehicleId);
   }
 
+  @Get('by-id/:vehicleId')
+  async getVehicleById(
+    @Session() userSession: UserSession,
+    @Param('vehicleId') vehicleId: string,
+  ): Promise<BasicVehicle> {
+    return await this.vehiclesService.getVehicleById(userSession, vehicleId);
+  }
+
   @Get('accessible')
   async getAccessibleVehicles(@Session() userSession: UserSession): Promise<TAccessibleVehicle[]> {
     const vehicles = await this.vehiclesService.getAccessibleVehicles(userSession);
     return vehicles;
   }
 
-  @Get(':id/stat-card')
+  @Get('by-id/:id/stat-card')
   async getStatCardData(@Session() userSession: UserSession, @Param('id') vehicleId: string) {
     return this.vehiclesService.getStatCardData(userSession, vehicleId);
   }

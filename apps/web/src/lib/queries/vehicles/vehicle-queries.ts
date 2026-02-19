@@ -1,16 +1,25 @@
 import { api, fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
-import type { TAccessibleVehicle, TRefillForClient, TStatCardData, VehicleType } from "@repo/validation";
+import { type BasicVehicle, type TAccessibleVehicle, type TRefillForClient, type VehicleType } from "@repo/validation";
 import { useInfiniteQuery, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 
-export function useVehicleHeroStatCards(vehicleId: MaybeRef<string | undefined>) {
+export function useVehiclesAll() {
+  const { isAuthenticated } = useAuth();
   return useQuery({
-    queryKey: computed(() => queryKeys.vehicles.heroStatCards(handleEmpty(vehicleId))),
-    queryFn: async () => await fetchApi<TStatCardData>(`/vehicles/${unref(vehicleId)}/stat-card`),
+    queryKey: ["vehicles"],
+    queryFn: async () => await fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
+    staleTime: 1000 * 60 * 30,
+    enabled: isAuthenticated,
+  });
+}
+
+export function useVehicleByIdQuery(vehicleId: MaybeRef<string | undefined>) {
+  return useQuery({
+    queryKey: computed(() => queryKeys.vehicles.byId(handleEmpty(vehicleId))),
+    queryFn: async () => await fetchApi<BasicVehicle>(`vehicles/by-id/${unref(vehicleId)}`),
     enabled: computed(() => !!unref(vehicleId)),
   });
 }
@@ -26,16 +35,6 @@ export function useVehicleTimelineInfinite(vehicleId: MaybeRef<string | undefine
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: "initial",
     enabled: computed(() => !!unref(vehicleId)),
-  });
-}
-
-export function useVehiclesAll() {
-  const { isAuthenticated } = useAuth();
-  return useQuery({
-    queryKey: ["vehicles"],
-    queryFn: async () => await fetchApi<TAccessibleVehicle[]>("vehicles/accessible"),
-    staleTime: 1000 * 60 * 30,
-    enabled: isAuthenticated,
   });
 }
 

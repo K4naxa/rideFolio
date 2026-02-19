@@ -85,6 +85,11 @@ watch([isModalOpen, editableTodo], ([open, todo]) => {
     resetForm({
       values: {
         vehicleId: currentVehicle.value?.vehicleData.id || "",
+        title: "",
+        description: "",
+        priority: null,
+        dueDate: null,
+        dueOdometer: null,
       },
     });
   }

@@ -75,7 +75,7 @@ const statsOpen = ref(false);
                 :items="[
                   {
                     label: 'Edit',
-                    action: () => modalStore.onOpen('createVehicle', currentVehicle?.vehicleData),
+                    action: () => modalStore.onOpen('createVehicle', currentVehicleId),
                     icon: 'edit',
                     disabled: !isVehicleOwner,
                   },
