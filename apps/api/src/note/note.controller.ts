@@ -22,9 +22,9 @@ export class NoteController {
     return this.noteService.getAccessibleNotes(session.user.id);
   }
 
-  @Get(':noteId/editable')
-  async getEditableNote(@Session() session: UserSession, @Param('noteId') noteId: string): Promise<EditableNote> {
-    return this.noteService.getEditableNote(session.user.id, noteId);
+  @Get('by-id/:noteId')
+  async getNoteById(@Session() session: UserSession, @Param('noteId') noteId: string): Promise<Note> {
+    return this.noteService.getNoteById(session.user.id, noteId);
   }
 
   @Patch(':noteId/pin')
@@ -32,7 +32,7 @@ export class NoteController {
     @Session() session: UserSession,
     @Param('noteId') noteId: string,
     @Body('pinned') pinned: boolean,
-  ): Promise<EditableNote> {
+  ): Promise<Note> {
     return await this.noteService.notePinnedToggle(session, noteId, pinned);
   }
 
@@ -41,7 +41,7 @@ export class NoteController {
     @Session() session: UserSession,
     @Param('noteId') noteId: string,
     @Body(new ZodValidationPipe(NoteSchema as ZodType)) noteDto: NoteSchemaType,
-  ): Promise<EditableNote> {
+  ): Promise<Note> {
     return await this.noteService.updateNote(session, noteId, noteDto);
   }
 

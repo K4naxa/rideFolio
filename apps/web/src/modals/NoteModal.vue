@@ -14,19 +14,14 @@ import { CheckIcon, SaveIcon } from "lucide-vue-next";
 import NoteSection from "@/views/VehiclePage/VehicleNotes/components/NoteSection.vue";
 
 import { useModalStore } from "@/stores/modal";
-import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-
-import type { Note } from "@repo/validation";
+import { useNoteByIdQuery } from "@/lib/queries/notes/note-queries";
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createNote");
-const initialNote = computed(() => modalStore.data as Note | null);
 
-const { currentVehicleId } = useCurrentVehicle();
-
-const vehicleId = computed(() => {
-  return initialNote.value?.vehicle.id ?? currentVehicleId.value ?? "";
-});
+const { data: editableNote } = useNoteByIdQuery(
+  computed(() => (isModalOpen.value && modalStore.itemId ? modalStore.itemId : undefined)),
+);
 
 const handleClose = () => {
   modalStore.onClose();
@@ -36,13 +31,7 @@ const handleClose = () => {
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="h-full max-w-4xl lg:h-fit lg:max-h-[90vh] lg:min-h-96">
-      <NoteSection
-        v-if="isModalOpen"
-        :noteId="initialNote?.id ?? 'new'"
-        :vehicleId="vehicleId"
-        @close="handleClose"
-        @deleted="handleClose"
-      >
+      <NoteSection :note="editableNote" @close="handleClose" @deleted="handleClose">
         <template #header="{ isNew, isPinned, isDeleting, saveStatus, onDelete, onTogglePin, onClose }">
           <DialogHeader>
             <DialogTitle class="flex items-center">

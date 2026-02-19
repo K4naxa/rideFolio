@@ -5,7 +5,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { useModalStore } from "@/stores/modal";
 import { type Note } from "@repo/validation";
 
-import { useAllNotes } from "@/lib/queries/notes/note-queries";
+import { useAllNotes, useNoteByIdQuery } from "@/lib/queries/notes/note-queries";
 import NoteSection from "@/views/VehiclePage/VehicleNotes/components/NoteSection.vue";
 import NotesList from "@/components/notes/NotesList.vue";
 
@@ -18,28 +18,20 @@ const isMobile = useMediaQuery("(max-width: 1024px)");
 
 const { data: notes, isLoading } = useAllNotes();
 
-const selectedNoteId = computed({
-  get: () => route.query.note as string | null,
-  set: (noteId: Note["id"] | null) => {
-    router.push({
-      query: { ...route.query, note: noteId || undefined },
-    });
-  },
-});
+const selectedNoteId = ref<string | null>(null);
 
-const selectNote = (note: Note) => {
-  if (!isMobile.value) selectedNoteId.value = note.id;
-  else {
-    console.log("Opening modal for mobile view");
-    onOpen("createNote", note);
-  }
+const { data: editableNote } = useNoteByIdQuery(
+  computed(() => (selectedNoteId.value ? selectedNoteId.value : undefined)),
+);
+
+const handleSelectNote = (note: Note) => {
+  selectedNoteId.value = note.id;
+  if (isMobile.value) onOpen("createNote", note.id);
 };
 
 const handleNewClick = () => {
-  if (!isMobile.value) selectedNoteId.value = "new";
-  else {
-    onOpen("createNote", null);
-  }
+  selectedNoteId.value = null;
+  if (isMobile.value) onOpen("createNote");
 };
 </script>
 
@@ -51,17 +43,12 @@ const handleNewClick = () => {
       :notes="notes"
       :is-loading="isLoading"
       :selected-note-id="selectedNoteId"
-      @select-note="selectNote"
+      @select-note="handleSelectNote"
       @create-new-note="handleNewClick"
     />
 
     <div class="hidden flex-1 flex-col lg:flex">
-      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" vehicle-id="" class="" />
-      <div v-else class="text-muted-foreground flex flex-1 items-center justify-center">
-        Select a note to view or edit
-
-        {{ selectedNoteId }}
-      </div>
+      <NoteSection :note="editableNote" />
     </div>
   </div>
 </template>

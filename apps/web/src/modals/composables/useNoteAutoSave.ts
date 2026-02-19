@@ -5,22 +5,21 @@ import type { Note, NoteSchemaType } from "@repo/validation";
 import { isHtmlEmpty } from "@/lib/utils/html";
 
 interface AutoSaveOptions {
-  noteId: Ref<Note["id"]>;
   formValues: Ref<NoteSchemaType>;
-  serverState: Ref<NoteSchemaType>;
+  serverState: Ref<Note | undefined>;
   isFormDirty: Ref<boolean>;
-  onSave: (noteId: Note["id"], data: NoteSchemaType) => Promise<{ id: Note["id"] } | void>;
-  onNoteIdChange?: (newId: Note["id"]) => void;
+  onSave: (noteId: string | undefined, data: NoteSchemaType) => Promise<Note>;
 }
 
 export function useNoteAutoSave(options: AutoSaveOptions) {
-  const { noteId, formValues, serverState, isFormDirty, onSave, onNoteIdChange } = options;
+  const { formValues, serverState, isFormDirty, onSave } = options;
 
-  const pendingSave = ref<{ noteId: Note["id"]; data: NoteSchemaType } | null>(null);
+  const pendingSave = ref<{ noteId: string | undefined; data: NoteSchemaType } | null>(null);
   const isSaving = ref(false);
 
   // Check if note has actual changes worth saving
-  function hasContentChanged(initial: NoteSchemaType, current: NoteSchemaType): boolean {
+  function hasContentChanged(initial: Note | undefined, current: NoteSchemaType): boolean {
+    if (!initial) return true;
     return (
       current.title !== initial.title ||
       current.content !== initial.content ||
@@ -37,7 +36,6 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     return hasTitle || hasContent;
   }
 
-  // Should we auto-save?
   function shouldAutoSave(): boolean {
     if (!isFormDirty.value) return false;
     if (!hasContentChanged(serverState.value, formValues.value)) return false;
@@ -55,13 +53,8 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     try {
       const result = await onSave(saveData.noteId, saveData.data);
 
-      // If creating new note, update the ID
-      if (saveData.noteId === "new" && result && "id" in result) {
-        onNoteIdChange?.(result.id);
-      }
-
       // Update server state to match what we just saved
-      serverState.value = { ...saveData.data };
+      serverState.value = result;
       pendingSave.value = null;
     } catch (error) {
       toast.error("Failed to save note", {
@@ -86,7 +79,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     () => {
       if (shouldAutoSave()) {
         pendingSave.value = {
-          noteId: noteId.value,
+          noteId: serverState.value?.id || undefined,
           data: { ...formValues.value },
         };
         debouncedSave();

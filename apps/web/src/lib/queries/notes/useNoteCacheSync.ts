@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/vue-query";
-import type { EditableNote, Note, NoteSchemaType } from "@repo/validation";
+import type { Note, NoteSchemaType } from "@repo/validation";
 import { queryKeys } from "@/lib/queries/queryKeys";
 
 export function useNoteCacheSync() {
@@ -16,47 +16,25 @@ export function useNoteCacheSync() {
   }
 
   // Update cache after successful save (not on every keystroke)
-  function syncNoteToCache(noteId: Note["id"], noteData: EditableNote) {
-    // update specific editable note
-    queryClient.setQueryData<NoteSchemaType>(queryKeys.notes.editable(noteId), (old) => {
+  function syncNoteToCache(updatedNote: Note) {
+    // update specific note cache
+    queryClient.setQueryData<Note>(queryKeys.notes.byId(updatedNote.id), (old) => {
       if (!old) return old;
-      return { ...old, ...noteData };
+      return updatedNote;
     });
 
     // Update global notes cache
     queryClient.setQueryData<Note[]>(queryKeys.notes.all, (old) => {
       if (!old) return old;
-      const updatedNotes = old.map((n) =>
-        n.id === noteId
-          ? {
-              ...n,
-              title: noteData.title ?? n.title,
-              content: noteData.content ?? n.content,
-              pinned: noteData.pinned ?? n.pinned,
-              tags: noteData.tags ?? n.tags,
-              updatedAt: noteData.updatedAt ?? new Date(),
-            }
-          : n,
-      );
+      const updatedNotes = old.map((n) => (n.id === updatedNote.id ? updatedNote : n));
       return sortNotes(updatedNotes);
     });
 
     // Update vehicle-specific cache if vehicleId exists
-    if (noteData.vehicleId) {
-      queryClient.setQueryData<Note[]>(queryKeys.notes.byVehicle(noteData.vehicleId), (old) => {
+    if (updatedNote.vehicle.id) {
+      queryClient.setQueryData<Note[]>(queryKeys.notes.byVehicle(updatedNote.vehicle.id), (old) => {
         if (!old) return old;
-        const updatedNotes = old.map((n) =>
-          n.id === noteId
-            ? {
-                ...n,
-                title: noteData.title ?? n.title,
-                content: noteData.content ?? n.content,
-                pinned: noteData.pinned ?? n.pinned,
-                tags: noteData.tags ?? n.tags,
-                updatedAt: noteData.updatedAt ?? new Date(),
-              }
-            : n,
-        );
+        const updatedNotes = old.map((n) => (n.id === updatedNote.id ? updatedNote : n));
         return sortNotes(updatedNotes);
       });
     }
@@ -74,14 +52,7 @@ export function useNoteCacheSync() {
       return sortNotes([newNote, ...old]);
     });
 
-    queryClient.setQueryData<NoteSchemaType>(queryKeys.notes.editable(newNote.id), () => ({
-      vehicleId: newNote.vehicle.id,
-      title: newNote.title,
-      content: newNote.content,
-      tags: newNote.tags,
-      pinned: newNote.pinned,
-      updatedAt: newNote.updatedAt,
-    }));
+    queryClient.setQueryData<Note>(queryKeys.notes.byId(newNote.id), () => newNote);
 
     // Set the query as fresh for 3 seconds to prevent immediate refetch
     queryClient.setQueryDefaults(queryKeys.notes.editable(newNote.id), {

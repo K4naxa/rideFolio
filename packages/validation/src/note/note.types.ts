@@ -28,13 +28,3 @@ export type EditableNote = {
   pinned: boolean;
   updatedAt: Date;
 };
-
-export function newNote({ vehicleId, title, content, tags }: Partial<NoteSchemaType> = {}): NoteSchemaType {
-  return {
-    vehicleId: vehicleId || "",
-    title: title || null,
-    content: content || null,
-    tags: tags || [],
-    pinned: false,
-  };
-}

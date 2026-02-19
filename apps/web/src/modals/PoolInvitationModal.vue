@@ -11,47 +11,53 @@ import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import DialogTrigger from "@/components/ui/dialog/DialogTrigger.vue";
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { usePoolInviteAccept, usePoolInviteDeny } from "@/lib/queries/pools/pool-mutations";
 import { useUserNotificationsMarkAsRead } from "@/lib/queries/user/user-mutations";
 import { getInitials } from "@/lib/utils";
-import { useModalStore } from "@/stores/modal";
 import type { PoolInviteNotification } from "@repo/validation";
-import { computed } from "vue";
+import { ref } from "vue";
 
-const modalStore = useModalStore();
-const data = computed(() => (modalStore.data as { notification: PoolInviteNotification })?.notification);
-const isModalOpen = computed(() => modalStore.type === "poolInvite" && modalStore.isOpen);
+const props = defineProps<{
+  data: PoolInviteNotification;
+}>();
 
 const { mutateAsync: acceptInvite, isPending: isAccepting } = usePoolInviteAccept();
 const { mutateAsync: denyInvite, isPending: isDenying } = usePoolInviteDeny();
 const { mutate: markAsRead } = useUserNotificationsMarkAsRead();
 
+const isModalOpen = ref(false);
+
 function handleAccept() {
-  if (data.value) {
-    acceptInvite(data.value.metadata.inviteId, {
+  if (props.data) {
+    acceptInvite(props.data.metadata.inviteId, {
       onSuccess: () => {
-        markAsRead(data.value!.id);
-        modalStore.onClose();
+        markAsRead(props.data.id);
+        isModalOpen.value = false;
       },
     });
   }
 }
 
 function handleDeny() {
-  if (data.value) {
-    denyInvite(data.value.metadata.inviteId, {
+  if (props.data) {
+    denyInvite(props.data.metadata.inviteId, {
       onSuccess: () => {
-        markAsRead(data.value!.id);
-        modalStore.onClose();
+        markAsRead(props.data.id);
+        isModalOpen.value = false;
       },
     });
   }
 }
 </script>
 <template>
-  <Dialog :open="isModalOpen" @update:open="modalStore.onClose">
+  <Dialog v-model:open="isModalOpen">
+    <DialogTrigger>
+      <slot name="trigger" />
+    </DialogTrigger>
+
     <DialogContent class="w-full max-w-3xl">
       <DialogHeader class="mb-4">
         <DialogTitle> You have been invited to a group! </DialogTitle>

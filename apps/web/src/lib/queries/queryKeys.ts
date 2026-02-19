@@ -43,6 +43,7 @@ export const queryKeys = {
   // ============ NOTES DOMAIN ============
   notes: {
     all: ["notes"] as const,
+    byId: (noteId: string) => ["notes", "id", noteId] as const,
     byVehicle: (vehicleId: string) => ["notes", "vehicle", vehicleId] as const,
     editable: (noteId: string) => ["notes", "editable", noteId] as const,
   },

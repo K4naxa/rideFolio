@@ -33,7 +33,9 @@ const router = useRouter();
 // Modal logic
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createVehicle");
-const { data: editableVehicle } = useVehicleByIdQuery(computed(() => modalStore.itemId));
+const { data: editableVehicle } = useVehicleByIdQuery(
+  computed(() => (isModalOpen.value ? modalStore.itemId : undefined)),
+);
 const isCreatingNew = computed(() => !modalStore.itemId);
 function handleClose() {
   modalStore.onClose();

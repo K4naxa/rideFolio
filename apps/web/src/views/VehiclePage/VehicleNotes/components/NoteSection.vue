@@ -8,7 +8,7 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { type NoteSchemaType, type Note, NoteSchema, newNote } from "@repo/validation";
+import { type NoteSchemaType, type Note, NoteSchema } from "@repo/validation";
 import { computed, onMounted, onUnmounted, ref, watch, useSlots } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
@@ -16,20 +16,19 @@ import { toast } from "vue-sonner";
 import { useCreateNote, useDeleteNote, useTogglePinNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
 import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
 import { useNoteAutoSave } from "@/modals/composables/useNoteAutoSave";
-import { useEditableNote } from "@/lib/queries/notes/note-queries";
+import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
 interface NoteSectionProps {
-  noteId: Note["id"];
-  vehicleId: Note["vehicle"]["id"];
+  note: Note | undefined;
 }
 
 const props = defineProps<NoteSectionProps>();
-
 const emit = defineEmits<{
   close: [];
   deleted: [];
-  created: [noteId: string];
 }>();
+
+const { currentVehicleId } = useCurrentVehicle();
 
 const slots = useSlots();
 const router = useRouter();
@@ -40,72 +39,45 @@ const { mutateAsync: togglePinNote } = useTogglePinNote();
 const { mutateAsync: deleteNote, isPending: isDeleting } = useDeleteNote();
 const { mutateAsync: updateNote, isPending: isUpdating } = useUpdateNote();
 
-const { data: editableNote, isLoading } = useEditableNote(computed(() => props.noteId));
-
 // Component state
-const currentNoteId = ref(props.noteId);
-const isNew = computed(() => props.noteId === "new");
+const isNew = computed(() => !props.note?.id);
 const hasHeaderSlot = computed(() => !!slots.header);
 const tagInput = ref("");
-const lastServerState = ref<NoteSchemaType>(newNote({ vehicleId: props.vehicleId }));
 
-// Query for existing note
-const isPinned = computed(() => editableNote.value?.pinned || false);
+// Keep track of last server state to determine if there are unsaved changes
+// This gets updated on every successful save, and is used to compare against form values to determine if there are changes worth saving
+const lastServerState = ref<Note | undefined>(props.note);
+
+const isPinned = computed(() => props.note?.pinned || false);
 
 // Form setup
 const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
   validationSchema: toTypedSchema(NoteSchema),
-  initialValues: newNote({ vehicleId: props.vehicleId }),
+  initialValues: {
+    title: props.note?.title || "",
+    content: props.note?.content || "",
+    vehicleId: props.note?.vehicle.id || currentVehicleId.value || "",
+    tags: props.note?.tags || [],
+  },
 });
 
-// Initialize form data
-function initializeForm() {
-  if (props.noteId === "new") {
-    const initialData = newNote({ vehicleId: props.vehicleId });
-    lastServerState.value = initialData;
-    resetForm({ values: initialData });
-    return;
-  }
-
-  if (isLoading.value || !editableNote.value) return;
-
-  lastServerState.value = editableNote.value as NoteSchemaType;
-  resetForm({ values: editableNote.value });
-}
-
 // Save handler for auto-save
-async function handleSave(noteId: Note["id"], data: NoteSchemaType) {
-  if (noteId === "new") {
-    const response = await createNote(data);
-    currentNoteId.value = response.id;
-    emit("created", response.id);
-
-    // Only update URL if no header slot (standalone mode)
-    if (!hasHeaderSlot.value) {
-      router.replace({
-        query: { ...router.currentRoute.value.query, note: response.id },
-      });
-    }
-
-    return response;
+async function handleSave(noteId: string | undefined, data: NoteSchemaType): Promise<Note> {
+  // We have no previous server state, so this must be a new note - create it
+  if (!noteId) {
+    return await createNote(data);
   } else {
-    await updateNote({ noteId, data });
-    return;
+    // Otherwise, update the existing note
+    return await updateNote({ noteId, data });
   }
-}
-
-function handleNoteIdChange(newId: Note["id"]) {
-  currentNoteId.value = newId;
 }
 
 // Auto-save setup
 const { pendingSave, isSaving, handleBeforeUnload } = useNoteAutoSave({
-  noteId: currentNoteId,
   formValues: computed(() => values),
   serverState: lastServerState,
   isFormDirty: computed(() => meta.value.dirty),
   onSave: handleSave,
-  onNoteIdChange: handleNoteIdChange,
 });
 
 // Status indicator
@@ -121,9 +93,10 @@ const saveStatus = computed<"saving" | "pending" | "saved">(() => {
 
 // Action handlers
 async function handleDelete() {
+  if (!lastServerState.value) return;
   try {
     await deleteNote({
-      noteId: currentNoteId.value,
+      noteId: lastServerState.value.id,
       vehicleId: values.vehicleId,
     });
 
@@ -142,7 +115,8 @@ async function handleDelete() {
 }
 
 function handleTogglePin() {
-  togglePinNote({ noteId: currentNoteId.value, pinned: !isPinned.value });
+  if (!lastServerState.value) return;
+  togglePinNote({ noteId: lastServerState.value?.id, pinned: !isPinned.value });
 }
 
 function handleClose() {
@@ -169,19 +143,6 @@ function handleRemoveTag(tagToRemove: string) {
   );
 }
 
-// Lifecycle
-onMounted(() => {
-  initializeForm();
-});
-
-watch(
-  () => [props.noteId, isLoading.value, editableNote.value],
-  () => {
-    currentNoteId.value = props.noteId;
-    initializeForm();
-  },
-);
-
 // Only add beforeunload in standalone mode
 if (!hasHeaderSlot.value) {
   window.addEventListener("beforeunload", handleBeforeUnload);
@@ -192,10 +153,38 @@ if (!hasHeaderSlot.value) {
 
 // Expose for parent if needed
 defineExpose({
-  currentNoteId,
   saveStatus,
   values,
 });
+
+// Reset form whenever the note prop changes (i.e. when selecting a different note from the list)
+watch(
+  () => props.note,
+  (newNote) => {
+    //
+    if (!newNote) {
+      lastServerState.value = undefined;
+      resetForm({
+        values: {
+          title: "",
+          content: "",
+          vehicleId: currentVehicleId.value || "",
+          tags: [],
+        },
+      });
+    } else {
+      lastServerState.value = newNote;
+      resetForm({
+        values: {
+          title: newNote.title,
+          content: newNote.content,
+          vehicleId: newNote.vehicle.id,
+          tags: newNote.tags,
+        },
+      });
+    }
+  },
+);
 </script>
 
 <template>
@@ -248,7 +237,7 @@ defineExpose({
 
       <!-- Vehicle Selection -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <div v-if="isNew && !props.vehicleId">
+        <div v-if="isNew && !currentVehicleId">
           <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
           <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
         </div>

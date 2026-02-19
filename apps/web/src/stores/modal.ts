@@ -1,9 +1,7 @@
-import type { NotificationModalType } from "@repo/validation";
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
 export type ModalType =
-  | NotificationModalType
   | "createVehicle"
   | "createRefill"
   | "createMaintenance"

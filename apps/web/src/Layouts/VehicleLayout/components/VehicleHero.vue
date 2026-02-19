@@ -3,43 +3,38 @@ import Badge from "@/components/ui/badge/Badge.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useModalStore } from "@/stores/modal";
-import type { AlertModalData } from "@/modals/alertModal.vue";
 import { useRouter } from "vue-router";
 import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
+import AlertModal from "@/modals/alertModal.vue";
 
 const router = useRouter();
 const modalStore = useModalStore();
 const { mutateAsync: deleteVehicle } = useVehicleDelete();
 const { currentVehicle, currentVehicleId, isVehicleOwner } = useCurrentVehicle();
+const isDeleteModalOpen = ref(false);
 
 function handleDeleteClick() {
-  modalStore.onOpen("alert", {
-    title: "Delete Vehicle",
-    description: currentVehicle.value?.vehicleData.name
-      ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
-      : "Are you sure you want to delete this vehicle? This action cannot be undone.",
-    actionButton: {
-      label: "Delete",
-      class: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-    },
-    cancelButton: {
-      label: "Cancel",
-    },
-    onAction: async () => {
-      console.log("Deleting vehicle...");
-      if (!currentVehicleId.value) return;
-      await deleteVehicle(currentVehicleId.value);
-      router.push("/dashboard");
-    },
-  } as AlertModalData);
+  isDeleteModalOpen.value = true;
 }
+
+async function handleConfirmDelete() {
+  if (!currentVehicleId.value) return;
+  await deleteVehicle(currentVehicleId.value);
+  router.push("/dashboard");
+}
+
+const deleteModalDescription = computed(() =>
+  currentVehicle.value?.vehicleData.name
+    ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
+    : "Are you sure you want to delete this vehicle? This action cannot be undone.",
+);
 
 const statsOpen = ref(false);
 </script>
@@ -150,5 +145,15 @@ const statsOpen = ref(false);
         </div>
       </MainContentWrapper>
     </div>
+
+    <AlertModal
+      v-model:open="isDeleteModalOpen"
+      title="Delete Vehicle"
+      :description="deleteModalDescription"
+      actionLabel="Delete"
+      cancelLabel="Cancel"
+      actionClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+      @action="handleConfirmDelete"
+    />
   </div>
 </template>

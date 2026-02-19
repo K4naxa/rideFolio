@@ -24,11 +24,10 @@ export const useVehicleNotes = (vehicleId: MaybeRef<string | undefined>) => {
   });
 };
 
-export const useEditableNote = (noteId: MaybeRef<string | undefined>) => {
+export const useNoteByIdQuery = (noteId: MaybeRef<string | undefined>) => {
   return useQuery({
     queryKey: computed(() => queryKeys.notes.editable(handleEmpty(noteId))),
-    queryFn: async (): Promise<NoteSchemaType | undefined> =>
-      await fetchApi<Required<NoteSchemaType>>(`/notes/${unref(noteId)}/editable`),
-    enabled: computed(() => !!unref(noteId) && unref(noteId) !== "new"),
+    queryFn: async () => await fetchApi<Note>(`/notes/by-id/${unref(noteId)}`),
+    enabled: computed(() => !!unref(noteId)),
   });
 };

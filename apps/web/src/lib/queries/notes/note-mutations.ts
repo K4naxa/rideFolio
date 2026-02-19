@@ -24,11 +24,11 @@ export function useUpdateNote() {
   return useMutation({
     mutationKey: ["update-note"],
     mutationFn: async ({ noteId, data }: { noteId: Note["id"]; data: NoteSchemaType }) => {
-      const response = await api.patch<EditableNote>(`/notes/${noteId}`, data);
+      const response = await api.patch<Note>(`/notes/${noteId}`, data);
       return response.data;
     },
     onSuccess: (data) => {
-      syncNoteToCache(data.id, data);
+      syncNoteToCache(data);
       toast.success("Note updated successfully");
     },
   });
@@ -58,13 +58,13 @@ export function useTogglePinNote() {
   return useMutation({
     mutationKey: ["toggle-pin-note"],
     mutationFn: async ({ noteId, pinned }: { noteId: Note["id"]; pinned: Note["pinned"] }) => {
-      const response = await api.patch<EditableNote>(`/notes/${noteId}/pin`, {
+      const response = await api.patch<Note>(`/notes/${noteId}/pin`, {
         pinned,
       });
       return response.data;
     },
     onSuccess: (data) => {
-      syncNoteToCache(data.id, data);
+      syncNoteToCache(data);
       toast.success(`Note ${data.pinned ? "pinned" : "unpinned"}`);
     },
     onError: (error) => {

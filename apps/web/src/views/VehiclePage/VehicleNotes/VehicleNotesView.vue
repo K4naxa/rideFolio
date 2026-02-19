@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import NoteSection from "./components/NoteSection.vue";
 import { useModalStore } from "@/stores/modal";
 import { type Note } from "@repo/validation";
-import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
+import { useNoteByIdQuery, useVehicleNotes } from "@/lib/queries/notes/note-queries";
 import NotesList from "@/components/notes/NotesList.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
@@ -17,28 +17,20 @@ const isMobile = useIsMobile();
 const { currentVehicleId } = useCurrentVehicle();
 const { data: vehicleNotes, isLoading: vehicleNotesLoading } = useVehicleNotes(currentVehicleId);
 
-const selectedNoteId = computed({
-  get: () => route.query.note as string | null,
-  set: (noteId: Note["id"] | null) => {
-    router.push({
-      query: { ...route.query, note: noteId || undefined },
-    });
-  },
-});
+const selectedNoteId = ref<string | null>(null);
 
-const selectNote = (note: Note) => {
-  if (!isMobile.value) selectedNoteId.value = note.id;
-  else {
-    console.log("Opening modal for mobile view");
-    onOpen("createNote", note);
-  }
+const { data: editableNote } = useNoteByIdQuery(
+  computed(() => (selectedNoteId.value ? selectedNoteId.value : undefined)),
+);
+
+const handleSelectNote = (note: Note) => {
+  selectedNoteId.value = note.id;
+  if (isMobile.value) onOpen("createNote", note.id);
 };
 
 const handleNewClick = () => {
-  if (!isMobile.value) selectedNoteId.value = "new";
-  else {
-    onOpen("createNote", null);
-  }
+  selectedNoteId.value = null;
+  if (isMobile.value) onOpen("createNote");
 };
 </script>
 
@@ -49,17 +41,12 @@ const handleNewClick = () => {
       :notes="vehicleNotes"
       :is-loading="vehicleNotesLoading"
       :selected-note-id="selectedNoteId"
-      @select-note="selectNote"
+      @select-note="handleSelectNote"
       @create-new-note="handleNewClick"
     />
 
     <div class="hidden min-w-0 flex-1 flex-col lg:flex">
-      <NoteSection v-if="selectedNoteId" :note-id="selectedNoteId" :vehicle-id="currentVehicleId || ''" />
-      <div v-else class="text-muted-foreground flex flex-1 items-center justify-center">
-        Select a note to view or edit
-
-        {{ selectedNoteId }}
-      </div>
+      <NoteSection :note="editableNote" />
     </div>
   </div>
 </template>

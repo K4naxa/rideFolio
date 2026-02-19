@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useModalStore } from "@/stores/modal";
-import { computed } from "vue";
-import { ref, watch } from "vue";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,60 +9,62 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import AlertDialogTrigger from "@/components/ui/alert-dialog/AlertDialogTrigger.vue";
+import { computed, ref, useSlots } from "vue";
 
-export type AlertModalData = {
-  title?: string;
-  description?: string;
-  actionButton?: {
-    label?: string;
-    class?: string;
-  };
-  cancelButton?: {
-    label?: string;
-  };
-  onAction?: () => void | Promise<void>;
-  onCancel?: () => void;
-};
-
-const modalStore = useModalStore();
-const isModalOpen = computed(() => modalStore.type === "alert" && modalStore.isOpen);
-const modalData = computed(() => modalStore.data as AlertModalData);
-
-const localData = ref<AlertModalData | null>(null);
-
-// When the modal opens, snapshot the store data
-watch(
-  () => isModalOpen.value,
-  (open) => {
-    if (open) {
-      localData.value = modalData.value ?? null;
-    }
+const props = withDefaults(
+  defineProps<{
+    open?: boolean;
+    title: string;
+    description?: string;
+    actionClass?: string;
+    actionLabel?: string;
+    cancelLabel?: string;
+  }>(),
+  {
+    title: "Are you sure?",
+    description: "This action cannot be undone.",
+    actionLabel: "Continue",
+    cancelLabel: "Cancel",
   },
-  { immediate: true },
 );
 
-const title = computed(() => localData.value?.title || "Are you sure?");
-const description = computed(() => localData.value?.description || "This action cannot be undone.");
-const actionLabel = computed(() => localData.value?.actionButton?.label || "Continue");
-const actionClass = computed(() => localData.value?.actionButton?.class);
-const cancelLabel = computed(() => localData.value?.cancelButton?.label || "Cancel");
+const emit = defineEmits<{
+  action: [];
+  "update:open": [value: boolean];
+}>();
 
-async function handleAction() {
-  if (localData.value?.onAction) {
-    await localData.value.onAction();
-  }
-  modalStore.onClose();
+const slots = useSlots();
+const internalOpen = ref(false);
+
+const isControlled = computed(() => props.open !== undefined);
+const openState = computed({
+  get: () => (isControlled.value ? props.open! : internalOpen.value),
+  set: (value: boolean) => {
+    if (!isControlled.value) {
+      internalOpen.value = value;
+    }
+    emit("update:open", value);
+  },
+});
+
+const hasTrigger = computed(() => !!slots.default);
+
+function onOpenChange(value: boolean) {
+  openState.value = value;
 }
-function handleCancel() {
-  if (localData.value?.onCancel) {
-    localData.value.onCancel();
-  }
-  modalStore.onClose();
+
+function onActionClick() {
+  emit("action");
+  openState.value = false;
 }
 </script>
 
 <template>
-  <AlertDialog :open="isModalOpen">
+  <AlertDialog :open="openState" @update:open="onOpenChange">
+    <AlertDialogTrigger v-if="hasTrigger">
+      <slot />
+    </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ title }}</AlertDialogTitle>
@@ -75,10 +73,10 @@ function handleCancel() {
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel @click="handleCancel" data-cy="cancel">
+        <AlertDialogCancel data-cy="cancel">
           {{ cancelLabel }}
         </AlertDialogCancel>
-        <AlertDialogAction @click="handleAction" :class="actionClass" data-cy="action">
+        <AlertDialogAction @click="onActionClick" :class="actionClass" data-cy="action">
           {{ actionLabel }}
         </AlertDialogAction>
       </AlertDialogFooter>
