@@ -27,7 +27,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         ref="dialogContentRef"
         :class="
           twMerge(
-            'bg-background bottom-safe-area data relative isolate z-50 flex h-full w-full min-w-0 flex-1 flex-col gap-4 rounded border-0 p-4 shadow-lg sm:rounded-lg md:my-8 md:h-fit md:w-full md:border lg:p-6',
+            'bg-background bottom-safe-area data border-border! relative isolate z-50 flex h-full w-full min-w-0 flex-1 flex-col gap-4 rounded border-0 p-4 shadow-lg sm:rounded-lg md:my-8 md:h-fit md:w-full md:border lg:p-6',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-250',
             props.class,
           )

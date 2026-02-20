@@ -38,7 +38,6 @@ const displayedTodos = computed(
 );
 
 const isMobile = useIsMobile();
-const isModalOpen = ref(false);
 </script>
 <template>
   <div class="flex h-full max-h-96 min-h-0 min-w-0 flex-col">
@@ -56,13 +55,12 @@ const isModalOpen = ref(false);
         class="gaps-sm scrollbar-macos grid w-full grid-flow-col grid-rows-2 flex-col overflow-x-auto pb-2 md:flex"
       >
         <Dialog v-for="todo in displayedTodos" :key="todo.id" v-slot="{ close }">
-          <DialogTrigger as-child :disabled="!isMobile">
+          <DialogTrigger v-if="isMobile" as-child>
             <div
               :class="
                 twMerge(
                   'group listHover bg-card flex w-82 gap-4 rounded border p-3 md:max-h-full md:w-full',
                   (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive! border-l-3',
-                  !isMobile && 'cursor-default',
                 )
               "
             >
@@ -122,6 +120,65 @@ const isModalOpen = ref(false);
               </div>
             </div>
           </DialogTrigger>
+
+          <!-- Desktop -->
+          <div
+            v-else
+            :class="
+              twMerge(
+                'group listHover bg-card flex w-82 cursor-default gap-4 rounded border p-3 md:max-h-full md:w-full',
+                (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive! border-l-3',
+              )
+            "
+          >
+            <!-- Left section -->
+            <Checkbox
+              :model-value="todo.isCompleted"
+              @click.stop
+              @update:model-value="
+                toggleTodo({
+                  todoId: todo.id,
+                  complete: !todo.isCompleted,
+                })
+              "
+              class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
+              variant="secondary"
+            />
+
+            <!-- Right section -->
+            <div class="flex w-full flex-col gap-1">
+              <!-- title / priority -->
+              <div class="flex w-full justify-between gap-4">
+                <h3 class="w-fit truncate line-through" :class="todo.isCompleted && 'text-muted-foreground purchased'">
+                  {{ todo.title }}
+                </h3>
+
+                <Badge v-if="todo.priority" variant="outline" :class="twMerge('priority-' + todo.priority, 'text-xs')">
+                  {{ capitalize(todo.priority || "") }}
+                </Badge>
+              </div>
+
+              <!-- Description -->
+              <span
+                v-if="todo.description"
+                class="text-muted-foreground hidden overflow-hidden text-start text-sm md:block"
+                :class="todo.isCompleted && 'purchased'"
+              >
+                {{ todo.description }}
+              </span>
+
+              <!-- Overdue -->
+              <div class="mt-auto flex items-center gap-2 text-sm">
+                <p class="text-end">
+                  <span class="text-muted-foreground mr-2">Due</span>
+                  <span v-if="todo.dueDate?.date" :class="twMerge(todo.dueDate?.overdue && 'text-destructive')">{{
+                    useTimeAgoIntl(new Date(todo.dueDate.date))
+                  }}</span>
+                </p>
+                <p v-if="todo.dueOdometer">/ {{ todo.dueOdometer?.remaining }} {{ todo.dueOdometer?.unit }}</p>
+              </div>
+            </div>
+          </div>
           <DialogContent>
             <TodoActivityPreviewItem :activity="todo" @close="close" />
           </DialogContent>
