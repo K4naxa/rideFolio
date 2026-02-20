@@ -10,11 +10,10 @@ export const NoteSchema = z
       .transform((val) => (val === "" ? null : val))
       .optional()
       .nullable(),
-    tags: z.array(z.string().max(30, "30 character limit passed")).optional(),
     pinned: z
       .preprocess(
         (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
-        z.boolean("Invalid value")
+        z.boolean("Invalid value"),
       )
       .optional(),
   })

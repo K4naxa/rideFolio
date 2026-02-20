@@ -58,7 +58,6 @@ const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaTyp
     title: props.note?.title || "",
     content: props.note?.content || "",
     vehicleId: props.note?.vehicle.id || currentVehicleId.value || "",
-    tags: props.note?.tags || [],
   },
 });
 
@@ -135,26 +134,6 @@ function handleClose() {
   emit("close");
 }
 
-// Tag management
-function handleAddTag() {
-  const trimmedTag = tagInput.value.trim().toLowerCase();
-  const currentTags = values.tags || [];
-  const tagExists = currentTags.some((tag) => tag.toLowerCase() === trimmedTag);
-
-  if (trimmedTag && !tagExists) {
-    setFieldValue("tags", [...currentTags, tagInput.value.trim()]);
-    tagInput.value = "";
-  }
-}
-
-function handleRemoveTag(tagToRemove: string) {
-  const currentTags = values.tags || [];
-  setFieldValue(
-    "tags",
-    currentTags.filter((tag) => tag !== tagToRemove),
-  );
-}
-
 // Only add beforeunload in standalone mode
 if (!hasHeaderSlot.value) {
   window.addEventListener("beforeunload", handleBeforeUnload);
@@ -181,7 +160,6 @@ watch(
           title: "",
           content: "",
           vehicleId: currentVehicleId.value || "",
-          tags: [],
         },
       });
     } else {
@@ -191,7 +169,6 @@ watch(
           title: newNote.title,
           content: newNote.content,
           vehicleId: newNote.vehicle.id,
-          tags: newNote.tags,
         },
       });
     }
@@ -279,32 +256,6 @@ watch(
             />
           </div>
         </TipTapEditor>
-      </div>
-
-      <!-- Tags -->
-      <div class="mt-auto">
-        <div class="space-y-2">
-          <div class="flex items-center gap-2">
-            <input
-              type="text"
-              v-model="tagInput"
-              placeholder="Add a tag"
-              class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 flex w-full min-w-0 flex-1 appearance-none rounded-md border px-3 py-1.5 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              @keydown.enter.prevent="handleAddTag"
-            />
-            <Button type="button" variant="outline" @click="handleAddTag" class="h-full"> Add </Button>
-          </div>
-
-          <div v-if="values.tags?.length" class="flex flex-wrap gap-2">
-            <Badge v-for="(tag, index) in values.tags" :key="index" variant="outline" class="px-3 py-1.5 text-sm">
-              {{ tag }}
-              <Button variant="ghost" size="icon-sm" type="button" class="ml-2" @click="handleRemoveTag(tag)">
-                <XIcon class="h-3 w-3" />
-              </Button>
-            </Badge>
-          </div>
-        </div>
-        <span v-if="errors.tags" class="text-destructive text-sm">{{ errors.tags }}</span>
       </div>
     </form>
   </div>

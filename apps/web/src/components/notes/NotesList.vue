@@ -29,8 +29,7 @@ const filteredNotes = computed(() => {
   return props.notes?.filter(
     (note) =>
       (note.title && note.title.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-      (note.content && String(note.content).toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-      note.tags.some((tag) => tag.toLowerCase().includes(searchQuery.value.toLowerCase())),
+      (note.content && String(note.content).toLowerCase().includes(searchQuery.value.toLowerCase())),
   );
 });
 const emit = defineEmits<{
@@ -95,11 +94,6 @@ const isMobile = useIsMobile();
           </div>
           <div class="text-muted-foreground mt-1 line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3">
             {{ getTextSnippet(String(note.content), 80) }}
-          </div>
-          <div class="truncate">
-            <Badge v-for="tag in note.tags" variant="outline" :key="tag" class="mt-2 mr-1 px-2 py-1.5 text-xs">
-              {{ tag }}
-            </Badge>
           </div>
         </li>
 

@@ -4,7 +4,6 @@ export type Note = {
   id: string;
   title: string | null;
   content: string | null;
-  tags: string[];
   pinned: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -23,7 +22,6 @@ export type EditableNote = {
   id: string;
   title: string | null;
   content: string | null;
-  tags: string[];
   vehicleId: string;
   pinned: boolean;
   updatedAt: Date;

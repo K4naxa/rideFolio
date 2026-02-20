@@ -170,7 +170,6 @@ export class NoteService {
       id: note.id,
       title: note.title ?? '',
       content: note.content ?? '',
-      tags: note.tags ?? [],
       pinned: note.pinned ?? false,
       createdAt: note.createdAt,
       updatedAt: note.updatedAt,

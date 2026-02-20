@@ -495,13 +495,12 @@ model Todo {
 }
 
 model Note {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   vehicleId String
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  title     String?  @default("")
-  content   String?  @default("")
-  tags      String[]
-  pinned    Boolean  @default(false)
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  title     String? @default("")
+  content   String? @default("")
+  pinned    Boolean @default(false)
 
   createdByUser user?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedAt     DateTime @updatedAt

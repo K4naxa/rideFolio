@@ -20,11 +20,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
   // Check if note has actual changes worth saving
   function hasContentChanged(initial: Note | undefined, current: NoteSchemaType): boolean {
     if (!initial) return true;
-    return (
-      current.title !== initial.title ||
-      current.content !== initial.content ||
-      JSON.stringify([...(current.tags ?? [])].sort()) !== JSON.stringify([...(initial.tags ?? [])].sort())
-    );
+    return current.title !== initial.title || current.content !== initial.content;
   }
 
   // Check if note has minimum required content
@@ -75,7 +71,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
 
   // Watch for form changes and queue saves
   watch(
-    () => [formValues.value.title, formValues.value.content, formValues.value.tags, formValues.value.vehicleId],
+    () => [formValues.value.title, formValues.value.content, formValues.value.vehicleId],
     () => {
       if (shouldAutoSave()) {
         pendingSaves.value.set(serverState.value?.id || undefined, { ...formValues.value });
