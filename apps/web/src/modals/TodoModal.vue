@@ -21,21 +21,21 @@ import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
-import { TodoSchema, type Todo } from "@repo/validation";
+import { TodoSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import { useEditableTodo } from "@/lib/queries/todos/todo-queries";
+import { useTodoById } from "@/lib/queries/todos/todo-queries";
 
 const { currentVehicle } = useCurrentVehicle();
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createTodo");
 
-const { data: editableTodo } = useEditableTodo(computed(() => (isModalOpen.value ? modalStore.itemId : undefined)));
+const { data: editableTodo } = useTodoById(computed(() => (isModalOpen.value ? modalStore.itemId : undefined)));
 
 const creatingNew = computed(() => !editableTodo.value);
 const handleClose = () => {
@@ -68,7 +68,7 @@ watch([isModalOpen, editableTodo], ([open, todo]) => {
       console.log("Editable todo data: ", todo);
       resetForm({
         values: {
-          vehicleId: todo.vehicleData.id,
+          vehicleId: todo.vehicleId,
           title: todo.title,
           description: todo.description,
           priority: todo.priority,

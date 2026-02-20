@@ -1,23 +1,10 @@
-import { TodoDueDate, TodoDueOdometer } from "../todo";
-import { TConversionResult } from "../vehicle";
-
-export interface RecentActivityQueryOptions {
-  vehicleId?: string;
-  poolId?: string;
-  owned?: boolean | "true" | "false";
-  take: number;
-  cursor?: { date: string; id: string };
-}
-
-export interface RecentActivityInfiniteResponse {
-  items: (RefillActivity | MaintenanceActivity)[];
-  nextCursor: string | null;
-}
+import { BaseTodo, TodoDueDate, TodoDueOdometer } from "../todo";
+import { TConversionResult, VehicleMinimal } from "../vehicle";
 
 export type ActivityItem = RefillActivity | MaintenanceActivity | TodoActivity;
 
 interface BaseActivity {
-  vehicle: { id: string; name: string; type: string; image: string | null };
+  vehicle: VehicleMinimal;
 }
 
 export interface RefillActivity extends BaseActivity {
@@ -58,11 +45,5 @@ export interface MaintenanceActivity extends BaseActivity {
 
 export interface TodoActivity extends BaseActivity {
   type: "todo";
-  data: {
-    id: string;
-    title: string;
-    description: string | null;
-    dueDate: TodoDueDate | null;
-    dueOdometer: TodoDueOdometer | null;
-  };
+  data: BaseTodo;
 }

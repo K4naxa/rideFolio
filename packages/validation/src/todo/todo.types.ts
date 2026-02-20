@@ -1,4 +1,4 @@
-import { TConversionResult, TLogVehicle } from "../vehicle";
+import { TConversionResult, VehicleMinimal } from "../vehicle";
 
 export type TodoDueOdometer = TConversionResult & {
   overdue: boolean;
@@ -9,15 +9,16 @@ export type TodoDueDate = {
   date: Date;
   overdue: boolean;
 };
-export type Todo = {
+
+export type BaseTodo = {
   id: string;
-  vehicleData: TLogVehicle;
   title: string;
   description: string | null;
   priority: TodoPriorityType | null;
   isCompleted: boolean;
   dueDate: TodoDueDate | null;
   dueOdometer: TodoDueOdometer | null;
+  vehicleId: string;
   createdData: {
     name: string;
     image: string | null;
@@ -32,6 +33,10 @@ export type Todo = {
     date: Date | null;
   } | null;
 };
+
+export interface TodoWithVehicle extends BaseTodo {
+  vehicle: VehicleMinimal;
+}
 
 export const TodoPriority = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 export type TodoPriorityType = (typeof TodoPriority)[number];

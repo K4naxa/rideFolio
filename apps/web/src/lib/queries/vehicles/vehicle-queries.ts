@@ -24,20 +24,6 @@ export function useVehicleByIdQuery(vehicleId: MaybeRef<string | undefined>) {
   });
 }
 
-export function useVehicleTimelineInfinite(vehicleId: MaybeRef<string | undefined>, LIMIT = 10) {
-  return useInfiniteQuery({
-    queryKey: computed(() => queryKeys.timelines.byVehicle(handleEmpty(vehicleId))),
-    queryFn: async ({ pageParam }: { pageParam: string }) => {
-      const cursor = pageParam;
-      const response = await api.get(`/vehicles/${unref(vehicleId)}/infiniteActivities/${cursor}/${LIMIT}`);
-      return response.data;
-    },
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-    initialPageParam: "initial",
-    enabled: computed(() => !!unref(vehicleId)),
-  });
-}
-
 export function useVehicleTypes(options?: { enabled?: MaybeRef<boolean> }) {
   return useQuery({
     queryKey: ["vehicleTypes"],

@@ -95,13 +95,13 @@ const isOpen = ref(false);
         <Separator class="mt-2" />
       </DrawerHeader>
 
-      <div class="px-2">
+      <div class="px-2 pb-2">
         <Button
           variant="ghost"
           type="button"
           v-for="item in items"
           :key="item.label"
-          class="text-foreground flex h-fit items-center justify-start text-start text-base font-normal"
+          class="text-foreground flex w-full items-center justify-start text-start text-base font-normal"
           @click="
             () => {
               item.action();

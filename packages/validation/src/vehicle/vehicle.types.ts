@@ -45,7 +45,7 @@ export type TOdometerData = {
   type: OdometerTypeCode;
 };
 
-export type TLogVehicle = {
+export type VehicleMinimal = {
   id: string;
   name: string;
   make: string | null;
@@ -87,35 +87,4 @@ export type TVehicleOwner = {
   name: string;
   email: string;
   image: string | null;
-};
-
-export type TVehicleInfo = {
-  id: string;
-  name: string;
-  make: string | null;
-  model: string | null;
-  year: number | null;
-  vin: string | null;
-  licensePlate: string | null;
-  image: string | null;
-  notes: string | null;
-  ownerId: string;
-  type: VehicleType;
-  fuelType: FuelTypeCode;
-  odometerData: TOdometerData;
-  lifetimeStats: {
-    totalTrackedUnits: TConversionResult;
-  };
-};
-
-export type UpcomingEvent = {
-  id: string;
-  title: string;
-  description: string | null;
-  vehicle: {
-    name: string;
-    image: string | null;
-  };
-  dueDate: TodoDueDate;
-  dueOdometer: TodoDueOdometer;
 };

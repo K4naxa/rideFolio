@@ -18,9 +18,9 @@ export class TodosController {
     return await this.todoservice.createTodo(userSession, todoDto);
   }
 
-  @Get()
-  async getAllTodos(@Session() userSession: UserSession) {
-    return await this.todoservice.getAllTodosForUser(userSession);
+  @Get('with-vehicles')
+  async getAllTodosWithVehicles(@Session() userSession: UserSession) {
+    return await this.todoservice.getUserTodosWithVehicles(userSession);
   }
 
   @Get(':todoId')
@@ -30,7 +30,7 @@ export class TodosController {
 
   @Get('vehicle/:vehicleId')
   async getTodos(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
-    return await this.todoservice.getTodosForVehicle(userSession, vehicleId);
+    return await this.todoservice.getVehicleTodos(userSession, vehicleId);
   }
   @Patch(':todoId/toggle')
   async toggleTodo(

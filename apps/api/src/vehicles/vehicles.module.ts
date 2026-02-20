@@ -1,17 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 import { VehiclesController } from 'src/vehicles/vehicles.controller';
-import { VehicleTransformerService } from 'src/utils/vehicleTransformer.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
-import { OdometerService } from 'src/utils/odometer.service';
+import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { LimitsModule } from 'src/limits/limits.module';
-import { TodosService } from 'src/todos/todos.service';
+import { TodosModule } from 'src/todos/todos.module';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
+import { OdometerService } from 'src/utils/odometer.service';
 
 @Module({
-  imports: [PrismaModule, LimitsModule],
+  imports: [PrismaModule, LimitsModule, forwardRef(() => TodosModule)],
   providers: [
     VehiclesService,
     VehicleRepository,
@@ -19,9 +19,8 @@ import { TodosService } from 'src/todos/todos.service';
     OdometerService,
     UnitConversionService,
     AuthValidationService,
-    TodosService,
   ],
-  exports: [VehiclesService, VehicleRepository],
+  exports: [VehiclesService, VehicleRepository, VehicleTransformerService],
   controllers: [VehiclesController],
 })
 export class VehiclesModule {}

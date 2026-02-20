@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Vehicle } from 'prisma/generated/prisma/client';
-import { BasicVehicle, TAccessibleVehicle } from '@repo/validation';
+import { Vehicle } from 'prisma/generated/prisma/client';
+import { BasicVehicle, TAccessibleVehicle, VehicleMinimal } from '@repo/validation';
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
@@ -36,15 +36,16 @@ export class VehicleTransformerService {
     private unitConversion: UnitConversionService,
   ) {}
 
-  DBInclude_BasicVehicle: Prisma.VehicleInclude = {
-    vehicleType: {
-      select: {
-        code: true,
-        nameKey: true,
-        icon: true,
-      },
-    },
-  };
+  toMinimalVehicle(rawVehicle: RawBasicVehicle): VehicleMinimal {
+    return {
+      id: rawVehicle.id,
+      name: rawVehicle.name,
+      make: rawVehicle.make,
+      model: rawVehicle.model,
+      type: rawVehicle.vehicleType.code,
+      image: rawVehicle.image,
+    };
+  }
 
   // Transform raw vehicle to TBasicVehicle
   toBasicVehicle(rawVehicle: RawBasicVehicle): BasicVehicle {

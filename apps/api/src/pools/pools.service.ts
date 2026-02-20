@@ -4,8 +4,8 @@ import { AccessiblePool, PoolMemberRoleCode, PoolSchemaValues, PoolDetails, Pool
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
-import { VehicleTransformerService } from 'src/utils/vehicleTransformer.service';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
+import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 import { NotificationService } from 'src/notifications/notification.service';
 
 @Injectable()
@@ -165,7 +165,7 @@ export class PoolsService {
             allowMembersToEditLogs: true,
             vehicle: {
               include: {
-                ...this.vehicleTransformer.DBInclude_BasicVehicle,
+                ...this.vehicleRepository.DBInclude_BasicVehicle,
                 owner: {
                   select: {
                     id: true,

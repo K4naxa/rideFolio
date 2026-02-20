@@ -7,7 +7,7 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { MaintenanceService } from './maintenance/maintenance.service';
 import { RefillsService } from './refills.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { LimitsModule } from 'src/limits/limits.module';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 

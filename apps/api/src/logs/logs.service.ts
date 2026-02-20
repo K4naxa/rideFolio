@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { RecentActivityQueryOptions } from '@repo/validation';
-import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 
 @Injectable()
 export class LogsService {

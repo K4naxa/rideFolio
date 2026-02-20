@@ -13,8 +13,6 @@ import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Label from "@/components/ui/label/Label.vue";
-import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
 
@@ -22,7 +20,8 @@ import { useModalStore } from "@/stores/modal";
 import { useTodoSettingsStore } from "@/stores/todoSettings";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
-import type { Todo } from "@repo/validation";
+import type { BaseTodo, TodoWithVehicle } from "@repo/validation";
+
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 
 const { mutate: toggleTodo } = useTodoToggle();
@@ -31,7 +30,7 @@ interface TodoTableProps {
   size?: "sm" | "md";
   hideCompleted?: boolean;
   searchQuery?: string;
-  todos: Todo[] | undefined;
+  todos: TodoWithVehicle[] | BaseTodo[] | undefined;
   isLoading: boolean;
   isError: boolean;
   showVehicle?: boolean;
@@ -101,6 +100,10 @@ const formatDate = (dateString: string) => {
     day: "numeric",
   });
 };
+
+const isTodoWithVehicle = (todo: BaseTodo | TodoWithVehicle): todo is TodoWithVehicle => {
+  return "vehicle" in todo;
+};
 </script>
 <template>
   <div class="flex min-h-0 w-full flex-col">
@@ -151,10 +154,10 @@ const formatDate = (dateString: string) => {
             />
           </div>
 
-          <div v-if="props.showVehicle" class="flex min-h-0 items-center gap-2">
-            <VehicleAvatar v-if="todo.vehicleData.image" :src="todo.vehicleData.image" :type="todo.vehicleData.type" />
+          <div v-if="props.showVehicle && isTodoWithVehicle(todo)" class="flex min-h-0 items-center gap-2">
+            <VehicleAvatar v-if="todo.vehicle.image" :src="todo.vehicle.image" :type="todo.vehicle.type" />
             <div v-else class="bg-muted grid h-full flex-1 place-content-center rounded border">
-              <Label class="text-muted-foreground">{{ todo.vehicleData.name }}</Label>
+              <Label class="text-muted-foreground">{{ todo.vehicle.name }}</Label>
             </div>
           </div>
 
@@ -211,7 +214,12 @@ const formatDate = (dateString: string) => {
                 <DropdownMenuItem @click="onOpen('createTodo', todo.id)"> Edit </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
-                  @click="deleteTodo({ todoId: todo.id, vehicleId: todo.vehicleData.id })"
+                  @click="
+                    deleteTodo({
+                      todoId: todo.id,
+                      vehicleId: isTodoWithVehicle(todo) ? todo.vehicle.id : todo.vehicleId,
+                    })
+                  "
                 >
                   Delete
                 </DropdownMenuItem>

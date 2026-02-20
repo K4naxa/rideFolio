@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CurrencyCode, ProfileUpdateValues, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
 import { LimitsService } from 'src/limits/limits.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 
 @Injectable()
 export class UsersService {

@@ -3,18 +3,18 @@ import TodoActivityPreviewItem from "@/components/previews/todo/TodoActivityPrev
 import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogContent from "@/components/ui/dialog/DialogContent.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import DialogTrigger from "@/components/ui/dialog/DialogTrigger.vue";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import PopoverContent from "@/components/ui/popover/PopoverContent.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import type { ActivityItem } from "@repo/validation";
 import { ref } from "vue";
 
 const isMobile = useIsMobile();
 
 const props = defineProps<{
-  item: any;
+  item: ActivityItem;
 }>();
 
 const isOpen = ref(false);
@@ -28,9 +28,9 @@ const isOpen = ref(false);
       </DialogTrigger>
 
       <DialogContent>
-        <DialogTitle class="sr-only">{{ item.title }}</DialogTitle>
+        <DialogTitle class="sr-only">Your activity</DialogTitle>
         <DialogDescription class="sr-only"> Manage your upcoming activity and view details here. </DialogDescription>
-        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item" />
+        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item.data" />
       </DialogContent>
     </Dialog>
   </template>
@@ -41,7 +41,7 @@ const isOpen = ref(false);
         <slot name="trigger" />
       </PopoverTrigger>
       <PopoverContent side="top" class="cardBackground w-xs">
-        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item" />
+        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item.data" />
       </PopoverContent>
     </Popover>
   </template>

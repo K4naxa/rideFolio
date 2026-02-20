@@ -1,33 +1,22 @@
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
-import { VehicleTransformerService } from './../utils/vehicleTransformer.service';
-import { VehicleRepository } from './../utils/vehicleRepository';
+import { VehicleTransformerService } from './vehicleTransformer.service';
+import { VehicleRepository } from './vehicleRepository';
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Vehicle } from 'prisma/generated/prisma/client';
 import {
-  Maintenance,
-  MaintenancePart,
-  Prisma,
-  Refill,
-  Vehicle,
-  VehiclePart,
-  VehiclePartLocation,
-} from 'prisma/generated/prisma/client';
-import {
-  RecentActivityInfiniteResponse,
   ActivityItem,
   TAccessibleVehicle,
-  TStatCardData,
+  // TStatCardData, // TODO: DELETE - Dead code - commented out with method that uses it
   VehicleInput,
   VehicleType,
-  MaintenanceActivity,
-  RefillActivity,
   BasicVehicle,
 } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
-import { Extend } from 'zod/v4/core/util.cjs';
 import { LimitsService } from 'src/limits/limits.service';
 import { TodosService } from 'src/todos/todos.service';
+import { TodoFormatterService } from 'src/todos/todoFormatter.service';
 
 @Injectable()
 export class VehiclesService {
@@ -39,6 +28,7 @@ export class VehiclesService {
     private authValidationService: AuthValidationService,
     private limitsService: LimitsService,
     private todoService: TodosService,
+    private todoFormatter: TodoFormatterService,
   ) {}
 
   // ***       Management       ***
@@ -224,218 +214,6 @@ export class VehiclesService {
     return this.vehicleTransformer.toBasicVehicle(vehicle!);
   }
 
-  async getStatCardData(userSession: UserSession, vehicleId: string): Promise<TStatCardData> {
-    await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
-
-    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: vehicleId } });
-    if (!vehicle) throw new NotFoundException('Vehicle not found');
-
-    const isHourlyBased = vehicle.odometerType === 'HOUR';
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: userSession.user.id },
-      select: { volumeUnit: true, consumptionUnitCode_distance: true, consumptionUnitCode_hour: true },
-    });
-    if (!user) throw new NotFoundException('user not found');
-
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth() + 1;
-
-    const monthlyData = await this.prisma.vehicleMonthlyStatistics.findUnique({
-      where: { vehicleId_year_month: { vehicleId, year, month } },
-      select: {
-        monthlyRunningCost: true,
-      },
-    });
-
-    const averageConsumptionValue = this.unitConversion.getBaseConsumptionFromBaseUnits(
-      vehicle.lifetimeTotalValidFuelForConsumption_L || 0,
-      isHourlyBased
-        ? vehicle.lifetimeTotalValidUnitsForConsumption_hour || 0
-        : vehicle.lifetimeTotalValidUnitsForConsumption_km || 0,
-      isHourlyBased,
-    );
-
-    const resData: TStatCardData = {
-      trackedUnits: this.unitConversion.getOdometerDataByType(
-        isHourlyBased ? vehicle.lifetimeTotalTrackedUnits_hour : vehicle.lifetimeTotalTrackedUnits_km,
-        vehicle.odometerType,
-      ),
-      averageConsumption: this.unitConversion.getConsumptionData(
-        averageConsumptionValue,
-        isHourlyBased ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
-        isHourlyBased ? 'HOUR' : 'DISTANCE',
-      ),
-      monthlyRunningCost: monthlyData?.monthlyRunningCost || 0,
-    };
-
-    return resData;
-  }
-
-  // Used in vehicle page activities tab and recent activities on dashboard
-  // used with tanstack useInfiniteQuery
-  async getVehicleActivities(
-    userSession: UserSession,
-    vehicleId: string,
-    cursor: string,
-    limit: number,
-  ): Promise<RecentActivityInfiniteResponse> {
-    await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
-    const user = await this.prisma.user.findUnique({
-      where: { id: userSession.user.id },
-      select: { volumeUnit: true, consumptionUnitCode_distance: true, consumptionUnitCode_hour: true },
-    });
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: vehicleId },
-      select: { odometerType: true },
-    });
-    if (!user) throw new NotFoundException('user not found');
-    if (!vehicle) throw new NotFoundException('Vehicle not found');
-    const isHourlyOdometer = vehicle.odometerType === 'HOUR';
-    limit = Number(limit);
-
-    const cursorDate = cursor === 'initial' ? new Date() : new Date(cursor);
-
-    const activities = await this.prisma.$transaction(async (tx) => {
-      type DBVehicleSelect = { name: Vehicle['name']; image: Vehicle['image']; type: Vehicle['type']; id: string };
-      type RefillDBSelect = Extend<Refill, { vehicle: DBVehicleSelect }>;
-      type MaintenanceDBSelect = Extend<
-        Maintenance,
-        {
-          vehicle: DBVehicleSelect;
-          parts: {
-            part: { code: VehiclePart['code']; id: VehiclePart['id'] };
-            location: { code: VehiclePartLocation['code'] } | null;
-            label: MaintenancePart['label'];
-            groupId: MaintenancePart['groupId'];
-            description: MaintenancePart['description'];
-            customName: MaintenancePart['customName'];
-          }[];
-        }
-      >;
-      // Get refills from dateFilter backwards
-      const refillActivities: RefillDBSelect[] = await tx.refill.findMany({
-        where: {
-          vehicleId,
-          date: { lt: cursorDate },
-        },
-        include: {
-          vehicle: { select: { name: true, type: true, image: true, id: true } },
-        },
-        orderBy: { date: 'desc' },
-        take: limit,
-      });
-
-      // Get maintenance activities from dateFilter backwards
-      const maintenanceActivities: MaintenanceDBSelect[] = await tx.maintenance.findMany({
-        where: {
-          vehicleId,
-          date: { lt: cursorDate },
-        },
-        include: {
-          vehicle: { select: { name: true, type: true, image: true, vehicleType: true, id: true } },
-          parts: {
-            select: {
-              label: true,
-              groupId: true,
-              description: true,
-              customName: true,
-              part: { select: { code: true, id: true } },
-              location: { select: { code: true } },
-            },
-          },
-        },
-        orderBy: { date: 'desc' },
-        take: limit,
-      });
-
-      // Normalize refills
-      const normalizedRefills: RefillActivity[] = refillActivities.map((r) => ({
-        type: 'refill',
-        date: r.date,
-        vehicle: r.vehicle,
-        data: {
-          id: r.id,
-          fullRefill: r.fullRefill,
-          date: r.date,
-          skippedRefill: r.skippedRefill,
-          fuelAmount: this.unitConversion.getVolumeDataByUnitType(r.fuelAmount_L, user.volumeUnit),
-          costTotal: r.costTotal,
-          notes: r.notes,
-          consumption: this.unitConversion.getConsumptionData(
-            isHourlyOdometer ? r.consumption_L_per_hour : r.consumption_L_per_100km,
-            isHourlyOdometer ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance,
-            isHourlyOdometer ? 'HOUR' : 'DISTANCE',
-          ),
-          // convenience odometer field depending on vehicle odometerType
-          odometer: this.unitConversion.getOdometerDataByType(
-            isHourlyOdometer ? r.odometer_hour : r.odometer_km,
-            vehicle.odometerType,
-          ),
-        },
-      }));
-
-      // Normalize maintenance
-      const normalizedMaintenance: (RefillActivity | MaintenanceActivity)[] = maintenanceActivities.map((m) => {
-        // combine parts into their partGroups
-        const partGroups: Record<string, MaintenanceActivity['data']['parts'][0]> = {};
-
-        m.parts.forEach((p) => {
-          const existing = partGroups[p.groupId];
-
-          if (!existing || existing === undefined || existing === null) {
-            partGroups[p.groupId] = {
-              groupId: p.groupId,
-              partId: p.part.id,
-              partCode: p.part.code,
-              label: p.label || null,
-              locations: p.location ? [p.location.code] : [],
-            };
-          } else {
-            partGroups[p.groupId] = {
-              ...existing, // now safe, because TS knows `existing` is not undefined
-              locations: p.location ? [...existing.locations, p.location.code] : existing.locations,
-            };
-          }
-        });
-        const partGroupArray = Object.values(partGroups);
-
-        const data = {
-          id: m.id,
-          date: m.date,
-          title: m.title,
-          costTotal: m.costTotal,
-          notes: m.notes,
-          parts: partGroupArray,
-          odometer: this.unitConversion.getOdometerDataByType(
-            isHourlyOdometer ? m.odometer_hour : m.odometer_km,
-            vehicle.odometerType,
-          ),
-        };
-
-        return {
-          type: 'maintenance',
-          date: m.date,
-          vehicle: m.vehicle,
-          data: data,
-        };
-      });
-
-      // Combine, sort by date desc and limit to requested count
-      const combinedActivities = [...normalizedRefills, ...normalizedMaintenance]
-        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-        .slice(0, limit);
-
-      return combinedActivities;
-    });
-
-    const nextCursor = activities.length === limit ? activities[activities.length - 1].date.toISOString() : null;
-    return {
-      items: activities,
-      nextCursor,
-    };
-  }
-
   async getUpcomingActivity(userSession: UserSession, vehicleId?: string): Promise<ActivityItem[]> {
     // If vehicleId is provided, validate access to that vehicle
     // If no vehicleId is provided, fetch upcoming events for all accessible vehicles
@@ -458,27 +236,16 @@ export class VehiclesService {
         isCompleted: false,
       },
       orderBy: { dueDate: 'asc' },
-      include: {
-        vehicle: { select: { name: true, image: true, type: true } },
-      },
+      include: this.todoFormatter.DB_include_todoWithVehicle(),
     });
 
-    return upcomingTodos.map((todo) => ({
-      type: 'todo' as const,
-      data: {
-        id: todo.id,
-        title: todo.title,
-        description: todo.description,
-        dueDate: this.todoService.formatDueDate(todo.dueDate),
-        dueOdometer: this.todoService.formatDueOdometer(todo, vehicles.find((v) => v.id === todo.vehicleId) as Vehicle),
-      },
-      vehicle: {
-        id: todo.vehicleId,
-        name: todo.vehicle.name,
-        type: todo.vehicle.type,
-        image: todo.vehicle.image,
-      },
-    }));
+    return upcomingTodos.map((todo) => {
+      return {
+        type: 'todo',
+        data: this.todoFormatter.toBaseTodo(todo),
+        vehicle: this.vehicleTransformer.toMinimalVehicle(todo.vehicle),
+      };
+    });
   }
 
   private async validateVehicleType(typeCode: string): Promise<void> {

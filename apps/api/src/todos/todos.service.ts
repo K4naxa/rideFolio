@@ -1,18 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Todo as PrismaTodo, Vehicle, user } from 'prisma/generated/prisma/client';
-import { Todo, TodoSchemaType } from '@repo/validation';
+import { BaseTodo, TodoSchemaType, TodoWithVehicle } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { LimitsService } from 'src/limits/limits.service';
-
-type TodoWithRelations = PrismaTodo & {
-  createdBy: Pick<user, 'name' | 'image'> | null;
-  vehicle: Vehicle;
-  completedBy: Pick<user, 'name' | 'image'> | null;
-};
+import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
+import { TodoFormatterService } from 'src/todos/todoFormatter.service';
 
 @Injectable()
 export class TodosService {
@@ -22,9 +18,11 @@ export class TodosService {
     private readonly vehicleRepo: VehicleRepository,
     private readonly authValidation: AuthValidationService,
     private readonly limitsService: LimitsService,
+    private readonly vehicleTransformer: VehicleTransformerService,
+    private readonly todoFormatter: TodoFormatterService,
   ) {}
 
-  async createTodo(userSession: UserSession, todoDto: TodoSchemaType): Promise<Todo> {
+  async createTodo(userSession: UserSession, todoDto: TodoSchemaType): Promise<BaseTodo> {
     // validate and enforce access
     const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, todoDto.vehicleId);
     const sizeBytes = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, todoDto);
@@ -46,58 +44,67 @@ export class TodosService {
           createdById: userSession.user.id,
           sizeBytes,
         },
-        include: this.getTodoInclude(),
+        include: this.todoFormatter.DB_include_baseTodo(),
       });
     });
 
-    return this.formatTodo(newTodo);
+    return this.todoFormatter.toBaseTodo(newTodo);
   }
 
-  async getAllTodosForUser(userSession: UserSession): Promise<Todo[]> {
+  async getUserTodosWithVehicles(userSession: UserSession): Promise<TodoWithVehicle[]> {
     // Get all accessible vehicles for the user
-    const accessibleVehicles = await this.prisma.vehicle.findMany({
-      where: {
-        OR: [
-          { ownerId: userSession.user.id },
-          {
-            pools: {
-              some: { pool: { members: { some: { userId: userSession.user.id } } } },
-            },
-          },
-        ],
-      },
-    });
-    const vehicleIds = accessibleVehicles.map((v) => v.id);
 
-    if (vehicleIds.length === 0) {
-      return [];
-    }
+    const vehicleIds = await this.vehicleRepo.findAccessibleVehicleIds(userSession.user.id);
+    if (vehicleIds.length === 0) return [];
 
     // Fetch todos for all accessible vehicles
     const todos = await this.prisma.todo.findMany({
       where: { vehicleId: { in: vehicleIds } },
 
-      include: this.getTodoInclude(),
+      include: {
+        vehicle: {
+          include: {
+            vehicleType: true,
+          },
+        },
+        createdBy: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        completedBy: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
       orderBy: this.getTodoOrderBy(),
     });
 
     // Format todos with proper odometer calculations
-    return this.formatTodos(todos);
+    return todos.map((todo) => {
+      return {
+        ...this.todoFormatter.toBaseTodo(todo),
+        vehicle: this.vehicleTransformer.toMinimalVehicle(todo.vehicle),
+      };
+    });
   }
 
-  async getTodoById(userSession: UserSession, todoId: string): Promise<Todo> {
+  async getTodoById(userSession: UserSession, todoId: string): Promise<BaseTodo> {
     const todo = await this.prisma.todo.findUnique({
       where: { id: todoId },
-      include: this.getTodoInclude(),
+      include: this.todoFormatter.DB_include_baseTodo(),
     });
     if (!todo) {
       throw new Error('Todo not found');
     }
     await this.authValidation.hasAccessToVehicle(userSession.user.id, todo.vehicleId);
-    return this.formatTodo(todo);
+    return this.todoFormatter.toBaseTodo(todo);
   }
 
-  async getTodosForVehicle(userSession: UserSession, vehicleId: string): Promise<Todo[]> {
+  async getVehicleTodos(userSession: UserSession, vehicleId: string): Promise<BaseTodo[]> {
     await this.authValidation.hasAccessToVehicle(userSession.user.id, vehicleId);
     const vehicle = await this.vehicleRepo.findVehicleById(vehicleId);
     if (!vehicle) throw new Error('Vehicle not found');
@@ -105,14 +112,14 @@ export class TodosService {
     // fetch todos with related user data
     const todos = await this.prisma.todo.findMany({
       where: { vehicleId },
-      include: this.getTodoInclude(),
+      include: this.todoFormatter.DB_include_baseTodo(),
       orderBy: this.getTodoOrderBy(),
     });
 
-    return this.formatTodos(todos);
+    return todos.map((todo) => this.todoFormatter.toBaseTodo(todo));
   }
 
-  async toggleTodoCompletion(userSession: UserSession, todoId: string, complete: boolean): Promise<Todo> {
+  async toggleTodoCompletion(userSession: UserSession, todoId: string, complete: boolean): Promise<BaseTodo> {
     const todo = await this.prisma.todo.findUnique({
       where: { id: todoId },
       include: { vehicle: { select: { id: true } } },
@@ -134,9 +141,9 @@ export class TodosService {
           completedAt_km: null,
           completedAt_hour: null,
         },
-        include: this.getTodoInclude(),
+        include: this.todoFormatter.DB_include_baseTodo(),
       });
-      return this.formatTodo(updatedTodo);
+      return this.todoFormatter.toBaseTodo(updatedTodo);
     }
 
     // We are completing the todo
@@ -156,9 +163,9 @@ export class TodosService {
         completedAt_km: vehicleOdometer?.odometerType === 'HOUR' ? null : vehicleOdometer?.odometer_km || 0,
         completedAt_hour: vehicleOdometer?.odometerType === 'HOUR' ? vehicleOdometer?.odometer_hour || 0 : null,
       },
-      include: this.getTodoInclude(),
+      include: this.todoFormatter.DB_include_baseTodo(),
     });
-    return this.formatTodo(updatedTodo);
+    return this.todoFormatter.toBaseTodo(updatedTodo);
   }
 
   async deleteTodo(userSession: UserSession, todoId: string) {
@@ -177,7 +184,7 @@ export class TodosService {
     });
   }
 
-  async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType): Promise<Todo> {
+  async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType): Promise<BaseTodo> {
     const vehicle = await this.authValidation.canEditLogs(userSession.user.id, todoDto.vehicleId);
     const oldTodo = await this.prisma.todo.findUnique({ where: { id: todoId } });
     if (!oldTodo) throw new NotFoundException('Todo not found');
@@ -205,15 +212,15 @@ export class TodosService {
           dueOdometer_hour,
           sizeBytes: newSizeBytes,
         },
-        include: this.getTodoInclude(),
+        include: this.todoFormatter.DB_include_baseTodo(),
       });
     });
 
-    return this.formatTodo(updatedTodo);
+    return this.todoFormatter.toBaseTodo(updatedTodo);
   }
 
-  // HELPERS
-  //////////////////////////
+  //// HELPERS
+
   private normalizeOdometerForStorage(
     dueOdometer: number | undefined | null,
     vehicle: Vehicle,
@@ -229,101 +236,6 @@ export class TodosService {
     return {
       dueOdometer_km: this.unitConversion.normalizeOdometer(dueOdometer, vehicle.odometerType),
       dueOdometer_hour: null,
-    };
-  }
-
-  private getVehicleBaseOdometer(vehicle: Vehicle): number {
-    return vehicle.odometerType === 'HOUR' ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
-  }
-  private getTodoBaseOdometer(todo: PrismaTodo, vehicle: Vehicle): number {
-    return vehicle.odometerType === 'HOUR' ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
-  }
-  formatDueDate(dueDate: Date | null): Todo['dueDate'] {
-    if (!dueDate) return null;
-
-    return {
-      date: dueDate,
-      overdue: new Date() > dueDate,
-    };
-  }
-
-  formatDueOdometer(todo: PrismaTodo, vehicle: Vehicle): Todo['dueOdometer'] {
-    // Check if todo has any odometer value set
-    if (!todo.dueOdometer_hour && !todo.dueOdometer_km) {
-      return null;
-    }
-
-    const todoBaseOdometer = this.getTodoBaseOdometer(todo, vehicle);
-    const vehicleBaseOdometer = this.getVehicleBaseOdometer(vehicle);
-
-    return {
-      ...this.unitConversion.getOdometerDataByType(todoBaseOdometer, vehicle.odometerType),
-      overdue: vehicleBaseOdometer >= todoBaseOdometer,
-      remaining: todoBaseOdometer - vehicleBaseOdometer,
-    };
-  }
-
-  private formatCreatedData(createdBy: Pick<user, 'name' | 'image'> | null, createdAt: Date): Todo['createdData'] {
-    return {
-      name: (createdBy?.name as string) ?? 'Unknown user',
-      image: (createdBy?.image as string) ?? null,
-      date: createdAt,
-    };
-  }
-  private formatCompletedData(todo: TodoWithRelations): Todo['completedData'] {
-    if (!todo.isCompleted) {
-      return null;
-    }
-
-    return {
-      user: {
-        name: todo.completedBy?.name ?? 'Unknown user',
-        image: todo.completedBy?.image ?? null,
-      },
-      date: todo.completedAt_date,
-      odometer: this.unitConversion.getOdometerDataByType(
-        todo.vehicle.odometerType === 'HOUR' ? todo.completedAt_hour || 0 : todo.completedAt_km || 0,
-        todo.vehicle.odometerType,
-      ),
-    };
-  }
-
-  private formatTodo(todo: TodoWithRelations): Todo {
-    const vehicle = todo.vehicle;
-
-    return {
-      id: todo.id,
-      vehicleData: vehicle,
-      title: todo.title,
-      description: todo.description,
-      priority: todo.priority || null,
-      isCompleted: todo.isCompleted,
-      dueDate: this.formatDueDate(todo.dueDate),
-      dueOdometer: this.formatDueOdometer(todo, vehicle),
-      createdData: this.formatCreatedData(todo.createdBy, todo.createdAt),
-      completedData: this.formatCompletedData(todo),
-    };
-  }
-
-  private formatTodos(todos: TodoWithRelations[]): Todo[] {
-    return todos.map((todo) => this.formatTodo(todo));
-  }
-
-  private getTodoInclude() {
-    return {
-      createdBy: {
-        select: {
-          name: true,
-          image: true,
-        },
-      },
-      vehicle: true,
-      completedBy: {
-        select: {
-          name: true,
-          image: true,
-        },
-      },
     };
   }
 

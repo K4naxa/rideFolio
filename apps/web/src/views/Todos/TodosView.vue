@@ -24,9 +24,9 @@ const filteredTodos = computed(() => {
     (todo) =>
       todo.title.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
       todo.description?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicleData.make?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicleData.model?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicleData.name?.toLowerCase().includes(searchQuery.value!.toLowerCase()),
+      todo.vehicle.make?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
+      todo.vehicle.model?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
+      todo.vehicle.name?.toLowerCase().includes(searchQuery.value!.toLowerCase()),
   );
 });
 const settingsStore = useTodoSettingsStore();

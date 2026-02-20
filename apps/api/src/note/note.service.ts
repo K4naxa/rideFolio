@@ -5,7 +5,7 @@ import { Prisma, Vehicle } from 'prisma/generated/prisma/client';
 import { LimitsService } from 'src/limits/limits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { VehicleRepository } from 'src/utils/vehicleRepository';
+import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 
 @Injectable()
 export class NoteService {

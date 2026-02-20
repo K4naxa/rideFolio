@@ -1,7 +1,7 @@
 import Sonner from "@/components/ui/sonner/Sonner.vue";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import { type ActivityItem, type Todo, type TodoSchemaType } from "@repo/validation";
+import { type ActivityItem, type BaseTodo, type TodoSchemaType } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
@@ -9,17 +9,17 @@ export function useTodoCreate() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: TodoSchemaType) => {
-      const response = await api.post<Todo>("/todos", data);
+      const response = await api.post<BaseTodo>("/todos", data);
       return response.data;
     },
     onSuccess: (newTodo) => {
       // update vehicle todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(newTodo.vehicleData.id), (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.byVehicle(newTodo.vehicleId), (old) => {
         if (!old) return [newTodo];
         return [...old, newTodo];
       });
       // update all todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.all, (old) => {
         if (!old) return [newTodo];
         return [...old, newTodo];
       });
@@ -40,17 +40,17 @@ export function useTodoUpdate() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ todoId, data }: { todoId: string; data: TodoSchemaType }) => {
-      const response = await api.put<Todo>(`/todos/${todoId}`, data);
+      const response = await api.put<BaseTodo>(`/todos/${todoId}`, data);
       return response.data;
     },
     onSuccess: (updatedTodo) => {
       // update vehicle todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(updatedTodo.vehicleData.id), (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.byVehicle(updatedTodo.vehicleId), (old) => {
         if (!old) return old;
         return old.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
       });
       // update all todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.all, (old) => {
         if (!old) return old;
         return old.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
       });
@@ -81,17 +81,17 @@ export function useTodoToggle() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ todoId, complete }: { todoId: string; complete: boolean }) => {
-      const response = await api.patch<Todo>(`/todos/${todoId}/toggle`, { complete });
+      const response = await api.patch<BaseTodo>(`/todos/${todoId}/toggle`, { complete });
       return response.data;
     },
     onSuccess: (data) => {
       // update vehicle todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(data.vehicleData.id), (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.byVehicle(data.vehicleId), (old) => {
         if (!old) return old;
         return old.map((todo) => (todo.id === data.id ? data : todo));
       });
       // update all todos cache
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.all, (old) => {
         if (!old) return old;
         return old.map((todo) => (todo.id === data.id ? data : todo));
       });
@@ -117,11 +117,11 @@ export function useTodoDelete() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.byVehicle(variables.vehicleId), (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.byVehicle(variables.vehicleId), (old) => {
         if (!old) return old;
         return old.filter((todo) => todo.id !== variables.todoId);
       });
-      queryClient.setQueryData<Todo[]>(queryKeys.todos.all, (old) => {
+      queryClient.setQueryData<BaseTodo[]>(queryKeys.todos.all, (old) => {
         if (!old) return old;
         return old.filter((todo) => todo.id !== variables.todoId);
       });

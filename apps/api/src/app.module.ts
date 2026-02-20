@@ -6,14 +6,12 @@ import { VehiclesModule } from 'src/vehicles/vehicles.module';
 import { PoolsController } from './pools/pools.controller';
 import { PoolsModule } from './pools/pools.module';
 import { LogsModule } from './logs/logs.module';
-import { StatisticsController } from './statistics/statistics.controller';
-import { StatisticsModule } from './statistics/statistics.module';
 import { AppService } from 'src/app.service';
 import { TodosModule } from './todos/todos.module';
 import { NoteModule } from './note/note.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { AuthGuard, AuthModule } from '@thallesp/nestjs-better-auth';
-import { createAuth } from './auth/auth'; // Your Better Auth instance
+import { createAuth } from './auth/auth'; // Better Auth instance
 import { APP_GUARD } from '@nestjs/core';
 import { EmailService } from 'src/email/email.service';
 import { EmailModule } from 'src/email/email.module';
@@ -38,7 +36,6 @@ import { LimitsModule } from './limits/limits.module';
     VehiclesModule,
     PoolsModule,
     LogsModule,
-    StatisticsModule,
     TodosModule,
     NoteModule,
     ShoppingListModule,
@@ -46,7 +43,7 @@ import { LimitsModule } from './limits/limits.module';
     QuicklinksModule,
     LimitsModule,
   ],
-  controllers: [AppController, PoolsController, StatisticsController, QuicklinksController],
+  controllers: [AppController, PoolsController, QuicklinksController],
   providers: [
     AppService,
     {

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from 'prisma/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -87,6 +88,35 @@ export class VehicleRepository {
         },
       },
     };
+  }
+
+  DBInclude_BasicVehicle: Prisma.VehicleInclude = {
+    vehicleType: {
+      select: {
+        code: true,
+        nameKey: true,
+        icon: true,
+      },
+    },
+  };
+
+  async findAccessibleVehicleIds(userId: string): Promise<string[]> {
+    const vehicles = await this.prisma.vehicle.findMany({
+      where: {
+        OR: [
+          { ownerId: userId },
+          {
+            pools: {
+              some: { pool: { members: { some: { userId } } } },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+    return vehicles.map((v) => v.id);
   }
 
   async findPoolVehicles(poolId: string) {

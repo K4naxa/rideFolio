@@ -1,7 +1,8 @@
 import { TConversionResult } from "../vehicle";
 
-export type TStatCardData = {
-  trackedUnits: TConversionResult;
-  averageConsumption: TConversionResult;
-  monthlyRunningCost: number;
-};
+// TODO: DELETE - Dead code - not used in frontend
+// export type TStatCardData = {
+//   trackedUnits: TConversionResult;
+//   averageConsumption: TConversionResult;
+//   monthlyRunningCost: number;
+// };

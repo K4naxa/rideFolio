@@ -77,35 +77,4 @@ export class ShoppingListService {
       await tx.shoppingListItem.delete({ where: { id: itemId } });
     });
   }
-
-  async updateItem(userSession: UserSession, itemId: string, itemDto: ShoppingItemValues): Promise<ShoppingItem> {
-    const item = await this.prisma.shoppingListItem.findUnique({
-      where: { id: itemId },
-      select: { vehicle: { select: { id: true } }, sizeBytes: true, createdById: true },
-    });
-    if (!item) throw new Error('Shopping list item not found');
-    const vehicle = await this.authValidation.canEditLogs(userSession.user.id, item.vehicle.id);
-    const mergedItem = { ...item, ...itemDto };
-    const newSize = await this.limitsService.canUpdateLog(
-      userSession.user.id,
-      vehicle.ownerId,
-      item.sizeBytes,
-      mergedItem,
-    );
-
-    return await this.prisma.$transaction(async (tx) => {
-      await this.limitsService.syncStorageUsage(tx, vehicle.ownerId, 'SHOPPING_LIST', item.sizeBytes, newSize);
-      return await tx.shoppingListItem.update({
-        where: { id: itemId },
-        data: {
-          vehicleId: itemDto.vehicleId,
-          name: itemDto.name,
-          price: itemDto.price,
-          isPurchased: itemDto.isPurchased,
-          sizeBytes: newSize,
-        },
-        select: ShoppingListDB_Select,
-      });
-    });
-  }
 }

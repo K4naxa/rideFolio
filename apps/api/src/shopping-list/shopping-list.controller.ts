@@ -35,13 +35,4 @@ export class ShoppingListController {
   async deleteItem(@Session() userSession: UserSession, @Param('itemId') itemId: string): Promise<void> {
     await this.shoppingListService.deleteItem(userSession, itemId);
   }
-
-  @Put(':itemId')
-  async updateItem(
-    @Session() userSession: UserSession,
-    @Param('itemId') itemId: string,
-    @Body(new ZodValidationPipe(ShoppingListItemSchema as ZodType)) itemDto: ShoppingItemValues,
-  ): Promise<ShoppingItem> {
-    return await this.shoppingListService.updateItem(userSession, itemId, itemDto);
-  }
 }
