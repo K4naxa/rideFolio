@@ -14,6 +14,8 @@ import Input from "@/components/ui/input/Input.vue";
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
 import { getTextSnippet } from "@/lib/utils/noteUtils";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
 
 const props = defineProps<{
   notes: Note[] | undefined;
@@ -42,6 +44,8 @@ const selectNote = (note: Note) => {
 const handleNewClick = () => {
   emit("createNewNote");
 };
+
+const isMobile = useIsMobile();
 </script>
 <template>
   <div class="flex flex-1 flex-col gap-4 lg:max-w-96 lg:border-r">
@@ -75,6 +79,7 @@ const handleNewClick = () => {
     <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!props.isLoading">
       <ul v-auto-animate v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-4 lg:gap-2">
         <li
+          v-if="!isMobile"
           v-for="note in filteredNotes"
           :key="note.id"
           :class="[
@@ -97,6 +102,10 @@ const handleNewClick = () => {
             </Badge>
           </div>
         </li>
+
+        <div class="gaps-md flex flex-col">
+          <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
+        </div>
       </ul>
       <Empty v-else-if="!notes?.length">
         <EmptyHeader>

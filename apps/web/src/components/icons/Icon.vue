@@ -75,6 +75,7 @@ import {
   DatabaseIcon,
   Settings2Icon,
   HelpCircleIcon,
+  ArrowRightIcon,
 } from "lucide-vue-next";
 import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
@@ -120,6 +121,7 @@ type IconName =
   | "search"
   | "files"
   | "mail"
+  | "arrowRight"
   | "logout"
   | "cake"
   | "plus"
@@ -183,6 +185,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   motorcycle: Bike,
   boat: Ship,
   shield: ShieldIcon,
+  arrowRight: ArrowRightIcon,
   otherVehicle: Cog,
   hash: Hash,
   vehicleMake: Building,
