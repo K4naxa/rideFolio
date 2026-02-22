@@ -51,7 +51,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
     <div class="flex flex-1 flex-col">
       <nav class="bg-background sticky top-(--app-header-height) z-20 mb-0 h-(--vehicle-navbar-height) text-sm">
         <!-- Mobile nav -->
-        <MainContentWrapper>
+        <MainContentWrapper class="px-1">
           <Tabs class="w-full">
             <TabsList class="bg-muted/50 w-full">
               <TabsTrigger v-for="tab in VEHICLE_TABS" :key="tab.id" :value="tab.id" as-child>

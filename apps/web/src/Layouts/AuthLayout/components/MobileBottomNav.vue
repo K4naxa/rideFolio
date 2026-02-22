@@ -12,12 +12,18 @@ import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
 import { RouteIcon } from "lucide-vue-next";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
-import Sheet from "@/components/ui/sheet/Sheet.vue";
-import SheetTrigger from "@/components/ui/sheet/SheetTrigger.vue";
-import SheetContent from "@/components/ui/sheet/SheetContent.vue";
-import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
+
+import Avatar from "@/components/ui/avatar/Avatar.vue";
+import AvatarImage from "@/components/ui/avatar/AvatarImage.vue";
+import AvatarFallback from "@/components/ui/avatar/AvatarFallback.vue";
+import { getInitials } from "@/lib/utils";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
+import { useAuth } from "@/lib/authClient";
 
 const modalStore = useModalStore();
+const { currentUser: user } = useCurrentUser();
+const auth = useAuth();
 
 interface AppHeaderButton {
   label: string;
@@ -26,7 +32,7 @@ interface AppHeaderButton {
   class: string;
   cypressDataAttr: string;
 }
-const headerButtons = computed<AppHeaderButton[]>(() => [
+const actionOptions = computed<AppHeaderButton[]>(() => [
   {
     label: "Refill",
     icon: "refill",
@@ -57,11 +63,22 @@ const headerButtons = computed<AppHeaderButton[]>(() => [
   },
 ]);
 
-const isDrawerOpen = ref(false);
+const isVehicleDrawerOpen = ref(false);
+const isProfileDrawerOpen = ref(false);
 const isMobile = useIsMobile();
 const { data: vehicles } = useVehiclesAll();
 
 const vehicleModalOpen = ref(false);
+
+function handleSettingsClick() {
+  modalStore.onOpen("settings");
+  isProfileDrawerOpen.value = false;
+}
+
+function handleLogout() {
+  auth.signOut();
+  isProfileDrawerOpen.value = false;
+}
 </script>
 
 <template>
@@ -95,13 +112,13 @@ const vehicleModalOpen = ref(false);
         </DrawerContent>
       </Drawer>
 
-      <Drawer v-model:open="isDrawerOpen" placement="bottom">
+      <Drawer v-model:open="isVehicleDrawerOpen" placement="bottom">
         <DrawerTrigger>
           <Button variant="outline" class="aspect-square size-10">
             <Icon name="plus" class="icon" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent class="">
           <DrawerHeader>
             <DrawerTitle> Create new </DrawerTitle>
             <DrawerDescription> Select an option below to create a new item. </DrawerDescription>
@@ -110,16 +127,16 @@ const vehicleModalOpen = ref(false);
             <Button
               variant="ghost"
               type="button"
-              v-for="button in headerButtons"
+              v-for="button in actionOptions"
               :key="button.label"
               @click="
                 button.onClick();
-                isDrawerOpen = false;
+                isVehicleDrawerOpen = false;
               "
-              class="text-foreground flex w-full items-center justify-start text-start text-base font-normal"
+              class="text-foreground flex w-full items-center justify-start gap-3 text-start text-base font-normal"
               :data-cy="button.cypressDataAttr"
             >
-              <Icon :name="button.icon" />
+              <Icon :name="button.icon" class="size-5" />
               <span class="">{{ button.label }}</span>
             </Button>
           </div>
@@ -128,14 +145,38 @@ const vehicleModalOpen = ref(false);
 
       <RouterLink to="#" class="bottom-nav-button"> <RouteIcon class="icon" /> Timelapse </RouterLink>
 
-      <Sheet>
-        <SheetTrigger asChild>
+      <Drawer v-model:open="isProfileDrawerOpen" placement="bottom">
+        <DrawerTrigger asChild>
           <button class="bottom-nav-button"><Icon name="user" class="icon" /> Profile</button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader> </SheetHeader>
-        </SheetContent>
-      </Sheet>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle class="sr-only"> Profile nav </DrawerTitle>
+            <DrawerDescription class="sr-only"> Choose what you want to do from the menu below. </DrawerDescription>
+
+            <div class="flex w-full items-center gap-2 rounded px-1 py-1.5 text-left text-sm">
+              <Avatar class="h-12 w-12 rounded-lg">
+                <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
+                <AvatarFallback v-else class="bg-accent rounded-lg text-lg">{{
+                  getInitials(user?.name)
+                }}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p class="truncate text-base font-medium">{{ user?.name }}</p>
+                <p class="text-muted-foreground truncate text-sm">{{ user?.email }}</p>
+              </div>
+            </div>
+          </DrawerHeader>
+          <ul class="flex flex-col px-4">
+            <Button variant="ghost" class="h-fit w-full justify-start" @click="handleSettingsClick">
+              <Icon name="settings" class="size-5" /> Settings</Button
+            >
+          </ul>
+          <DrawerFooter>
+            <Button variant="secondary" class="w-full" @click="handleLogout"> Logout </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   </section>
 </template>
@@ -164,5 +205,7 @@ const vehicleModalOpen = ref(false);
   opacity: 0.5;
 }
 .bottom-nav-button .icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>

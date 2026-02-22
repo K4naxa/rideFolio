@@ -2,7 +2,7 @@
 import AppHeader from "@/components/ui/AppHeader.vue";
 import AppSidebar from "@/components/ui/AppSidebar.vue";
 import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
-import MobileBottomNav from "../VehicleLayout/MobileBottomNav.vue";
+import MobileBottomNav from "./components/MobileBottomNav.vue";
 </script>
 <template>
   <div class="flex flex-col" id="authLayout">

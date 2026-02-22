@@ -26,11 +26,9 @@ import { getInitials } from "@/lib/utils";
 import { useModalStore } from "@/stores/modal";
 import { EllipsisVerticalIcon } from "lucide-vue-next";
 import { ref } from "vue";
-import { iso } from "zod";
 
 const isMobile = useIsMobile();
 const { currentUser: user } = useCurrentUser();
-const { setOpenMobile } = useSidebar();
 const modalStore = useModalStore();
 
 const auth = useAuth();
@@ -90,63 +88,4 @@ const isOpen = ref(false);
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
-
-  <Drawer v-else v-model:open="isOpen">
-    <DrawerTrigger asChild>
-      <Button variant="ghost" size="lg" class="hover:bg-accent/50 h-fit py-2">
-        <Avatar class="h-9 w-9 rounded-lg">
-          <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-          <AvatarFallback v-else class="bg-accent rounded-lg">{{ getInitials(user?.name) }}</AvatarFallback>
-        </Avatar>
-        <div class="grid flex-1 text-left leading-tight">
-          <span class="truncate font-medium">{{ user?.name }}</span>
-          <span class="text-muted-foreground truncate text-xs">
-            {{ user?.email }}
-          </span>
-        </div>
-        <EllipsisVerticalIcon class="ml-auto" />
-      </Button>
-    </DrawerTrigger>
-    <DrawerContent>
-      <DrawerHeader>
-        <div class="flex items-center gap-2 px-1 py-1.5 text-left">
-          <Avatar class="h-8 w-8 rounded-lg">
-            <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-            <AvatarFallback v-else class="bg-accent rounded-lg">{{ getInitials(user?.name) }}</AvatarFallback>
-          </Avatar>
-          <div class="grid flex-1 text-left leading-tight">
-            <span class="truncate text-lg leading-tight font-medium">{{ user?.name }}</span>
-            <span class="text-muted-foreground truncate text-sm leading-tight"> {{ user?.email }} </span>
-          </div>
-        </div>
-        <Separator class="my-2" />
-      </DrawerHeader>
-
-      <div class="space-y-2.5 px-4">
-        <Button
-          variant="outline"
-          class="h-fit w-full text-base"
-          @click="
-            isOpen = false;
-            setOpenMobile(false);
-            modalStore.onOpen('settings');
-          "
-        >
-          <Icon name="settings" />
-          Settings
-        </Button>
-
-        <Button variant="outline" class="h-fit w-full text-base">
-          <Icon name="billing" />
-          Billing
-        </Button>
-      </div>
-      <DrawerFooter>
-        <Button variant="outline" class="mt-2 w-full" @click="auth.signOut()">
-          <Icon name="logout" />
-          Log out
-        </Button>
-      </DrawerFooter>
-    </DrawerContent>
-  </Drawer>
 </template>
