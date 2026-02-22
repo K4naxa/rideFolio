@@ -1,16 +1,5 @@
-import AuthLayout from "@/Layouts/AuthLayout/AuthLayout.vue";
-import VehicleLayout from "@/Layouts/VehicleLayout/VehicleLayout.vue";
 import { authClient } from "@/lib/authClient";
-import DashboardView from "@/views/Dashboard/DashboardView.vue";
-import LoginView from "@/views/Login-Register/LoginView.vue";
-import RegisterView from "@/views/Login-Register/RegisterView.vue";
-import VehicleNotesView from "@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue";
-import VehicleOverview from "@/views/VehiclePage/vehicleOverview/VehicleOverview.vue";
-import VehicleShoppingView from "@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue";
-import VehicleTodosView from "@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue";
-import NotesView from "@/views/Notes/NotesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import TodosView from "@/views/Todos/TodosView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,13 +7,13 @@ const router = createRouter({
     {
       path: "/login",
       name: "Login",
-      component: LoginView,
+      component: () => import("@/views/Login-Register/LoginView.vue"),
       meta: { guestOnly: true },
     },
     {
       path: "/register",
       name: "Register",
-      component: RegisterView,
+      component: () => import("@/views/Login-Register/RegisterView.vue"),
       meta: { guestOnly: true },
     },
 
@@ -36,57 +25,57 @@ const router = createRouter({
     },
     {
       path: "/",
-      component: AuthLayout,
+      component: () => import("@/Layouts/AuthLayout/AuthLayout.vue"),
       redirect: "/dashboard",
       meta: { requiresAuth: true },
       children: [
         {
           path: "/dashboard",
           name: "Dashboard",
-          component: DashboardView,
+          component: () => import("@/views/Dashboard/DashboardView.vue"),
           meta: { requiresAuth: true },
         },
         {
           path: "/notes",
           name: "Notes",
-          component: NotesView,
+          component: () => import("@/views/Notes/NotesView.vue"),
           meta: { requiresAuth: true },
         },
         {
           path: "/todos",
           name: "To-Dos",
-          component: TodosView,
+          component: () => import("@/views/Todos/TodosView.vue"),
           meta: { requiresAuth: true },
         },
         {
           path: "/vehicles/:vehicleId",
           name: "Vehicle Layout",
           meta: { requiresAuth: true },
-          component: VehicleLayout,
+          component: () => import("@/Layouts/VehicleLayout/VehicleLayout.vue"),
           children: [
             {
               path: "",
               name: "Overview",
               meta: { requiresAuth: true },
-              component: VehicleOverview,
+              component: () => import("@/views/VehiclePage/vehicleOverview/VehicleOverview.vue"),
             },
             {
               path: "todos",
               name: "to-dos",
               meta: { requiresAuth: true },
-              component: VehicleTodosView,
+              component: () => import("@/views/VehiclePage/VehicleTodos/VehicleTodosView.vue"),
             },
             {
               path: "shopping-list",
               name: "Shopping list",
               meta: { requiresAuth: true },
-              component: VehicleShoppingView,
+              component: () => import("@/views/VehiclePage/vehicleShopping/VehicleShoppingView.vue"),
             },
             {
               path: "notes",
               name: "Vehicle Notes",
               meta: { requiresAuth: true },
-              component: VehicleNotesView,
+              component: () => import("@/views/VehiclePage/VehicleNotes/VehicleNotesView.vue"),
             },
           ],
         },

@@ -191,11 +191,10 @@ img {
   .ProseMirror:focus {
     outline: none;
   }
+}
 
-  .bottom-safe-area {
-    /* Ensure it appears above other content */
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+@utility bottom-safe-area {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 @layer components {

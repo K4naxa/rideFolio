@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import Icon from "@/components/icons/Icon.vue";
 import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Card from "@/components/ui/card/Card.vue";
-import CardContent from "@/components/ui/card/CardContent.vue";
-import CardFooter from "@/components/ui/card/CardFooter.vue";
-import CardTitle from "@/components/ui/card/CardTitle.vue";
+import Empty from "@/components/ui/empty/Empty.vue";
+
+import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
-import { getTextSnippet } from "@/lib/utils/noteUtils";
 import { useModalStore } from "@/stores/modal";
 import type { Note } from "@repo/validation";
 import { RouterLink } from "vue-router";
