@@ -44,9 +44,9 @@ export class VehicleRepository {
             },
           },
           select: {
-            allowMembersToAddLogs: true,
-            allowMembersToEditLogs: true,
-            allowMembersToDeleteLogs: true,
+            membersCanAddLogs: true,
+            membersCanEditLogs: true,
+            membersCanDeleteLogs: true,
             pool: {
               select: {
                 id: true,

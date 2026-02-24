@@ -53,7 +53,7 @@ img {
   --color-card: hsl(0, 0%, 100%); /* white */
   --color-card-foreground: oklch(27.546% 0.03701 260.041); /* slate-800 */
 
-  --color-background-light: hsl(0, 0%, 100%); /* white */
+  --color-background-light: hsl(0, 0%, 99%); /* white */
 
   --color-muted: oklch(95.2% 0 0); /* slate-300 */
   --color-muted-foreground: var(--color-neutral-500); /* slate-500 */
@@ -75,7 +75,7 @@ img {
   --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
 
   --color-secondary: var(--color-neutral-800);
-  --color-secondary-foreground: var(--color-neutral-100);
+  --color-secondary-foreground: var(--color-neutral-50);
 
   --color-destructive: hsl(10, 100%, 53%); /* red-600 */
   --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
@@ -147,7 +147,7 @@ img {
     --color-card: var(--color-neutral-950); /* slate-900 */
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-background-light: var(--color-neutral-950); /* slate-900 */
+    --color-background-light: oklch(16.5% 0 0);
 
     --color-muted: oklch(20.9% 0 0);
     --color-muted-foreground: var(--color-neutral-400);
@@ -198,15 +198,25 @@ img {
 }
 
 @layer components {
+  .card {
+    @apply bg-card text-card-foreground rounded-lg border shadow-sm transition-colors;
+  }
+  .cardHover {
+    @apply hover:bg-card/80 dark:hover:bg-background-light transition-colors duration-100;
+  }
   .iconBackground {
     @apply from-background bg-linear-to-t to-transparent dark:to-transparent;
   }
 
   .cardBackground {
-    @apply from-background-light to-card bg-linear-to-b;
+    @apply bg-card;
   }
   .cardPrimaryBackground {
     @apply from-primary/10 to-primary/0 bg-linear-to-b backdrop-blur-md;
+  }
+
+  .hover-bg-override:hover {
+    background-image: none !important;
   }
 
   .inputField {
@@ -364,10 +374,6 @@ img {
   /* inside section gaps */
   .gaps-sm {
     @apply gap-3 md:gap-4;
-  }
-
-  .card {
-    @apply from-background to-background-light rounded border bg-linear-to-t shadow-sm;
   }
 }
 

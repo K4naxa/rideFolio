@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 
 import {
   AccessiblePool,
@@ -41,6 +41,15 @@ export class PoolsController {
     return createdPool;
   }
 
+  @Put(':poolId')
+  async updatePool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+    @Body(new ZodValidationPipe(PoolSchema as ZodType)) updateData: PoolSchemaValues,
+  ) {
+    return await this.poolsService.updatePool(userSession, poolId, updateData);
+  }
+
   @Delete(':poolId')
   async deletePool(
     @Session() userSession: UserSession,
@@ -49,7 +58,7 @@ export class PoolsController {
     return await this.poolsService.deletePool(userSession, poolId);
   }
 
-  @Post(':poolId/leave')
+  @Post('leave/:poolId')
   async leavePool(
     @Session() userSession: UserSession,
     @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,

@@ -43,7 +43,7 @@ const modalStore = useModalStore();
       <Empty v-else-if="notes && notes.length === 0">
         <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
       </Empty>
-      <ul v-auto-animate class="gaps-sm grid w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ul v-auto-animate class="gaps-md grid w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <NoteListMobileItem
           v-for="note in notes?.slice(0, 4)"
           :key="note.id"

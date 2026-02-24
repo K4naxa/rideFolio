@@ -64,7 +64,7 @@ const { data: upcomingActivity } = useUpcomingActivityQuery();
                 <button
                   :class="
                     twMerge(
-                      'listHover bg-card flex h-fit w-80 cursor-pointer flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
+                      'cardBackground flex h-fit w-80 cursor-pointer flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
                       (event.data.dueDate?.overdue || event.data.dueOdometer?.overdue) && 'border-l-destructive!',
                     )
                   "

@@ -66,6 +66,166 @@ export class PoolsService {
     return { newPoolId: createdPool.id };
   }
 
+  async updatePool(userSession: UserSession, poolId: string, updateDate: PoolSchemaValues): Promise<PoolDetails> {
+    const { vehicleIds, ...poolData } = updateDate;
+
+    const pool = await this.prisma.pool.findUnique({
+      where: {
+        id: poolId,
+        members: {
+          some: {
+            userId: userSession.user.id,
+            OR: [{ role: 'OWNER' }, { role: 'ADMIN' }],
+          },
+        },
+      },
+      include: {
+        vehicles: {
+          select: {
+            vehicleId: true,
+          },
+        },
+      },
+    });
+
+    if (!pool) throw new NotFoundException(`Pool not found or access denied.`);
+
+    const vehiclesToAdd = vehicleIds.filter((id) => !pool.vehicles.some((v) => v.vehicleId === id));
+    const vehiclesToRemove = pool.vehicles
+      .filter((v) => !vehicleIds.some((id) => id === v.vehicleId))
+      .map((v) => v.vehicleId);
+
+    const updatedPool = await this.prisma.$transaction(async (tx) => {
+      if (vehiclesToAdd.length > 0) {
+        for (const vehicleId of vehiclesToAdd) {
+          await tx.poolVehicle.create({
+            data: { poolId, vehicleId },
+          });
+        }
+      }
+
+      if (vehiclesToRemove.length > 0) {
+        await tx.poolVehicle.deleteMany({
+          where: {
+            poolId,
+            vehicleId: { in: vehiclesToRemove },
+          },
+        });
+      }
+
+      // If changing from SHARED to PRIVATE,
+      if (pool.type === 'SHARED' && poolData.type === 'PRIVATE') {
+        // remove all members except owner
+        await tx.poolMember.deleteMany({
+          where: {
+            poolId,
+            role: { not: 'OWNER' },
+          },
+        });
+        // remove all pending invites
+        await tx.poolInvite.deleteMany({
+          where: {
+            poolId,
+          },
+        });
+        // remove all notifications related to the pool invites
+        await tx.notification.deleteMany({
+          where: {
+            type: 'POOL_INVITE',
+            metadata: {
+              path: ['poolId'],
+              equals: poolId,
+            },
+          },
+        });
+      }
+
+      // update pool details
+      return await tx.pool.update({
+        where: { id: poolId },
+        data: { ...poolData },
+        include: {
+          members: {
+            select: {
+              role: true,
+              createdAt: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          vehicles: {
+            select: {
+              addedAt: true,
+              membersCanAddLogs: true,
+              membersCanDeleteLogs: true,
+              membersCanEditLogs: true,
+              vehicle: {
+                include: {
+                  ...this.vehicleRepository.DBInclude_BasicVehicle,
+                  owner: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          invites: {
+            select: {
+              id: true,
+              receiver: {
+                select: {
+                  email: true,
+                },
+              },
+              roleToGrant: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+    });
+
+    return {
+      id: updatedPool.id,
+      type: updatedPool.type,
+      name: updatedPool.name,
+      description: updatedPool.description,
+      createdAt: updatedPool.createdAt,
+      userRole: updatedPool.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
+      members: updatedPool.members,
+      rules: {
+        membersCanAddLogs: updatedPool.membersCanAddLogs,
+        membersCanAddVehicles: updatedPool.membersCanAddVehicles,
+        membersCanEditLogs: updatedPool.membersCanEditLogs,
+        membersCanDeleteLogs: updatedPool.membersCanDeleteLogs,
+      },
+      vehicles: updatedPool.vehicles.map((v) => ({
+        addedAt: v.addedAt,
+        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
+        owner: v.vehicle.owner,
+        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
+      })),
+      invites: updatedPool.invites.map((inv) => ({
+        id: inv.id,
+        email: inv.receiver.email,
+        roleToGrant: inv.roleToGrant,
+        state: 'PENDING',
+        createdAt: inv.createdAt,
+      })),
+    };
+  }
+
   async getAccessiblePools(currentUserId: string): Promise<AccessiblePool[]> {
     const pools = await this.prisma.pool.findMany({
       // 1. Find all pools where the current user is a member
@@ -81,10 +241,10 @@ export class PoolsService {
         id: true,
         type: true,
         name: true,
-        allowMembersToAddLogs: true,
-        allowMembersToDeleteLogs: true,
-        allowMembersToEditLogs: true,
-        allowMembersToAddVehicles: true,
+        membersCanAddLogs: true,
+        membersCanDeleteLogs: true,
+        membersCanEditLogs: true,
+        membersCanAddVehicles: true,
 
         // 3. Include the 'members' relation, but ONLY the one for the current user.
         // This is the key to getting the role efficiently.
@@ -160,9 +320,9 @@ export class PoolsService {
         vehicles: {
           select: {
             addedAt: true,
-            allowMembersToAddLogs: true,
-            allowMembersToDeleteLogs: true,
-            allowMembersToEditLogs: true,
+            membersCanAddLogs: true,
+            membersCanDeleteLogs: true,
+            membersCanEditLogs: true,
             vehicle: {
               include: {
                 ...this.vehicleRepository.DBInclude_BasicVehicle,
@@ -204,10 +364,10 @@ export class PoolsService {
       userRole: poolDetails.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
       members: poolDetails.members,
       rules: {
-        allowMembersToaddLogs: poolDetails.allowMembersToAddLogs,
-        allowMembersToaddVehicles: poolDetails.allowMembersToAddVehicles,
-        allowMembersToEditLogs: poolDetails.allowMembersToEditLogs,
-        allowMembersToDeleteLogs: poolDetails.allowMembersToDeleteLogs,
+        membersCanAddLogs: poolDetails.membersCanAddLogs,
+        membersCanAddVehicles: poolDetails.membersCanAddVehicles,
+        membersCanEditLogs: poolDetails.membersCanEditLogs,
+        membersCanDeleteLogs: poolDetails.membersCanDeleteLogs,
       },
       vehicles: poolDetails.vehicles.map((v) => ({
         addedAt: v.addedAt,

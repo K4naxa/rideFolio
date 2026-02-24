@@ -73,7 +73,7 @@ export class AuthValidationService {
             pools: {
               some: {
                 pool: {
-                  allowMembersToAddLogs: true,
+                  membersCanAddLogs: true,
                   members: {
                     some: {
                       userId,
@@ -126,7 +126,7 @@ export class AuthValidationService {
             pools: {
               some: {
                 pool: {
-                  allowMembersToEditLogs: true,
+                  membersCanEditLogs: true,
                   members: {
                     some: {
                       userId,
@@ -178,7 +178,7 @@ export class AuthValidationService {
             pools: {
               some: {
                 pool: {
-                  allowMembersToDeleteLogs: true,
+                  membersCanDeleteLogs: true,
                   members: {
                     some: {
                       userId,

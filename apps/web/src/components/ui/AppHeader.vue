@@ -8,7 +8,7 @@ import { useRoute } from "vue-router";
 import { useModalStore } from "@/stores/modal";
 import Icons from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
-import NotificationsPopover from "../NotificationsPopover.vue";
+import NotificationsPopover from "../ResponsiveNotification.vue";
 
 import Icon from "../icons/Icon.vue";
 import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";

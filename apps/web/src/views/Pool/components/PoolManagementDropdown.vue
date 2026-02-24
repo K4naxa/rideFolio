@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuGroup from "@/components/ui/dropdown-menu/DropdownMenuGroup.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import Label from "@/components/ui/label/Label.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
+import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 import { usePoolDelete, usePoolLeave } from "@/lib/queries/pools/pool-mutations";
-import type { AlertModalData } from "@/modals/alertModal.vue";
+import AlertModal from "@/modals/alertModal.vue";
 import { useModalStore } from "@/stores/modal";
 import type { PoolDetails } from "@repo/validation";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
@@ -20,28 +13,32 @@ interface PoolManagementDropdownProps {
 }
 
 const router = useRouter();
-const props = defineProps<PoolManagementDropdownProps>();
 const modalStore = useModalStore();
+const props = defineProps<PoolManagementDropdownProps>();
+const isDeleteModalOpen = ref(false);
+const isLeaveModalOpen = ref(false);
+
+const canManagePool = computed(() => {
+  return props.details?.userRole === "OWNER" || props.details?.userRole === "ADMIN";
+});
+const canDeletePool = computed(() => {
+  return props.details?.userRole === "OWNER";
+});
+const canLeavePool = computed(() => {
+  return props.details?.userRole !== "OWNER";
+});
 
 const { mutateAsync: deletePool } = usePoolDelete();
 const { mutateAsync: leavePool } = usePoolLeave();
 
-function handleDeleteClick() {
+function handleDeletePool() {
   if (!props.details) return;
   const poolId = props.details.id;
-  modalStore.onOpen("alert", {
-    title: "Are you sure?",
-    description: "Are you sure you want to delete this pool? This action cannot be undone.",
-    variant: "destructive",
-    confirmText: "Delete",
-    cancelText: "Cancel",
-    onConfirm: () => {
-      deletePool(poolId, {
-        onSuccess: () => {
-          toast.success("Pool deleted successfully.");
-          router.push("/dashboard");
-        },
-      });
+
+  deletePool(poolId, {
+    onSuccess: () => {
+      toast.success("Pool deleted successfully.");
+      router.push("/dashboard");
     },
   });
 }
@@ -49,43 +46,83 @@ function handleDeleteClick() {
 function handleLeavePool() {
   if (!props.details) return;
   const poolId = props.details.id;
-  modalStore.onOpen("alert", {
-    title: "Are you sure?",
-    description: "Are you sure you want to leave this pool? <br/> You will lose access to shared resources.",
-    onAction: () => {
-      leavePool(poolId, {
-        onSuccess: () => {
-          toast.success("You have left the pool successfully.");
-          router.push("/dashboard");
-        },
-      });
+
+  leavePool(poolId, {
+    onSuccess: () => {
+      toast.success("You have left the pool successfully.");
+      router.push("/dashboard");
     },
-  } satisfies AlertModalData);
+  });
+}
+
+function handleEditPool() {
+  if (!props.details) return;
+  const poolId = props.details.id;
+
+  modalStore.onOpen("pool", poolId);
 }
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger>
-      <Icon name="dotsHorizontal" />
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <DropdownMenuGroup v-if="props.details?.userRole === 'OWNER' || props.details?.userRole === 'ADMIN'">
-        <DropdownMenuLabel><Label class="text-muted-foreground">Manage Pool</Label></DropdownMenuLabel>
-        <Separator />
-        <DropdownMenuItem> <Icon name="edit" /> Edit Pool </DropdownMenuItem>
-        <DropdownMenuItem v-if="props.details?.userRole === 'OWNER'" variant="destructive" @click="handleDeleteClick">
-          <Icon name="trash" /> Delete Pool
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-      <DropdownMenuGroup v-if="props.details?.userRole !== 'OWNER'">
-        <DropdownMenuLabel><Label class="text-muted-foreground">Actions</Label></DropdownMenuLabel>
-        <Separator />
+  <ResponsiveDropdown
+    :items="[
+      {
+        label: 'Edit Group',
+        icon: 'edit',
+        action: handleEditPool,
+        hidden: !canManagePool,
+      },
+      {
+        label: 'Delete Group',
+        icon: 'trash',
+        action: () => (isDeleteModalOpen = true),
+        hidden: !canDeletePool,
+      },
+      {
+        label: 'Leave Group',
+        icon: 'logout',
+        action: () => (isLeaveModalOpen = true),
+        hidden: !canLeavePool,
+      },
+    ]"
+  >
+    <template #header>
+      <div>
+        <h1>{{ props.details?.name }}</h1>
+        <p class="text-muted-foreground text-sm">{{ props.details?.description }}</p>
+      </div>
+    </template>
+  </ResponsiveDropdown>
 
-        <DropdownMenuItem variant="destructive" @click="handleLeavePool">
-          <Icon name="logout" /> Leave group
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-    </DropdownMenuContent>
-  </DropdownMenu>
+  <AlertModal
+    v-on:action="handleDeletePool"
+    v-model:open="isDeleteModalOpen"
+    title="Pool Deletion"
+    action-label="Delete"
+    action-class="destructive"
+  >
+    <template #description>
+      <p>
+        Are you sure you want to delete the following group: <strong>{{ props.details?.name }}</strong>
+      </p>
+
+      <p class="">This action cannot be undone.</p>
+    </template>
+  </AlertModal>
+
+  <AlertModal
+    v-on:action="handleLeavePool"
+    v-model:open="isLeaveModalOpen"
+    title="Leave Group"
+    action-label="Leave"
+    action-class="destructive"
+  >
+    <template #description>
+      <p>
+        Are you sure you want to leave the following group: <strong>{{ props.details?.name }}</strong>
+      </p>
+
+      <p class="">You will lose access to shared resources in this group.</p>
+    </template>
+  </AlertModal>
 </template>

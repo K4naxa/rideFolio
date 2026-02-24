@@ -20,7 +20,7 @@ const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createNote");
 
 const { data: editableNote } = useNoteByIdQuery(
-  computed(() => (isModalOpen.value && modalStore.itemId ? modalStore.itemId : undefined)),
+  computed(() => (modalStore.type === "createNote" && modalStore.itemId ? modalStore.itemId : undefined)),
 );
 
 const handleClose = () => {

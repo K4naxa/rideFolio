@@ -18,24 +18,25 @@ import { usePoolInviteAccept, usePoolInviteDeny } from "@/lib/queries/pools/pool
 import { useUserNotificationsMarkAsRead } from "@/lib/queries/user/user-mutations";
 import { getInitials } from "@/lib/utils";
 import type { PoolInviteNotification } from "@repo/validation";
-import { ref } from "vue";
-
 const props = defineProps<{
   data: PoolInviteNotification;
+  open?: boolean;
+}>();
+
+const emit = defineEmits<{
+  "update:open": [value: boolean];
 }>();
 
 const { mutateAsync: acceptInvite, isPending: isAccepting } = usePoolInviteAccept();
 const { mutateAsync: denyInvite, isPending: isDenying } = usePoolInviteDeny();
 const { mutate: markAsRead } = useUserNotificationsMarkAsRead();
 
-const isModalOpen = ref(false);
-
 function handleAccept() {
   if (props.data) {
     acceptInvite(props.data.metadata.inviteId, {
       onSuccess: () => {
         markAsRead(props.data.id);
-        isModalOpen.value = false;
+        emit("update:open", false);
       },
     });
   }
@@ -46,14 +47,14 @@ function handleDeny() {
     denyInvite(props.data.metadata.inviteId, {
       onSuccess: () => {
         markAsRead(props.data.id);
-        isModalOpen.value = false;
+        emit("update:open", false);
       },
     });
   }
 }
 </script>
 <template>
-  <Dialog v-model:open="isModalOpen">
+  <Dialog :open="open" @update:open="emit('update:open', $event)">
     <DialogTrigger>
       <slot name="trigger" />
     </DialogTrigger>

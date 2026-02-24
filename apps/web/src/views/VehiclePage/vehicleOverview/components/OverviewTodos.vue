@@ -52,15 +52,15 @@ const isMobile = useIsMobile();
       </div>
       <ul
         v-else
-        class="gaps-sm scrollbar-macos grid w-full grid-flow-col grid-rows-2 flex-col overflow-x-auto pb-2 md:flex"
+        class="scrollbar-macos grid w-full grid-flow-col grid-rows-2 flex-col gap-4 overflow-x-auto pb-2 md:flex"
       >
         <Dialog v-for="todo in displayedTodos" :key="todo.id" v-slot="{ close }">
           <DialogTrigger v-if="isMobile" as-child>
             <div
               :class="
                 twMerge(
-                  'group listHover bg-card flex w-82 gap-4 rounded border p-3 md:max-h-full md:w-full',
-                  (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive! border-l-3',
+                  'group listHover flex w-82 gap-4 rounded p-3 md:max-h-full md:w-full',
+                  (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && !todo.isCompleted && 'bg-destructive/20!',
                 )
               "
             >
@@ -74,7 +74,7 @@ const isMobile = useIsMobile();
                     complete: !todo.isCompleted,
                   })
                 "
-                class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
+                class="group-hover:bg-accent/10 group-hover:border-foreground/50 my-auto size-6 bg-transparent"
                 variant="secondary"
               />
 
@@ -126,8 +126,8 @@ const isMobile = useIsMobile();
             v-else
             :class="
               twMerge(
-                'group listHover bg-card flex w-82 cursor-default gap-4 rounded border p-3 md:max-h-full md:w-full',
-                (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && 'border-l-destructive! border-l-3',
+                'group listHover flex w-82 cursor-default gap-4 rounded p-3 md:max-h-full md:w-full',
+                (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && !todo.isCompleted && 'bg-destructive/20!',
               )
             "
           >
@@ -141,7 +141,7 @@ const isMobile = useIsMobile();
                   complete: !todo.isCompleted,
                 })
               "
-              class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
+              class="group-hover:bg-accent/10 group-hover:border-foreground/50 my-auto size-6 bg-transparent"
               variant="secondary"
             />
 

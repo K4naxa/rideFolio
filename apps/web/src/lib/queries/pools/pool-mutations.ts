@@ -1,6 +1,7 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import {
+  type AccessiblePool,
   type PoolDetails,
   type PoolInviteValues,
   type PoolMemberRoleCode,
@@ -25,6 +26,30 @@ export function usePoolCreate() {
   });
 }
 
+export function usePoolUpdate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool", "update"],
+    mutationFn: async ({ poolId, values }: { poolId: string; values: PoolSchemaValues }) => {
+      const response = await api.put<PoolDetails>(`/pools/${poolId}`, values);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData<PoolDetails>(queryKeys.pools.detail(data.id), (oldData) => {
+        if (!oldData) return oldData;
+        return data;
+      });
+
+      queryClient.setQueryData<AccessiblePool[]>(queryKeys.pools.all, (oldData) => {
+        if (!oldData) return oldData;
+        const otherPools = oldData.filter((pool) => pool.id !== data.id);
+        return [...otherPools, data];
+      });
+      toast.success("Group details updated successfully!");
+    },
+  });
+}
+
 export function usePoolDelete() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -44,7 +69,7 @@ export function usePoolLeave() {
   return useMutation({
     mutationKey: ["pool-leave"],
     mutationFn: async (poolId: string) => {
-      return await api.post("/pools/" + poolId + "/leave");
+      return await api.post("/pools/leave/" + poolId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });

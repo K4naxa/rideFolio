@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
@@ -14,8 +13,6 @@ import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
-import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
-import ScrollBar from "@/components/ui/scroll-area/ScrollBar.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
@@ -24,23 +21,23 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
-import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { usePoolCreate } from "@/lib/queries/pools/pool-mutations";
+import { usePoolCreate, usePoolUpdate } from "@/lib/queries/pools/pool-mutations";
+import { usePoolDetails } from "@/lib/queries/pools/pool-queries";
 import { useModalStore } from "@/stores/modal";
 import { getPoolTypeIcon, POOL_TYPES, PoolSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
-import { Check } from "lucide-vue-next";
 import { AnimatePresence, Motion } from "motion-v";
 import { twMerge } from "tailwind-merge";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
 
 const router = useRouter();
 const { mutateAsync: createPool } = usePoolCreate();
+const { mutateAsync: updatePool } = usePoolUpdate();
 const { handleSubmit, values, isSubmitting, resetForm } = useForm({
   validationSchema: toTypedSchema(PoolSchema),
   initialValues: {
@@ -48,15 +45,17 @@ const { handleSubmit, values, isSubmitting, resetForm } = useForm({
     description: "",
     type: "PRIVATE",
     vehicleIds: [],
-    allowMembersToAddLogs: true,
-    allowMembersToAddVehicles: false,
-    allowMembersToDeleteLogs: true,
-    allowMembersToEditLogs: true,
+    membersCanAddLogs: true,
+    membersCanAddVehicles: false,
+    membersCanDeleteLogs: true,
+    membersCanEditLogs: true,
   },
 });
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "pool");
+const { data: pool } = usePoolDetails(computed(() => (isModalOpen.value ? modalStore.itemId : undefined)));
+const isEditing = computed(() => Boolean(pool.value));
 const handleClose = () => {
   modalStore.onClose();
 };
@@ -64,32 +63,65 @@ const handleClose = () => {
 const showMemberSettings = computed(() => values.type !== "PRIVATE");
 const { usersOwnVehicles } = useCurrentUser();
 
-watch(isModalOpen, (open) => {
-  if (open) {
+watch([isModalOpen, pool], ([open, poolData]) => {
+  if (!open) return;
+
+  if (isEditing.value && poolData) {
+    resetForm({
+      values: {
+        name: poolData.name,
+        description: poolData.description || "",
+        type: poolData.type,
+        vehicleIds: poolData.vehicles.map((v) => v.data.id),
+        membersCanAddLogs: Boolean(poolData.rules.membersCanAddLogs),
+        membersCanAddVehicles: Boolean(poolData.rules.membersCanAddVehicles),
+        membersCanDeleteLogs: Boolean(poolData.rules.membersCanDeleteLogs),
+        membersCanEditLogs: Boolean(poolData.rules.membersCanEditLogs),
+      },
+    });
+  } else {
     resetForm({
       values: {
         name: "",
         description: "",
         type: "PRIVATE",
         vehicleIds: [],
-        allowMembersToAddLogs: true,
-        allowMembersToAddVehicles: false,
-        allowMembersToDeleteLogs: true,
-        allowMembersToEditLogs: true,
+        membersCanAddLogs: true,
+        membersCanAddVehicles: false,
+        membersCanDeleteLogs: true,
+        membersCanEditLogs: true,
       },
     });
   }
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("Creating pool with values:", values);
-  const res = await createPool(values);
-  await router.push("/pools/" + res.newPoolId);
-  handleClose();
-});
+  if (pool.value) {
+    await updatePool(
+      { poolId: pool.value.id, values },
+      {
+        onSuccess: () => {
+          handleClose();
+        },
+        onError: () => {
+          toast.error("Something went wrong, please try again.");
+        },
+      },
+    );
+  } else {
+    await createPool(values, {
+      onSuccess: (data) => {
+        toast.success("Group created successfully!");
+        router.push("/pools/" + data.newPoolId);
+        handleClose();
+      },
+      onError: () => {
+        toast.error("Failed to create group. Please try again.");
+      },
+    });
+  }
 
-watchEffect(() => {
-  console.log("Selected vehicle IDs:", values.vehicleIds);
+  handleClose();
 });
 </script>
 
@@ -97,8 +129,12 @@ watchEffect(() => {
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="text-foreground max-w-4xl">
       <DialogHeader class="">
-        <DialogTitle>Create a New Group</DialogTitle>
-        <DialogDescription> Start by filling out the details below to set up your new group. </DialogDescription>
+        <DialogTitle>{{ pool?.name || "Create a New Group" }}</DialogTitle>
+        <DialogDescription>
+          <p v-if="pool">
+            Edit the details of your group <strong>{{ pool.name }}</strong>
+          </p>
+        </DialogDescription>
       </DialogHeader>
       <form @submit.prevent="onSubmit" class="gaps-md flex flex-col justify-between">
         <!-- Group info -->
@@ -162,30 +198,30 @@ watchEffect(() => {
             </div>
 
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <Field v-slot="{ value, handleChange }" name="allowMembersToAddLogs">
-                <label class="flex items-center gap-4" data-cy="allowMembersToAddLogs-checkbox">
+              <Field v-slot="{ value, handleChange }" name="membersCanAddLogs">
+                <label class="flex items-center gap-4" data-cy="membersCanAddLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to create logs</h4>
                     <p class="text-muted-foreground text-sm">Members can create new logs for the groups vehicles</p>
                   </div>
-                  <ErrorMessage name="allowMembersToAddLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                  <ErrorMessage name="membersCanAddLogs" class="text-destructive mt-1 ml-2 text-sm" />
                 </label>
               </Field>
 
-              <Field v-slot="{ value, handleChange }" name="allowMembersToEditLogs">
-                <label class="flex items-center gap-4" data-cy="allowMembersToEditLogs-checkbox">
+              <Field v-slot="{ value, handleChange }" name="membersCanEditLogs">
+                <label class="flex items-center gap-4" data-cy="membersCanEditLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to edit logs</h4>
                     <p class="text-muted-foreground text-sm">Members can edit existing logs for the groups vehicles</p>
                   </div>
-                  <ErrorMessage name="allowMembersToEditLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                  <ErrorMessage name="membersCanEditLogs" class="text-destructive mt-1 ml-2 text-sm" />
                 </label>
               </Field>
 
-              <Field v-slot="{ value, handleChange }" name="allowMembersToDeleteLogs">
-                <label class="flex items-center gap-4" data-cy="allowMembersToDeleteLogs-checkbox">
+              <Field v-slot="{ value, handleChange }" name="membersCanDeleteLogs">
+                <label class="flex items-center gap-4" data-cy="membersCanDeleteLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to delete logs</h4>
@@ -193,12 +229,12 @@ watchEffect(() => {
                       Members can delete existing logs for the groups vehicles
                     </p>
                   </div>
-                  <ErrorMessage name="allowMembersToDeleteLogs" class="text-destructive mt-1 ml-2 text-sm" />
+                  <ErrorMessage name="membersCanDeleteLogs" class="text-destructive mt-1 ml-2 text-sm" />
                 </label>
               </Field>
 
-              <Field v-slot="{ value, handleChange }" name="allowMembersToAddVehicles">
-                <label class="flex items-center gap-4" data-cy="allowMembersToAddVehicles-checkbox">
+              <Field v-slot="{ value, handleChange }" name="membersCanAddVehicles">
+                <label class="flex items-center gap-4" data-cy="membersCanAddVehicles-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to add vehicles</h4>
@@ -206,7 +242,7 @@ watchEffect(() => {
                       Members can add their own vehicles to the group. Only group admins can remove vehicles
                     </p>
                   </div>
-                  <ErrorMessage name="allowMembersToAddVehicles" class="text-destructive mt-1 ml-2 text-sm" />
+                  <ErrorMessage name="membersCanAddVehicles" class="text-destructive mt-1 ml-2 text-sm" />
                 </label>
               </Field>
             </div>
@@ -259,8 +295,14 @@ watchEffect(() => {
 
         <DialogFooter class="pt-8">
           <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
-            <span v-if="!isSubmitting">Create</span>
-            <span v-else> <Spinner /> Creating.. </span>
+            <span v-if="!isSubmitting">
+              <p v-if="pool">Save Changes</p>
+              <p v-else>Create Group</p>
+            </span>
+            <span v-else>
+              <Spinner />
+              <p>Processing...</p>
+            </span>
           </Button>
           <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>
         </DialogFooter>

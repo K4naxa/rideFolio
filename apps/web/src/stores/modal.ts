@@ -19,6 +19,15 @@ export const useModalStore = defineStore("modal", {
     isOpen: ref(false),
   }),
 
+  getters: {
+    isModalOpen(): (type: ModalType) => boolean {
+      return (type: ModalType) => this.isOpen && this.type === type;
+    },
+    getItemId(): string | undefined {
+      return this.itemId;
+    },
+  },
+
   actions: {
     onOpen(modalType: ModalType, itemId?: string) {
       this.type = modalType;

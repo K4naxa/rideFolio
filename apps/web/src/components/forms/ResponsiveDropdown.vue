@@ -7,7 +7,6 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -24,6 +23,7 @@ interface DropdownItem {
   icon?: IconProps["name"];
   action: () => void;
   disabled?: boolean;
+  hidden?: boolean;
 }
 
 interface Props {
@@ -52,16 +52,22 @@ const isOpen = ref(false);
   <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
     <DropdownMenuTrigger as-child>
       <slot name="trigger">
-        <Button variant="ghost" size="icon" :class="triggerClass">
+        <Button variant="ghost" size="icon" :class="props.triggerClass">
           <Icon name="dotsHorizontal" class="h-4 w-4" />
           <span class="sr-only">Open menu</span>
         </Button>
       </slot>
     </DropdownMenuTrigger>
-    <DropdownMenuContent :align="align" :class="contentClass">
-      <DropdownMenuLabel v-if="title">{{ title }}</DropdownMenuLabel>
-      <DropdownMenuSeparator v-if="title && items.length > 0" />
-      <DropdownMenuItem v-for="item in items" :key="item.label" @click="item.action" :disabled="item.disabled">
+    <DropdownMenuContent :align="props.align" :class="props.contentClass">
+      <DropdownMenuLabel v-if="props.title">{{ props.title }}</DropdownMenuLabel>
+      <DropdownMenuSeparator v-if="props.title && props.items.length > 0" />
+      <DropdownMenuItem
+        v-for="item in props.items"
+        v-show="!item.hidden"
+        :key="item.label"
+        @click="item.action"
+        :disabled="item.disabled"
+      >
         <Icon v-if="item.icon" :name="item.icon" />
         {{ item.label }}
       </DropdownMenuItem>
@@ -72,7 +78,7 @@ const isOpen = ref(false);
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger as-child>
       <slot name="trigger">
-        <Button variant="ghost" size="icon-sm" :class="triggerClass">
+        <Button variant="ghost" size="icon-sm" :class="props.triggerClass">
           <Icon name="dotsVertical" class="h-4 w-4" />
           <span class="sr-only">Open menu</span>
         </Button>
@@ -82,8 +88,8 @@ const isOpen = ref(false);
       <DrawerHeader>
         <div class="flex justify-between gap-2">
           <slot name="header">
-            <DrawerTitle>{{ title || "Options" }}</DrawerTitle>
-            <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
+            <DrawerTitle>{{ props.title || "Options" }}</DrawerTitle>
+            <DrawerDescription v-if="props.description">{{ props.description }}</DrawerDescription>
           </slot>
           <DrawerClose as-child>
             <Button variant="outline" class="mb-auto ml-auto" size="icon-sm">
@@ -99,7 +105,8 @@ const isOpen = ref(false);
         <Button
           variant="ghost"
           type="button"
-          v-for="item in items"
+          v-for="item in props.items"
+          v-show="!item.hidden"
           :key="item.label"
           class="text-foreground flex w-full items-center justify-start text-start text-base font-normal"
           @click="

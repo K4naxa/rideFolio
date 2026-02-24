@@ -69,9 +69,14 @@ function onActionClick() {
       <AlertDialogHeader>
         <AlertDialogTitle>{{ title }}</AlertDialogTitle>
         <AlertDialogDescription>
-          <span class="text-muted-foreground" v-html="description" />
+          <slot name="description">
+            <template v-if="description">
+              <p v-html="description" />
+            </template>
+          </slot>
         </AlertDialogDescription>
       </AlertDialogHeader>
+
       <AlertDialogFooter>
         <AlertDialogCancel data-cy="cancel">
           {{ cancelLabel }}

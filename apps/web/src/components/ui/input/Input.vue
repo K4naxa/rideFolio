@@ -4,10 +4,9 @@ import { useField } from "vee-validate";
 import { twMerge } from "tailwind-merge";
 import Label from "../label/Label.vue";
 import Icon from "@/components/icons/Icon.vue";
-import { Search } from "lucide-vue-next";
 
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: true,
 });
 
 interface InputProps {
@@ -59,7 +58,7 @@ async function handleBlur() {
 }
 </script>
 
-<template>
+<template lang="html">
   <div :aria-invalid="!!errorMessage" :class="['group', props.class]">
     <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
     <div class="relative flex-1">
@@ -68,10 +67,10 @@ async function handleBlur() {
         name="search"
         class="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2"
       />
+
       <input
         v-bind="$attrs"
         v-model="value"
-        autocomplete="off"
         :type="props.type"
         :name="props.name"
         :placeholder="props.placeholder"

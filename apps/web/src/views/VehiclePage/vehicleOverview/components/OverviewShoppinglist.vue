@@ -77,8 +77,12 @@ const displayedItems = computed(() =>
         <span class="text-destructive">Error loading shopping list.</span>
       </div>
 
-      <ul v-else>
-        <li v-for="item in displayedItems" :key="item.id" class="group flex items-center gap-4 py-2">
+      <ul v-else class="flex flex-col">
+        <li
+          v-for="item in displayedItems"
+          :key="item.id"
+          class="group cardHover flex items-center gap-4 rounded-sm px-3 py-2 shadow-none"
+        >
           <Checkbox
             :model-value="item.isPurchased"
             @update:model-value="

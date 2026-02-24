@@ -105,10 +105,10 @@ export type PoolDetails = {
   userRole: PoolMemberRoleCode;
 
   rules: {
-    allowMembersToaddLogs: boolean;
-    allowMembersToaddVehicles: boolean;
-    allowMembersToEditLogs: boolean;
-    allowMembersToDeleteLogs: boolean;
+    membersCanAddLogs: boolean;
+    membersCanAddVehicles: boolean;
+    membersCanEditLogs: boolean;
+    membersCanDeleteLogs: boolean;
   };
 
   members: PoolMember[];

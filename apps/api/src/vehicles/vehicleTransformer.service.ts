@@ -11,9 +11,9 @@ interface RawVehicleWithPools extends Vehicle {
     icon: string | null;
   };
   pools?: {
-    allowMembersToAddLogs: boolean;
-    allowMembersToEditLogs: boolean;
-    allowMembersToDeleteLogs: boolean;
+    membersCanAddLogs: boolean;
+    membersCanEditLogs: boolean;
+    membersCanDeleteLogs: boolean;
     pool: {
       id: string;
       name: string;
@@ -81,9 +81,9 @@ export class VehicleTransformerService {
     const poolAccess = rawVehicle.pools?.[0];
     if (poolAccess) {
       poolId = poolAccess.pool.id;
-      canCreateLogs = poolAccess.allowMembersToAddLogs;
-      canEditLogs = poolAccess.allowMembersToEditLogs;
-      canDeleteLogs = poolAccess.allowMembersToDeleteLogs;
+      canCreateLogs = poolAccess.membersCanAddLogs;
+      canEditLogs = poolAccess.membersCanEditLogs;
+      canDeleteLogs = poolAccess.membersCanDeleteLogs;
     }
 
     // Owner override

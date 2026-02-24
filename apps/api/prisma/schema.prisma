@@ -549,10 +549,10 @@ model Pool {
   invites  PoolInvite[]
 
   // Settings that override default member permissions.
-  allowMembersToAddLogs     Boolean @default(true)
-  allowMembersToEditLogs    Boolean @default(false)
-  allowMembersToDeleteLogs  Boolean @default(false)
-  allowMembersToAddVehicles Boolean @default(false)
+  membersCanAddLogs     Boolean @default(true)
+  membersCanEditLogs    Boolean @default(false)
+  membersCanDeleteLogs  Boolean @default(false)
+  membersCanAddVehicles Boolean @default(false)
 }
 
 model PoolMember {
@@ -581,9 +581,9 @@ model PoolVehicle {
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
   // Settings that override default member permissions.
-  allowMembersToAddLogs    Boolean @default(true)
-  allowMembersToEditLogs   Boolean @default(false)
-  allowMembersToDeleteLogs Boolean @default(false)
+  membersCanAddLogs    Boolean @default(true)
+  membersCanEditLogs   Boolean @default(false)
+  membersCanDeleteLogs Boolean @default(false)
 
   // The vehicle was added to the pool at a specific time.
   addedAt DateTime @default(now())

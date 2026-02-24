@@ -13,7 +13,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { computed, ref, type Component, type HTMLAttributes } from "vue";
+import { computed, ref, type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
 
 export interface ResponsiveSelectOption<T> {
@@ -115,9 +115,9 @@ function fromSelectValue(value: string): T {
         variant="outline"
         :class="
           twMerge(
-            'w-full justify-between truncate font-normal',
+            'h-fit w-full justify-between truncate text-base font-normal',
             !modelValue && 'text-muted-foreground',
-            inputStyle ? 'bg-input! border-border! h-fit border px-3 py-2! text-base' : '',
+            inputStyle ? 'bg-input! border-border! border px-3 py-2! text-base' : '',
             triggerClass,
           )
         "
