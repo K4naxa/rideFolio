@@ -31,7 +31,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { AnimatePresence, Motion } from "motion-v";
 import { twMerge } from "tailwind-merge";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { computed, watch, watchEffect } from "vue";
+import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 

@@ -139,7 +139,7 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
           <Separator class="mt-2" />
         </header>
 
-        <div class="gaps-md flex flex-col">
+        <div class="gaps-lg flex flex-col">
           <div v-if="data?.type === 'SHARED'" class="gaps-sm flex flex-col">
             <div class="gap-md flex justify-between">
               <h3 class="text-muted-foreground flex items-center gap-2"><Icon name="users" /> Members</h3>
@@ -151,7 +151,7 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
 
             <div class="space-y-2">
               <!-- Users table -->
-              <ul class="cardBackground divide-y rounded border">
+              <ul class="divide-y">
                 <li
                   v-for="member in data?.members"
                   :key="member.user.id"
@@ -177,10 +177,12 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
                       trigger-class="text-sm medium w-32"
                       :disabled="member.role === 'OWNER'"
                       :options="
-                        Object.values(POOL_MEMBER_ROLES).map((role) => ({
-                          label: role.label,
-                          value: role.code,
-                        }))
+                        Object.values(POOL_MEMBER_ROLES)
+                          .filter((role) => role.code !== 'OWNER' || data?.userRole === 'OWNER')
+                          .map((role) => ({
+                            label: role.label,
+                            value: role.code,
+                          }))
                       "
                       :modelValue="member.role"
                       @select="(value) => handleUpdateRoleClick(member.user.id, value as PoolMemberRoleCode)"
@@ -303,7 +305,7 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
   </div>
 
   <AlertModal
-    title="Transfer pool ownership"
+    title="Transfer group ownership"
     action-label="Transfer Ownership"
     action-class="destructive"
     :open="showRoleUpdateAlert"
@@ -316,7 +318,7 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
         pendingRoleUpdate = null;
       }
     "
-    description="Are you sure you want to transfer ownership of this pool? You will lose your admin privileges and the new owner will have full control over the pool"
+    description="Are you sure you want to transfer ownership of this group? You will lose your admin privileges and the new owner will have full control over the group"
   />
 
   <!-- Invite Modal -->

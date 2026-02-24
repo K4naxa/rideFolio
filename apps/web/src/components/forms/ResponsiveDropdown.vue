@@ -39,10 +39,6 @@ const props = withDefaults(defineProps<Props>(), {
   align: "end",
 });
 
-const emit = defineEmits<{
-  action: [key: string];
-}>();
-
 const isMobile = useIsMobile();
 const isOpen = ref(false);
 </script>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ResponsiveSelect, { type ResponsiveSelectOption } from "@/components/forms/ResponsiveSelect.vue";
-import Button from "@/components/ui/button/Button.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
