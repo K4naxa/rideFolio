@@ -1,6 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Vehicle } from 'prisma/generated/prisma/client';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Pool, Vehicle } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class AuthValidationService {
@@ -58,6 +58,32 @@ export class AuthValidationService {
     }
   }
 
+  async canAddVehiclesToPool(userId: string, poolId: string): Promise<Pool> {
+    const pool = await this.prisma.pool.findUnique({
+      where: {
+        id: poolId,
+        OR: [
+          // User is an owner or admin of the pool
+          { members: { some: { userId, OR: [{ role: 'OWNER' }, { role: 'ADMIN' }] } } },
+          // Pool allows members to add vehicles AND user is a member (not viewer)
+          {
+            membersCanAddVehicles: true,
+            members: { some: { userId, role: 'MEMBER' } },
+          },
+        ],
+      },
+    });
+
+    if (!pool) {
+      Logger.error(
+        'Permission denied: user: ' + userId + ' does not have permission to add vehicles to pool: ' + poolId,
+      );
+      throw new NotFoundException('Pool not found or access denied.');
+    }
+
+    return pool;
+  }
+
   async canCreateLogs(userId: string, vehicleId?: string | null): Promise<Vehicle> {
     if (!vehicleId) {
       throw new NotFoundException('Vehicle not found or access denied.');
@@ -103,7 +129,9 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: user does not have permission to create logs for the vehicle.');
+      Logger.error(
+        'Permission denied: user: ' + userId + ' does not have permission to create logs for vehicle: ' + vehicleId,
+      );
       throw new NotFoundException('Vehicle not found or access denied.');
     }
     // If we reach here, the user has permission to create logs.
@@ -156,11 +184,11 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: user does not have permission to edit logs for the vehicle.');
+      Logger.error(
+        'Permission denied: user: ' + userId + ' does not have permission to delete logs for vehicle: ' + vehicleId,
+      );
       throw new NotFoundException('Vehicle not found or access denied.');
     }
-    // If we reach here, the user has permission to edit logs.
-    console.log('Permission to edit logs granted.');
     return vehicle;
   }
   async canDeleteLogs(userId: string, vehicleId?: string | null): Promise<Vehicle> {
@@ -208,11 +236,11 @@ export class AuthValidationService {
     });
 
     if (!vehicle) {
-      console.error('Permission denied: user does not have permission to delete logs for the vehicle.');
+      Logger.error(
+        'Permission denied: user: ' + userId + ' does not have permission to delete logs for vehicle: ' + vehicleId,
+      );
       throw new NotFoundException('Vehicle not found or access denied.');
     }
-    // If we reach here, the user has permission to delete logs.
-    console.log('Permission to delete logs granted.');
     return vehicle;
   }
 }

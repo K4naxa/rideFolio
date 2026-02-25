@@ -47,14 +47,7 @@ export class LimitsService {
     });
     const vehicleCount = await this.prisma.vehicle.count({
       where: {
-        OR: [
-          { ownerId: userId },
-          {
-            pools: {
-              some: { pool: { members: { some: { userId } } } },
-            },
-          },
-        ],
+        ownerId: userId,
       },
     });
 

@@ -60,7 +60,7 @@ async function handleBlur() {
 
 <template lang="html">
   <div :aria-invalid="!!errorMessage" :class="['group', props.class]">
-    <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-1 ml-1 font-medium">{{ label }}</Label>
     <div class="relative flex-1">
       <Icon
         v-if="props.type === 'search'"

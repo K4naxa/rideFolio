@@ -50,6 +50,24 @@ export function usePoolUpdate() {
   });
 }
 
+export function usePoolAddVehicles() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-add-vehicles"],
+    mutationFn: async ({ poolId, vehicleIds }: { poolId: string; vehicleIds: string[] }) => {
+      const response = await api.patch<PoolDetails>(`/pools/vehicles/add/${poolId}`, { vehicleIds });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData<PoolDetails>(queryKeys.pools.detail(data.id), (oldData) => {
+        if (!oldData) return oldData;
+        return data;
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
 export function usePoolDelete() {
   const queryClient = useQueryClient();
   return useMutation({

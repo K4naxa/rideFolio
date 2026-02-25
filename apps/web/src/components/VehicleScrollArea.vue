@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Label from "@/components/ui/label/Label.vue";
+import Icon from "./icons/Icon.vue";
 
 const { data: vehicles } = useVehiclesAll();
 const modalStore = useModalStore();
@@ -46,6 +47,11 @@ const props = defineProps<{
             class="bg-muted relative overflow-hidden rounded-b-none"
           />
           <div class="to-card dark:to-background absolute bottom-0 h-1/4 bg-linear-to-b from-transparent" />
+
+          <div class="absolute top-1 right-1">
+            <Badge v-if="vehicle.isOwnerUser" variant="accent"> <Icon name="user" /> Private</Badge>
+            <Badge v-else variant="secondary"> <Icon name="users" /> {{ vehicle.pool?.name }}</Badge>
+          </div>
         </div>
 
         <!-- text -->
@@ -61,9 +67,6 @@ const props = defineProps<{
               {{ vehicle.vehicleData.make }} • {{ vehicle.vehicleData.model }}
             </span>
           </div>
-
-          <!-- Group badge-->
-          <Badge variant="accent" class="h-fit" v-if="vehicle.isOwnerUser"> Owned </Badge>
         </div>
       </RouterLink>
     </nav>

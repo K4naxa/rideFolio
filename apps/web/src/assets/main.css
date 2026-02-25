@@ -199,7 +199,7 @@ img {
 
 @layer components {
   .card {
-    @apply bg-card text-card-foreground rounded-lg border shadow-sm transition-colors;
+    @apply bg-card text-card-foreground rounded border transition-colors;
   }
   .cardHover {
     @apply hover:bg-card/80 dark:hover:bg-background-light transition-colors duration-100;

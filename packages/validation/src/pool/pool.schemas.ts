@@ -1,7 +1,6 @@
 import * as z from "zod";
 import { poolMemberRoleCodes, poolTypeCodes } from "./pool.types";
 
-// Client-side form schema (what the form actually works with)
 export const PoolSchema = z.object({
   name: z.string().min(1, "Required").max(50, "50 Character limit passed"),
   description: z
@@ -12,7 +11,6 @@ export const PoolSchema = z.object({
   type: z.enum(poolTypeCodes, { message: "Pool type is required" }),
   vehicleIds: z.array(z.string()),
 
-  // Boolean fields - no preprocessing needed for React Hook Form
   membersCanAddLogs: z.preprocess(
     (val) =>
       typeof val === "string" ?

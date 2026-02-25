@@ -15,6 +15,7 @@ import {
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { computed, ref, type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
+import Label from "../ui/label/Label.vue";
 
 export interface ResponsiveSelectOption<T> {
   value: T;
@@ -29,6 +30,7 @@ interface Props {
   modelValue?: T;
   placeholder?: string;
   title?: string;
+  label?: string;
   description?: string;
   disabled?: boolean;
   triggerClass?: HTMLAttributes["class"];
@@ -74,6 +76,8 @@ function fromSelectValue(value: string): T {
 
 <template>
   <!-- Desktop -->
+  <Label v-if="label" class="group-aria-invalid:text-destructive mb-1 ml-1 font-medium">{{ label }}</Label>
+
   <Select
     v-if="!isMobile"
     :model-value="toSelectValue(modelValue)"

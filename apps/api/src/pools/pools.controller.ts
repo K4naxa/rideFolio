@@ -76,6 +76,15 @@ export class PoolsController {
     return await this.poolsService.updateUserRoleInPool(userSession, poolId, userId, role);
   }
 
+  @Patch('vehicles/add/:poolId')
+  async addVehiclesToPool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+    @Body('vehicleIds', new ZodValidationPipe(z.array(z.cuid()))) vehicleIds: string[],
+  ): Promise<PoolDetails> {
+    return await this.poolsService.addVehiclesToPool(userSession, poolId, vehicleIds);
+  }
+
   // INVITE LOGIC
   @Post(':poolId/invite')
   async inviteToPool(

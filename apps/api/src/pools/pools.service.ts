@@ -68,6 +68,7 @@ export class PoolsService {
 
   async updatePool(userSession: UserSession, poolId: string, updateDate: PoolSchemaValues): Promise<PoolDetails> {
     const { vehicleIds, ...poolData } = updateDate;
+    // TODO: add logic for updating vehicles in the pool. Send notification to users if their vehicle has been removed
 
     const pool = await this.prisma.pool.findUnique({
       where: {
@@ -90,20 +91,11 @@ export class PoolsService {
 
     if (!pool) throw new NotFoundException(`Pool not found or access denied.`);
 
-    const vehiclesToAdd = vehicleIds.filter((id) => !pool.vehicles.some((v) => v.vehicleId === id));
     const vehiclesToRemove = pool.vehicles
       .filter((v) => !vehicleIds.some((id) => id === v.vehicleId))
       .map((v) => v.vehicleId);
 
     const updatedPool = await this.prisma.$transaction(async (tx) => {
-      if (vehiclesToAdd.length > 0) {
-        for (const vehicleId of vehiclesToAdd) {
-          await tx.poolVehicle.create({
-            data: { poolId, vehicleId },
-          });
-        }
-      }
-
       if (vehiclesToRemove.length > 0) {
         await tx.poolVehicle.deleteMany({
           where: {
@@ -195,6 +187,106 @@ export class PoolsService {
         },
       });
     });
+
+    return {
+      id: updatedPool.id,
+      type: updatedPool.type,
+      name: updatedPool.name,
+      description: updatedPool.description,
+      createdAt: updatedPool.createdAt,
+      userRole: updatedPool.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
+      members: updatedPool.members,
+      rules: {
+        membersCanAddLogs: updatedPool.membersCanAddLogs,
+        membersCanAddVehicles: updatedPool.membersCanAddVehicles,
+        membersCanEditLogs: updatedPool.membersCanEditLogs,
+        membersCanDeleteLogs: updatedPool.membersCanDeleteLogs,
+      },
+      vehicles: updatedPool.vehicles.map((v) => ({
+        addedAt: v.addedAt,
+        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
+        owner: v.vehicle.owner,
+        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
+      })),
+      invites: updatedPool.invites.map((inv) => ({
+        id: inv.id,
+        email: inv.receiver.email,
+        roleToGrant: inv.roleToGrant,
+        state: 'PENDING',
+        createdAt: inv.createdAt,
+      })),
+    };
+  }
+
+  async addVehiclesToPool(userSession: UserSession, poolId: string, vehicleIds: string[]): Promise<PoolDetails> {
+    // Find the pool and validate that the user has permission to add vehicles
+    await this.authValidationService.canAddVehiclesToPool(userSession.user.id, poolId);
+
+    const updatedPool = await this.prisma.$transaction(async (tx) => {
+      await tx.poolVehicle.createMany({
+        data: vehicleIds.map((vehicleId) => ({
+          poolId,
+          vehicleId,
+        })),
+      });
+
+      return await tx.pool.findUnique({
+        where: { id: poolId },
+        include: {
+          members: {
+            select: {
+              role: true,
+              createdAt: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          vehicles: {
+            select: {
+              addedAt: true,
+              membersCanAddLogs: true,
+              membersCanDeleteLogs: true,
+              membersCanEditLogs: true,
+              vehicle: {
+                include: {
+                  ...this.vehicleRepository.DBInclude_BasicVehicle,
+                  owner: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          invites: {
+            select: {
+              id: true,
+              receiver: {
+                select: {
+                  email: true,
+                },
+              },
+              roleToGrant: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+    });
+
+    if (!updatedPool) {
+      throw new Error('Unexpected error occurred while adding vehicles to the pool.');
+    }
 
     return {
       id: updatedPool.id,

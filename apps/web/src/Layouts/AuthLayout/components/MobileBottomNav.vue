@@ -99,7 +99,7 @@ function handleLogout() {
             <DrawerTitle> Your Vehicles </DrawerTitle>
             <DrawerDescription> Select what vehicles page you want to navigate to.</DrawerDescription>
           </DrawerHeader>
-          <div class="p-4">
+          <div class="gaps-sm flex flex-col p-4">
             <RouterLink
               v-for="vehicle in vehicles"
               :key="vehicle.vehicleData.id"

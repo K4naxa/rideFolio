@@ -76,11 +76,9 @@ export class VehicleTransformerService {
     let canCreateLogs = false;
     let canEditLogs = false;
     let canDeleteLogs = false;
-    let poolId: string | null = null;
 
     const poolAccess = rawVehicle.pools?.[0];
     if (poolAccess) {
-      poolId = poolAccess.pool.id;
       canCreateLogs = poolAccess.membersCanAddLogs;
       canEditLogs = poolAccess.membersCanEditLogs;
       canDeleteLogs = poolAccess.membersCanDeleteLogs;
@@ -98,7 +96,12 @@ export class VehicleTransformerService {
       canCreateLogs,
       canEditLogs,
       canDeleteLogs,
-      poolId,
+      pool: poolAccess
+        ? {
+            id: poolAccess.pool.id,
+            name: poolAccess.pool.name,
+          }
+        : null,
       vehicleData: this.toBasicVehicle(rawVehicle),
     };
   }
