@@ -187,6 +187,45 @@ export class PoolsService {
     });
   }
 
+  async removeMemberFromPool(userSession: UserSession, poolId: string, userId: string): Promise<void> {
+    // Validate that the current user has permission to remove members from the pool
+    const pool = await this.prisma.pool.findUnique({
+      where: {
+        id: poolId,
+        members: { some: { userId: userSession.user.id, OR: [{ role: 'OWNER' }, { role: 'ADMIN' }] } },
+      },
+      include: {
+        vehicles: {
+          select: {
+            vehicle: true,
+          },
+        },
+        members: true,
+      },
+    });
+
+    // Prevent removing the owner of the pool
+    const memberToRemove = pool?.members.find((member) => member.userId === userId);
+    if (!memberToRemove) throw new NotFoundException('Member not found in the pool.');
+    if (memberToRemove.role === 'OWNER') throw new BadRequestException('Cannot remove the owner of the pool.');
+
+    const leavingUserVehicles = pool?.vehicles.filter((v) => v.vehicle.ownerId === userId) || [];
+
+    await this.prisma.$transaction(async (tx) => {
+      // 1. Remove the member from the pool
+      await tx.poolMember.delete({
+        where: { poolId_userId: { poolId, userId } },
+      });
+      // 2. Remove the member's vehicles from the pool
+      for (const v of leavingUserVehicles) {
+        await tx.poolVehicle.delete({
+          where: { poolId_vehicleId: { poolId, vehicleId: v.vehicle.id } },
+        });
+      }
+    });
+
+    // TODO: Send notification to the removed user about their removal from the pool
+  }
   async getAccessiblePools(currentUserId: string): Promise<AccessiblePool[]> {
     const pools = await this.prisma.pool.findMany({
       // 1. Find all pools where the current user is a member

@@ -9,6 +9,7 @@ import {
   getPoolInviteStateNameKey,
   getPoolMemberRoleNameKey,
   POOL_MEMBER_ROLES,
+  type PoolMember,
   type PoolMemberRoleCode,
 } from "@repo/validation";
 import Button from "@/components/ui/button/Button.vue";
@@ -27,7 +28,12 @@ import PoolErrorState from "./components/PoolErrorState.vue";
 import CardDescription from "@/components/ui/card/CardDescription.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import AlertModal from "@/modals/alertModal.vue";
-import { usePoolInviteCancel, usePoolRemoveVehicle, usePoolUpdateUserRole } from "@/lib/queries/pools/pool-mutations";
+import {
+  usePoolInviteCancel,
+  usePoolMemberRemove,
+  usePoolRemoveVehicle,
+  usePoolUpdateUserRole,
+} from "@/lib/queries/pools/pool-mutations";
 import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
 
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
@@ -44,6 +50,7 @@ const { currentPoolId } = useCurrentPool();
 const { mutateAsync: cancelPoolInvite } = usePoolInviteCancel();
 const { mutateAsync: updateRole } = usePoolUpdateUserRole();
 const { mutateAsync: removeVehicleFromPool } = usePoolRemoveVehicle();
+const { mutateAsync: removeMemberFromPool } = usePoolMemberRemove();
 const { data, isLoading, isError } = usePoolDetails(computed(() => currentPoolId.value));
 
 const canManagePool = computed(() => {
@@ -59,6 +66,9 @@ const pendingRoleUpdate = ref<{ userId: string; role: PoolMemberRoleCode } | nul
 const showAddVehicleModal = ref(false);
 const showRemoveVehicleAlert = ref(false);
 const pendingVehicleRemoval = ref<{ poolId: string; vehicleId: string } | null>(null);
+
+const showRemoveMemberAlert = ref(false);
+const pendingMemberRemoval = ref<{ member: PoolMember; poolId: string } | null>(null);
 
 function handleUpdateRoleClick(userId: string, role: PoolMemberRoleCode) {
   if (role === "OWNER") {
@@ -103,6 +113,23 @@ async function handleRemoveVehicle() {
     );
   }
   pendingVehicleRemoval.value = null;
+}
+
+async function handleRemoveMember() {
+  if (pendingMemberRemoval.value) {
+    await removeMemberFromPool(
+      { poolId: pendingMemberRemoval.value.poolId, userId: pendingMemberRemoval.value.member.user.id },
+      {
+        onSuccess: () => {
+          toast.success("Member removed from the pool.");
+        },
+        onError: () => {
+          toast.error("Failed to remove member from the pool. Please try again.");
+        },
+      },
+    );
+  }
+  pendingMemberRemoval.value = null;
 }
 </script>
 
@@ -217,7 +244,9 @@ async function handleRemoveVehicle() {
                         label: 'Remove Member',
                         icon: 'logout',
                         action: () => {
-                          toast.error('Removing members is not implemented yet.');
+                          if (!data) return;
+                          showRemoveMemberAlert = true;
+                          pendingMemberRemoval = { member, poolId: data.id };
                         },
                       },
                     ]"
@@ -354,6 +383,56 @@ async function handleRemoveVehicle() {
     "
     description="Are you sure you want to transfer ownership of this group? You will lose your admin privileges and the new owner will have full control over the group"
   />
+
+  <AlertModal
+    title="Remove Member"
+    action-label="Remove Member"
+    action-variant="destructive"
+    v-model:open="showRemoveMemberAlert"
+    v-on:action="handleRemoveMember"
+  >
+    <template #description>
+      <div class="gaps-md flex flex-col">
+        <divs class="space-y-2">
+          <p>You are about to remove the following member:</p>
+          <div class="flex items-center gap-2 rounded border px-1 py-1.5 text-left text-sm">
+            <Avatar class="h-8 w-8 rounded-lg">
+              <AvatarImage
+                :src="pendingMemberRemoval?.member.user.image ?? ''"
+                :alt="pendingMemberRemoval?.member.user.name ?? 'user'"
+              />
+              <AvatarFallback class="bg-accent rounded-lg">
+                {{ getInitials(pendingMemberRemoval?.member.user.name) }}
+              </AvatarFallback>
+            </Avatar>
+            <div class="grid flex-1 text-left text-sm leading-tight">
+              <span class="truncate font-medium">{{ pendingMemberRemoval?.member.user.name }}</span>
+              <span class="text-muted-foreground truncate text-xs">
+                {{ pendingMemberRemoval?.member.user.email }}
+              </span>
+            </div>
+          </div>
+        </divs>
+
+        <div
+          v-if="data?.vehicles.some((vehicle) => vehicle.owner.id === pendingMemberRemoval?.member.user.id)"
+          class="space-y-2"
+        >
+          <p>Removing the member will also remove their vehicles:</p>
+          <ul class="max-h-48 space-y-2 overflow-y-auto rounded border">
+            <div
+              v-for="vehicle in data?.vehicles.filter(
+                (vehicle) => vehicle.owner.id === pendingMemberRemoval?.member.user.id,
+              )"
+              :key="vehicle.data.id"
+            >
+              <VehicleItem :vehicle="vehicle.data" variant="small" />
+            </div>
+          </ul>
+        </div>
+      </div>
+    </template>
+  </AlertModal>
 
   <AlertModal
     title="Remove Vehicle"

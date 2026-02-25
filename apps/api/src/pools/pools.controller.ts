@@ -94,6 +94,15 @@ export class PoolsController {
     return await this.poolsService.removeVehicleFromPool(userSession, poolId, vehicleId);
   }
 
+  @Delete(':poolId/member/:userId')
+  async removeMemberFromPool(
+    @Session() userSession: UserSession,
+    @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
+    @Param('userId', new ZodValidationPipe(z.string())) userId: string,
+  ) {
+    return await this.poolsService.removeMemberFromPool(userSession, poolId, userId);
+  }
+
   // INVITE LOGIC
   @Post(':poolId/invite')
   async inviteToPool(

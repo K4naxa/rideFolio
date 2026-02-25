@@ -152,6 +152,21 @@ export function usePoolUpdateUserRole() {
   });
 }
 
+export function usePoolMemberRemove() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-remove-member"],
+    mutationFn: async ({ poolId, userId }: { poolId: string; userId: string }) => {
+      console.log("Removing member with userId:", userId, "from pool with poolId:", poolId);
+      return await api.delete(`/pools/${poolId}/member/${userId}`);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pools.detail(variables.poolId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
 export function usePoolInviteUser() {
   const queryClient = useQueryClient();
   return useMutation({
