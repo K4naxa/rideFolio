@@ -51,13 +51,6 @@ export const POOL_MEMBER_ROLES = {
     descriptionKey: "pool.memberRoles.memberDescription",
     description: "Can add and edit logs and vehicles",
   },
-  VIEWER: {
-    code: "VIEWER",
-    label: "Viewer",
-    nameKey: "pool.memberRoles.viewer",
-    descriptionKey: "pool.memberRoles.viewerDescription",
-    description: "Can view logs and vehicles",
-  },
 };
 export type PoolMemberRoleCode = keyof typeof POOL_MEMBER_ROLES;
 export const poolMemberRoleCodes = Object.keys(

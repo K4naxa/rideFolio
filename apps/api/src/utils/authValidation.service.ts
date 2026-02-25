@@ -65,7 +65,6 @@ export class AuthValidationService {
         OR: [
           // User is an owner or admin of the pool
           { members: { some: { userId, OR: [{ role: 'OWNER' }, { role: 'ADMIN' }] } } },
-          // Pool allows members to add vehicles AND user is a member (not viewer)
           {
             membersCanAddVehicles: true,
             members: { some: { userId, role: 'MEMBER' } },

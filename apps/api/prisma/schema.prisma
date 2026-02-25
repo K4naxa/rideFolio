@@ -88,7 +88,6 @@ enum PoolMemberRole {
   OWNER // The creator of the pool, has all rights.
   ADMIN // Can manage members and vehicles.
   MEMBER // Can view, and potentially add/edit logs based on pool settings.
-  VIEWER // Can only view data, no editing.
 }
 
 enum PoolInviteStatus {
