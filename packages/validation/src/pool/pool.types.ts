@@ -60,7 +60,9 @@ export const POOL_MEMBER_ROLES = {
   },
 };
 export type PoolMemberRoleCode = keyof typeof POOL_MEMBER_ROLES;
-export const poolMemberRoleCodes = Object.keys(POOL_MEMBER_ROLES) as PoolMemberRoleCode[];
+export const poolMemberRoleCodes = Object.keys(
+  POOL_MEMBER_ROLES,
+) as PoolMemberRoleCode[];
 export function getPoolMemberRoleNameKey(roleCode: PoolMemberRoleCode): string {
   return POOL_MEMBER_ROLES[roleCode]?.label || "pool.memberRoles.unknown";
 }
@@ -83,18 +85,18 @@ export const POOL_INVITE_STATES = {
   },
 };
 export type PoolInviteStateCode = keyof typeof POOL_INVITE_STATES;
-export const poolInviteStateCodes = Object.keys(POOL_INVITE_STATES) as PoolInviteStateCode[];
-export function getPoolInviteStateNameKey(stateCode: PoolInviteStateCode): string {
+export const poolInviteStateCodes = Object.keys(
+  POOL_INVITE_STATES,
+) as PoolInviteStateCode[];
+export function getPoolInviteStateNameKey(
+  stateCode: PoolInviteStateCode,
+): string {
   return POOL_INVITE_STATES[stateCode]?.label || "pool.inviteStates.unknown";
 }
 
 // Data types
 
-export type AccessiblePool = {
-  id: string;
-  type: PoolTypeCode;
-  name: string;
-};
+export type AccessiblePool = { id: string; type: PoolTypeCode; name: string };
 
 export type PoolDetails = {
   id: string;
@@ -127,12 +129,7 @@ export type PoolInvites = {
 export type PoolMember = {
   role: PoolMemberRoleCode;
   createdAt: Date;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image: string | null;
-  };
+  user: { id: string; name: string; email?: string; image: string | null };
 };
 
 export type PoolVehicle = {

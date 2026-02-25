@@ -65,6 +65,7 @@ img {
   --color-accent-foreground: var(--color-foreground);
 
   --color-table-header-background: var(--color-neutral-50);
+  --color-table-header-foreground: var(--color-neutral-800);
   --color-table-row-hover: var(--color-neutral-100);
 
   --color-border: var(--color-neutral-200);
@@ -163,6 +164,10 @@ img {
 
     --color-secondary: oklch(0.269 0 0);
     --color-secondary-foreground: oklch(0.985 0 0);
+
+    --color-table-header-background: var(--color-neutral-800);
+    --color-table-header-foreground: var(--color-neutral-50);
+    --color-table-row-hover: var(--color-neutral-900);
 
     --color-destructive: var(--color-red-700);
     --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */

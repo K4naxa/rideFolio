@@ -4,18 +4,16 @@ import { AccessiblePool, PoolMemberRoleCode, PoolSchemaValues, PoolDetails, Pool
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { VehicleRepository } from 'src/vehicles/vehicleRepository';
-import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 import { NotificationService } from 'src/notifications/notification.service';
+import { PoolsTransformerService } from './pools.transformer.service';
 
 @Injectable()
 export class PoolsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly vehicleRepository: VehicleRepository,
-    private readonly vehicleTransformer: VehicleTransformerService,
     private readonly authValidationService: AuthValidationService,
     private readonly notificationService: NotificationService,
+    private readonly poolTransformer: PoolsTransformerService,
   ) {}
 
   async createNewPool(userSession: UserSession, newPoolDto: PoolSchemaValues): Promise<{ newPoolId: string }> {
@@ -136,86 +134,11 @@ export class PoolsService {
       return await tx.pool.update({
         where: { id: poolId },
         data: { ...poolData },
-        include: {
-          members: {
-            select: {
-              role: true,
-              createdAt: true,
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  image: true,
-                },
-              },
-            },
-          },
-          vehicles: {
-            select: {
-              addedAt: true,
-              membersCanAddLogs: true,
-              membersCanDeleteLogs: true,
-              membersCanEditLogs: true,
-              vehicle: {
-                include: {
-                  ...this.vehicleRepository.DBInclude_BasicVehicle,
-                  owner: {
-                    select: {
-                      id: true,
-                      name: true,
-                      email: true,
-                      image: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          invites: {
-            select: {
-              id: true,
-              receiver: {
-                select: {
-                  email: true,
-                },
-              },
-              roleToGrant: true,
-              createdAt: true,
-            },
-          },
-        },
+        include: this.poolTransformer.DB_PoolDetails_Inlcude(),
       });
     });
 
-    return {
-      id: updatedPool.id,
-      type: updatedPool.type,
-      name: updatedPool.name,
-      description: updatedPool.description,
-      createdAt: updatedPool.createdAt,
-      userRole: updatedPool.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
-      members: updatedPool.members,
-      rules: {
-        membersCanAddLogs: updatedPool.membersCanAddLogs,
-        membersCanAddVehicles: updatedPool.membersCanAddVehicles,
-        membersCanEditLogs: updatedPool.membersCanEditLogs,
-        membersCanDeleteLogs: updatedPool.membersCanDeleteLogs,
-      },
-      vehicles: updatedPool.vehicles.map((v) => ({
-        addedAt: v.addedAt,
-        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
-        owner: v.vehicle.owner,
-        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
-      })),
-      invites: updatedPool.invites.map((inv) => ({
-        id: inv.id,
-        email: inv.receiver.email,
-        roleToGrant: inv.roleToGrant,
-        state: 'PENDING',
-        createdAt: inv.createdAt,
-      })),
-    };
+    return this.poolTransformer.toPoolDetails(updatedPool, userSession.user.id);
   }
 
   async addVehiclesToPool(userSession: UserSession, poolId: string, vehicleIds: string[]): Promise<PoolDetails> {
@@ -232,55 +155,7 @@ export class PoolsService {
 
       return await tx.pool.findUnique({
         where: { id: poolId },
-        include: {
-          members: {
-            select: {
-              role: true,
-              createdAt: true,
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  image: true,
-                },
-              },
-            },
-          },
-          vehicles: {
-            select: {
-              addedAt: true,
-              membersCanAddLogs: true,
-              membersCanDeleteLogs: true,
-              membersCanEditLogs: true,
-              vehicle: {
-                include: {
-                  ...this.vehicleRepository.DBInclude_BasicVehicle,
-                  owner: {
-                    select: {
-                      id: true,
-                      name: true,
-                      email: true,
-                      image: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          invites: {
-            select: {
-              id: true,
-              receiver: {
-                select: {
-                  email: true,
-                },
-              },
-              roleToGrant: true,
-              createdAt: true,
-            },
-          },
-        },
+        include: this.poolTransformer.DB_PoolDetails_Inlcude(),
       });
     });
 
@@ -288,34 +163,28 @@ export class PoolsService {
       throw new Error('Unexpected error occurred while adding vehicles to the pool.');
     }
 
-    return {
-      id: updatedPool.id,
-      type: updatedPool.type,
-      name: updatedPool.name,
-      description: updatedPool.description,
-      createdAt: updatedPool.createdAt,
-      userRole: updatedPool.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
-      members: updatedPool.members,
-      rules: {
-        membersCanAddLogs: updatedPool.membersCanAddLogs,
-        membersCanAddVehicles: updatedPool.membersCanAddVehicles,
-        membersCanEditLogs: updatedPool.membersCanEditLogs,
-        membersCanDeleteLogs: updatedPool.membersCanDeleteLogs,
+    return this.poolTransformer.toPoolDetails(updatedPool, userSession.user.id);
+  }
+
+  async removeVehicleFromPool(userSession: UserSession, poolId: string, vehicleId: string): Promise<void> {
+    // Find the pool and validate that the user has permission to remove vehicles
+    const pool = await this.prisma.pool.findUnique({
+      where: {
+        id: poolId,
+        OR: [
+          // User is an admin or owner of the pool
+          { members: { some: { userId: userSession.user.id, OR: [{ role: 'OWNER' }, { role: 'ADMIN' }] } } },
+          // Vehicle belongs to the user
+          { vehicles: { some: { vehicleId, vehicle: { ownerId: userSession.user.id } } } },
+        ],
       },
-      vehicles: updatedPool.vehicles.map((v) => ({
-        addedAt: v.addedAt,
-        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
-        owner: v.vehicle.owner,
-        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
-      })),
-      invites: updatedPool.invites.map((inv) => ({
-        id: inv.id,
-        email: inv.receiver.email,
-        roleToGrant: inv.roleToGrant,
-        state: 'PENDING',
-        createdAt: inv.createdAt,
-      })),
-    };
+    });
+
+    if (!pool) throw new NotFoundException('Pool not found or access denied.');
+
+    await this.prisma.poolVehicle.delete({
+      where: { poolId_vehicleId: { poolId, vehicleId } },
+    });
   }
 
   async getAccessiblePools(currentUserId: string): Promise<AccessiblePool[]> {
@@ -393,88 +262,11 @@ export class PoolsService {
 
     const poolDetails = await this.prisma.pool.findUnique({
       where: { id: poolId, members: { some: { userId: userSession.user.id } } },
-
-      include: {
-        members: {
-          select: {
-            role: true,
-            createdAt: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-              },
-            },
-          },
-        },
-        vehicles: {
-          select: {
-            addedAt: true,
-            membersCanAddLogs: true,
-            membersCanDeleteLogs: true,
-            membersCanEditLogs: true,
-            vehicle: {
-              include: {
-                ...this.vehicleRepository.DBInclude_BasicVehicle,
-                owner: {
-                  select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        invites: {
-          select: {
-            id: true,
-            receiver: {
-              select: {
-                email: true,
-              },
-            },
-            roleToGrant: true,
-            createdAt: true,
-          },
-        },
-      },
+      include: this.poolTransformer.DB_PoolDetails_Inlcude(),
     });
 
     if (!poolDetails) throw new NotFoundException(`Pool not found or access denied.`);
-
-    return {
-      id: poolDetails.id,
-      type: poolDetails.type,
-      name: poolDetails.name,
-      description: poolDetails.description,
-      createdAt: poolDetails.createdAt,
-      userRole: poolDetails.members.find((m) => m.user.id === userSession.user.id)?.role as PoolMemberRoleCode,
-      members: poolDetails.members,
-      rules: {
-        membersCanAddLogs: poolDetails.membersCanAddLogs,
-        membersCanAddVehicles: poolDetails.membersCanAddVehicles,
-        membersCanEditLogs: poolDetails.membersCanEditLogs,
-        membersCanDeleteLogs: poolDetails.membersCanDeleteLogs,
-      },
-      vehicles: poolDetails.vehicles.map((v) => ({
-        addedAt: v.addedAt,
-        isCurrentUserOwner: v.vehicle.owner.id === userSession.user.id,
-        owner: v.vehicle.owner,
-        data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
-      })),
-      invites: poolDetails.invites.map((inv) => ({
-        id: inv.id,
-        email: inv.receiver.email,
-        roleToGrant: inv.roleToGrant,
-        state: 'PENDING',
-        createdAt: inv.createdAt,
-      })),
-    };
+    return this.poolTransformer.toPoolDetails(poolDetails, userSession.user.id);
   }
 
   async updateUserRoleInPool(

@@ -21,33 +21,29 @@ import AvatarImage from "@/components/ui/avatar/AvatarImage.vue";
 import AvatarFallback from "@/components/ui/avatar/AvatarFallback.vue";
 import { getInitials } from "@/lib/utils";
 import Badge from "@/components/ui/badge/Badge.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 
 import { toast } from "vue-sonner";
 import PoolErrorState from "./components/PoolErrorState.vue";
 import CardDescription from "@/components/ui/card/CardDescription.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
-import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 import AlertModal from "@/modals/alertModal.vue";
-import { usePoolInviteCancel, usePoolUpdateUserRole } from "@/lib/queries/pools/pool-mutations";
+import { usePoolInviteCancel, usePoolRemoveVehicle, usePoolUpdateUserRole } from "@/lib/queries/pools/pool-mutations";
 import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
-import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { PlusIcon } from "lucide-vue-next";
 
 import PoolAddVehicleForm from "./components/PoolAddVehicleForm.vue";
 import PoolSendInviteModal from "./components/PoolSendInviteModal.vue";
+import Label from "@/components/ui/label/Label.vue";
+import { useTimeAgoIntl } from "@vueuse/core";
+import ScrollableNav from "@/components/ui/ScrollableNav.vue";
+import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 
-const { currentUser } = useCurrentUser();
 const { currentPoolId } = useCurrentPool();
 const { mutateAsync: cancelPoolInvite } = usePoolInviteCancel();
 const { mutateAsync: updateRole } = usePoolUpdateUserRole();
+const { mutateAsync: removeVehicleFromPool } = usePoolRemoveVehicle();
 const { data, isLoading, isError } = usePoolDetails(computed(() => currentPoolId.value));
 
 const canManagePool = computed(() => {
@@ -61,6 +57,8 @@ const showRoleUpdateAlert = ref(false);
 const pendingRoleUpdate = ref<{ userId: string; role: PoolMemberRoleCode } | null>(null);
 
 const showAddVehicleModal = ref(false);
+const showRemoveVehicleAlert = ref(false);
+const pendingVehicleRemoval = ref<{ poolId: string; vehicleId: string } | null>(null);
 
 function handleUpdateRoleClick(userId: string, role: PoolMemberRoleCode) {
   if (role === "OWNER") {
@@ -89,6 +87,23 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
     },
   );
 }
+
+async function handleRemoveVehicle() {
+  if (pendingVehicleRemoval.value) {
+    await removeVehicleFromPool(
+      { poolId: pendingVehicleRemoval.value.poolId, vehicleId: pendingVehicleRemoval.value.vehicleId },
+      {
+        onSuccess: () => {
+          toast.success("Vehicle removed from the pool.");
+        },
+        onError: () => {
+          toast.error("Failed to remove vehicle from the pool. Please try again.");
+        },
+      },
+    );
+  }
+  pendingVehicleRemoval.value = null;
+}
 </script>
 
 <template lang="html">
@@ -115,119 +130,164 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
       <div class="gaps-lg flex flex-col">
         <!-- Members -->
         <section v-if="data?.type === 'SHARED'">
-          <div class="flex items-end justify-between gap-4">
+          <div class="mb-1 flex items-end justify-between gap-4">
             <h3 class="flex items-center gap-2.5"><Icon name="users" /> Members</h3>
             <Button v-if="canManagePool" variant="outline" @click="showInviteModal = true">
               <Icon name="userPlus" class="mr-2" />
               Invite Member
             </Button>
           </div>
-          <Separator class="my-2" />
           <!-- Users table -->
-          <ul class="divide-y">
-            <li
-              v-for="member in data?.members"
-              :key="member.user.id"
-              class="listHover grid items-center gap-4 p-2.5 lg:gap-6"
-              :class="[canManagePool ? 'grid-cols-[auto_1fr_auto_auto]' : 'grid-cols-[auto_1fr_auto]']"
-            >
-              <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
-                <AvatarFallback class="rounded-lg text-center text-sm">
-                  {{ getInitials(member.user.name) }}
-                </AvatarFallback>
-              </Avatar>
+          <ScrollableNav>
+            <ul class="card flex w-full min-w-fit flex-col divide-y overflow-hidden">
+              <header
+                :class="[
+                  canManagePool
+                    ? 'grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem]'
+                    : 'grid-cols-[2rem_minmax(12rem,1fr)_8rem]',
+                ]"
+                class="bg-table-header-background text-table-header-foreground gaps-md grid min-w-fit px-2.5 py-1"
+              >
+                <!-- empty header for avatar column -->
+                <div />
+                <Label class="py-1 text-sm">User</Label>
+                <Label v-if="canManagePool" class="py-1 text-sm">Joined</Label>
+                <Label class="py-1 text-sm">Role</Label>
+                <!-- empty header for actions column -->
+                <div v-if="canManagePool" class="w-6" />
+              </header>
+              <li
+                v-for="member in data?.members"
+                :key="member.user.id"
+                class="listHover gaps-md grid min-w-fit items-center px-2.5 py-2.5"
+                :class="[
+                  canManagePool
+                    ? 'grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem]'
+                    : 'grid-cols-[2rem_minmax(12rem,1fr)_8rem]',
+                ]"
+              >
+                <Avatar class="h-8 w-8 rounded-lg">
+                  <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                  <AvatarFallback class="rounded-lg text-center text-sm">
+                    {{ getInitials(member.user.name) }}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div>
-                <p class="leading-tight font-semibold">{{ member.user.name }}</p>
-                <p class="text-muted-foreground text-sm">{{ member.user.email }}</p>
-              </div>
-              <div>
-                <ResponsiveSelect
-                  v-if="canManagePool"
-                  title="Member role"
-                  description="User role in the pool, determines permissions"
-                  trigger-class="text-sm medium w-32"
-                  :disabled="member.role === 'OWNER'"
-                  :options="
-                    Object.values(POOL_MEMBER_ROLES)
-                      .filter((role) => role.code !== 'OWNER' || data?.userRole === 'OWNER')
-                      .map((role) => ({
-                        label: role.label,
-                        value: role.code,
-                      }))
-                  "
-                  :modelValue="member.role"
-                  @select="(value) => handleUpdateRoleClick(member.user.id, value as PoolMemberRoleCode)"
-                  placeholder="Role"
-                >
-                </ResponsiveSelect>
+                <div>
+                  <p class="">{{ member.user.name }}</p>
+                  <p v-if="member.user.email" class="text-muted-foreground text-sm">{{ member.user.email }}</p>
+                </div>
 
-                <Badge v-else variant="outline" class="text-base">
-                  {{ getPoolMemberRoleNameKey(member.role) }}
-                </Badge>
-              </div>
+                <span v-if="canManagePool" class="text-muted-foreground text-sm">
+                  {{ useTimeAgoIntl(member.createdAt) }}
+                </span>
 
-              <div class="w-6">
-                <DropdownMenu v-if="member.role !== 'OWNER' && canManagePool">
-                  <DropdownMenuTrigger>
-                    <Icon name="dotsHorizontal" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
-                    <Separator />
-                    <DropdownMenuItem
-                      variant="destructive"
-                      :disabled="data.userRole === 'OWNER' && member.user.id === currentUser?.id"
-                    >
-                      <Icon name="logout" /> Remove Member
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </li>
+                <div class="w-32">
+                  <ResponsiveSelect
+                    v-if="canManagePool"
+                    title="Member role"
+                    description="User role in the pool, determines permissions"
+                    trigger-class="text-sm w-full "
+                    :disabled="member.role === 'OWNER'"
+                    :options="
+                      Object.values(POOL_MEMBER_ROLES)
+                        .filter((role) => role.code !== 'OWNER' || data?.userRole === 'OWNER')
+                        .map((role) => ({
+                          label: role.label,
+                          value: role.code,
+                        }))
+                    "
+                    :modelValue="member.role"
+                    @select="(value) => handleUpdateRoleClick(member.user.id, value as PoolMemberRoleCode)"
+                    placeholder="Role"
+                  >
+                  </ResponsiveSelect>
 
-            <!-- Member Invites -->
-            <li
-              v-for="invite in data?.invites"
-              :key="invite.id"
-              class="listHover grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-8 p-4"
-            >
-              <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarFallback class="rounded-lg">{{ getInitials(invite.email) }}</AvatarFallback>
-              </Avatar>
+                  <span v-else class="text-muted-foreground text-sm">
+                    {{ getPoolMemberRoleNameKey(member.role) }}
+                  </span>
+                </div>
 
-              <div>
+                <div v-if="canManagePool && member.role !== 'OWNER'">
+                  <ResponsiveDropdown
+                    title="Member actions"
+                    description="Manage member"
+                    :items="[
+                      {
+                        label: 'Remove Member',
+                        icon: 'logout',
+                        action: () => {
+                          toast.error('Removing members is not implemented yet.');
+                        },
+                      },
+                    ]"
+                  >
+                    <template #trigger>
+                      <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
+                    </template>
+                    <template #header>
+                      <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                        <Avatar class="h-8 w-8 rounded-lg">
+                          <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                          <AvatarFallback class="bg-accent rounded-lg">
+                            {{ getInitials(member?.user?.name) }}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div class="grid flex-1 text-left text-sm leading-tight">
+                          <span class="truncate font-medium">{{ member?.user?.name }}</span>
+                          <span class="text-muted-foreground truncate text-xs"> {{ member?.user?.email }} </span>
+                        </div>
+                      </div>
+                    </template>
+                  </ResponsiveDropdown>
+                </div>
+              </li>
+
+              <!-- Member Invites -->
+              <li
+                v-for="invite in data?.invites"
+                :key="invite.id"
+                class="listHover gaps-md grid min-w-fit grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem] items-center px-2.5 py-2.5"
+              >
+                <Avatar class="h-8 w-8 rounded-lg">
+                  <AvatarFallback class="rounded-lg">{{ getInitials(invite.email) }}</AvatarFallback>
+                </Avatar>
+
                 <p class="text-muted-foreground text-sm">{{ invite.email }}</p>
-              </div>
 
-              <Badge class="px-3 text-base" variant="muted">{{ getPoolInviteStateNameKey(invite.state) }} </Badge>
+                <Badge class="px-3 text-sm" variant="muted">{{ getPoolInviteStateNameKey(invite.state) }}... </Badge>
 
-              <div>
-                <Select v-if="canManagePool" disabled>
-                  <SelectTrigger>
-                    <SelectValue class="text-sm" :placeholder="getPoolMemberRoleNameKey(invite.roleToGrant)" />
-                  </SelectTrigger>
-                </Select>
-                <Badge v-else variant="outline" class="text-sm">
-                  {{ getPoolMemberRoleNameKey(invite.roleToGrant) }}
-                </Badge>
-              </div>
+                <div class="w-32">
+                  <Select v-if="canManagePool" disabled>
+                    <SelectTrigger class="w-full">
+                      <SelectValue class="text-sm" :placeholder="getPoolMemberRoleNameKey(invite.roleToGrant)" />
+                    </SelectTrigger>
+                  </Select>
+                  <Badge v-else variant="outline" class="text-sm">
+                    {{ getPoolMemberRoleNameKey(invite.roleToGrant) }}
+                  </Badge>
+                </div>
 
-              <DropdownMenu v-if="canManagePool">
-                <DropdownMenuTrigger>
-                  <Icon name="dotsHorizontal" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem @click="cancelPoolInvite(invite.id)">
-                    <Icon name="close" /> Cancel Invite
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </li>
-          </ul>
+                <div v-if="canManagePool">
+                  <ResponsiveDropdown
+                    title="Member actions"
+                    description="Manage member"
+                    :items="[
+                      {
+                        label: 'Cancel Invite',
+                        icon: 'close',
+                        action: () => cancelPoolInvite(invite.id),
+                      },
+                    ]"
+                  >
+                    <template #trigger>
+                      <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
+                    </template>
+                  </ResponsiveDropdown>
+                </div>
+              </li>
+            </ul>
+          </ScrollableNav>
         </section>
 
         <!-- Vehicles -->
@@ -249,27 +309,28 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
           <Separator />
 
           <!-- Vehicle list -->
+
           <div class="">
             <ul class="scrollbar-thin overflow-x-auto">
               <li
                 v-for="vehicle in data?.vehicles"
                 :key="vehicle.data.id"
-                class="listHover flex items-center justify-between gap-4 rounded p-2.5 md:p-4"
+                class="group listHover flex items-center justify-between gap-4 rounded py-2.5 md:p-4"
               >
-                <VehicleItem :vehicle="vehicle.data" />
+                <VehicleItem :vehicle="vehicle.data" variant="small" />
 
-                <ResponsiveDropdown
-                  v-if="canManagePool || vehicle.isCurrentUserOwner"
-                  :items="[
-                    {
-                      label: 'Remove vehicle',
-                      icon: 'logout',
-                      disabled: true,
-                      action: () => console.log('removed vehicle ', vehicle.data.name),
-                    },
-                  ]"
+                <Button
+                  class="opacity-100 transition-opacity duration-150 group-hover:opacity-100 md:opacity-0"
+                  v-if="canManagePool || data?.rules.membersCanAddVehicles"
+                  variant="outline"
+                  size="sm"
+                  @click="
+                    showRemoveVehicleAlert = true;
+                    pendingVehicleRemoval = { poolId: data.id, vehicleId: vehicle.data.id };
+                  "
                 >
-                </ResponsiveDropdown>
+                  <Icon name="trash" />
+                </Button>
               </li>
             </ul>
           </div>
@@ -281,9 +342,8 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
   <AlertModal
     title="Transfer group ownership"
     action-label="Transfer Ownership"
-    action-class="destructive"
-    :open="showRoleUpdateAlert"
-    @update:open="(val) => (showRoleUpdateAlert = val)"
+    action-variant="secondary"
+    v-model:open="showRoleUpdateAlert"
     v-on:action="
       () => {
         if (pendingRoleUpdate) {
@@ -293,6 +353,15 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
       }
     "
     description="Are you sure you want to transfer ownership of this group? You will lose your admin privileges and the new owner will have full control over the group"
+  />
+
+  <AlertModal
+    title="Remove Vehicle"
+    action-label="Remove Vehicle"
+    action-variant="destructive"
+    v-model:open="showRemoveVehicleAlert"
+    v-on:action="handleRemoveVehicle"
+    description="Are you sure you want to remove this vehicle from the pool?"
   />
 
   <!-- Invite Modal -->

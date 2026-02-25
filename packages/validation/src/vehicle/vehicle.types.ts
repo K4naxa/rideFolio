@@ -110,9 +110,4 @@ export type TAccessibleVehicle = {
   vehicleData: BasicVehicle;
 };
 
-export type TVehicleOwner = {
-  id: string;
-  name: string;
-  email: string;
-  image: string | null;
-};
+export type TVehicleOwner = { id: string; name: string };

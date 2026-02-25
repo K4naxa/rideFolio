@@ -56,7 +56,6 @@ const mainSidebarLinks: MainSideBarLinks[] = [
     to: "/todos",
   },
 ];
-const { signOut } = useAuth();
 
 const { data: vehicles } = useVehiclesAll();
 const { currentVehicleId } = useCurrentVehicle();

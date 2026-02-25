@@ -97,17 +97,22 @@ watch([isModalOpen, pool], ([open, poolData]) => {
 
 const onSubmit = handleSubmit(async (values) => {
   if (pool.value) {
-    await updatePool(
-      { poolId: pool.value.id, values },
-      {
-        onSuccess: () => {
-          handleClose();
+    try {
+      await updatePool(
+        { poolId: pool.value.id, values },
+        {
+          onSuccess: () => {
+            handleClose();
+          },
+          onError: () => {
+            toast.error("Something went wrong, please try again.");
+          },
         },
-        onError: () => {
-          toast.error("Something went wrong, please try again.");
-        },
-      },
-    );
+      );
+    } catch (error) {
+      toast.error("Something went wrong, please try again.");
+      console.log("Failed to update pool:", error);
+    }
   } else {
     await createPool(values, {
       onSuccess: (data) => {
@@ -128,7 +133,7 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="text-foreground max-w-4xl">
-      <DialogHeader class="">
+      <DialogHeader class="mb-4">
         <DialogTitle>{{ pool?.name || "Create a New Group" }}</DialogTitle>
         <DialogDescription>
           <p v-if="pool">
@@ -139,11 +144,6 @@ const onSubmit = handleSubmit(async (values) => {
       <form @submit.prevent="onSubmit" class="gaps-md flex flex-col justify-between">
         <!-- Group info -->
         <div>
-          <header class="mb-4 space-y-2 px-0">
-            <Label class="text-muted-foreground">Group info</Label>
-            <Separator />
-          </header>
-
           <div class="gaps-md flex flex-col">
             <!-- name / type -->
             <div class="gaps-md grid grid-cols-1 place-content-end items-end md:grid-cols-2">
@@ -193,7 +193,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="overflow-hidden"
           >
             <div class="mb-4 space-y-2">
-              <Label class="text-muted-foreground mb-4">Member Permissions</Label>
+              <Label class="text-muted-foreground mb-1">Member Permissions</Label>
               <Separator />
             </div>
 
@@ -251,13 +251,14 @@ const onSubmit = handleSubmit(async (values) => {
 
         <!-- Vehicles -->
         <div class="mt-6">
-          <header class="mb-4 space-y-2 px-0">
-            <Label class="text-muted-foreground">Add vehicles</Label>
+          <header class="mb-4 px-0">
+            <Label v-if="!isEditing" class="text-muted-foreground mb-1">Add vehicles</Label>
+            <Label v-else class="text-muted-foreground mb-1">Manage vehicles</Label>
             <Separator />
           </header>
 
           <div class="min-h-36">
-            <Empty v-if="usersOwnVehicles.length < 1" class="h-36">
+            <Empty v-if="usersOwnVehicles.length < 1 && !isEditing" class="h-36">
               <EmptyTitle>No vehicles available</EmptyTitle>
               <EmptyDescription>
                 You don't have any vehicles to add to this group. Create a vehicle first to add it to the group.
@@ -266,7 +267,9 @@ const onSubmit = handleSubmit(async (values) => {
 
             <Field v-else v-slot="{ value, handleChange }" name="vehicleIds" class="">
               <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
-              <ul class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
+
+              <!-- Add own vehicles if creating -->
+              <ul v-if="!isEditing" class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
                 <li
                   for="selectedVehicle"
                   v-for="{ vehicleData } in usersOwnVehicles"
@@ -287,6 +290,31 @@ const onSubmit = handleSubmit(async (values) => {
                 >
                   <VehicleItem :vehicle="vehicleData" variant="small" />
                   <Icon name="check" class="text-primary mr-2 ml-auto" v-show="value?.includes(vehicleData.id)" />
+                </li>
+              </ul>
+
+              <!-- Manage existing vehicles if editing -->
+              <ul v-else class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
+                <li
+                  for="selectedVehicle"
+                  v-for="{ data } in pool?.vehicles"
+                  :key="data.id"
+                  @click="
+                    handleChange(
+                      value?.includes(data.id)
+                        ? value.filter((id: string) => id !== data.id)
+                        : [...(value || []), data.id],
+                    )
+                  "
+                  :class="
+                    twMerge(
+                      'listHover flex cursor-pointer items-center gap-3 rounded border p-2',
+                      value?.includes(data.id) ? 'border-primary!' : 'border-border',
+                    )
+                  "
+                >
+                  <VehicleItem :vehicle="data" variant="small" />
+                  <Icon name="check" class="text-primary mr-2 ml-auto" v-show="value?.includes(data.id)" />
                 </li>
               </ul>
             </Field>

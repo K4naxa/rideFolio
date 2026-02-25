@@ -2,14 +2,6 @@
 import { ref, onMounted, onUnmounted, useTemplateRef } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 
-interface Props {
-  scrollAmount?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scrollAmount: 150,
-});
-
 const scrollContainer = useTemplateRef("scrollContainer");
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
@@ -22,17 +14,6 @@ const checkScroll = () => {
   // Add small threshold (1px) to handle floating point issues
   canScrollLeft.value = scrollLeft > 1;
   canScrollRight.value = scrollLeft < scrollWidth - clientWidth - 1;
-};
-
-const scrollTo = (direction: "left" | "right") => {
-  if (!scrollContainer.value) return;
-
-  const amount = direction === "left" ? -props.scrollAmount : props.scrollAmount;
-
-  scrollContainer.value.scrollBy({
-    left: amount,
-    behavior: "smooth",
-  });
 };
 
 // Debounced resize observer
@@ -63,14 +44,14 @@ onUnmounted(() => {
     <Transition name="fade">
       <div v-if="canScrollLeft" class="pointer-events-none absolute top-0 left-0 z-10 flex h-full items-center">
         <!-- Gradient fade -->
-        <div class="from-background via-background/80 absolute inset-y-0 left-0 w-12 bg-linear-to-r to-transparent" />
+        <div class="from-background via-background/50 absolute inset-y-0 left-0 w-10 bg-linear-to-r to-transparent" />
         <!-- Chevron button -->
-        <Icon name="chevronLeft" class="text-muted-foreground relative z-10 ml-1 size-5" />
+        <Icon name="chevronLeft" class="text-muted-foreground relative z-10 size-4" />
       </div>
     </Transition>
 
     <!-- Scrollable content -->
-    <div ref="scrollContainer" class="scrollbar-macos overflow-x-auto scroll-smooth">
+    <div ref="scrollContainer" class="scrollbar-macos min-w-0 overflow-x-auto scroll-smooth">
       <slot />
     </div>
 
@@ -81,9 +62,9 @@ onUnmounted(() => {
         class="pointer-events-none absolute top-0 right-0 z-10 flex h-full items-center justify-end"
       >
         <!-- Gradient fade -->
-        <div class="from-background via-background/80 absolute inset-y-0 right-0 w-12 bg-linear-to-l to-transparent" />
+        <div class="from-background via-background/50 absolute inset-y-0 right-0 w-10 bg-linear-to-l to-transparent" />
         <!-- Chevron button -->
-        <Icon name="chevronRight" class="text-muted-foreground relative z-10 mr-1 size-5" />
+        <Icon name="chevronRight" class="text-muted-foreground relative z-10 size-4" />
       </div>
     </Transition>
   </div>

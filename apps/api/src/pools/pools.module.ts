@@ -8,10 +8,11 @@ import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { NotificationService } from 'src/notifications/notification.service';
+import { PoolsTransformerService } from './pools.transformer.service';
 
 @Module({
   imports: [],
-  exports: [PoolsService],
+  exports: [PoolsService, PoolsTransformerService],
   controllers: [PoolsController],
   providers: [
     PoolsService,
@@ -22,6 +23,7 @@ import { NotificationService } from 'src/notifications/notification.service';
     UnitConversionService,
     AuthValidationService,
     NotificationService,
+    PoolsTransformerService,
   ],
 })
 export class PoolsModule {}

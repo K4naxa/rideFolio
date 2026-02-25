@@ -18,6 +18,7 @@ const props = withDefaults(
     title: string;
     description?: string;
     actionClass?: string;
+    actionVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
     actionLabel?: string;
     cancelLabel?: string;
   }>(),
@@ -81,7 +82,7 @@ function onActionClick() {
         <AlertDialogCancel data-cy="cancel">
           {{ cancelLabel }}
         </AlertDialogCancel>
-        <AlertDialogAction @click="onActionClick" :class="actionClass" data-cy="action">
+        <AlertDialogAction @click="onActionClick" :class="actionClass" :variant="actionVariant" data-cy="action">
           {{ actionLabel }}
         </AlertDialogAction>
       </AlertDialogFooter>

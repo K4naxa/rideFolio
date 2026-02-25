@@ -68,6 +68,29 @@ export function usePoolAddVehicles() {
   });
 }
 
+export function usePoolRemoveVehicle() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["pool-remove-vehicle"],
+    mutationFn: async ({ poolId, vehicleId }: { poolId: string; vehicleId: string }) => {
+      const response = await api.patch(`/pools/vehicle/remove/${poolId}`, { vehicleId });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData<PoolDetails>(queryKeys.pools.detail(variables.poolId), (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          vehicles: oldData.vehicles.filter((vehicle) => vehicle.data.id !== variables.vehicleId),
+        };
+      });
+
+      // Vehicle can be accessible from other groups, so invalidate entire vehicles list to ensure all data is up to date
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+    },
+  });
+}
+
 export function usePoolDelete() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -2,10 +2,9 @@
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { usePoolAddVehicles } from "@/lib/queries/pools/pool-mutations";
@@ -59,11 +58,10 @@ const submit = handleSubmit(async (values) => {
     <template #default>
       <Input type="text" name="poolId" :initial-value="props.pool.id" hidden />
 
-      <div class="min-h-36">
-        <Empty v-if="filteredVehicles.length < 1" class="h-36">
-          <EmptyTitle>No vehicles available</EmptyTitle>
+      <div class="grid min-h-36">
+        <div v-if="filteredVehicles.length < 1" class="place-self-center">
           <EmptyDescription> You don't have any vehicles to add to this group. </EmptyDescription>
-        </Empty>
+        </div>
 
         <Field v-else v-slot="{ value, handleChange }" name="vehicleIds" class="">
           <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
@@ -95,7 +93,7 @@ const submit = handleSubmit(async (values) => {
     </template>
     <template #footer>
       <Button variant="outline" type="button" @click="emit('update:open', false)"> Cancel </Button>
-      <Button v-if="usersOwnVehicles.length > 0" type="button" @click="submit()" :disabled="isSubmitting">
+      <Button v-if="filteredVehicles.length > 0" type="button" @click="submit()" :disabled="isSubmitting">
         <span v-if="isSubmitting" class="flex items-center gap-2"> <Spinner /> Adding... </span>
         <span v-else>Add Vehicles</span>
       </Button>

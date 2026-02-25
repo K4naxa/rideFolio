@@ -53,9 +53,6 @@ const isMobile = useIsMobile();
           <span v-if="props.vehicle?.model" class="beforeDot">
             {{ props.vehicle?.model }}
           </span>
-          <span v-if="props.vehicle?.year" class="beforeDot">
-            {{ props.vehicle?.year }}
-          </span>
         </div>
       </div>
     </div>
