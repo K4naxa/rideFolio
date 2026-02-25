@@ -44,6 +44,12 @@ import { usePoolInviteCancel, usePoolInviteUser, usePoolUpdateUserRole } from "@
 import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
+import Card from "@/components/ui/card/Card.vue";
+import CardHeader from "@/components/ui/card/CardHeader.vue";
+import CardTitle from "@/components/ui/card/CardTitle.vue";
+import CardContent from "@/components/ui/card/CardContent.vue";
+import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
+import { PlusIcon } from "lucide-vue-next";
 
 const { currentUser } = useCurrentUser();
 const { currentPoolId } = useCurrentPool();
@@ -114,7 +120,7 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
 </script>
 
 <template lang="html">
-  <div class="flex min-w-0 flex-1 justify-center p-4 lg:p-8">
+  <MainContentWrapper class="py-8">
     <Transition name="fade" mode="out-in">
       <!-- Loading Skeleton -->
       <PoolLoadingSkeleton v-if="isLoading" />
@@ -123,33 +129,34 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
       <PoolErrorState v-else-if="isError" />
 
       <!-- Main Content -->
-      <div v-else-if="data" class="mx-auto flex w-full flex-col lg:max-w-7xl">
-        <header class="mb-6">
+      <div v-else-if="data" class="gaps-md flex w-full flex-col">
+        <header class="">
           <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold tracking-tight">{{ data?.name }}</h1>
+            <h1 class="text-2xl font-bold tracking-tight">{{ data.name }}</h1>
             <div class="flex items-center gap-8">
               <Badge variant="secondary" class="">
-                {{ getPoolMemberRoleNameKey(data?.userRole) }}
+                {{ getPoolMemberRoleNameKey(data.userRole) }}
               </Badge>
 
               <PoolManagementDropdown v-if="!isLoading && !isError" :details="data" />
             </div>
           </div>
           <CardDescription class="text-base">{{ data.description }}</CardDescription>
-          <Separator class="mt-2" />
         </header>
 
         <div class="gaps-lg flex flex-col">
-          <div v-if="data?.type === 'SHARED'" class="gaps-sm flex flex-col">
-            <div class="gap-md flex justify-between">
-              <h3 class="text-muted-foreground flex items-center gap-2"><Icon name="users" /> Members</h3>
+          <!-- Members -->
+          <Card v-if="data?.type === 'SHARED'" class="gaps-sm flex flex-col">
+            <CardHeader class="gap-md flex justify-between">
+              <CardTitle class="flex items-center text-xl"><Icon name="users" /> Members</CardTitle>
               <Button v-if="canManagePool" variant="outline" @click="showInviteModal = true">
                 <Icon name="userPlus" class="mr-2" />
                 Invite Member
               </Button>
-            </div>
+            </CardHeader>
+            <Separator />
 
-            <div class="space-y-2">
+            <CardContent class="space-y-2">
               <!-- Users table -->
               <ul class="divide-y">
                 <li
@@ -255,26 +262,29 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
                   </DropdownMenu>
                 </li>
               </ul>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div class="space-y-2">
-            <div class="flex items-end text-lg">
-              <h3 class="flex items-center gap-2">
+          <!-- Vehicles -->
+          <Card class="space-y-2">
+            <CardHeader class="flex items-end text-lg">
+              <CardTitle class="flex items-center text-xl">
                 <Icon name="carFront" /> Vehicles <Badge variant="secondary">{{ data?.vehicles.length }} </Badge>
-              </h3>
+              </CardTitle>
               <Button
                 v-if="canManagePool || data?.rules.membersCanAddVehicles"
-                variant="default"
+                variant="outline"
                 class="ml-auto"
                 size="sm"
               >
+                <PlusIcon class="mr-2" />
                 Add Vehicle
               </Button>
-            </div>
+            </CardHeader>
+            <Separator />
 
             <!-- Vehicle list -->
-            <div class="">
+            <CardContent class="">
               <ul class="scrollbar-thin overflow-x-auto">
                 <li
                   v-for="vehicle in data?.vehicles"
@@ -297,12 +307,12 @@ async function handleRoleUpdate(userId: string, role: PoolMemberRoleCode) {
                   </ResponsiveDropdown>
                 </li>
               </ul>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </Transition>
-  </div>
+  </MainContentWrapper>
 
   <AlertModal
     title="Transfer group ownership"

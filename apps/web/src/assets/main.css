@@ -144,7 +144,7 @@ img {
     --color-background: hsl(0, 0%, 1%); /* slate-950 */
     --color-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-card: var(--color-neutral-950); /* slate-900 */
+    --color-card: oklch(12.5% 0 0); /* slate-900 */
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
     --color-background-light: oklch(16.5% 0 0);

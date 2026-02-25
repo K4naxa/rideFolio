@@ -197,9 +197,9 @@ const onSubmit = handleSubmit(async (values) => {
               <Separator />
             </div>
 
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div class="gaps-sm grid grid-cols-1 md:grid-cols-2">
               <Field v-slot="{ value, handleChange }" name="membersCanAddLogs">
-                <label class="flex items-center gap-4" data-cy="membersCanAddLogs-checkbox">
+                <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanAddLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to create logs</h4>
@@ -210,7 +210,7 @@ const onSubmit = handleSubmit(async (values) => {
               </Field>
 
               <Field v-slot="{ value, handleChange }" name="membersCanEditLogs">
-                <label class="flex items-center gap-4" data-cy="membersCanEditLogs-checkbox">
+                <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanEditLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to edit logs</h4>
@@ -221,7 +221,7 @@ const onSubmit = handleSubmit(async (values) => {
               </Field>
 
               <Field v-slot="{ value, handleChange }" name="membersCanDeleteLogs">
-                <label class="flex items-center gap-4" data-cy="membersCanDeleteLogs-checkbox">
+                <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanDeleteLogs-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to delete logs</h4>
@@ -234,7 +234,7 @@ const onSubmit = handleSubmit(async (values) => {
               </Field>
 
               <Field v-slot="{ value, handleChange }" name="membersCanAddVehicles">
-                <label class="flex items-center gap-4" data-cy="membersCanAddVehicles-checkbox">
+                <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanAddVehicles-checkbox">
                   <Checkbox :model-value="value" @update:model-value="handleChange" />
                   <div>
                     <h4>Allow members to add vehicles</h4>
