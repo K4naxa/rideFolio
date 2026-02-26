@@ -70,10 +70,10 @@ const props = defineProps<{
         </div>
       </RouterLink>
     </nav>
-    <div v-else class="text-muted-foreground text-center">
-      <h3>No Vehicles available</h3>
-      <p>Create your first vehicle to get started!</p>
-      <Button @click="openCreateVehicleModal" class="mt-3">Create Vehicle</Button>
+    <div v-else class="text-muted-foreground h-fit text-center">
+      <h4>No Vehicles available</h4>
+      <p class="text-muted-foreground text-sm">Create your first vehicle to get started!</p>
+      <Button @click="openCreateVehicleModal" class="mt-3 mb-1">Create Vehicle</Button>
     </div>
   </ScrollableNav>
 </template>

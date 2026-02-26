@@ -43,23 +43,3 @@ export function useUserPreferenceUpdate() {
     },
   });
 }
-
-export function useUserNotificationsMarkAsRead() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["notifications", "markAsRead"],
-    mutationFn: async (notificationId: string) => {
-      return await api.patch("/users/notifications/" + notificationId + "/read");
-    },
-    onSuccess: (_, variables) => {
-      queryClient.setQueryData<Notification[]>(queryKeys.user.notifications, (old) => {
-        if (!old) return old;
-        return old.map((notification) =>
-          notification.id === variables
-            ? { ...notification, isRead: true, readAt: new Date().toISOString() }
-            : notification,
-        );
-      });
-    },
-  });
-}

@@ -1,69 +1,47 @@
-import { PoolMemberRoleCode } from "../pool";
-
 export type NotificationModalType = "poolInvite";
 
-export const NOTIFICATION_TYPES = [
-  "POOL_INVITE",
-  "POOL_INVITE_ACCEPTED",
-  "POOL_INVITE_DECLINED",
-  "POOL_MEMBER_LEFT",
-  "POOL_YOUR_ROLE_CHANGED",
-  "POOL_YOUR_VEHICLE_REMOVED",
-] as const;
-export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
-
-interface NotificationHandler {
-  modalType?: NotificationModalType;
-  requiresAction: boolean;
-  onClick?: (notification: Notification, modalStore: any) => void;
-}
-
-export const NOTIFICATION_HANDLERS: Record<NotificationType, NotificationHandler> = {
-  POOL_INVITE: { modalType: "poolInvite", requiresAction: true },
-  POOL_INVITE_ACCEPTED: { requiresAction: false },
-  POOL_INVITE_DECLINED: { requiresAction: false },
-  POOL_MEMBER_LEFT: { requiresAction: false },
-  POOL_YOUR_ROLE_CHANGED: { requiresAction: false },
-  POOL_YOUR_VEHICLE_REMOVED: { requiresAction: false },
-};
-
-interface BaseNotification {
-  id: string;
-  title: string;
-  message: string;
-  requiresAction: boolean;
-  isRead: boolean;
-  createdAt: string;
-  expireAt: string;
-}
-
-export interface PoolInviteNotification extends BaseNotification {
-  type: "POOL_INVITE";
-  metadata: {
+export interface PoolNotificationMeta {
+  POOL_INVITE: {
     poolId: string;
     poolName: string;
     poolDescription: string | null;
-    poolMemberCount: number;
-    poolVehicleCount: number;
+    membersCanAddVehicles: boolean;
     inviteId: string;
-    sender: {
-      name: string;
-      image: string | null;
-    };
-    roleToGrant: PoolMemberRoleCode;
+    sender: { name: string; image: string | null };
+    roleToGrant: string;
   };
+  POOL_MEMBER_REMOVED: { poolName: string };
+  POOL_ROLE_UPDATED: { poolName: string; newRole: string };
+  POOL_VEHICLE_REMOVED: { poolName: string; vehicleName: string };
 }
 
-export interface PoolInviteResponseNotification extends BaseNotification {
-  type: "POOL_INVITE_ACCEPTED" | "POOL_INVITE_DECLINED";
-  metadata: {
-    poolId: string;
-    poolName: string;
-    responder: {
-      name: string;
-      image: string | null;
-    };
-  };
+// Merge all notification meta types into a single map
+export type NotificationMetaMap = PoolNotificationMeta;
+// All notification types variable keys of the meta map
+export type NotificationType = keyof NotificationMetaMap;
+
+export interface Notification<T extends NotificationType = NotificationType> {
+  id: string;
+  type: T;
+  title: string;
+  message: string;
+  requiresAction: boolean;
+  metadata: NotificationMetaMap[T];
+  isRead: boolean;
+  readAt: string | null;
+  createdAt: string;
+  expiresAt: string | null;
+  userId: string;
 }
 
-export type Notification = PoolInviteNotification | PoolInviteResponseNotification;
+export const NOTIFICATION_HANDLERS: Partial<
+  Record<NotificationType, { modalType: string }>
+> = { POOL_INVITE: { modalType: "poolInvite" } };
+
+// TYPE guard utility for getting typed metadata in frontend components
+export function isNotificationType<T extends NotificationType>(
+  n: Notification,
+  type: T,
+): n is Notification<T> {
+  return n.type === type;
+}

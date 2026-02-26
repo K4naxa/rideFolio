@@ -14,16 +14,6 @@ export function useUserQuery() {
   });
 }
 
-export function useUserNotifications() {
-  const { isAuthenticated } = useAuth();
-  return useQuery({
-    queryKey: queryKeys.user.notifications,
-    queryFn: async () => await fetchApi<Notification[]>("/users/notifications"),
-    enabled: isAuthenticated,
-    placeholderData: [],
-  });
-}
-
 export function useStorageBreakdown() {
   const { isAuthenticated } = useAuth();
   return useQuery({

@@ -68,14 +68,6 @@ enum TimeConsumptionTypes {
   HOURS_PER_GALLON
 }
 
-enum NotificationType {
-  POOL_INVITE
-  POOL_INVITE_ACCEPTED
-  POOL_INVITE_DECLINED
-  POOL_MEMBER_LEFT
-  POOL_YOUR_ROLE_CHANGED
-  POOL_YOUR_VEHICLE_REMOVED
-}
 
 // ** POOL INFORMATION
 enum PoolType {
@@ -654,7 +646,7 @@ model Notification {
   userId String // Recipient user ID
   user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type NotificationType
+  type String
 
   title    String
   message  String

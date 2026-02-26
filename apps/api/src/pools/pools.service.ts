@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { NotificationService } from 'src/notifications/notification.service';
 import { PoolsTransformerService } from './pools.transformer.service';
+import { POOL_INVITE_NOTIFICATION } from 'src/notifications/definitions/pool.notifications';
 
 @Injectable()
 export class PoolsService {
@@ -392,7 +393,7 @@ export class PoolsService {
   }
 
   // Invite handling
-  async inviteToPool(userSession: UserSession, inviteData: PoolInviteValues) {
+  async sendPoolInvite(userSession: UserSession, inviteData: PoolInviteValues) {
     // 1. Validate that the current user has permission to invite to the pool
     await this.canUserManagePool(userSession, inviteData.poolId);
     // 2. Find the user by email
@@ -422,16 +423,26 @@ export class PoolsService {
           select: {
             name: true,
             description: true,
-            _count: {
-              select: { members: true, vehicles: true },
-            },
+            membersCanAddVehicles: true,
           },
         },
       },
     });
 
     // 4. create a notification for the invite
-    await this.notificationService.createPoolInviteNotification(poolInvite);
+    await this.notificationService.create({
+      type: POOL_INVITE_NOTIFICATION.type,
+      userId: receiver.id,
+      meta: {
+        poolId: inviteData.poolId,
+        poolName: poolInvite.pool.name,
+        poolDescription: poolInvite.pool.description,
+        membersCanAddVehicles: poolInvite.pool.membersCanAddVehicles,
+        inviteId: poolInvite.id,
+        sender: poolInvite.sender,
+        roleToGrant: inviteData.roleToGrant,
+      },
+    });
   }
 
   async cancelPoolInvite(userSession: UserSession, inviteId: string) {

@@ -60,8 +60,11 @@ export const queryKeys = {
     byVehicle: (vehicleId: string) => ["shopping-list", "vehicle", vehicleId] as const,
   },
 
+  notification: {
+    all: ["notifications"] as const,
+  },
+
   user: {
-    notifications: ["user", "notifications"] as const,
     basicProfile: ["user", "basic-profile"] as const,
     limits: ["user", "limits"] as const,
     storageSummary: ["user", "storage-summary"] as const,

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useUserNotifications } from "@/lib/queries/user/user-queries";
 import Button from "./ui/button/Button.vue";
 import Icon from "./icons/Icon.vue";
 import Separator from "./ui/separator/Separator.vue";
@@ -7,9 +6,8 @@ import Label from "./ui/label/Label.vue";
 import PopoverTrigger from "./ui/popover/PopoverTrigger.vue";
 import Popover from "./ui/popover/Popover.vue";
 import PopoverContent from "./ui/popover/PopoverContent.vue";
-import type { Notification, PoolInviteNotification } from "@repo/validation";
+import { isNotificationType, type Notification } from "@repo/validation";
 import { computed, ref } from "vue";
-import { useUserNotificationsMarkAsRead } from "@/lib/queries/user/user-mutations";
 import { useQueryClient } from "@tanstack/vue-query";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import PoolInvitationModal from "@/modals/PoolInvitationModal.vue";
@@ -22,29 +20,29 @@ import SheetFooter from "@/components/ui/sheet/SheetFooter.vue";
 import SheetClose from "@/components/ui/sheet/SheetClose.vue";
 import SheetContent from "@/components/ui/sheet/SheetContent.vue";
 import SheetTrigger from "@/components/ui/sheet/SheetTrigger.vue";
+import { useNotificationsQuery } from "@/lib/queries/notifications/notification-queries";
+import { userNotificationMarkAsRead } from "@/lib/queries/notifications/notification-mutations";
 
 const queryClient = useQueryClient();
-const { data: notifications } = useUserNotifications();
-const { mutate: markAsRead } = useUserNotificationsMarkAsRead();
-const showUnreadIndicator = computed(() =>
-  notifications.value ? notifications.value.some((notification) => !notification.isRead) : false,
-);
+const { data: notifications } = useNotificationsQuery();
+const { mutate: markAsRead } = userNotificationMarkAsRead();
+const showUnreadIndicator = computed(() => (notifications.value ? notifications.value.length > 0 : false));
 
 const showPoolInviteModal = ref(false);
-const poolInviteModalData = ref<PoolInviteNotification | null>(null);
+const poolInviteModalData = ref<Notification<"POOL_INVITE"> | null>(null);
 
 const open = ref(false);
 function handlePopoverClose(isOpen: boolean) {
   if (!isOpen) {
     // refetch updated notifications on close (removes read notifications from the list)
-    queryClient.invalidateQueries({ queryKey: queryKeys.user.notifications });
+    queryClient.invalidateQueries({ queryKey: queryKeys.notification.all });
   }
 }
 
 function handleNotificationClick(notification: Notification) {
   if (notification.isRead) return;
   if (notification.requiresAction) {
-    if (notification.type === "POOL_INVITE") {
+    if (isNotificationType(notification, "POOL_INVITE")) {
       poolInviteModalData.value = notification;
       showPoolInviteModal.value = true;
     }
@@ -92,7 +90,7 @@ const isMobile = useIsMobile();
               <h4 class="">
                 {{ notification.title }}
               </h4>
-              <p class="text-muted-foreground">{{ notification.message }}</p>
+              <p class="text-muted-foreground text-sm">{{ notification.message }}</p>
             </div>
 
             <span v-if="!notification.isRead" class="relative flex size-3">
@@ -121,13 +119,13 @@ const isMobile = useIsMobile();
           </div>
         </Button>
       </SheetTrigger>
+
       <SheetContent>
         <SheetHeader>
           <SheetTitle> Notifications </SheetTitle>
           <SheetDescription> View and manage your notifications here. </SheetDescription>
         </SheetHeader>
-
-        <ul v-if="notifications && notifications.length > 0" class="space-y-2">
+        <ul v-if="notifications && notifications.length > 0" class="space-y-2 px-2">
           <li
             v-for="notification in notifications"
             :key="notification.id"
@@ -139,10 +137,10 @@ const isMobile = useIsMobile();
             @click="handleNotificationClick(notification)"
           >
             <div>
-              <h4 class="">
+              <h3 class="">
                 {{ notification.title }}
-              </h4>
-              <p class="text-muted-foreground">{{ notification.message }}</p>
+              </h3>
+              <p class="text-muted-foreground text-sm">{{ notification.message }}</p>
             </div>
 
             <span v-if="!notification.isRead" class="relative flex size-3">
@@ -159,5 +157,9 @@ const isMobile = useIsMobile();
     </Sheet>
   </template>
 
-  <PoolInvitationModal v-if="poolInviteModalData" :data="poolInviteModalData" v-model:open="showPoolInviteModal" />
+  <PoolInvitationModal
+    v-if="poolInviteModalData"
+    :notification="poolInviteModalData"
+    v-model:open="showPoolInviteModal"
+  />
 </template>

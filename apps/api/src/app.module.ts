@@ -18,6 +18,7 @@ import { EmailModule } from 'src/email/email.module';
 import { QuicklinksController } from './quicklinks/quicklinks.controller';
 import { QuicklinksModule } from './quicklinks/quicklinks.module';
 import { LimitsModule } from './limits/limits.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { LimitsModule } from './limits/limits.module';
     EmailModule,
     QuicklinksModule,
     LimitsModule,
+    NotificationsModule,
   ],
   controllers: [AppController, PoolsController, QuicklinksController],
   providers: [

@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { NotificationService } from 'src/notifications/notification.service';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 import { UsersController } from 'src/user/user.controller';
 import { LimitsModule } from 'src/limits/limits.module';
 import { VehiclesModule } from 'src/vehicles/vehicles.module';
 
 @Module({
-  imports: [PrismaModule, LimitsModule, VehiclesModule],
-  providers: [UsersService, NotificationService],
-  exports: [UsersService, NotificationService],
+  imports: [PrismaModule, LimitsModule, VehiclesModule, NotificationsModule],
+  providers: [UsersService],
+  exports: [UsersService],
   controllers: [UsersController],
 })
 export class UsersModule {}

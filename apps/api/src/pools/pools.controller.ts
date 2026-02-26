@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put } from '@nestjs/common';
 
 import {
   AccessiblePool,
@@ -109,7 +109,7 @@ export class PoolsController {
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(PoolInviteSchema as ZodType)) inviteData: PoolInviteValues,
   ) {
-    return await this.poolsService.inviteToPool(userSession, inviteData);
+    return await this.poolsService.sendPoolInvite(userSession, inviteData);
   }
 
   @Post('invite/:inviteId/accept')
@@ -117,7 +117,11 @@ export class PoolsController {
     @Session() userSession: UserSession,
     @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
   ) {
-    return await this.poolsService.acceptPoolInvite(userSession, inviteId);
+    Logger.debug(`User ${userSession.user.id} is accepting invite ${inviteId}`);
+    return {
+      success: true,
+    };
+    // return await this.poolsService.acceptPoolInvite(userSession, inviteId);
   }
 
   @Post('invite/:inviteId/deny')

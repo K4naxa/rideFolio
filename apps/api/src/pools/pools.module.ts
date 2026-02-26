@@ -7,11 +7,11 @@ import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.servi
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { NotificationService } from 'src/notifications/notification.service';
 import { PoolsTransformerService } from './pools.transformer.service';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
-  imports: [],
+  imports: [NotificationsModule],
   exports: [PoolsService, PoolsTransformerService],
   controllers: [PoolsController],
   providers: [
@@ -22,7 +22,6 @@ import { PoolsTransformerService } from './pools.transformer.service';
     OdometerService,
     UnitConversionService,
     AuthValidationService,
-    NotificationService,
     PoolsTransformerService,
   ],
 })
