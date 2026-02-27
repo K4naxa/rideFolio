@@ -2,11 +2,11 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/
 
 import {
   AccessiblePool,
-  PoolSchema,
-  PoolSchemaValues,
   PoolDetails,
   PoolInviteSchema,
   PoolInviteValues,
+  PoolSchema,
+  PoolSchemaValues,
 } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { PoolMemberRole } from 'prisma/generated/prisma/enums';
@@ -37,8 +37,7 @@ export class PoolsController {
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(PoolSchema as ZodType)) newPoolDto: PoolSchemaValues,
   ) {
-    const createdPool = await this.poolsService.createNewPool(userSession, newPoolDto);
-    return createdPool;
+    return await this.poolsService.createNewPool(userSession, newPoolDto);
   }
 
   @Put(':poolId')
@@ -66,7 +65,7 @@ export class PoolsController {
     return await this.poolsService.leavePool(userSession, poolId);
   }
 
-  @Patch(':poolId/user/:userId/role')
+  @Patch(':poolId/members/:userId/role')
   async updateUserRoleInPool(
     @Session() userSession: UserSession,
     @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
@@ -94,7 +93,7 @@ export class PoolsController {
     return await this.poolsService.removeVehicleFromPool(userSession, poolId, vehicleId);
   }
 
-  @Delete(':poolId/member/:userId')
+  @Delete(':poolId/members/:userId')
   async removeMemberFromPool(
     @Session() userSession: UserSession,
     @Param('poolId', new ZodValidationPipe(z.cuid())) poolId: string,
@@ -112,7 +111,7 @@ export class PoolsController {
     return await this.poolsService.sendPoolInvite(userSession, inviteData);
   }
 
-  @Post('invite/:inviteId/accept')
+  @Post('invites/:inviteId/accept')
   async acceptPoolInvite(
     @Session() userSession: UserSession,
     @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
@@ -120,7 +119,7 @@ export class PoolsController {
     return await this.poolsService.acceptPoolInvite(userSession, inviteId);
   }
 
-  @Post('invite/:inviteId/deny')
+  @Post('invites/:inviteId/deny')
   async denyPoolInvite(
     @Session() userSession: UserSession,
     @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,
@@ -128,7 +127,7 @@ export class PoolsController {
     return await this.poolsService.denyPoolInvite(userSession, inviteId);
   }
 
-  @Delete('invite/:inviteId')
+  @Delete('invites/:inviteId')
   async cancelPoolInvite(
     @Session() userSession: UserSession,
     @Param('inviteId', new ZodValidationPipe(z.cuid())) inviteId: string,

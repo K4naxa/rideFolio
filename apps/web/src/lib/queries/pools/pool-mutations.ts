@@ -124,7 +124,7 @@ export function usePoolUpdateUserRole() {
   return useMutation({
     mutationKey: ["pool-update-user-role"],
     mutationFn: async (data: { poolId: string; userId: string; role: PoolMemberRoleCode }) => {
-      return await api.patch("/pools/" + data.poolId + "/user/" + data.userId + "/role", { role: data.role });
+      return await api.patch("/pools/" + data.poolId + "/members/" + data.userId + "/role", { role: data.role });
     },
     onSuccess: (_, variants) => {
       if (variants.role === "OWNER") {
@@ -158,7 +158,7 @@ export function usePoolMemberRemove() {
     mutationKey: ["pool-remove-member"],
     mutationFn: async ({ poolId, userId }: { poolId: string; userId: string }) => {
       console.log("Removing member with userId:", userId, "from pool with poolId:", poolId);
-      return await api.delete(`/pools/${poolId}/member/${userId}`);
+      return await api.delete(`/pools/${poolId}/members/${userId}`);
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.detail(variables.poolId) });
@@ -172,7 +172,7 @@ export function usePoolInviteUser() {
   return useMutation({
     mutationKey: ["pool-invite-user"],
     mutationFn: async (data: PoolInviteValues) => {
-      return await api.post("/pools/" + data.poolId + "/invite", data);
+      return await api.post("/pools/" + data.poolId + "/invites", data);
     },
     onError: (error) => {
       if (axios.isAxiosError(error)) return error as AxiosError;
@@ -188,7 +188,7 @@ export function usePoolInviteCancel() {
   return useMutation({
     mutationKey: ["pool-invite-cancel"],
     mutationFn: async (inviteId: string) => {
-      return await api.delete("/pools/invite/" + inviteId);
+      return await api.delete("/pools/invites/" + inviteId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
@@ -201,7 +201,7 @@ export function usePoolInviteAccept() {
   return useMutation({
     mutationKey: ["pool-invite-accept"],
     mutationFn: async (inviteId: string) => {
-      return await api.post("/pools/invite/" + inviteId + "/accept");
+      return await api.post("/pools/invites/" + inviteId + "/accept");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
@@ -214,7 +214,7 @@ export function usePoolInviteDeny() {
   return useMutation({
     mutationKey: ["pool-invite-deny"],
     mutationFn: async (inviteId: string) => {
-      return await api.post("/pools/invite/" + inviteId + "/deny");
+      return await api.post("/pools/invites/" + inviteId + "/deny");
     },
   });
 }
