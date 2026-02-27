@@ -31,9 +31,17 @@ export const POOL_DISBANDED_NOTIFICATION: NotificationDefinition<'POOL_DISBANDED
   buildMessage: (meta) => `The group "${meta.poolName}" has been disbanded`,
 };
 
+export const POOL_VEHICLE_REMOVED_NOTIFICATION: NotificationDefinition<'POOL_VEHICLE_REMOVED'> = {
+  type: 'POOL_VEHICLE_REMOVED',
+  requiresAction: false,
+  defaultTitle: 'Vehicle Removed',
+  buildMessage: (meta) => `Your vehicle "${meta.vehicleName}" has been removed from the group "${meta.poolName}"`,
+};
+
 export const POOL_NOTIFICATIONS = [
   POOL_INVITE_NOTIFICATION,
   POOL_MEMBER_REMOVED_NOTIFICATION,
   POOL_ROLE_UPDATED_NOTIFICATION,
   POOL_DISBANDED_NOTIFICATION,
+  POOL_VEHICLE_REMOVED_NOTIFICATION,
 ] as const satisfies readonly NotificationDefinition<keyof NotificationMetaMap>[];

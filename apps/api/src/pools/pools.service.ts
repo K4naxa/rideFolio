@@ -10,6 +10,7 @@ import {
   POOL_DISBANDED_NOTIFICATION,
   POOL_INVITE_NOTIFICATION,
   POOL_ROLE_UPDATED_NOTIFICATION,
+  POOL_VEHICLE_REMOVED_NOTIFICATION,
 } from 'src/notifications/definitions/pool.notifications';
 
 @Injectable()
@@ -183,12 +184,45 @@ export class PoolsService {
           { vehicles: { some: { vehicleId, vehicle: { ownerId: userSession.user.id } } } },
         ],
       },
+      select: {
+        id: true,
+        name: true,
+      },
     });
 
-    if (!pool) throw new NotFoundException('Pool not found or access denied.');
-
-    await this.prisma.poolVehicle.delete({
+    const poolVehicle = await this.prisma.poolVehicle.findUnique({
       where: { poolId_vehicleId: { poolId, vehicleId } },
+      select: {
+        vehicle: {
+          select: {
+            ownerId: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!pool || !poolVehicle) throw new NotFoundException('Pool not found or access denied.');
+
+    await this.prisma.$transaction(async (tx) => {
+      // Delete the vehicle
+      await tx.poolVehicle.delete({
+        where: { poolId_vehicleId: { poolId, vehicleId } },
+      });
+
+      // Notify the vehicle owner of the removal
+      if (poolVehicle.vehicle.ownerId !== userSession.user.id) {
+        await this.notificationService.create({
+          type: POOL_VEHICLE_REMOVED_NOTIFICATION.type,
+          userId: poolVehicle.vehicle.ownerId,
+          meta: {
+            poolId: pool.id,
+            poolName: pool.name,
+            vehicleName: poolVehicle.vehicle.name,
+          },
+          transactionClient: tx,
+        });
+      }
     });
   }
 

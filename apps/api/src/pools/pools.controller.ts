@@ -102,7 +102,7 @@ export class PoolsController {
   }
 
   // INVITE LOGIC
-  @Post(':poolId/invite')
+  @Post(':poolId/invites')
   async inviteToPool(
     @Session() userSession: UserSession,
     @Body(new ZodValidationPipe(PoolInviteSchema as ZodType)) inviteData: PoolInviteValues,
