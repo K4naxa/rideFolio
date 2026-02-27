@@ -7,10 +7,9 @@ import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
 import { useModalStore } from "@/stores/modal";
 import Icons from "../icons/Icon.vue";
+import Icon from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 import NotificationsPopover from "../ResponsiveNotification.vue";
-
-import Icon from "../icons/Icon.vue";
 import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, useTemplateRef } from "vue";
+import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 
 const scrollContainer = useTemplateRef("scrollContainer");

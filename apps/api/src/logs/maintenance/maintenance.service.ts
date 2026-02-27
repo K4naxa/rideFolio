@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Maintenance, Prisma, VehicleType } from 'prisma/generated/prisma/client';
-import { MaintenanceInput, MaintenanceCategoryWithParts } from '@repo/validation';
+import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
+import { MaintenanceCategoryWithParts, MaintenanceInput } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';

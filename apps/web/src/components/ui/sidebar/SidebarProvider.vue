@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { HTMLAttributes, Ref } from "vue";
+import { computed, ref } from "vue";
 import { defaultDocument, useEventListener, useMediaQuery, useVModel } from "@vueuse/core";
 import { TooltipProvider } from "reka-ui";
-import { computed, ref } from "vue";
 import { cn } from "@/lib/utils";
 import {
   provideSidebarContext,
@@ -83,12 +83,7 @@ provideSidebarContext({
         '--sidebar-width': SIDEBAR_WIDTH,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
       }"
-      :class="
-        cn(
-          'group/sidebar-wrapper has-data-[variant=inset]:bg-background flex min-h-svh w-full',
-          props.class,
-        )
-      "
+      :class="cn('group/sidebar-wrapper has-data-[variant=inset]:bg-background flex min-h-svh w-full', props.class)"
       v-bind="$attrs"
     >
       <slot />

@@ -5,7 +5,7 @@ import Button from "@/components/ui/button/Button.vue";
 import Label from "@/components/ui/label/Label.vue";
 import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
 import { useModalStore } from "@/stores/modal";
-import type { BaseTodo, TodoActivity } from "@repo/validation";
+import type { BaseTodo } from "@repo/validation";
 import { useTimeAgoIntl } from "@vueuse/core";
 
 const props = defineProps<{

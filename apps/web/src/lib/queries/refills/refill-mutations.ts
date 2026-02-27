@@ -2,7 +2,6 @@ import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import type { RefillSchemaInput, TAccessibleVehicle } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { toast } from "vue-sonner";
 
 export function useRefillCreate() {
   const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import { api, fetchApi } from "@/lib/api";
+import { api } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { useQuery } from "@tanstack/vue-query";

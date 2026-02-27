@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { CircleQuestionMarkIcon } from "lucide-vue-next";
-import TooltipTrigger from "./tooltip/TooltipTrigger.vue";
-import TooltipContent from "./tooltip/TooltipContent.vue";
-import Tooltip from "./tooltip/Tooltip.vue";
-import TooltipProvider from "./tooltip/TooltipProvider.vue";
 import { ref } from "vue";
-import { useMediaQuery } from "@vueuse/core";
 import Popover from "@/components/ui/popover/Popover.vue";
 import PopoverTrigger from "@/components/ui/popover/PopoverTrigger.vue";
 import PopoverContent from "@/components/ui/popover/PopoverContent.vue";

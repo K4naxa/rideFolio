@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, type HTMLAttributes } from "vue";
+import { computed, type HTMLAttributes, ref } from "vue";
 import Button from "../ui/button/Button.vue";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";

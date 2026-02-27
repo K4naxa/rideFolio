@@ -9,11 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Separator
-    data-slot="sidebar-separator"
-    data-sidebar="separator"
-    :class="cn('bg-border mx-2 w-auto', props.class)"
-  >
+  <Separator data-slot="sidebar-separator" data-sidebar="separator" :class="cn('bg-border mx-2 w-auto', props.class)">
     <slot />
   </Separator>
 </template>

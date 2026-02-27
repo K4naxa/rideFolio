@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { useNoteCacheSync } from "@/lib/queries/notes/useNoteCacheSync";
-import type { EditableNote, Note, NoteSchemaType } from "@repo/validation";
+import type { Note, NoteSchemaType } from "@repo/validation";
 import { useMutation } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 

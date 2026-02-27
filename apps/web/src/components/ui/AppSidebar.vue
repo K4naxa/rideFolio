@@ -23,8 +23,6 @@ import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
 
 import { toast } from "vue-sonner";
-import Separator from "@/components/ui/separator/Separator.vue";
-import { useAuth } from "@/lib/authClient";
 import { capitalize, formatBytesToMB } from "@/lib/utils";
 import Label from "@/components/ui/label/Label.vue";
 import Badge from "@/components/ui/badge/Badge.vue";

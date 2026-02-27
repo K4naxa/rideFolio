@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Todo as PrismaTodo, Vehicle, user } from 'prisma/generated/prisma/client';
+import { Vehicle } from 'prisma/generated/prisma/client';
 import { BaseTodo, TodoSchemaType, TodoWithVehicle } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';

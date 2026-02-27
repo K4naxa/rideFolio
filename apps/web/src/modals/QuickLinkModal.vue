@@ -8,7 +8,6 @@ import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue"
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useQuicklinkCreate } from "@/lib/queries/quicklinks/quicklink-mutation";
 import { useModalStore } from "@/stores/modal";
 import { QuicklinkSchema } from "@repo/validation";

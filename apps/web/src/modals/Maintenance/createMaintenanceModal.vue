@@ -16,17 +16,14 @@ import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { type MaintenancePartInput, MaintenanceSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
-import { ErrorMessage, Field, FieldArray, useFieldArray, useForm } from "vee-validate";
-import { computed, provide, ref, toRef, watch } from "vue";
+import { ErrorMessage, Field, useFieldArray, useForm } from "vee-validate";
+import { computed, provide, watch } from "vue";
 import PartsFormField from "./components/partsFormField.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import { toast } from "vue-sonner";
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mutations";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import ResponsiveSelect, { type ResponsiveSelectOption } from "@/components/forms/ResponsiveSelect.vue";
-import { capitalize } from "@/lib/utils";
 import { PartsFieldKey } from "@/modals/Maintenance/composables/injection-keys";
 
 // Modal store

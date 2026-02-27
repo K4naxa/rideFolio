@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useEditor, EditorContent } from "@tiptap/vue-3";
+import { EditorContent, useEditor } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import { computed, watch, type HTMLAttributes } from "vue";
+import { computed, type HTMLAttributes, watch } from "vue";
 import { twMerge } from "tailwind-merge";
 import { CharacterCount } from "@tiptap/extension-character-count";
 import EditorMenuBar from "./EditorMenuBar.vue";

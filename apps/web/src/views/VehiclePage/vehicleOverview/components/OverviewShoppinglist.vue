@@ -2,10 +2,6 @@
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { Checkbox } from "@/components/ui/checkbox";
-import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";

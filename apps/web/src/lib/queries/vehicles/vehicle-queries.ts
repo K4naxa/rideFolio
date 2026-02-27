@@ -1,10 +1,10 @@
-import { api, fetchApi } from "@/lib/api";
+import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 import { type BasicVehicle, type TAccessibleVehicle, type TRefillForClient, type VehicleType } from "@repo/validation";
-import { useInfiniteQuery, useQuery } from "@tanstack/vue-query";
-import { computed, unref, type MaybeRef } from "vue";
+import { useQuery } from "@tanstack/vue-query";
+import { computed, type MaybeRef, unref } from "vue";
 
 export function useVehiclesAll() {
   const { isAuthenticated } = useAuth();

@@ -4,12 +4,9 @@ import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Icon from "@/components/icons/Icon.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
 
 import { useModalStore } from "@/stores/modal";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import { useQuicklinks } from "@/lib/queries/quicklinks/quicklink-queries";
-import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
@@ -18,13 +15,8 @@ import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.v
 import Separator from "@/components/ui/separator/Separator.vue";
 import { ref } from "vue";
 import { useQuicklinkDelete } from "@/lib/queries/quicklinks/quicklink-mutation";
-import Label from "@/components/ui/label/Label.vue";
 import { getFaviconUrl } from "@/lib/utils";
-import Card from "@/components/ui/card/Card.vue";
-import CardHeader from "@/components/ui/card/CardHeader.vue";
-import CardTitle from "@/components/ui/card/CardTitle.vue";
-import CardContent from "@/components/ui/card/CardContent.vue";
-import { ExternalLinkIcon, LinkIcon } from "lucide-vue-next";
+import { ExternalLinkIcon } from "lucide-vue-next";
 
 const isEditing = ref(false);
 

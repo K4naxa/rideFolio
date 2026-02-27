@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 
@@ -6,7 +6,6 @@ import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { BasicVehicle, TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
 import { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
-import { log } from 'console';
 
 @Controller('vehicles')
 export class VehiclesController {

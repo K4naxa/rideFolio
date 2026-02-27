@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { VehiclesService } from 'src/vehicles/vehicles.service';
 import { VehiclesController } from 'src/vehicles/vehicles.controller';

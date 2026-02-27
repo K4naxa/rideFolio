@@ -1,8 +1,7 @@
 import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
-import { queryKeys } from "@/lib/queries/queryKeys";
 import { addNetworkDelay } from "@/lib/utils";
-import { type TBasicProfile, type Notification, type StorageBreakdown } from "@repo/validation";
+import { type StorageBreakdown, type TBasicProfile } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 
 export function useUserQuery() {

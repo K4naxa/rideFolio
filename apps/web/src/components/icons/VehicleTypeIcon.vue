@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
-import Icon, { type IconProps } from "./Icon.vue";
+import Icon from "./Icon.vue";
 
 const props = defineProps<{
   type: string;

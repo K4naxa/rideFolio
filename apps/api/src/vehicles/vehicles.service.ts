@@ -2,7 +2,7 @@ import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleTransformerService } from './vehicleTransformer.service';
 import { VehicleRepository } from './vehicleRepository';
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ActivityItem, TAccessibleVehicle, VehicleInput, VehicleType, BasicVehicle } from '@repo/validation';
+import { ActivityItem, BasicVehicle, TAccessibleVehicle, VehicleInput, VehicleType } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';

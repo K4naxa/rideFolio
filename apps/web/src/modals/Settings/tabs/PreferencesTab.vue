@@ -9,7 +9,7 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useUserPreferenceUpdate } from "@/lib/queries/user/user-mutations";
 
-import { useThemeStore, type ThemeType } from "@/stores/theme";
+import { type ThemeType, useThemeStore } from "@/stores/theme";
 import {
   consumptionUnits_distance,
   consumptionUnits_hour,

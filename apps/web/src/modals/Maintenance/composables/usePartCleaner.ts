@@ -4,7 +4,7 @@ import type {
   MaintenancePartInput,
   PartLocation,
 } from "@repo/validation";
-import { unref, type MaybeRef } from "vue";
+import { type MaybeRef, unref } from "vue";
 
 // Composable for data cleanup when vehicle type changes
 // Ensures parts are valid for the new vehicle type

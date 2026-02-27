@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { ref, type HTMLAttributes } from "vue";
+import { type HTMLAttributes, ref } from "vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.vue";
 import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";

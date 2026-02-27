@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Badge from "@/components/ui/badge/Badge.vue";
 import Icon from "@/components/icons/Icon.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";

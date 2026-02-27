@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { ShoppingListItemSchema, ShoppingItemValues, ShoppingItem } from '@repo/validation';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ShoppingItem, ShoppingItemValues, ShoppingListItemSchema } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ShoppingListService } from 'src/shopping-list/shopping-list.service';

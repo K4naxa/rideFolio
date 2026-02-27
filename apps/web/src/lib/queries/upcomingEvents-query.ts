@@ -2,7 +2,7 @@ import { fetchApi } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import type { ActivityItem } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
-import { unref, type MaybeRef } from "vue";
+import { type MaybeRef, unref } from "vue";
 
 export const useUpcomingActivityQuery = (vehicleId?: MaybeRef<string>) => {
   const id = unref(vehicleId);

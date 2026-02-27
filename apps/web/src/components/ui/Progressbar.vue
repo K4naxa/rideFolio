@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { percent } from "motion-v";
-import { h, type HTMLAttributes } from "vue";
-import { Motion } from "motion-v";
+import { Motion, percent } from "motion-v";
+import { type HTMLAttributes } from "vue";
 
 const props = defineProps<{
   percent: number;

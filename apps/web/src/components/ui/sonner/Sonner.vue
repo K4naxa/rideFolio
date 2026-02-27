@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Icon from "@/components/icons/Icon.vue";
 import type { ToasterProps } from "vue-sonner";
 import { Toaster as Sonner } from "vue-sonner";
 

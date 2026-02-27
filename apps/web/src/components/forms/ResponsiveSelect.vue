@@ -13,7 +13,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { computed, ref, type HTMLAttributes } from "vue";
+import { computed, type HTMLAttributes, ref } from "vue";
 import { twMerge } from "tailwind-merge";
 import Label from "../ui/label/Label.vue";
 

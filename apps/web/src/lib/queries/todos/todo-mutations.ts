@@ -1,4 +1,3 @@
-import Sonner from "@/components/ui/sonner/Sonner.vue";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { type ActivityItem, type BaseTodo, type TodoSchemaType } from "@repo/validation";

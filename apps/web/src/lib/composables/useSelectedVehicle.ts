@@ -1,6 +1,6 @@
 import type { IconProps } from "@/components/icons/Icon.vue";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
-import { computed, unref, watch, type MaybeRef } from "vue";
+import { computed, type MaybeRef, unref, watch } from "vue";
 
 export function useSelectedVehicle(vehicleId: MaybeRef<string | undefined>) {
   const { data: vehicles } = useVehiclesAll();

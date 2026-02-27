@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
-
-import Label from "@/components/ui/label/Label.vue";
 import type {
   MaintenanceCategoryPart,
   MaintenanceCategoryWithParts,
@@ -10,7 +8,7 @@ import type {
   PartLocation,
   TAccessibleVehicle,
 } from "@repo/validation";
-import { computed, inject, ref, watch, watchEffect } from "vue";
+import { computed, inject, ref, watch } from "vue";
 
 import ResponsiveCombobox from "@/components/forms/ResponsiveCombobox.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
@@ -22,7 +20,6 @@ import { Empty } from "@/components/ui/empty";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { twMerge } from "tailwind-merge";
 import { timestamp } from "@vueuse/core";
 import { PartsFieldKey } from "@/modals/Maintenance/composables/injection-keys";

@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import { VehicleInputSchema, type VehicleInput } from "@repo/validation";
+import { type VehicleInput } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 

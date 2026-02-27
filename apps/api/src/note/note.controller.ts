@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { EditableNote, Note, NoteSchema, NoteSchemaType } from '@repo/validation';
+import { Note, NoteSchema, NoteSchemaType } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { NoteService } from 'src/note/note.service';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';

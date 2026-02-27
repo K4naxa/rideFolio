@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/vue-query";
-import type { Note, NoteSchemaType } from "@repo/validation";
+import type { Note } from "@repo/validation";
 import { queryKeys } from "@/lib/queries/queryKeys";
 
 export function useNoteCacheSync() {

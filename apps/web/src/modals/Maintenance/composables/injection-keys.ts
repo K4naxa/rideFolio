@@ -1,6 +1,6 @@
 import type { MaintenancePartInput } from "@repo/validation";
 import type { FieldEntry } from "vee-validate";
-import type { ComputedRef, InjectionKey, Ref } from "vue";
+import type { InjectionKey, Ref } from "vue";
 
 export const PartsFieldKey: InjectionKey<{
   push: (item: MaintenancePartInput) => void;

@@ -3,7 +3,7 @@ import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 import type { MaintenanceCategoryWithParts } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
-import { computed, unref, type MaybeRef } from "vue";
+import { computed, type MaybeRef, unref } from "vue";
 
 export function useMaintenancePartCategories(typeCode: MaybeRef<string | undefined>) {
   return useQuery({

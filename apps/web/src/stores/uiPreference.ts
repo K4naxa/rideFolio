@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { unref, type MaybeRef } from "vue";
+import { type MaybeRef, unref } from "vue";
 
 type UI_PREFERENCE_ELEMENTS = "consumptionChart";
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { type MaintenancePartDisplay, MaintenancePartInput } from '@repo/validation';
-import { MaintenancePart, Vehicle, VehiclePart, VehiclePartLocation } from 'prisma/generated/prisma/client';
+import { MaintenancePart, VehiclePart, VehiclePartLocation } from 'prisma/generated/prisma/client';
 
 type MaintenancePartWithRelations = MaintenancePart & {
   part: VehiclePart;

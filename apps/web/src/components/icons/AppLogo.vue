@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { HTMLAttributes } from "vue";
 import { computed } from "vue";
 import { cn } from "@/lib/utils";
-import type { HTMLAttributes } from "vue";
 
 interface Props {
   class?: HTMLAttributes["class"];
@@ -21,19 +21,7 @@ const iconClass = computed(() => cn(props.class));
       stroke-linecap="round"
       stroke-linejoin="round"
     />
-    <path
-      d="M2 17L12 22L22 17"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M2 12L12 17L22 12"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
+    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 </template>

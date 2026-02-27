@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { computed, ref, useTemplateRef, watch } from "vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
@@ -8,7 +6,7 @@ import VChart from "vue-echarts";
 import { graphic, use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
-import { TooltipComponent, GridComponent } from "echarts/components";
+import { GridComponent, TooltipComponent } from "echarts/components";
 import { type EChartsOption } from "echarts";
 import { useThemeStore } from "@/stores/theme";
 import Label from "@/components/ui/label/Label.vue";

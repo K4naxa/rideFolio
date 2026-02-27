@@ -1,4 +1,4 @@
-import { ref, watch, type Ref } from "vue";
+import { ref, type Ref, watch } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { toast } from "vue-sonner";
 import type { Note, NoteSchemaType } from "@repo/validation";

@@ -6,7 +6,7 @@ import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { usePoolInviteUser } from "@/lib/queries/pools/pool-mutations";
-import { POOL_MEMBER_ROLES, PoolInviteSchema, type PoolDetails } from "@repo/validation";
+import { POOL_MEMBER_ROLES, type PoolDetails, PoolInviteSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { isAxiosError } from "axios";
 import { ErrorMessage, Field, useForm } from "vee-validate";

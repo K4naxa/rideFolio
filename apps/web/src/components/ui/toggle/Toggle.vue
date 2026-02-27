@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { ToggleEmits, ToggleProps } from "reka-ui";
+import { Toggle, useForwardPropsEmits } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import type { ToggleVariants } from ".";
-import { reactiveOmit } from "@vueuse/core";
-import { Toggle, useForwardPropsEmits } from "reka-ui";
 import { toggleVariants } from ".";
+import { reactiveOmit } from "@vueuse/core";
 import { twMerge } from "tailwind-merge";
 
 const props = withDefaults(

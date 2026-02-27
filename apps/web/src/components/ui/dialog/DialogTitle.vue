@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DialogTitleProps } from "reka-ui";
+import { DialogTitle, useForwardProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
-import { DialogTitle, useForwardProps } from "reka-ui";
 import { cn } from "@/lib/utils";
 import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Icon from "@/components/icons/Icon.vue";
-import { CheckIcon, SaveIcon, XIcon } from "lucide-vue-next";
+import { CheckIcon, SaveIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { type NoteSchemaType, type Note, NoteSchema } from "@repo/validation";
-import { computed, onUnmounted, ref, watch, useSlots } from "vue";
+import { type Note, NoteSchema, type NoteSchemaType } from "@repo/validation";
+import { computed, onUnmounted, ref, useSlots, watch } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";

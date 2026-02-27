@@ -4,9 +4,8 @@ import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 import type { AccessiblePool, PoolDetails } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
-import { computed, unref, watchEffect, type MaybeRef } from "vue";
+import { computed, type MaybeRef, unref } from "vue";
 import { useRouter } from "vue-router";
-import { toast } from "vue-sonner";
 
 export function usePoolsAll() {
   const { isAuthenticated } = useAuth();

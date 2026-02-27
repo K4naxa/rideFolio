@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";

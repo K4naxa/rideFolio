@@ -20,7 +20,7 @@ import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useVehicleByIdQuery, useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
-import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema, type BasicVehicle } from "@repo/validation";
+import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";

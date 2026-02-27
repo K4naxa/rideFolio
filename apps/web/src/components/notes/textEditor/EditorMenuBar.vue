@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, type Component } from "vue";
+import { type Component, computed, h } from "vue";
 import { twMerge } from "tailwind-merge";
 import { type Editor } from "@tiptap/vue-3";
 import Toggle from "@/components/ui/toggle/Toggle.vue";
