@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { Avatar } from "@/components/ui/avatar";
 import AvatarFallback from "@/components/ui/avatar/AvatarFallback.vue";
 import AvatarImage from "@/components/ui/avatar/AvatarImage.vue";
@@ -52,15 +52,11 @@ function handleAccept() {
       console.log("Invite accepted successfully");
       if (hasOwnVehicles.value && props.notification.metadata.membersCanAddVehicles) {
         console.log("User can add vehicles, moving to vehicle selection stage");
-
         stage.value = "vehicles";
       } else {
-        console.log("No vehicles to add or pool doesn't allow adding vehicles, closing modal");
-        console.log("Allow adding vehicles:", props.notification.metadata.membersCanAddVehicles);
-        console.log("User has own vehicles:", hasOwnVehicles.value);
         emit("update:open", false);
-        // markAsRead(props.notification.id);
       }
+      markAsRead(props.notification.id);
     },
   });
 }
@@ -68,18 +64,17 @@ function handleAccept() {
 function handleDeny() {
   denyInvite(props.notification.metadata.inviteId, {
     onSuccess: () => {
-      // markAsRead(props.notification.id);
+      markAsRead(props.notification.id);
       emit("update:open", false);
     },
   });
 }
 
-function handleClose(val: boolean) {
-  if (!val) stage.value = "invite";
-  emit("update:open", val);
+function handleClose() {
+  emit("update:open", false);
 }
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit, values, resetForm } = useForm({
   validationSchema: toTypedSchema(object({ poolId: cuid(), vehicleIds: array(cuid()) })),
   initialValues: {
     poolId: props.notification.metadata.poolId,
@@ -90,7 +85,6 @@ const { handleSubmit, values } = useForm({
 const submit = handleSubmit(async (values) => {
   await addVehiclesToPool(values, {
     onSuccess() {
-      // markAsRead(props.notification.id);
       emit("update:open", false);
     },
     onError() {
@@ -98,13 +92,27 @@ const submit = handleSubmit(async (values) => {
     },
   });
 });
+
+watch(
+  () => props.open,
+  (newOpen) => {
+    if (newOpen) {
+      stage.value = "invite";
+      resetForm({
+        values: {
+          vehicleIds: [],
+        },
+      });
+    }
+  },
+);
 </script>
 
 <template>
   <Dialog :open="open" @update:open="handleClose">
     <slot name="trigger" />
 
-    <DialogContent class="w-full max-w-md overflow-hidden">
+    <DialogContent class="w-full max-w-md overflow-hidden" @interact-outside="(e) => e.preventDefault()">
       <Transition name="slide-left" mode="out-in" class="">
         <div v-if="stage === 'invite'" key="invite" class="gaps-md flex flex-col">
           <!-- ─── STAGE 1: Invitation ─────────────────────────────── -->
@@ -194,7 +202,7 @@ const submit = handleSubmit(async (values) => {
 
           <!-- Footer -->
           <DialogFooter>
-            <Button variant="outline" @click="handleClose(false)"> Skip </Button>
+            <Button variant="outline" @click="handleClose()"> Skip </Button>
             <Button :disabled="values.vehicleIds?.length === 0" @click="submit()"> Add & Done </Button>
           </DialogFooter>
         </div>

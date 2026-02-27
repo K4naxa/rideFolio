@@ -72,7 +72,7 @@ const isMobile = useIsMobile();
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="center" class="w-xs" key="notificationContent">
+      <PopoverContent class="w-xs" key="notificationContent" align="end">
         <Label class="text-muted-foreground"> Notifications </Label>
         <Separator class="my-2" />
         <ul v-if="notifications && notifications.length > 0" class="space-y-2">
