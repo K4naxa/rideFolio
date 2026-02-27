@@ -41,15 +41,18 @@ function handlePopoverClose(isOpen: boolean) {
 
 function handleNotificationClick(notification: Notification) {
   if (notification.isRead) return;
-  if (notification.requiresAction) {
-    if (isNotificationType(notification, "POOL_INVITE")) {
-      poolInviteModalData.value = notification;
-      showPoolInviteModal.value = true;
-    }
-  } else {
+  if (!notification.requiresAction) {
     if (!notification.isRead) {
+      console.log("marking notification read");
       markAsRead(notification.id);
     }
+    return;
+  }
+
+  // Notifications that require user input or validation to be discarded
+  if (isNotificationType(notification, "POOL_INVITE")) {
+    poolInviteModalData.value = notification;
+    showPoolInviteModal.value = true;
   }
 }
 

@@ -1,12 +1,15 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool, PoolMemberRole, Prisma } from 'prisma/generated/prisma/client';
-import { AccessiblePool, PoolMemberRoleCode, PoolSchemaValues, PoolDetails, PoolInviteValues } from '@repo/validation';
+import { AccessiblePool, PoolDetails, PoolInviteValues, PoolSchemaValues } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { NotificationService } from 'src/notifications/notification.service';
 import { PoolsTransformerService } from './pools.transformer.service';
-import { POOL_INVITE_NOTIFICATION } from 'src/notifications/definitions/pool.notifications';
+import {
+  POOL_INVITE_NOTIFICATION,
+  POOL_ROLE_UPDATED_NOTIFICATION,
+} from 'src/notifications/definitions/pool.notifications';
 
 @Injectable()
 export class PoolsService {
@@ -23,7 +26,7 @@ export class PoolsService {
 
     try {
       createdPool = await this.prisma.$transaction(async (prisma) => {
-        // 1. Create new pool
+        // 1. Create a new pool
         const pool = await prisma.pool.create({
           data: {
             ...poolData,
@@ -106,7 +109,7 @@ export class PoolsService {
 
       // If changing from SHARED to PRIVATE,
       if (pool.type === 'SHARED' && poolData.type === 'PRIVATE') {
-        // remove all members except owner
+        // remove all members except the owner
         await tx.poolMember.deleteMany({
           where: {
             poolId,
@@ -132,7 +135,7 @@ export class PoolsService {
       }
 
       // update pool details
-      return await tx.pool.update({
+      return tx.pool.update({
         where: { id: poolId },
         data: { ...poolData },
         include: this.poolTransformer.DB_PoolDetails_Inlcude(),
@@ -154,7 +157,7 @@ export class PoolsService {
         })),
       });
 
-      return await tx.pool.findUnique({
+      return tx.pool.findUnique({
         where: { id: poolId },
         include: this.poolTransformer.DB_PoolDetails_Inlcude(),
       });
@@ -227,9 +230,9 @@ export class PoolsService {
 
     // TODO: Send notification to the removed user about their removal from the pool
   }
+
   async getAccessiblePools(currentUserId: string): Promise<AccessiblePool[]> {
-    const pools = await this.prisma.pool.findMany({
-      // 1. Find all pools where the current user is a member
+    return this.prisma.pool.findMany({
       where: {
         members: {
           some: {
@@ -237,69 +240,16 @@ export class PoolsService {
           },
         },
       },
-      // 2. Use `include` to fetch related data.
       select: {
         id: true,
         type: true,
         name: true,
-        membersCanAddLogs: true,
-        membersCanDeleteLogs: true,
-        membersCanEditLogs: true,
-        membersCanAddVehicles: true,
-
-        // 3. Include the 'members' relation, but ONLY the one for the current user.
-        // This is the key to getting the role efficiently.
-        members: {
-          where: {
-            userId: currentUserId, // Filter to get just this user's membership
-          },
-          select: {
-            role: true, // We only need their role from this record
-          },
-        },
-
-        // Include the count of vehicles and members for UI purposes.
-        _count: {
-          select: {
-            vehicles: true,
-            members: true,
-          },
-        },
-        // You can also include a snippet of vehicle info if needed for the UI
-        vehicles: {
-          select: {
-            vehicle: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              },
-            },
-          },
-        },
       },
     });
-
-    // 4. Transform the data for a cleaner frontend experience.
-    const transformedPools = pools.map((pool) => {
-      const currentUserRole = pool.members[0]?.role || null;
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { members, vehicles, ...restOfPool } = pool;
-
-      return {
-        ...restOfPool,
-        userRole: currentUserRole as PoolMemberRoleCode, // Add the role to the top level
-        vehicles: vehicles.map((v) => v.vehicle), // Flatten the vehicle structure
-      };
-    });
-
-    return transformedPools;
   }
 
   async getPoolDetails(userSession: UserSession, poolId: string): Promise<PoolDetails> {
     // Validate that the user has access to the pool
-
     const poolDetails = await this.prisma.pool.findUnique({
       where: { id: poolId, members: { some: { userId: userSession.user.id } } },
       include: this.poolTransformer.DB_PoolDetails_Inlcude(),
@@ -319,18 +269,18 @@ export class PoolsService {
     await this.canUserManagePool(userSession, poolId);
 
     if (role === 'OWNER') {
-      // Validate that current user is the OWNER of the pool
-      const isOwner = await this.prisma.poolMember.findUnique({
-        where: {
-          poolId_userId: { poolId, userId: userSession.user.id },
-          role: 'OWNER',
-        },
-      });
-      if (!isOwner) {
-        throw new ForbiddenException(`Only the current OWNER can transfer ownership.`);
-      }
-
       await this.prisma.$transaction(async (tx) => {
+        // Validate that the current user is the OWNER of the pool
+        const isOwner = await tx.poolMember.findUnique({
+          where: {
+            poolId_userId: { poolId, userId: userSession.user.id },
+            role: 'OWNER',
+          },
+        });
+        if (!isOwner) {
+          throw new ForbiddenException(`Only the current OWNER can transfer ownership.`);
+        }
+
         // 1. Update the current OWNER to ADMIN
         await tx.poolMember.update({
           where: { poolId_userId: { poolId, userId: userSession.user.id } },
@@ -346,6 +296,24 @@ export class PoolsService {
       await this.prisma.poolMember.update({
         where: { poolId_userId: { poolId, userId } },
         data: { role },
+      });
+    }
+
+    const pool = await this.prisma.pool.findUnique({
+      where: { id: poolId },
+      select: { name: true },
+    });
+    if (!pool) throw new NotFoundException('Pool not found.');
+
+    // Notify the user about the role update if he did not do it himself (admins)
+    if (userSession.user.id !== userId) {
+      await this.notificationService.create({
+        type: POOL_ROLE_UPDATED_NOTIFICATION.type,
+        userId,
+        meta: {
+          poolName: pool.name,
+          newRole: role,
+        },
       });
     }
   }

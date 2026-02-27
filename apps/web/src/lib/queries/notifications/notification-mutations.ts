@@ -13,7 +13,7 @@ export function userNotificationMarkAsRead() {
       queryClient.setQueryData<Notification[]>(queryKeys.notification.all, (oldData) => {
         if (!oldData) return oldData;
         return oldData.map((notification) =>
-          notification.id === variable ? { ...notification, read: true } : notification,
+          notification.id === variable ? { ...notification, isRead: true } : notification,
         );
       });
     },

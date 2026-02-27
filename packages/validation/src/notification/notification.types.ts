@@ -12,12 +12,21 @@ export interface PoolNotificationMeta {
   };
   POOL_MEMBER_REMOVED: { poolName: string };
   POOL_ROLE_UPDATED: { poolName: string; newRole: string };
-  POOL_VEHICLE_REMOVED: { poolName: string; vehicleName: string };
+  POOL_VEHICLE_REMOVED: {
+    poolId: string;
+    poolName: string;
+    vehicleName: string;
+  };
+
+  POOL_DISBANDED: {
+    poolId: string;
+    poolName: string;
+  };
 }
 
-// Merge all notification meta types into a single map
+// Merge all notification meta-types into a single map
 export type NotificationMetaMap = PoolNotificationMeta;
-// All notification types variable keys of the meta map
+// All notification types variable keys of the meta-map
 export type NotificationType = keyof NotificationMetaMap;
 
 export interface Notification<T extends NotificationType = NotificationType> {
