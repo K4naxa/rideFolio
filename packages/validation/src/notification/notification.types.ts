@@ -1,5 +1,4 @@
-export type NotificationModalType = "poolInvite";
-
+// Insert poolId to values that get automatically deleted when the pool is deleted
 export interface PoolNotificationMeta {
   POOL_INVITE: {
     poolId: string;
@@ -11,7 +10,7 @@ export interface PoolNotificationMeta {
     roleToGrant: string;
   };
   POOL_MEMBER_REMOVED: { poolName: string };
-  POOL_ROLE_UPDATED: { poolName: string; newRole: string };
+  POOL_ROLE_UPDATED: { poolId: string; poolName: string; newRole: string };
   POOL_VEHICLE_REMOVED: {
     poolId: string;
     poolName: string;
@@ -19,7 +18,6 @@ export interface PoolNotificationMeta {
   };
 
   POOL_DISBANDED: {
-    poolId: string;
     poolName: string;
   };
 }
@@ -42,10 +40,6 @@ export interface Notification<T extends NotificationType = NotificationType> {
   expiresAt: string | null;
   userId: string;
 }
-
-export const NOTIFICATION_HANDLERS: Partial<
-  Record<NotificationType, { modalType: string }>
-> = { POOL_INVITE: { modalType: "poolInvite" } };
 
 // TYPE guard utility for getting typed metadata in frontend components
 export function isNotificationType<T extends NotificationType>(

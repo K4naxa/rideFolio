@@ -17,6 +17,7 @@ export class NotificationService {
     userId: string;
     meta: NotificationMetaMap[TType];
     overrides?: { title?: string; message?: string; requiresAction?: boolean };
+    transactionClient?: Prisma.TransactionClient;
   }): Promise<void> {
     const def = this.registry.get(params.type);
     const message = params.overrides?.message ?? def.buildMessage(params.meta);
@@ -24,17 +25,31 @@ export class NotificationService {
     const requiresAction = params.overrides?.requiresAction ?? def.requiresAction;
     const expiresAt = def.ttlSeconds ? new Date(Date.now() + def.ttlSeconds * 1000) : null;
 
-    await this.prisma.notification.create({
-      data: {
-        type: def.type,
-        userId: params.userId,
-        title,
-        message,
-        requiresAction,
-        expiresAt,
-        metadata: params.meta as Prisma.InputJsonValue,
-      },
-    });
+    if (params.transactionClient) {
+      await params.transactionClient.notification.create({
+        data: {
+          type: def.type,
+          userId: params.userId,
+          title,
+          message,
+          requiresAction,
+          expiresAt,
+          metadata: params.meta as Prisma.InputJsonValue,
+        },
+      });
+    } else {
+      await this.prisma.notification.create({
+        data: {
+          type: def.type,
+          userId: params.userId,
+          title,
+          message,
+          requiresAction,
+          expiresAt,
+          metadata: params.meta as Prisma.InputJsonValue,
+        },
+      });
+    }
 
     // Future: emit event handler here to push real-time updates to the user via WebSocket or similar
   }

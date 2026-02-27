@@ -20,8 +20,18 @@ export function usePoolCreate() {
       const response = await api.post<{ newPoolId: string }>("/pools", data);
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.pools.all });
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData<AccessiblePool[]>(queryKeys.pools.all, (oldData) => {
+        if (!oldData) return oldData;
+
+        const newPool = {
+          name: variables.name,
+          id: data.newPoolId,
+          type: variables.type,
+        };
+
+        return [...oldData, newPool];
+      });
     },
   });
 }
@@ -34,7 +44,7 @@ export function usePoolUpdate() {
       const response = await api.put<PoolDetails>(`/pools/${poolId}`, values);
       return response.data;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       queryClient.setQueryData<PoolDetails>(queryKeys.pools.detail(data.id), (oldData) => {
         if (!oldData) return oldData;
         return data;

@@ -7,6 +7,7 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
 import { NotificationService } from 'src/notifications/notification.service';
 import { PoolsTransformerService } from './pools.transformer.service';
 import {
+  POOL_DISBANDED_NOTIFICATION,
   POOL_INVITE_NOTIFICATION,
   POOL_ROLE_UPDATED_NOTIFICATION,
 } from 'src/notifications/definitions/pool.notifications';
@@ -311,6 +312,7 @@ export class PoolsService {
         type: POOL_ROLE_UPDATED_NOTIFICATION.type,
         userId,
         meta: {
+          poolId: poolId,
           poolName: pool.name,
           newRole: role,
         },
@@ -319,25 +321,44 @@ export class PoolsService {
   }
 
   async deletePool(userSession: UserSession, poolId: string): Promise<void> {
-    const validatedPoolId = await this.prisma.poolMember.findUnique({
-      where: {
-        poolId_userId: {
-          poolId: poolId,
-          userId: userSession.user.id,
-        },
-        role: 'OWNER', // Ensure the user is an OWNER
-      },
-      select: {
-        poolId: true,
+    const poolToDelete = await this.prisma.pool.findUnique({
+      where: { id: poolId, members: { some: { userId: userSession.user.id, role: 'OWNER' } } },
+      include: {
+        members: true,
       },
     });
 
-    if (!validatedPoolId) {
+    if (!poolToDelete) {
       throw new ForbiddenException(`Pool not found or access denied.`);
     }
 
-    await this.prisma.pool.delete({
-      where: { id: validatedPoolId.poolId },
+    await this.prisma.$transaction(async (tx) => {
+      // 1. Clean up any stale notifications referencing this pool
+      await tx.notification.deleteMany({
+        where: {
+          metadata: {
+            path: ['poolId'],
+            equals: poolId,
+          },
+        },
+      });
+
+      // 2. Notify members that the group has been disbanded
+      for (const member of poolToDelete.members) {
+        await this.notificationService.create({
+          type: POOL_DISBANDED_NOTIFICATION.type,
+          userId: member.userId,
+          meta: {
+            poolName: poolToDelete.name,
+          },
+          transactionClient: tx,
+        });
+      }
+
+      // 3. Delete the pool
+      await tx.pool.delete({
+        where: { id: poolId },
+      });
     });
   }
 

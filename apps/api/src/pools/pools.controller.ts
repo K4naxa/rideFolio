@@ -21,8 +21,7 @@ export class PoolsController {
 
   @Get('accessible')
   async getAccessiblePools(@Session() userSession: UserSession): Promise<AccessiblePool[]> {
-    const pools = await this.poolsService.getAccessiblePools(userSession.user.id);
-    return pools;
+    return await this.poolsService.getAccessiblePools(userSession.user.id);
   }
   @Get(':poolId')
   async getPoolDetails(
