@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DateInput from "@/components/forms/DateInput.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
@@ -25,6 +24,7 @@ import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mut
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { PartsFieldKey } from "@/modals/Maintenance/composables/injection-keys";
+import FormDateInput from "@/components/forms/FormDateInput.vue";
 
 // Modal store
 const modalStore = useModalStore();
@@ -35,7 +35,7 @@ const { preferredCurrencySymbol } = useCurrentUser();
 // Maintenance queries
 const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
 
-const { resetForm, handleSubmit, values, isSubmitting, setFieldValue } = useForm({
+const { resetForm, handleSubmit, values, isSubmitting } = useForm({
   name: "Create Maintenance Form",
   validationSchema: toTypedSchema(MaintenanceSchema),
   initialValues: {
@@ -109,7 +109,7 @@ watch(isModalOpen, (open) => {
             </Field>
 
             <div class="grid grid-cols-2 gap-4">
-              <DateInput name="date" :initial-value="new Date()" disableFuture />
+              <FormDateInput name="date" :initial-value="new Date()" disableFuture />
               <Input name="odometer" type="number" placeholder="Odometer" :suffix="selectedVehicleOdometerUnit" />
             </div>
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DateInput from "@/components/forms/DateInput.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
@@ -29,6 +28,7 @@ import { toast } from "vue-sonner";
 import Label from "@/components/ui/label/Label.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { useTodoById } from "@/lib/queries/todos/todo-queries";
+import FormDateInput from "@/components/forms/FormDateInput.vue";
 
 const { currentVehicle } = useCurrentVehicle();
 
@@ -202,7 +202,7 @@ const onSubmit = handleSubmit(async (values) => {
         <Transition name="slide">
           <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
             <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
-              <DateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
+              <FormDateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
               <Input
                 name="dueOdometer"
                 type="number"

@@ -3,11 +3,10 @@ import type { DateValue } from "@internationalized/date";
 import { DateFormatter, fromDate, getLocalTimeZone } from "@internationalized/date";
 import { CalendarIcon } from "lucide-vue-next";
 
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useField } from "vee-validate";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import Drawer from "@/components/ui/drawer/Drawer.vue";
 import DrawerTrigger from "@/components/ui/drawer/DrawerTrigger.vue";
@@ -20,33 +19,40 @@ import DrawerClose from "@/components/ui/drawer/DrawerClose.vue";
 
 const props = withDefaults(
   defineProps<{
-    name: string;
+    modelValue?: Date | null;
     label?: string;
-    validator?: string;
-    initialValue?: Date;
-    validateOnBlur?: boolean;
-    validateOnChange?: boolean;
-    disableFuture?: boolean;
     placeholder?: string;
+    disableFuture?: boolean;
+
+    errorMessage?: string | null;
+    disabled?: boolean;
   }>(),
   {
-    validateOnBlur: true,
-    validateOnChange: false,
-    initialValue: undefined,
+    modelValue: null,
+    disableFuture: false,
+    disabled: false,
   },
 );
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: Date | null): void;
+  (e: "change", value: Date | null): void;
+}>();
 
 const open = ref(false);
 const isMobile = useIsMobile();
 
-const { value, errorMessage, handleChange } = useField(props.name, props.validator, {
-  initialValue: props.initialValue,
-  validateOnValueUpdate: props.validateOnChange,
-});
-
 const selectedDate = ref<DateValue | undefined>(
-  props.initialValue ? fromDate(new Date(props.initialValue), getLocalTimeZone()) : undefined,
+  props.modelValue ? fromDate(new Date(props.modelValue), getLocalTimeZone()) : undefined,
 );
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    selectedDate.value = newVal ? fromDate(new Date(newVal), getLocalTimeZone()) : undefined;
+  },
+);
+
 const df = computed(
   () =>
     new DateFormatter(navigator.language, {
@@ -56,13 +62,14 @@ const df = computed(
 
 function onCalendarSelect(val: DateValue | undefined) {
   selectedDate.value = val;
-  handleChange(val ? val.toDate(getLocalTimeZone()) : null);
+  const dateOrNull = val ? val.toDate(getLocalTimeZone()) : null;
+  // Emitted both so v-model works AND FormDateInput can bind to @change.
+  emit("update:modelValue", dateOrNull);
+  emit("change", dateOrNull);
   open.value = false;
 }
 
-const formattedDate = computed(() => {
-  return value.value ? df.value.format(value.value) : null;
-});
+const formattedDate = computed(() => (props.modelValue ? df.value.format(props.modelValue) : null));
 </script>
 
 <template>
@@ -71,8 +78,8 @@ const formattedDate = computed(() => {
     <Popover v-if="!isMobile" v-model:open="open" key="DateInput">
       <PopoverTrigger as-child>
         <Button variant="input">
-          <CalendarIcon :class="['mr-2 h-4 w-4', value ? '' : 'stroke-muted-foreground']" />
-          <span v-if="value">{{ formattedDate }}</span>
+          <CalendarIcon :class="['mr-2 h-4 w-4', modelValue ? '' : 'stroke-muted-foreground']" />
+          <span v-if="modelValue">{{ formattedDate }}</span>
           <span v-else class="text-muted-foreground">{{ placeholder || "Pick a date" }}</span>
         </Button>
       </PopoverTrigger>
@@ -89,8 +96,8 @@ const formattedDate = computed(() => {
     <Drawer v-else v-model:open="open" title="Select Date" key="DateInputDrawer">
       <DrawerTrigger as-child>
         <Button variant="input">
-          <CalendarIcon :class="['mr-2 h-4 w-4', value ? '' : 'stroke-muted-foreground']" />
-          <span v-if="value">{{ formattedDate }}</span>
+          <CalendarIcon :class="['mr-2 h-4 w-4', modelValue ? '' : 'stroke-muted-foreground']" />
+          <span v-if="modelValue">{{ formattedDate }}</span>
           <span v-else class="text-muted-foreground">{{ placeholder || "Pick a date" }}</span>
         </Button>
       </DrawerTrigger>

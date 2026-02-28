@@ -2,18 +2,6 @@
 import Icon from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Input from "@/components/ui/input/Input.vue";
-import Label from "@/components/ui/label/Label.vue";
-import Select from "@/components/ui/select/Select.vue";
-import SelectContent from "@/components/ui/select/SelectContent.vue";
-import SelectItem from "@/components/ui/select/SelectItem.vue";
-import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
-import SelectValue from "@/components/ui/select/SelectValue.vue";
-import Sheet from "@/components/ui/sheet/Sheet.vue";
-import SheetContent from "@/components/ui/sheet/SheetContent.vue";
-import SheetFooter from "@/components/ui/sheet/SheetFooter.vue";
-import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
-import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
 import Skeleton from "@/components/ui/skeleton/Skeleton.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useTimelineQuery } from "@/lib/queries/timeline/timeline-query.ts";
@@ -21,6 +9,9 @@ import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import type { TimelineEventType, TimelineItem, TimelineQueryInput } from "@repo/validation";
 import { twMerge } from "tailwind-merge";
 import { computed, ref } from "vue";
+import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import DateInput from "@/components/forms/DateInput.vue";
+import ResponsivePopover from "@/components/forms/ResponsivePopover.vue";
 
 // ─── Filters state ──────────────────────────────────────────────────────────
 
@@ -34,8 +25,8 @@ const filters = ref<TimelineQueryInput>({
 
 // Temporary state used inside the filter sheet before confirming
 const tempVehicleId = ref<string>("");
-const tempStartDate = ref<string>("");
-const tempEndDate = ref<string>("");
+const tempStartDate = ref<Date | undefined>(undefined);
+const tempEndDate = ref<Date | undefined>(undefined);
 
 // ─── Query ───────────────────────────────────────────────────────────────────
 
@@ -72,8 +63,6 @@ const setAllTypes = () => {
 
 // ─── Advanced filter sheet ───────────────────────────────────────────────────
 
-const filtersOpen = ref(false);
-
 const advancedFilterCount = computed(() => {
   let c = 0;
   if (filters.value.vehicleId) c++;
@@ -82,29 +71,22 @@ const advancedFilterCount = computed(() => {
   return c;
 });
 
-const openFilters = () => {
-  tempVehicleId.value = filters.value.vehicleId ?? "";
-  tempStartDate.value = filters.value.startDate ? new Date(filters.value.startDate).toISOString().split("T")[0] : "";
-  tempEndDate.value = filters.value.endDate ? new Date(filters.value.endDate).toISOString().split("T")[0] : "";
-  filtersOpen.value = true;
-};
-
-const applyFilters = () => {
+const applyFilters = (close: () => void) => {
   filters.value = {
     ...filters.value,
     vehicleId: tempVehicleId.value || undefined,
     startDate: tempStartDate.value ? new Date(tempStartDate.value) : null,
     endDate: tempEndDate.value ? new Date(tempEndDate.value) : null,
   };
-  filtersOpen.value = false;
+  close();
 };
 
-const clearAdvancedFilters = () => {
+const clearAdvancedFilters = (close: () => void) => {
   tempVehicleId.value = "";
-  tempStartDate.value = "";
-  tempEndDate.value = "";
+  tempStartDate.value = undefined;
+  tempEndDate.value = undefined;
   filters.value = { ...filters.value, vehicleId: undefined, startDate: null, endDate: null };
-  filtersOpen.value = false;
+  close();
 };
 
 const clearAllFilters = () => {
@@ -121,18 +103,11 @@ const selectedVehicleName = computed(
 
 // ─── Timeline grouping ───────────────────────────────────────────────────────
 
-function isSameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
-
 function dateGroupLabel(timestamp: Date | string): string {
   const date = new Date(timestamp);
   const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-  if (isSameDay(date, today)) return "Today";
-  if (isSameDay(date, yesterday)) return "Yesterday";
-  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  if (date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth()) return "This Month";
+  return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 }
 
 const groupedItems = computed(() => {
@@ -204,17 +179,42 @@ const typeConfig = {
           </Button>
 
           <!-- Advanced filter button -->
-          <Button variant="outline" size="sm" class="relative" @click="openFilters">
-            <Icon name="filter" />
-            <span class="hidden sm:inline">Filters</span>
-            <!-- Active count pill -->
-            <span
-              v-if="advancedFilterCount > 0"
-              class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
-            >
-              {{ advancedFilterCount }}
-            </span>
-          </Button>
+
+          <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
+            <template #trigger>
+              <Button variant="outline" size="sm" class="relative">
+                <Icon name="filter" />
+                <span class="hidden sm:inline">Filters</span>
+                <span
+                  v-if="advancedFilterCount > 0"
+                  class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
+                >
+                  {{ advancedFilterCount }}
+                </span>
+              </Button>
+            </template>
+
+            <template #content>
+              <div class="gaps-sm flex flex-col md:w-sm">
+                <div>
+                  <VehicleSelect
+                    placeholder="Select a vehicle"
+                    :value="tempVehicleId"
+                    @value-change="(value) => (tempVehicleId = value)"
+                  />
+                </div>
+                <div class="gaps-sm grid grid-cols-2">
+                  <date-input placeholder="Select a date" label="From" v-model="tempStartDate" />
+                  <date-input placeholder="Select a date" label="To" v-model="tempEndDate" />
+                </div>
+              </div>
+            </template>
+
+            <template #footer="{ close }">
+              <Button variant="outline" @click="clearAdvancedFilters(close)">Clear filters</Button>
+              <Button variant="default" @click="applyFilters(close)">Apply</Button>
+            </template>
+          </ResponsivePopover>
         </div>
       </header>
 
@@ -319,6 +319,11 @@ const typeConfig = {
             <!-- Icon + connector -->
             <div class="flex w-8 shrink-0 flex-col items-center">
               <div
+                class="w-px flex-1"
+                :class="twMerge('mb-1 w-px flex-1', itemIdx === 0 ? 'bg-transparent' : 'bg-border')"
+                style="min-height: 1.5rem"
+              />
+              <div
                 :class="
                   twMerge(
                     'flex size-8 shrink-0 items-center justify-center rounded-full',
@@ -330,8 +335,7 @@ const typeConfig = {
               </div>
               <!-- Connector line to next item -->
               <div
-                v-if="itemIdx < groupItems.length - 1"
-                class="bg-border mt-1 w-px flex-1"
+                :class="twMerge('mt-1 w-px flex-1', itemIdx === groupItems.length - 1 ? 'bg-transparent' : 'bg-border')"
                 style="min-height: 1.5rem"
               />
             </div>
@@ -446,53 +450,6 @@ const typeConfig = {
       </div>
     </div>
   </MainContentWrapper>
-
-  <!-- ── Filter sheet ──────────────────────────────────────────────── -->
-  <Sheet v-model:open="filtersOpen">
-    <SheetContent side="bottom" class="max-h-[85dvh] overflow-y-auto rounded-t-xl">
-      <SheetHeader class="text-left">
-        <SheetTitle>Filters</SheetTitle>
-      </SheetHeader>
-
-      <div class="flex flex-col gap-6 py-4">
-        <!-- Vehicle -->
-        <div class="flex flex-col gap-2">
-          <Label class="text-sm font-medium">Vehicle</Label>
-          <Select v-model="tempVehicleId">
-            <SelectTrigger class="w-full">
-              <SelectValue placeholder="All vehicles" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All vehicles</SelectItem>
-              <SelectItem v-for="v in vehicles" :key="v.vehicleData.id" :value="v.vehicleData.id">
-                {{ v.vehicleData.name }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <!-- Date range -->
-        <div class="flex flex-col gap-2">
-          <Label class="text-sm font-medium">Date range</Label>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1.5">
-              <Label class="text-muted-foreground text-xs">From</Label>
-              <Input v-model="tempStartDate" type="date" />
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <Label class="text-muted-foreground text-xs">To</Label>
-              <Input v-model="tempEndDate" type="date" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <SheetFooter class="flex flex-col-reverse gap-2 sm:flex-row">
-        <Button variant="outline" class="flex-1" @click="clearAdvancedFilters"> Clear filters </Button>
-        <Button class="flex-1" @click="applyFilters"> Apply </Button>
-      </SheetFooter>
-    </SheetContent>
-  </Sheet>
 </template>
 
 <style scoped></style>

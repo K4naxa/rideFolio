@@ -14,7 +14,6 @@ import Input from "@/components/ui/input/Input.vue";
 import Switch from "@/components/ui/switch/Switch.vue";
 import HelpTooltip from "@/components/ui/HelpTooltip.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
-import DateInput from "@/components/forms/DateInput.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Button from "@/components/ui/button/Button.vue";
@@ -27,6 +26,7 @@ import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
 
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
+import FormDateInput from "@/components/forms/FormDateInput.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol, preferredVolumeUnit } = useCurrentUser();
@@ -153,7 +153,7 @@ watch(isModalOpen, (open) => {
 
           <!-- Date & Odometer -->
           <div class="gaps-sm grid md:grid-cols-2">
-            <DateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
+            <FormDateInput name="date" :initial-value="new Date()" disableFuture data-cy="date-input" />
             <div class="relative">
               <Input
                 name="odometer"

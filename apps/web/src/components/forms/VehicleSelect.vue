@@ -86,6 +86,7 @@ function handleSelect(value: string) {
         <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
           <div
             v-for="vehicle in filteredVehicles"
+            key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
             class="listHover flex cursor-pointer items-center justify-between rounded select-none"
           >

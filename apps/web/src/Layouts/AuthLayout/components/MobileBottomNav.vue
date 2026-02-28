@@ -143,7 +143,7 @@ function handleLogout() {
         </DrawerContent>
       </Drawer>
 
-      <RouterLink to="#" class="bottom-nav-button"> <RouteIcon class="icon" /> Timeline </RouterLink>
+      <RouterLink to="/timeline" class="bottom-nav-button"> <RouteIcon class="icon" /> Timeline </RouterLink>
 
       <Drawer v-model:open="isProfileDrawerOpen" placement="bottom">
         <DrawerTrigger asChild>
@@ -157,9 +157,9 @@ function handleLogout() {
             <div class="flex w-full items-center gap-2 rounded px-1 py-1.5 text-left text-sm">
               <Avatar class="h-12 w-12 rounded-lg">
                 <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-                <AvatarFallback v-else class="bg-accent rounded-lg text-lg">{{
-                  getInitials(user?.name)
-                }}</AvatarFallback>
+                <AvatarFallback v-else class="bg-accent rounded-lg text-lg">
+                  {{ getInitials(user?.name) }}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p class="truncate text-base font-medium">{{ user?.name }}</p>
