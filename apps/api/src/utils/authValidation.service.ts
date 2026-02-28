@@ -1,6 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Pool, Vehicle } from 'prisma/generated/prisma/client';
+import { Pool, Vehicle } from 'prisma/generated/client';
 
 @Injectable()
 export class AuthValidationService {
@@ -83,10 +83,7 @@ export class AuthValidationService {
     return pool;
   }
 
-  async canCreateLogs(userId: string, vehicleId?: string | null): Promise<Vehicle> {
-    if (!vehicleId) {
-      throw new NotFoundException('Vehicle not found or access denied.');
-    }
+  async canCreateLogs(userId: string, vehicleId: string): Promise<Vehicle> {
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: vehicleId,

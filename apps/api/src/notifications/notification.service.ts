@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserSession } from '@thallesp/nestjs-better-auth';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotificationRegistry } from './registry/notification.registry';
 import type { NotificationMetaMap, NotificationType } from '@repo/validation';

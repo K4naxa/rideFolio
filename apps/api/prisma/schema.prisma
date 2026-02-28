@@ -1,6 +1,6 @@
 generator client {
   provider     = "prisma-client"
-  output       = "../prisma/generated/prisma"
+  output       = "./generated"
   moduleFormat = "cjs"
 }
 
@@ -68,7 +68,6 @@ enum TimeConsumptionTypes {
   HOURS_PER_GALLON
 }
 
-
 // ** POOL INFORMATION
 enum PoolType {
   PRIVATE // A user's personal default pool
@@ -108,7 +107,7 @@ enum TodoPriority {
   CRITICAL
 }
 
-model subscriptionPlan {
+model SubscriptionPlan {
   id       String  @id @default(cuid())
   code     String  @unique // e.g. 'FREE', 'PRO', 'ENTERPRISE'
   nameKey  String // i18n key for plan name
@@ -127,14 +126,14 @@ model subscriptionPlan {
   // ID To link DB to payment provider plans
   stripePriceId String? @unique
 
-  subscriptions subscription[]
-  users         user[] // users on this plan
+  subscriptions Subscription[]
+  users         User[] // users on this plan
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model subscription {
+model Subscription {
   id     String @id @default(cuid())
   userId String @unique
   planId String
@@ -150,11 +149,11 @@ model subscription {
 
   // Did they click 'Cancel subscription'? Access remains until period end.
   cancelAtPeriodEnd Boolean          @default(false)
-  user              user             @relation(fields: [userId], references: [id])
-  plan              subscriptionPlan @relation(fields: [planId], references: [id])
+  user              User             @relation(fields: [userId], references: [id])
+  plan              SubscriptionPlan @relation(fields: [planId], references: [id])
 }
 
-model user {
+model User {
   id            String   @id @default(cuid())
   name          String
   email         String   @unique
@@ -166,8 +165,8 @@ model user {
   role ROLE @default(USER)
 
   planId       String
-  plan         subscriptionPlan @relation(fields: [planId], references: [id])
-  subscription subscription?
+  plan         SubscriptionPlan @relation(fields: [planId], references: [id])
+  subscription Subscription?
 
   maxStorageBytes   BigInt         @default(0) // synced from plan limits, but stored here for quick access
   storageUsageBytes BigInt         @default(0)
@@ -214,7 +213,7 @@ model StorageUsage {
 
   category StorageUsageCategory // e.g., "images", "notes", "logs"
   bytes    BigInt               @default(0) // Number of bytes used in this category
-  user     user                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, category])
 }
@@ -222,7 +221,7 @@ model StorageUsage {
 model QuickLink {
   id     String @id @default(cuid())
   userId String
-  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name        String
   url         String
@@ -301,7 +300,7 @@ model Vehicle {
   name String
 
   ownerId String
-  owner   user   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   type        String
   vehicleType VehicleType @relation(fields: [type], references: [code], onDelete: Cascade)
@@ -381,7 +380,7 @@ model Refill {
   updatedAt DateTime @updatedAt
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  user    user?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([userId])
@@ -408,7 +407,7 @@ model Maintenance {
   updatedAt DateTime @updatedAt
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  user    user?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   // Many-to-many relationship with parts
   parts MaintenancePart[]
@@ -478,8 +477,8 @@ model Todo {
   completedById    String?
 
   sizeBytes   Int
-  createdBy   user? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  completedBy user? @relation("CompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  createdBy   User? @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  completedBy User? @relation("CompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([isCompleted])
@@ -493,7 +492,7 @@ model Note {
   content   String? @default("")
   pinned    Boolean @default(false)
 
-  createdByUser user?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdByUser User?    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedAt     DateTime @updatedAt
 
   sizeBytes   Int
@@ -516,7 +515,7 @@ model ShoppingListItem {
 
   sizeBytes   Int
   createdById String?
-  createdBy   user?   @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy   User?   @relation("ShoppingListCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([vehicleId])
   @@index([isPurchased])
@@ -552,7 +551,7 @@ model PoolMember {
   poolId    String
   pool      Pool           @relation(fields: [poolId], references: [id], onDelete: Cascade)
   userId    String
-  user      user           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   // A member joins a pool at a specific time.
   createdAt DateTime       @default(now())
 
@@ -597,10 +596,10 @@ model PoolInvite {
   pool   Pool   @relation(fields: [poolId], references: [id], onDelete: Cascade)
 
   senderId String
-  sender   user   @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
+  sender   User   @relation("SentBy", fields: [senderId], references: [id], onDelete: Cascade)
 
   receiverId String
-  receiver   user   @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver   User   @relation("ReceivedBy", fields: [receiverId], references: [id], onDelete: Cascade)
 
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -644,7 +643,7 @@ model VehicleMonthlyStatistics {
 model Notification {
   id     String @id @default(cuid())
   userId String // Recipient user ID
-  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   type String
 
@@ -679,7 +678,7 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Verification {
@@ -702,5 +701,5 @@ model Session {
   userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

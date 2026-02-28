@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PoolDetails, PoolMemberRoleCode } from '@repo/validation';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 

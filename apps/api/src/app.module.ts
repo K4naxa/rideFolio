@@ -19,6 +19,7 @@ import { QuicklinksController } from './quicklinks/quicklinks.controller';
 import { QuicklinksModule } from './quicklinks/quicklinks.module';
 import { LimitsModule } from './limits/limits.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { TimelineModule } from './timeline/timeline.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     QuicklinksModule,
     LimitsModule,
     NotificationsModule,
+    TimelineModule,
   ],
   controllers: [AppController, PoolsController, QuicklinksController],
   providers: [

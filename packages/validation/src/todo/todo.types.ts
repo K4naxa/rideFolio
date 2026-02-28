@@ -1,4 +1,5 @@
 import { TConversionResult, VehicleMinimal } from "../vehicle";
+import { UserMinimal } from "../user";
 
 export type TodoDueOdometer = TConversionResult & {
   overdue: boolean;
@@ -18,17 +19,12 @@ export type BaseTodo = {
   isCompleted: boolean;
   dueDate: TodoDueDate | null;
   dueOdometer: TodoDueOdometer | null;
-  vehicleId: string;
   createdData: {
-    name: string;
-    image: string | null;
+    user: UserMinimal | null;
     date: Date;
   };
   completedData: {
-    user: {
-      name: string;
-      image: string | null;
-    };
+    user: UserMinimal | null;
     odometer: TConversionResult;
     date: Date | null;
   } | null;

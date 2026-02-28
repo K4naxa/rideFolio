@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Note, NoteSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { LimitsService } from 'src/limits/limits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';

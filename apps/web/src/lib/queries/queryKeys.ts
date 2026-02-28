@@ -31,6 +31,7 @@ export const queryKeys = {
     byVehicle: (vehicleId: string) => ["timelines", "vehicle", vehicleId] as const,
     byPool: (poolId: string) => ["timelines", "pool", poolId] as const,
     byUser: (userId: string) => ["timelines", "user", userId] as const,
+    filtered: (query: object) => ["timelines", "filtered", query] as const,
   },
 
   // ============ TODOS DOMAIN ============

@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { type MaintenancePartDisplay, MaintenancePartInput } from '@repo/validation';
-import { MaintenancePart, VehiclePart, VehiclePartLocation } from 'prisma/generated/prisma/client';
+import { MaintenancePart } from 'prisma/generated/client';
+import { MaintenancePartGetPayload, MaintenancePartInclude } from '../../../prisma/generated/models/MaintenancePart';
 
-type MaintenancePartWithRelations = MaintenancePart & {
-  part: VehiclePart;
-  location: VehiclePartLocation;
-};
 type MaintenancePartDbFormat = Omit<MaintenancePart, 'id'>;
 @Injectable()
 export class MaintenancePartTransformer {
-  toDisplayFormat(dbParts: MaintenancePartWithRelations[]): MaintenancePartDisplay[] {
+  // Used to fetch Maintenance Parts for a given maintenance
+  DB_MaintenancePart_Include() {
+    return {
+      part: true,
+      location: true,
+    } satisfies MaintenancePartInclude;
+  }
+
+  toDisplayFormat(dbParts: DB_MaintenancePart[]): MaintenancePartDisplay[] {
     const partGroups = new Map<string, MaintenancePartDisplay>();
 
     for (const dbPart of dbParts) {
       const existing = partGroups.get(dbPart.groupId);
       if (existing) {
-        // Add location to existing group
+        // Add location to an existing group
         if (dbPart.locationId && dbPart.location) {
           existing.locations.push({
             id: dbPart.location.id,
@@ -24,7 +29,7 @@ export class MaintenancePartTransformer {
           });
         }
       } else {
-        // Create new group entry
+        // Create a new group entry
         partGroups.set(dbPart.groupId, {
           groupId: dbPart.groupId,
           partId: dbPart.part.id,
@@ -54,7 +59,7 @@ export class MaintenancePartTransformer {
     const dbParts: MaintenancePartDbFormat[] = [];
 
     for (const part of inputParts) {
-      // If no locations, create a single row with null location
+      // If no locations, create a single row with a null location
       if (part.locations?.length === 0 || !part.locations) {
         dbParts.push({
           maintenanceId,
@@ -84,3 +89,7 @@ export class MaintenancePartTransformer {
     return dbParts;
   }
 }
+
+export type DB_MaintenancePart = MaintenancePartGetPayload<{
+  include: ReturnType<MaintenancePartTransformer['DB_MaintenancePart_Include']>;
+}>;

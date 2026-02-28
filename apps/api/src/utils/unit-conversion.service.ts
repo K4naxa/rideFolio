@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { user, Vehicle } from 'prisma/generated/prisma/client';
+import { User, Vehicle } from 'prisma/generated/client';
 import { ConsumptionUnitCode, TConversionResult } from '@repo/validation';
 
 @Injectable()
 export class UnitConversionService {
-  getVolumeDataByUnitType(volume_L: number, volumeUnitType: user['volumeUnit']): TConversionResult {
+  getVolumeDataByUnitType(volume_L: number, volumeUnitType: User['volumeUnit']): TConversionResult {
     switch (volumeUnitType) {
       case 'LITER':
         return {
@@ -177,7 +177,7 @@ export class UnitConversionService {
   litersToGallons(LITER: number | null): number {
     return Number(LITER ? LITER / 3.78541 : 0);
   }
-  normalizeFuelAmount(fuelAmount: number, type: user['volumeUnit']): number {
+  normalizeFuelAmount(fuelAmount: number, type: User['volumeUnit']): number {
     return type === 'GALLON' ? this.gallonsToLiters(fuelAmount) : fuelAmount;
   }
   normalizeOdometer(odometer: number, type: Vehicle['odometerType']): number {

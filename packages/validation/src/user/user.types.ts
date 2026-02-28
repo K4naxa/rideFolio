@@ -2,8 +2,18 @@ import { ActiveSubscriptionPlan } from "../subscription";
 
 // Volume units
 export const VOLUME_UNITS = {
-  LITER: { code: "LITER", label: "Liter", unit: "L", nameKey: "user.volumeUnits.liter" },
-  GALLON: { code: "GALLON", label: "Gallon", unit: "gal", nameKey: "user.volumeUnits.gallon" },
+  LITER: {
+    code: "LITER",
+    label: "Liter",
+    unit: "L",
+    nameKey: "user.volumeUnits.liter",
+  },
+  GALLON: {
+    code: "GALLON",
+    label: "Gallon",
+    unit: "gal",
+    nameKey: "user.volumeUnits.gallon",
+  },
 } as const;
 export type VolumeUnitCode = keyof typeof VOLUME_UNITS;
 export const volumeUnitCodes = Object.keys(VOLUME_UNITS) as VolumeUnitCode[];
@@ -87,13 +97,19 @@ export const CONSUMPTION_UNITS = {
     nameKey: "user.consumptionUnits.hoursPerGallon",
   },
 };
-export const consumptionUnits_distance = Object.values(CONSUMPTION_UNITS).filter(
-  (unit) => unit.odometerType === "distance",
+export const consumptionUnits_distance = Object.values(
+  CONSUMPTION_UNITS,
+).filter((unit) => unit.odometerType === "distance");
+export const consumptionUnitCodes_distance = consumptionUnits_distance.map(
+  (v) => v.code,
 );
-export const consumptionUnitCodes_distance = consumptionUnits_distance.map((v) => v.code);
 
-export const consumptionUnits_hour = Object.values(CONSUMPTION_UNITS).filter((unit) => unit.odometerType === "hour");
-export const consumptionUnitCodes_hour = consumptionUnits_hour.map((v) => v.code);
+export const consumptionUnits_hour = Object.values(CONSUMPTION_UNITS).filter(
+  (unit) => unit.odometerType === "hour",
+);
+export const consumptionUnitCodes_hour = consumptionUnits_hour.map(
+  (v) => v.code,
+);
 
 export type ConsumptionUnitCode = keyof typeof CONSUMPTION_UNITS;
 export function getConsumptionUnitNamekey(code: string): string {
@@ -128,6 +144,12 @@ export type TSessionUser = {
   name?: string | null;
   email?: string | null;
   image?: string | null;
+};
+
+export type UserMinimal = {
+  id: string;
+  name: string;
+  image: string | null;
 };
 
 export type TBasicProfile = {

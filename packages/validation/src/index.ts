@@ -11,3 +11,4 @@ export * from "./note/index.js";
 export * from "./shoppingList/index.js";
 export * from "./notification/index.js";
 export * from "./quicklink/index.js";
+export * from "./timeline/index.js";

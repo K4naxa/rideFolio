@@ -1,4 +1,4 @@
-import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
+import { Prisma, VehicleType } from 'prisma/generated/client';
 
 export interface VehicleTypesResult {
   car: VehicleType;

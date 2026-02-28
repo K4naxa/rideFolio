@@ -4,10 +4,10 @@ import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ZodType } from 'zod';
 
 import { LogsService } from './logs.service';
-import { RefillsService } from './refills.service';
+import { RefillsService } from './refills/refills.service';
 import { MaintenanceService } from 'src/logs/maintenance/maintenance.service';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
-import { VehicleType } from 'prisma/generated/prisma/client';
+import { VehicleType } from 'prisma/generated/client';
 
 @Controller('logs')
 export class LogsController {

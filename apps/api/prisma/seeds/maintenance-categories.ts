@@ -1,4 +1,4 @@
-import { MaintenanceCategory, Prisma } from 'prisma/generated/prisma/client';
+import { MaintenanceCategory, Prisma } from 'prisma/generated/client';
 
 export interface MaintenanceCategoriesResult {
   cat_engine: MaintenanceCategory;

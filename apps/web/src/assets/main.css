@@ -27,6 +27,7 @@ img {
     opacity: 1;
   }
 }
+
 @keyframes fade-out {
   from {
     opacity: 1;
@@ -43,7 +44,6 @@ img {
   --radius: 0.5rem; /* Base radius for buttons, inputs, etc. */
   --radius-sm: 0.375rem; /* Smaller radius for buttons, badges */
   --radius-lg: 0.75rem; /* Larger radius for containers, modals */
-
   /* Fonts (Recommended: Add Inter from Google Fonts) */
   --font-roboto: "Roboto", sans-serif;
 
@@ -52,12 +52,9 @@ img {
   --color-foreground: oklch(20.5% 0 0); /* Neutral 950 */
   --color-card: hsl(0, 0%, 100%); /* white */
   --color-card-foreground: oklch(27.546% 0.03701 260.041); /* slate-800 */
-
   --color-background-light: hsl(0, 0%, 99%); /* white */
-
   --color-muted: oklch(95.2% 0 0); /* slate-300 */
   --color-muted-foreground: var(--color-neutral-500); /* slate-500 */
-
   --color-popover: var(--color-card);
   --color-popover-foreground: var(--color-card-foreground);
 
@@ -74,22 +71,17 @@ img {
 
   --color-primary: #ff8c00; /* indigo-500 */
   --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
-
   --color-secondary: var(--color-neutral-800);
   --color-secondary-foreground: var(--color-neutral-50);
 
   --color-destructive: hsl(10, 100%, 53%); /* red-600 */
   --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
-
   --color-success: hsl(142, 76%, 36%); /* green-600 */
   --color-success-foreground: hsl(210, 40%, 98%); /* slate-50 */
-
   --color-error: hsl(0, 72%, 51%); /* red-600 */
   --color-error-foreground: hsl(210, 40%, 98%); /* slate-50 */
-
   --color-warning: rgb(245 158 11); /* amber-500 */
   --color-warning-foreground: rgb(30 41 59); /* slate-800 */
-
   --color-chart-1: hsl(18, 100%, 48%);
   --color-chart-2: hsl(175, 100%, 29%);
   --color-chart-3: hsl(196, 72%, 23%);
@@ -103,7 +95,6 @@ img {
   /* Log - Refill */
   --color-refill: var(--color-teal-500); /* teal-500 */
   --color-refill-foreground: var(--color-slate-50); /* slate-50 */
-
   /* Log - Maintenance */
   --color-maintenance: var(--color-amber-500);
   --color-maintenance-foreground: var(--color-white);
@@ -111,11 +102,9 @@ img {
   /* Log - Notes */
   --color-notes: var(--color-slate-500); /* sky-500 */
   --color-notes-foreground: var(--color-slate-50); /* slate-50 */
-
   /* Log - Todo */
   --color-todo: var(--color-violet-500); /* violet-500 */
   --color-todo-foreground: var(--color-violet-50); /* slate-50 */
-
   --transition-property-width: width;
   --transition-property-height: height;
   --transition-property-size: width, height;
@@ -131,15 +120,19 @@ img {
   h1 {
     @apply text-foreground text-xl font-bold;
   }
+
   h2 {
     @apply text-foreground text-base font-semibold md:text-lg;
   }
+
   h3 {
     @apply text-foreground text-base font-medium;
   }
+
   h4 {
     @apply text-foreground text-sm leading-tight font-medium;
   }
+
   .dark {
     /* Core Colors */
     --color-background: hsl(0, 0%, 1%); /* slate-950 */
@@ -190,9 +183,11 @@ img {
     @apply text-foreground bg-background font-normal antialiased;
     font-family: var(--font-roboto);
   }
+
   * {
     @apply border-border;
   }
+
   .ProseMirror:focus {
     outline: none;
   }
@@ -206,9 +201,11 @@ img {
   .card {
     @apply bg-card text-card-foreground rounded border transition-colors;
   }
+
   .cardHover {
     @apply hover:bg-card/80 dark:hover:bg-background-light transition-colors duration-100;
   }
+
   .iconBackground {
     @apply from-background bg-linear-to-t to-transparent dark:to-transparent;
   }
@@ -216,6 +213,7 @@ img {
   .cardBackground {
     @apply bg-card;
   }
+
   .cardPrimaryBackground {
     @apply from-primary/10 to-primary/0 bg-linear-to-b backdrop-blur-md;
   }
@@ -225,8 +223,9 @@ img {
   }
 
   .inputField {
-    @apply file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-10 w-full min-w-0 appearance-none rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-10 w-full min-w-0 appearance-none rounded-md border px-3 py-2 text-base shadow-xs transition-[color] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
   }
+
   .inputMinimal {
     @apply file:text-foreground placeholder:text-muted-foreground text-foreground selection:bg-primary selection:text-primary-foreground aria-invalid:ring-destructive/20 flex h-10 w-full min-w-0 appearance-none border-b py-2 text-base outline-none focus:ring-0 focus-visible:ring-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -235,12 +234,15 @@ img {
   .priority-LOW {
     @apply text-foreground;
   }
+
   .priority-MEDIUM {
     @apply text-foreground;
   }
+
   .priority-HIGH {
     @apply bg-orange-400 text-orange-50 dark:bg-orange-800;
   }
+
   .priority-CRITICAL {
     @apply bg-purple-500 text-purple-200 dark:bg-purple-800;
   }
@@ -249,6 +251,16 @@ img {
 /*
   ---break---
 */
+
+
+@utility mainContentPadding {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+/* Bleeds an element to full viewport width inside a mainContentPadding container */
+@utility mobileOffScreenScroll {
+  @apply -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8;
+}
 
 @utility listHover {
   @apply hover:border-border hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors;
@@ -268,16 +280,19 @@ img {
     border-radius: 9999px;
     background: var(--color-scrollbar-track);
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--color-scrollbar-thumb);
     border-radius: 100vh;
   }
+
   &::-webkit-scrollbar-button {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
     background: transparent !important;
   }
+
   &::-webkit-scrollbar-corner {
     display: none;
   }
@@ -291,32 +306,36 @@ img {
     width: 8px;
     height: 8px;
   }
+
   &::-webkit-scrollbar-track {
     background: transparent;
     border-radius: 9999px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 9999px;
     transition: background 0.2s ease;
   }
+
   &::-webkit-scrollbar-button {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
     background: transparent !important;
   }
+
   &::-webkit-scrollbar-corner {
     display: none;
   }
+
   &:hover {
     scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+
     &::-webkit-scrollbar-thumb {
       background: var(--color-scrollbar-thumb);
     }
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--color-scrollbar-thumb-hover);
-    }
+
   }
 } /* ===== Gutter Stable (Prevents Layout Shift) ===== */
 @utility scrollbar-gutter-stable {
@@ -330,26 +349,32 @@ img {
     width: 6px;
     height: 6px;
   }
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
+
   &::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: content-box;
   }
+
   &::-webkit-scrollbar-button {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
     background: transparent !important;
   }
+
   &::-webkit-scrollbar-corner {
     display: none;
   }
+
   &:hover {
     scrollbar-color: oklch(0.6 0 0 / 0.5) transparent;
+
     &::-webkit-scrollbar-thumb {
       background: oklch(0.6 0 0 / 0.5);
       background-clip: content-box;
@@ -376,10 +401,12 @@ img {
   .gaps-md {
     @apply gap-6;
   }
+
   /* inside section gaps */
   .gaps-sm {
     @apply gap-3 md:gap-4;
   }
+
 }
 
 /*  */
@@ -402,47 +429,22 @@ img {
   }
 }
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 
 /* Smooth theme transitions using CSS custom properties */
 
 html.theme-transitioning {
   /* Transition all CSS custom properties for smooth theme changes */
-  transition:
-    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Apply smooth transitions to specific high-impact elements only */
 
 .transition-colors-safe {
-  transition:
-    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+  background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+  border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* When theme is transitioning, disable element-level transitions */
@@ -456,12 +458,11 @@ html.theme-transitioning [class*="bg-"],
 html.theme-transitioning [class*="text-"],
 html.theme-transitioning [class*="divide-"],
 html.theme-transitioning [class*="border-"] {
-  transition:
-    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
-    stroke 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
+  stroke 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Prevent layout shift and ensure smooth rendering */

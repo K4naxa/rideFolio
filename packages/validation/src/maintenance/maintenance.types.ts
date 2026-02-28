@@ -1,3 +1,5 @@
+import { TConversionResult } from "../vehicle";
+
 export type MaintenanceCategoryWithParts = {
   id: string;
   code: string;
@@ -29,4 +31,16 @@ export type MaintenancePartDisplay = {
   label?: string | null;
   description?: string | null;
   locations: PartLocation[];
+};
+
+export type ClientMaintenance = {
+  id: string;
+  date: Date;
+  title: string;
+  notes: string | null;
+  image: string | null;
+  costTotal: number | null;
+
+  parts: MaintenancePartDisplay[];
+  odometerData: TConversionResult;
 };

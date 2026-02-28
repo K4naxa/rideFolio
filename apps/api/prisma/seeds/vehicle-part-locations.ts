@@ -1,4 +1,4 @@
-import { Prisma, VehiclePartLocation } from 'prisma/generated/prisma/client';
+import { Prisma, VehiclePartLocation } from 'prisma/generated/client';
 import type { VehicleTypesResult } from './vehicle-types';
 
 export interface VehiclePartLocationsResult {

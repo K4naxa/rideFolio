@@ -9,7 +9,7 @@ import {
   PoolSchemaValues,
 } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
-import { PoolMemberRole } from 'prisma/generated/prisma/enums';
+import { PoolMemberRole } from 'prisma/generated/client';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { PoolsService } from 'src/pools/pools.service';

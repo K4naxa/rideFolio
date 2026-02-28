@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { MaintenanceInput, StorageBreakdown, VehicleInput } from '@repo/validation';
-import { Prisma } from 'prisma/generated/prisma/client';
-import { StorageUsageCategory } from 'prisma/generated/prisma/enums';
+import { Prisma, StorageUsageCategory } from 'prisma/generated/client';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';

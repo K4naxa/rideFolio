@@ -143,7 +143,7 @@ function handleLogout() {
         </DrawerContent>
       </Drawer>
 
-      <RouterLink to="#" class="bottom-nav-button"> <RouteIcon class="icon" /> Timelapse </RouterLink>
+      <RouterLink to="#" class="bottom-nav-button"> <RouteIcon class="icon" /> Timeline </RouterLink>
 
       <Drawer v-model:open="isProfileDrawerOpen" placement="bottom">
         <DrawerTrigger asChild>

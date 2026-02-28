@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Vehicle } from 'prisma/generated/prisma/client';
+import { Vehicle } from 'prisma/generated/client';
 import { BaseTodo, TodoSchemaType, TodoWithVehicle } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -31,7 +31,7 @@ export class TodosService {
 
     const newTodo = await this.prisma.$transaction(async (tx) => {
       await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'TODO', sizeBytes);
-      return await tx.todo.create({
+      return tx.todo.create({
         data: {
           vehicleId: todoDto.vehicleId,
           title: todoDto.title,
@@ -54,32 +54,15 @@ export class TodosService {
   async getUserTodosWithVehicles(userSession: UserSession): Promise<TodoWithVehicle[]> {
     // Get all accessible vehicles for the user
 
-    const vehicleIds = await this.vehicleRepo.findAccessibleVehicleIds(userSession.user.id);
+    const vehicles = await this.vehicleRepo.findAccessibleVehicles(userSession.user.id);
+    const vehicleIds = vehicles.map((v) => v.id);
     if (vehicleIds.length === 0) return [];
 
     // Fetch todos for all accessible vehicles
     const todos = await this.prisma.todo.findMany({
       where: { vehicleId: { in: vehicleIds } },
 
-      include: {
-        vehicle: {
-          include: {
-            vehicleType: true,
-          },
-        },
-        createdBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        completedBy: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-      },
+      include: this.todoFormatter.DB_include_todoWithVehicle(),
       orderBy: this.getTodoOrderBy(),
     });
 

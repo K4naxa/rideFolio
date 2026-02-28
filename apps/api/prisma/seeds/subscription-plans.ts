@@ -1,9 +1,9 @@
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 
 export async function seedSubscriptionPlans(tx: Prisma.TransactionClient): Promise<void> {
   console.log(' Seeding subscription plans...');
 
-  const SUBSCRIPTION_PLANS: Prisma.subscriptionPlanCreateInput[] = [
+  const SUBSCRIPTION_PLANS: Prisma.SubscriptionPlanCreateInput[] = [
     {
       code: 'FREE',
       nameKey: 'subscription.plans.free',

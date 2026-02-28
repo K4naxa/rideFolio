@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Vehicle } from 'prisma/generated/prisma/client';
+import { Vehicle } from 'prisma/generated/client';
 import { TConversionResult, TOdometerData } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';

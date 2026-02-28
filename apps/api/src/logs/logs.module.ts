@@ -6,14 +6,22 @@ import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { MaintenanceService } from './maintenance/maintenance.service';
-import { RefillsService } from './refills.service';
+import { RefillsService } from './refills/refills.service';
 import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { LimitsModule } from 'src/limits/limits.module';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
+import { RefillsTransformerService } from './refills/refills.transformer.service';
+import { MaintenanceTransformerService } from './maintenance/maintenance.transformer.service';
 
 @Module({
   imports: [PrismaModule, forwardRef(() => LimitsModule)],
-  exports: [LogsService, RefillsService, MaintenancePartTransformer],
+  exports: [
+    LogsService,
+    RefillsService,
+    MaintenancePartTransformer,
+    MaintenanceTransformerService,
+    RefillsTransformerService,
+  ],
   controllers: [LogsController],
   providers: [
     LogsService,
@@ -24,6 +32,8 @@ import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-par
     RefillsService,
     VehicleRepository,
     MaintenancePartTransformer,
+    MaintenanceTransformerService,
+    RefillsTransformerService,
   ],
 })
 export class LogsModule {}

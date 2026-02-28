@@ -48,6 +48,12 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: "/timeline",
+          name: "Timeline",
+          component: () => import("@/views/timeline/TimelineView.vue"),
+          meta: { requiresAuth: true },
+        },
+        {
           path: "/vehicles/:vehicleId",
           name: "Vehicle Layout",
           meta: { requiresAuth: true },

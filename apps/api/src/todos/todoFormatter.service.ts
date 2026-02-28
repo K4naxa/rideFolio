@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BaseTodo } from '@repo/validation/dist/types/todo/todo.types';
-import { user, Vehicle } from 'prisma/generated/prisma/browser';
-import { Todo } from 'prisma/generated/prisma/client';
+import { Todo, Vehicle } from 'prisma/generated/client';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
+import { TodoGetPayload, TodoInclude } from '../../prisma/generated/models/Todo';
 
-type TodoWithRelations = Todo & {
-  vehicle: Vehicle;
-  createdBy: Pick<user, 'name' | 'image'> | null;
-  completedBy: Pick<user, 'name' | 'image'> | null;
-};
 @Injectable()
 export class TodoFormatterService {
   constructor(private readonly unitConversion: UnitConversionService) {}
@@ -24,11 +19,12 @@ export class TodoFormatterService {
       vehicle: true,
       completedBy: {
         select: {
+          id: true,
           name: true,
           image: true,
         },
       },
-    };
+    } satisfies TodoInclude;
   }
 
   DB_include_todoWithVehicle() {
@@ -52,6 +48,7 @@ export class TodoFormatterService {
       },
       completedBy: {
         select: {
+          id: true,
           name: true,
           image: true,
         },
@@ -59,31 +56,34 @@ export class TodoFormatterService {
     };
   }
 
-  toBaseTodo(todoWithRelations: TodoWithRelations) {
+  toBaseTodo(baseTodo: DB_baseTodo) {
     return {
-      id: todoWithRelations.id,
-      title: todoWithRelations.title,
-      description: todoWithRelations.description,
-      priority: todoWithRelations.priority || null,
-      isCompleted: todoWithRelations.isCompleted,
-      vehicleId: todoWithRelations.vehicleId,
-      dueDate: this.formatDueDate(todoWithRelations.dueDate),
-      dueOdometer: this.formatDueOdometer(todoWithRelations, todoWithRelations.vehicle),
-      createdData: this.formatCreatedData(todoWithRelations.createdBy, todoWithRelations.createdAt),
-      completedData: this.formatCompletedData(todoWithRelations),
+      id: baseTodo.id,
+      title: baseTodo.title,
+      description: baseTodo.description,
+      priority: baseTodo.priority || null,
+      isCompleted: baseTodo.isCompleted,
+      vehicleId: baseTodo.vehicleId,
+      dueDate: this.formatDueDate(baseTodo.dueDate),
+      dueOdometer: this.formatDueOdometer(baseTodo, baseTodo.vehicle),
+      createdData: this.formatCreatedData(baseTodo),
+      completedData: this.formatCompletedData(baseTodo),
     };
   }
 
-  private formatCompletedData(todo: TodoWithRelations): BaseTodo['completedData'] {
+  private formatCompletedData(todo: DB_baseTodo): BaseTodo['completedData'] {
     if (!todo.isCompleted) {
       return null;
     }
 
     return {
-      user: {
-        name: todo.completedBy?.name ?? 'Unknown user',
-        image: todo.completedBy?.image ?? null,
-      },
+      user: todo.completedBy
+        ? {
+            id: todo.completedBy.id,
+            name: todo.completedBy.name,
+            image: todo.completedBy.image ?? null,
+          }
+        : null,
       date: todo.completedAt_date,
       odometer: this.unitConversion.getOdometerDataByType(
         todo.vehicle.odometerType === 'HOUR' ? todo.completedAt_hour || 0 : todo.completedAt_km || 0,
@@ -92,11 +92,16 @@ export class TodoFormatterService {
     };
   }
 
-  private formatCreatedData(createdBy: Pick<user, 'name' | 'image'> | null, createdAt: Date): BaseTodo['createdData'] {
+  private formatCreatedData(todo: DB_baseTodo): BaseTodo['createdData'] {
     return {
-      name: (createdBy?.name as string) ?? 'Unknown user',
-      image: (createdBy?.image as string) ?? null,
-      date: createdAt,
+      user: todo.completedBy
+        ? {
+            id: todo.completedBy.id,
+            name: todo.completedBy.name,
+            image: todo.completedBy.image ?? null,
+          }
+        : null,
+      date: todo.createdAt,
     };
   }
 
@@ -128,7 +133,13 @@ export class TodoFormatterService {
   private getVehicleBaseOdometer(vehicle: Vehicle): number {
     return vehicle.odometerType === 'HOUR' ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
   }
+
   private getTodoBaseOdometer(todo: Todo, vehicle: Vehicle): number {
     return vehicle.odometerType === 'HOUR' ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
   }
 }
+
+export type DB_baseTodo = TodoGetPayload<{ include: ReturnType<TodoFormatterService['DB_include_baseTodo']> }>;
+export type DB_todoWithVehicle = TodoGetPayload<{
+  include: ReturnType<TodoFormatterService['DB_include_todoWithVehicle']>;
+}>;

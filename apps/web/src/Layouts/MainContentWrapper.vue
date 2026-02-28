@@ -9,8 +9,9 @@ const props = defineProps<{
 
 <template>
   <div data-slot="main-content-wrapper" class="flex h-full w-full">
-    <div :class="[twMerge('mx-auto flex h-full w-full max-w-370 px-4 sm:px-6 lg:px-8', props.class)]">
+    <div :class="[twMerge('mainContentPadding mx-auto flex h-full w-full max-w-370', props.class)]">
       <slot />
     </div>
   </div>
 </template>
+<style></style>

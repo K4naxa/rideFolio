@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, VehicleType } from 'prisma/generated/prisma/client';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Prisma, VehicleType } from 'prisma/generated/client';
 import { MaintenanceCategoryWithParts, MaintenanceInput } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -64,7 +64,7 @@ export class MaintenanceService {
       },
     });
 
-    console.log('found categories for vehicle type', vehicleType, categories);
+    Logger.error('found categories for vehicle type', vehicleType, categories);
     return categories;
   }
 

@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Pool, PoolMemberRole, Prisma } from 'prisma/generated/prisma/client';
+import { Pool, PoolMemberRole, Prisma } from 'prisma/generated/client';
 import { AccessiblePool, PoolDetails, PoolInviteValues, PoolSchemaValues } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';

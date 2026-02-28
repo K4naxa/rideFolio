@@ -1,12 +1,12 @@
-import { UnitConversionService } from './../utils/unit-conversion.service';
+import { UnitConversionService } from '../../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, Refill, user, Vehicle } from 'prisma/generated/prisma/client';
+import { Prisma, Refill, Vehicle } from 'prisma/generated/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { Extend } from 'zod/v4/core/util.cjs';
 import { LimitsService } from 'src/limits/limits.service';
+import { RefillsTransformerService } from './refills.transformer.service';
 
 @Injectable()
 export class RefillsService {
@@ -15,16 +15,17 @@ export class RefillsService {
     private unitConversion: UnitConversionService,
     private authValidation: AuthValidationService,
     private limitsService: LimitsService,
+    private refillTransformer: RefillsTransformerService,
   ) {}
 
   async createRefill(UserSession: UserSession, refillData: RefillSchemaOutput): Promise<void> {
     // 1. Check if the user has permission to create logs for the vehicle
-    const vehicle = await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
+    const vehicle: Vehicle = await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
     // validate user storage limits
     const byteSize = await this.limitsService.canCreateLog(UserSession.user.id, vehicle.ownerId, refillData);
 
     // 2. Fetch user, vehicle and previous log data
-    const [user, previousLog] = (await Promise.all([
+    const [user, previousLog] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: UserSession.user.id },
         select: {
@@ -36,7 +37,8 @@ export class RefillsService {
         where: { vehicleId: refillData.vehicleId },
         orderBy: { date: 'desc' },
       }),
-    ])) as [{ volumeUnit: user['volumeUnit'] } | null, Refill | null];
+    ]);
+
     if (!user || !vehicle) {
       // Should never happen, but just to satisfy TypeScript
       throw new Error('user or Vehicle not found');
@@ -141,15 +143,11 @@ export class RefillsService {
   async getRefillsForChart(UserSession: UserSession, vehicleId: string, dateLimit: Date): Promise<TRefillForClient[]> {
     await this.authValidation.hasAccessToVehicle(UserSession.user.id, vehicleId);
 
-    const [vehicle, user, refills] = (await Promise.all([
-      this.prisma.vehicle.findUnique({
-        where: { id: vehicleId },
-        select: { odometerType: true },
-      }),
+    const [user, refills] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: UserSession.user.id },
-        select: { consumptionUnitCode_hour: true, consumptionUnitCode_distance: true, volumeUnit: true },
       }),
+
       this.prisma.refill.findMany({
         where: {
           vehicleId,
@@ -157,59 +155,15 @@ export class RefillsService {
           OR: [{ consumption_L_per_100km: { not: null } }, { consumption_L_per_hour: { not: null } }],
         },
         orderBy: { date: 'asc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
+        select: this.refillTransformer.DB_refill_select(),
       }),
-    ])) as [
-      { odometerType: Vehicle['odometerType'] } | null,
-      {
-        consumptionUnitCode_hour: user['consumptionUnitCode_hour'];
-        consumptionUnitCode_distance: user['consumptionUnitCode_distance'];
-        volumeUnit: user['volumeUnit'];
-      } | null,
-      Array<Extend<Refill, { user: { id: string; name: string; image: string | null } }>>,
-    ];
+    ]);
 
-    const isVehicleHourly = vehicle?.odometerType === 'HOUR';
-    const userUnit = isVehicleHourly ? user!.consumptionUnitCode_hour : user!.consumptionUnitCode_distance;
+    if (!user) throw new BadRequestException('User not found');
 
     // Single-pass grouping with running average
     return refills.map((refill) => {
-      const rawConsumption = isVehicleHourly ? refill.consumption_L_per_hour : refill.consumption_L_per_100km;
-
-      const convertedConsumption = this.unitConversion.getConsumptionData(
-        rawConsumption,
-        userUnit,
-        isVehicleHourly ? 'HOUR' : 'DISTANCE',
-      );
-      return {
-        id: refill.id,
-        vehicleId: refill.vehicleId,
-        creator: {
-          id: refill.user.id,
-          name: refill.user.name,
-          image: refill.user.image,
-        },
-        date: refill.date,
-        consumption: convertedConsumption,
-        odometer: this.unitConversion.getOdometerDataByType(
-          isVehicleHourly ? refill.odometer_hour : refill.odometer_km,
-          vehicle!.odometerType,
-        ),
-        fullRefill: refill.fullRefill,
-        skippedRefill: refill.skippedRefill,
-        fuelVolume: this.unitConversion.getVolumeDataByUnitType(refill.fuelAmount_L, user!.volumeUnit),
-        pricePerUnit: refill.pricePerUnit,
-        costTotal: refill.costTotal,
-        notes: refill.notes,
-      };
+      return this.refillTransformer.toClientRefill(refill, user);
     });
   }
 
@@ -262,10 +216,6 @@ export class RefillsService {
         fuelAmount_L: true,
       },
     });
-
-    console.log('previous full refill:', previousFullRefill);
-    console.log('refills backwards:', refillsBackwards);
-    console.log('currentOdometer:', currentOdometer);
 
     // find the last full refill and check for skipped refills in between
     const refillsInPeriod: Array<{

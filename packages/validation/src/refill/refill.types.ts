@@ -1,13 +1,9 @@
 import { TConversionResult } from "../vehicle";
+import { UserMinimal } from "../user";
 
 export interface TRefillForClient {
   id: string;
-  vehicleId: string;
-  creator: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
+
   date: Date;
   odometer: TConversionResult;
   fullRefill: boolean;
@@ -17,4 +13,5 @@ export interface TRefillForClient {
   costTotal: number | null;
   notes: string | null;
   consumption: TConversionResult | null;
+  creator: UserMinimal | null;
 }

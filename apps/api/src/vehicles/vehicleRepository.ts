@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -120,15 +120,15 @@ export class VehicleRepository {
   }
 
   async findPoolVehicles(poolId: string) {
-    return await this.prisma.poolVehicle.findMany(this.getPoolVehiclesQuery(poolId));
+    return this.prisma.poolVehicle.findMany(this.getPoolVehiclesQuery(poolId));
   }
 
   async findAccessibleVehicles(userId: string) {
-    return await this.prisma.vehicle.findMany(this.getVehicleWithPoolsQuery(userId));
+    return this.prisma.vehicle.findMany(this.getVehicleWithPoolsQuery(userId));
   }
 
   async findOwnVehicles(userId: string) {
-    return await this.prisma.vehicle.findMany({
+    return this.prisma.vehicle.findMany({
       where: { ownerId: userId },
       include: {
         vehicleType: {
@@ -143,7 +143,7 @@ export class VehicleRepository {
   }
 
   async findVehicleById(vehicleId: string) {
-    return await this.prisma.vehicle.findUnique({
+    return this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
       include: {
         vehicleType: {

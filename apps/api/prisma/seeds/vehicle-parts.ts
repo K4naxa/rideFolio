@@ -1,7 +1,7 @@
 import type { VehicleTypesResult } from './vehicle-types';
 import type { VehiclePartLocationsResult } from './vehicle-part-locations';
 import type { MaintenanceCategoriesResult } from './maintenance-categories';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { Prisma } from 'prisma/generated/client';
 
 export async function seedVehicleParts(
   tx: Prisma.TransactionClient,
