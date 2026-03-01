@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DialogOverlayProps } from "reka-ui";
-import type { HTMLAttributes } from "vue";
+import { type HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
 import { DrawerOverlay } from "vaul-vue";
 import { cn } from "@/lib/utils";

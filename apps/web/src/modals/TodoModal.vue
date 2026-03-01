@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
-import Icon from "@/components/icons/Icon.vue";
+import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
-import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
-import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
-import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
@@ -16,6 +11,7 @@ import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import Label from "@/components/ui/label/Label.vue";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
@@ -25,8 +21,6 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
-import Label from "@/components/ui/label/Label.vue";
-import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import { useTodoById } from "@/lib/queries/todos/todo-queries";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
 
@@ -38,9 +32,7 @@ const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "cre
 const { data: editableTodo } = useTodoById(computed(() => (isModalOpen.value ? modalStore.itemId : undefined)));
 
 const creatingNew = computed(() => !editableTodo.value);
-const handleClose = () => {
-  modalStore.onClose();
-};
+const handleClose = () => modalStore.onClose();
 
 const { mutateAsync: createTodo } = useTodoCreate();
 const { mutateAsync: updateTodo } = useTodoUpdate();
@@ -60,26 +52,18 @@ const { selectedVehicleOdometerUnit } = useSelectedVehicle(computed(() => values
 watch([isModalOpen, editableTodo], ([open, todo]) => {
   if (!open) return;
 
-  console.log("TodoModal opened. Editable todo ID: ", modalStore.itemId);
   if (todo) {
-    // wait for editableTodo to be fetched before resetting the form
-
-    if (todo) {
-      console.log("Editable todo data: ", todo);
-      resetForm({
-        values: {
-          vehicleId: todo.vehicleId,
-          title: todo.title,
-          description: todo.description,
-          priority: todo.priority,
-          dueDate: todo.dueDate?.date,
-          dueOdometer: todo.dueOdometer?.value,
-        },
-      });
-
-      // Show or hide due options based on whether the editable todo has due information
-      showDueOptions.value = !!(todo.dueDate || todo.dueOdometer);
-    }
+    resetForm({
+      values: {
+        vehicleId: todo.vehicleId,
+        title: todo.title,
+        description: todo.description,
+        priority: todo.priority,
+        dueDate: todo.dueDate?.date,
+        dueOdometer: todo.dueOdometer?.value,
+      },
+    });
+    showDueOptions.value = !!(todo.dueDate || todo.dueOdometer);
   } else {
     showDueOptions.value = false;
     resetForm({
@@ -108,7 +92,6 @@ const onSubmit = handleSubmit(async (values) => {
       },
     });
   } else {
-    // Updating existing todo
     if (!editableTodo.value?.id) return toast.error("Error updating todo: Missing todo ID");
     updateTodo(
       { todoId: editableTodo.value?.id, data: values },
@@ -128,48 +111,49 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="w-full max-w-2xl" key="TodoModal">
-      <DialogHeader>
-        <DialogTitle>
-          <Icon name="todo" />
-          <h3 v-if="creatingNew">Create To-do</h3>
-          <h3 v-else>Edit To-do</h3>
-        </DialogTitle>
-        <DialogDescription v-show="false">
-          Create new to-do for your vehicle or edit existing one. You can set a title, description, priority and due
-          information for the to-do.
-        </DialogDescription>
-      </DialogHeader>
-      <form @submit="onSubmit" class="flex flex-col gap-4" data-cy="create-todo-form">
-        <Field v-slot="{ value, handleChange }" name="vehicleId">
-          <div v-if="!currentVehicle">
-            <VehicleSelect
-              :value="value"
-              @valueChange="handleChange"
-              placeholder="Select a vehicle"
-              data-cy="vehicle-select"
-            />
-            <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
-          </div>
-        </Field>
-        <Input name="title" placeholder="To-do" type="text" data-cy="todo-title-input" :maxlength="100" />
-        <Textarea
-          name="description"
-          placeholder="To-do description"
-          data-cy="todo-description-input"
-          :maxlength="500"
-        />
+  <ResponsiveFormDialog
+    :open="isModalOpen"
+    @close="handleClose"
+    :title="creatingNew ? 'Create To-do' : 'Edit To-do'"
+    description="Set a title, priority and optional due information."
+    icon="todo"
+    content-class="max-w-2xl"
+    key="TodoModal"
+  >
+    <form data-cy="create-todo-form" class="contents">
+      <Field v-slot="{ value, handleChange }" name="vehicleId">
+        <div v-if="!currentVehicle">
+          <VehicleSelect
+            :value="value"
+            @valueChange="handleChange"
+            placeholder="Select a vehicle"
+            data-cy="vehicle-select"
+          />
+          <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
+        </div>
+      </Field>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Field v-slot="{ value, handleChange }" name="priority">
-            <Select
-              :model-value="value"
-              @update:model-value="handleChange"
-              class="w-full"
-              data-cy="priority-select"
-              :clearable="true"
-            >
+      <Input
+        name="title"
+        label="Title"
+        placeholder="What needs to be done?"
+        type="text"
+        data-cy="todo-title-input"
+        :maxlength="100"
+      />
+      <Textarea
+        name="description"
+        label="Description"
+        placeholder="Add more details (optional)"
+        data-cy="todo-description-input"
+        :maxlength="500"
+      />
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Field v-slot="{ value, handleChange }" name="priority">
+          <div class="flex flex-col gap-1.5">
+            <Label class="ml-1 text-sm font-medium">Priority</Label>
+            <Select :model-value="value" @update:model-value="handleChange" class="w-full" data-cy="priority-select">
               <SelectTrigger class="w-full" data-cy="priority-trigger">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
@@ -186,97 +170,83 @@ const onSubmit = handleSubmit(async (values) => {
                 <SelectItem value="CRITICAL" data-cy="priority-select-critical">Critical</SelectItem>
               </SelectContent>
             </Select>
-          </Field>
-
-          <Label class="flex items-center gap-3 text-base select-none" data-cy="due-checkbox-label">
-            <Checkbox
-              :model-value="showDueOptions"
-              @update:model-value="showDueOptions = !showDueOptions"
-              class="size-6"
-              data-cy="due-checkbox"
-            />
-            Set due information
-          </Label>
-        </div>
-
-        <Transition name="slide">
-          <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
-            <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormDateInput name="dueDate" placeholder="Select due date" data-cy="due-date-input" />
-              <Input
-                name="dueOdometer"
-                type="number"
-                :suffix="selectedVehicleOdometerUnit"
-                placeholder="Due Odometer"
-                data-cy="due-odometer-input"
-              />
-            </div>
           </div>
-        </Transition>
+        </Field>
 
-        <DialogFooter class="">
-          <Button type="submit" :disabled="isSubmitting" data-cy="submit-todo-btn">
-            <span v-if="!isSubmitting">
-              <p v-if="creatingNew">Create</p>
-              <p v-else>Save changes</p>
-            </span>
-            <span v-else>
-              <Spinner />
-              <p v-if="creatingNew">Creating...</p>
-              <p v-else>Saving...</p>
-            </span>
-          </Button>
-          <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-todo-btn">Cancel</Button>
-        </DialogFooter>
-      </form>
-    </DialogScrollContent>
-  </Dialog>
+        <Label class="flex items-center gap-3 text-base select-none" data-cy="due-checkbox-label">
+          <Checkbox
+            :model-value="showDueOptions"
+            @update:model-value="showDueOptions = !showDueOptions"
+            class="size-6"
+            data-cy="due-checkbox"
+          />
+          Set due information
+        </Label>
+      </div>
+
+      <Transition name="slide">
+        <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
+          <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormDateInput name="dueDate" label="Due date" placeholder="Select due date" data-cy="due-date-input" />
+            <Input
+              name="dueOdometer"
+              type="number"
+              label="Due odometer"
+              :suffix="selectedVehicleOdometerUnit"
+              placeholder="Odometer reading"
+              data-cy="due-odometer-input"
+            />
+          </div>
+        </div>
+      </Transition>
+    </form>
+
+    <template #footer>
+      <Button type="button" @click="onSubmit" :disabled="isSubmitting" data-cy="submit-todo-btn">
+        <Spinner v-if="isSubmitting" class="mr-1" />
+        <span v-if="creatingNew">{{ isSubmitting ? "Creating…" : "Create" }}</span>
+        <span v-else>{{ isSubmitting ? "Saving…" : "Save changes" }}</span>
+      </Button>
+      <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-todo-btn">Cancel</Button>
+    </template>
+  </ResponsiveFormDialog>
 </template>
 
 <style scoped>
-/* Smooth slide-expand transition for mobile stats panel */
 .slide-enter-active {
   transition:
     grid-template-rows 0.15s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .slide-leave-active {
   transition:
     grid-template-rows 0.1s cubic-bezier(0.4, 0, 0.6, 1),
     opacity 0.1s cubic-bezier(0.4, 0, 0.6, 1);
 }
-
 .slide-enter-from {
   opacity: 0;
   display: grid;
   grid-template-rows: 0fr;
 }
-
 .slide-enter-to {
   opacity: 1;
   display: grid;
   grid-template-rows: 1fr;
 }
-
 .slide-leave-from {
   opacity: 1;
   display: grid;
   grid-template-rows: 1fr;
 }
-
 .slide-leave-to {
   opacity: 0;
   display: grid;
   grid-template-rows: 0fr;
 }
-
-/* Ensure smooth performance and proper overflow handling */
 .slide-panel {
   will-change: grid-template-rows, opacity;
   backface-visibility: hidden;
 }
-
 .slide-content {
   overflow: hidden;
 }

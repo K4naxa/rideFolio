@@ -25,50 +25,60 @@ const modalStore = useModalStore();
 const { currentUser: user } = useCurrentUser();
 const auth = useAuth();
 
-interface AppHeaderButton {
+interface ActionOption {
   label: string;
+  description: string;
   icon: IconProps["name"];
   onClick: () => void;
-  class: string;
+  iconBg: string;
+  iconColor: string;
   cypressDataAttr: string;
 }
-const actionOptions = computed<AppHeaderButton[]>(() => [
+
+const actionOptions = computed<ActionOption[]>(() => [
   {
     label: "Refill",
+    description: "Log a fuel refill",
     icon: "refill",
     onClick: () => modalStore.onOpen("createRefill"),
-    class: "shadow-refill/50 ",
+    iconBg: "bg-refill",
+    iconColor: "text-refill-foreground",
     cypressDataAttr: "create-refill-button",
   },
   {
     label: "Maintenance",
+    description: "Log a service",
     icon: "maintenance",
     onClick: () => modalStore.onOpen("createMaintenance"),
-    class: "shadow-maintenance/50 ",
+    iconBg: "bg-maintenance",
+    iconColor: "text-maintenance-foreground",
     cypressDataAttr: "create-maintenance-button",
   },
   {
     label: "Note",
+    description: "Add a note",
     icon: "notes",
     onClick: () => modalStore.onOpen("createNote"),
-    class: "shadow-notes/50 ",
+    iconBg: "bg-notes",
+    iconColor: "text-notes-foreground",
     cypressDataAttr: "create-note-button",
   },
   {
     label: "Todo",
+    description: "Add a task",
     icon: "todo",
     onClick: () => modalStore.onOpen("createTodo"),
-    class: "shadow-todo/50 ",
+    iconBg: "bg-todo",
+    iconColor: "text-todo-foreground",
     cypressDataAttr: "create-todo-button",
   },
 ]);
 
+const isCreateDrawerOpen = ref(false);
 const isVehicleDrawerOpen = ref(false);
 const isProfileDrawerOpen = ref(false);
 const isMobile = useIsMobile();
 const { data: vehicles } = useVehiclesAll();
-
-const vehicleModalOpen = ref(false);
 
 function handleSettingsClick() {
   modalStore.onOpen("settings");
@@ -84,128 +94,150 @@ function handleLogout() {
 <template>
   <section v-if="isMobile">
     <div
-      class="bg-background/80 bottom-safe-area! fixed bottom-0 z-20 grid w-screen grid-cols-5 border-t p-1 backdrop-blur-sm"
+      class="bg-background/85 bottom-safe-area! fixed bottom-0 z-20 grid w-screen grid-cols-5 items-center border-t px-1 py-1 backdrop-blur-md"
     >
-      <RouterLink to="/dashboard" class="bottom-nav-button" active-class="active">
-        <Icon name="home" class="icon" /> Dashboard
+      <!-- Dashboard -->
+      <RouterLink
+        to="/dashboard"
+        active-class="text-primary!"
+        class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+      >
+        <Icon name="home" class="size-6" />
+        <span>Dashboard</span>
       </RouterLink>
 
-      <Drawer v-model:open="vehicleModalOpen" placement="bottom">
+      <!-- Vehicles Drawer -->
+      <Drawer v-model:open="isVehicleDrawerOpen" placement="bottom">
         <DrawerTrigger asChild>
-          <button variant="ghost" class="bottom-nav-button"><Icon name="carFront" class="icon" /> Vehicles</button>
+          <button
+            class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+          >
+            <Icon name="carFront" class="size-6" />
+            <span>Vehicles</span>
+          </button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle> Your Vehicles </DrawerTitle>
-            <DrawerDescription> Select what vehicles page you want to navigate to.</DrawerDescription>
+            <DrawerTitle>Your Vehicles</DrawerTitle>
+            <DrawerDescription>Navigate to a vehicle page</DrawerDescription>
           </DrawerHeader>
-          <div class="gaps-sm flex flex-col p-4">
+          <div class="scrollbar-thin flex max-h-[55vh] flex-col gap-1 overflow-y-auto overscroll-contain px-2 pb-5">
             <RouterLink
               v-for="vehicle in vehicles"
               :key="vehicle.vehicleData.id"
               :to="`/vehicles/${vehicle.vehicleData.id}`"
-              @click="vehicleModalOpen = false"
+              @click="isVehicleDrawerOpen = false"
+              class="hover:bg-accent rounded-xl px-2 py-1 transition-colors duration-75"
             >
-              <VehicleItem :key="vehicle.vehicleData.id" :vehicle="vehicle.vehicleData" class="" />
+              <VehicleItem :vehicle="vehicle.vehicleData" />
             </RouterLink>
           </div>
         </DrawerContent>
       </Drawer>
 
-      <Drawer v-model:open="isVehicleDrawerOpen" placement="bottom">
-        <DrawerTrigger>
-          <Button variant="outline" class="aspect-square size-10">
-            <Icon name="plus" class="icon" />
-          </Button>
+      <!-- Create Action Drawer — centre FAB -->
+      <Drawer v-model:open="isCreateDrawerOpen" placement="bottom">
+        <DrawerTrigger asChild>
+          <button
+            aria-label="Create new"
+            class="bg-primary mx-auto flex size-11 items-center justify-center rounded-full shadow-lg transition-transform duration-100 active:scale-95"
+          >
+            <Icon name="plus" class="text-primary-foreground size-6" />
+          </button>
         </DrawerTrigger>
-        <DrawerContent class="">
-          <DrawerHeader>
-            <DrawerTitle> Create new </DrawerTitle>
-            <DrawerDescription> Select an option below to create a new item. </DrawerDescription>
+
+        <DrawerContent>
+          <DrawerHeader class="pb-1">
+            <DrawerTitle class="text-lg">Create new</DrawerTitle>
+            <DrawerDescription>What would you like to log?</DrawerDescription>
           </DrawerHeader>
-          <div class="flex flex-col px-2">
-            <Button
-              variant="ghost"
-              type="button"
-              v-for="button in actionOptions"
-              :key="button.label"
+
+          <div class="flex flex-col gap-3 px-4 pt-2 pb-6">
+            <button
+              v-for="option in actionOptions"
+              :key="option.label"
+              :data-cy="option.cypressDataAttr"
+              class="border-border active:bg-muted flex items-start gap-4 rounded-2xl py-2 text-left"
               @click="
-                button.onClick();
-                isVehicleDrawerOpen = false;
+                option.onClick();
+                isCreateDrawerOpen = false;
               "
-              class="text-foreground flex w-full items-center justify-start gap-3 text-start text-base font-normal"
-              :data-cy="button.cypressDataAttr"
             >
-              <Icon :name="button.icon" class="size-5" />
-              <span class="">{{ button.label }}</span>
-            </Button>
+              <div :class="['flex size-11 items-center justify-center rounded-xl', option.iconBg]">
+                <Icon :name="option.icon" :class="['size-7', option.iconColor]" />
+              </div>
+              <div>
+                <p class="text-foreground leading-tight font-semibold">{{ option.label }}</p>
+                <p class="text-muted-foreground text-sm leading-snug">{{ option.description }}</p>
+              </div>
+            </button>
           </div>
         </DrawerContent>
       </Drawer>
 
-      <RouterLink to="/timeline" class="bottom-nav-button"> <RouteIcon class="icon" /> Timeline </RouterLink>
+      <!-- Timeline -->
+      <RouterLink
+        to="/timeline"
+        active-class="text-primary!"
+        class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+      >
+        <RouteIcon class="size-6" />
+        <span>Timeline</span>
+      </RouterLink>
 
+      <!-- Profile Drawer -->
       <Drawer v-model:open="isProfileDrawerOpen" placement="bottom">
         <DrawerTrigger asChild>
-          <button class="bottom-nav-button"><Icon name="user" class="icon" /> Profile</button>
+          <button
+            class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+          >
+            <Icon name="user" class="size-6" />
+            <span>Profile</span>
+          </button>
         </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle class="sr-only"> Profile nav </DrawerTitle>
-            <DrawerDescription class="sr-only"> Choose what you want to do from the menu below. </DrawerDescription>
 
-            <div class="flex w-full items-center gap-2 rounded px-1 py-1.5 text-left text-sm">
-              <Avatar class="h-12 w-12 rounded-lg">
-                <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-                <AvatarFallback v-else class="bg-accent rounded-lg text-lg">
+        <DrawerContent>
+          <DrawerHeader class="pb-3">
+            <DrawerTitle class="sr-only">Profile</DrawerTitle>
+            <DrawerDescription class="sr-only">Profile navigation menu</DrawerDescription>
+
+            <!-- User identity card -->
+            <div class="bg-accent/60 flex items-center gap-3 rounded-xl p-3">
+              <Avatar class="size-14 rounded-xl">
+                <AvatarImage v-if="user?.image" :src="user?.image" :alt="user?.name" />
+                <AvatarFallback v-else class="bg-primary/15 text-primary rounded-xl text-xl font-bold">
                   {{ getInitials(user?.name) }}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <p class="truncate text-base font-medium">{{ user?.name }}</p>
-                <p class="text-muted-foreground truncate text-sm">{{ user?.email }}</p>
+              <div class="min-w-0">
+                <p class="text-foreground truncate text-base leading-tight font-semibold">{{ user?.name }}</p>
+                <p class="text-muted-foreground mt-0.5 truncate text-sm">{{ user?.email }}</p>
               </div>
             </div>
           </DrawerHeader>
-          <ul class="flex flex-col px-4">
-            <Button variant="ghost" class="h-fit w-full justify-start" @click="handleSettingsClick">
-              <Icon name="settings" class="size-5" /> Settings</Button
+
+          <!-- Menu items -->
+          <nav class="flex flex-col gap-1 px-3 pb-2">
+            <button
+              class="text-foreground/80 active:bg-accent flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left font-medium transition-colors duration-75"
+              @click="handleSettingsClick"
             >
-          </ul>
-          <DrawerFooter>
-            <Button variant="secondary" class="w-full" @click="handleLogout"> Logout </Button>
+              <Icon name="settings" class="size-6" />
+              <span class="">Settings</span>
+            </button>
+          </nav>
+
+          <DrawerFooter class="border-t py-0">
+            <button
+              class="text-foreground/80 active:bg-accent flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left font-medium transition-colors duration-75"
+              @click="handleLogout"
+            >
+              <Icon name="logout" class="size-6" />
+              <span class="">Log out</span>
+            </button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>
   </section>
 </template>
-
-<style scoped>
-.bottom-nav-button {
-  color: var(--color-foreground);
-  height: fit-content;
-  font-size: small;
-  font-weight: 400;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.1rem;
-  padding: 0.5rem 0;
-}
-.bottom-nav-button:active {
-  color: var(--color-primary);
-}
-.bottom-nav-button.active {
-  color: var(--color-primary);
-}
-.bottom-nav-button:disabled {
-  color: var(--color-foreground-muted);
-  opacity: 0.5;
-}
-.bottom-nav-button .icon {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-</style>

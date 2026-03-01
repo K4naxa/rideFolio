@@ -1,68 +1,101 @@
 <!-- ResponsiveFormDialog.vue -->
 <script setup lang="ts">
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
-import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogScrollContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Dialog from "@/components/ui/dialog/Dialog.vue";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import Separator from "../ui/separator/Separator.vue";
+import type { HTMLAttributes } from "vue";
 
-const props = defineProps<{
+interface Props {
   open: boolean;
   title: string;
   description?: string;
-}>();
+  /** Optional icon shown next to the title */
+  icon?: IconProps["name"];
+  /** Extra classes applied to the desktop DialogScrollContent (e.g. max-w-2xl) */
+  contentClass?: HTMLAttributes["class"];
+}
 
+const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
+  (e: "close"): void;
 }>();
 
 const isMobile = useIsMobile();
+
+function handleOpenChange(value: boolean) {
+  emit("update:open", value);
+  if (!value) emit("close");
+}
 </script>
 
 <template>
-  <!-- Desktop: Dialog -->
+  <!-- Desktop: Dialog modal -->
   <template v-if="!isMobile">
-    <Dialog :open="open" @update:open="emit('update:open', $event)">
-      <DialogContent class="max-w-lg">
+    <Dialog :open="props.open" @update:open="handleOpenChange">
+      <DialogScrollContent :class="['w-full', contentClass ?? 'max-w-lg']">
         <DialogHeader>
-          <DialogTitle>{{ props.title }}</DialogTitle>
+          <DialogTitle>
+            <Icon v-if="icon" :name="icon" />
+            {{ props.title }}
+          </DialogTitle>
           <DialogDescription v-if="props.description">
             {{ props.description }}
           </DialogDescription>
         </DialogHeader>
-        <slot />
 
-        <DialogFooter>
-          <!-- Optional footer slot -->
-          <slot name="footer" />
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  </template>
-
-  <!-- Mobile: Drawer -->
-  <template v-else>
-    <Drawer :open="open" @update:open="emit('update:open', $event)">
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>{{ props.title }}</DrawerTitle>
-          <DrawerDescription v-if="props.description">
-            {{ props.description }}
-          </DrawerDescription>
-          <Separator class="mt-2" />
-        </DrawerHeader>
-
-        <div class="gaps-md flex flex-col px-4 py-2 text-base">
+        <div class="flex flex-col gap-4">
           <slot />
         </div>
 
-        <DrawerFooter>
-          <!-- Optional footer slot -->
+        <DialogFooter>
           <slot name="footer" />
-        </DrawerFooter>
+        </DialogFooter>
+      </DialogScrollContent>
+    </Dialog>
+  </template>
+
+  <!-- Mobile: Bottom sheet drawer -->
+  <template v-else>
+    <Drawer :open="props.open" @update:open="handleOpenChange">
+      <DrawerContent class="data-[vaul-drawer-direction=bottom]:max-h-[90vh]" dismiss-from-pill>
+        <DrawerHeader class="border-b text-left">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex flex-col gap-1">
+              <DrawerTitle class="flex items-center gap-2">
+                <Icon v-if="icon" :name="icon" />
+                {{ props.title }}
+              </DrawerTitle>
+              <DrawerDescription v-if="props.description" class="text-left text-xs">
+                {{ props.description }}
+              </DrawerDescription>
+            </div>
+            <Button variant="ghost" size="icon-sm" class="mt-0.5 shrink-0" @click="handleOpenChange(false)">
+              <Icon name="close" class="size-4" />
+            </Button>
+          </div>
+        </DrawerHeader>
+
+        <!-- Scrollable body -->
+        <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain p-4">
+          <div class="flex flex-1 flex-col gap-4">
+            <slot />
+          </div>
+
+          <!--  Footer -->
+          <div class="flex flex-col gap-2 [&>button]:w-full">
+            <slot name="footer" />
+          </div>
+        </div>
       </DrawerContent>
     </Drawer>
   </template>

@@ -8,7 +8,7 @@ import Icon from "@/components/icons/Icon.vue";
 import { CheckIcon, SaveIcon } from "lucide-vue-next";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type Note, NoteSchema, type NoteSchemaType } from "@repo/validation";
-import { computed, onUnmounted, ref, useSlots, watch } from "vue";
+import { computed, type HTMLAttributes, onUnmounted, ref, useSlots, watch } from "vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -16,9 +16,11 @@ import { useCreateNote, useDeleteNote, useTogglePinNote, useUpdateNote } from "@
 import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
 import { useNoteAutoSave } from "@/modals/composables/useNoteAutoSave";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
+import { twMerge } from "tailwind-merge";
 
 interface NoteSectionProps {
   note: Note | undefined;
+  classForm?: HTMLAttributes["class"];
 }
 
 const props = defineProps<NoteSectionProps>();
@@ -177,7 +179,7 @@ watch(
 
 <template>
   <div class="bg-background mx-auto flex min-h-0 w-full max-w-5xl min-w-0 flex-1 flex-col p-0">
-    <form class="flex min-h-0 min-w-0 flex-1 flex-col space-y-4" @submit.prevent>
+    <form :class="twMerge('flex min-h-0 min-w-0 flex-1 flex-col space-y-4', props.classForm)" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot
         name="header"

@@ -32,7 +32,7 @@ const handleClose = () => {
   <Dialog :open="isModalOpen" @update:open="handleClose">
     <DialogScrollContent class="h-full max-w-4xl lg:h-fit lg:max-h-[90vh] lg:min-h-96">
       <NoteSection :note="editableNote" @close="handleClose" @deleted="handleClose">
-        <template #header="{ isNew, isPinned, isDeleting, saveStatus, onDelete, onTogglePin, onClose }">
+        <template #header="{ isNew, isPinned, isDeleting, saveStatus, onDelete, onTogglePin }">
           <DialogHeader>
             <DialogTitle class="flex items-center">
               <Icon name="notes" /> {{ isNew ? "New Note" : "Edit Note" }}
