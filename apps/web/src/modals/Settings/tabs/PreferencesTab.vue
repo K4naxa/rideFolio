@@ -81,14 +81,15 @@ function handleThemeChange(value: ThemeType) {
 
           <ResponsiveSelect
             :options="[
-              { value: 'light', label: 'Light' },
-              { value: 'dark', label: 'Dark' },
-              { value: 'system', label: 'System' },
+              { icon: 'lightMode', value: 'light', label: 'Light' },
+              { icon: 'darkMode', value: 'dark', label: 'Dark' },
+              { icon: 'systemMode', value: 'system', label: 'System' },
             ]"
             :modelValue="themeStore.theme"
             @select="handleThemeChange"
             placeholder="Select Theme"
             title="Theme"
+            description="Choose your preferred theme for the application"
             triggerClass="w-40 md:w-50"
           />
         </div>

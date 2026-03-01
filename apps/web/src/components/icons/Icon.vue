@@ -69,6 +69,7 @@ import {
   Trash2,
   TrendingDown,
   TrendingUp,
+  TvMinimalIcon,
   User,
   UserLock,
   UserPlus,
@@ -157,6 +158,7 @@ type IconName =
   | "database"
   | "help"
   | "preferences"
+  | "systemMode"
   | "circleCheck";
 
 export interface IconProps {
@@ -250,6 +252,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   dotsVertical: EllipsisVerticalIcon,
   retry: RotateCcwIcon,
   database: DatabaseIcon,
+  systemMode: TvMinimalIcon,
   preferences: Settings2Icon,
   help: HelpCircleIcon,
 };

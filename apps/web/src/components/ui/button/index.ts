@@ -9,6 +9,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        menu: "text-foreground/80 justify-start active:bg-accent flex w-full items-center gap-3 h-fit! rounded-xl px-4! py-3! text-left text-base font-medium transition-colors duration-75 [&_svg]:shrink-0 [&_svg]:size-6!",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

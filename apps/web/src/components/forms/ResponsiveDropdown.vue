@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -87,24 +86,17 @@ const isOpen = ref(false);
             <DrawerTitle>{{ props.title || "Options" }}</DrawerTitle>
             <DrawerDescription v-if="props.description">{{ props.description }}</DrawerDescription>
           </slot>
-          <DrawerClose as-child>
-            <Button variant="outline" class="mb-auto ml-auto" size="icon-sm">
-              <Icon name="close" class="h-4 w-4" />
-              <span class="sr-only">Close</span>
-            </Button>
-          </DrawerClose>
         </div>
         <Separator class="mt-2" />
       </DrawerHeader>
 
-      <div class="px-2 pb-2">
+      <div class="flex flex-col gap-1 overflow-y-auto overscroll-contain px-2 pb-2">
         <Button
-          variant="ghost"
+          variant="menu"
           type="button"
           v-for="item in props.items"
           v-show="!item.hidden"
           :key="item.label"
-          class="text-foreground flex w-full items-center justify-start text-start text-base font-normal"
           @click="
             () => {
               item.action();
@@ -113,7 +105,7 @@ const isOpen = ref(false);
           "
           :disabled="item.disabled"
         >
-          <Icon v-if="item.icon" :name="item.icon" class="mr-2 h-4 w-4" />
+          <Icon v-if="item.icon" :name="item.icon" />
           {{ item.label }}
         </Button>
       </div>

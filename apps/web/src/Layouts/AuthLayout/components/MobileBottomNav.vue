@@ -217,24 +217,18 @@ function handleLogout() {
           </DrawerHeader>
 
           <!-- Menu items -->
-          <nav class="flex flex-col gap-1 px-3 pb-2">
-            <button
-              class="text-foreground/80 active:bg-accent flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left font-medium transition-colors duration-75"
-              @click="handleSettingsClick"
-            >
-              <Icon name="settings" class="size-6" />
+          <nav class="flex flex-col gap-1">
+            <Button variant="menu" @click="handleSettingsClick">
+              <Icon name="settings" />
               <span class="">Settings</span>
-            </button>
+            </Button>
           </nav>
 
-          <DrawerFooter class="border-t py-0">
-            <button
-              class="text-foreground/80 active:bg-accent flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left font-medium transition-colors duration-75"
-              @click="handleLogout"
-            >
-              <Icon name="logout" class="size-6" />
+          <DrawerFooter class="h-fit border-t p-0">
+            <Button variant="menu" @click="handleLogout">
+              <Icon name="logout" />
               <span class="">Log out</span>
-            </button>
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

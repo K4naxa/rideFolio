@@ -4,13 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
+  DrawerTrigger
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { computed, type HTMLAttributes, ref } from "vue";
@@ -140,28 +138,26 @@ function fromSelectValue(value: string): T {
         <DrawerTitle>{{ title }}</DrawerTitle>
         <DrawerDescription v-if="description">{{ description }}</DrawerDescription>
       </DrawerHeader>
-      <div class="px-4 pb-4">
-        <ul class="divide-border flex flex-col gap-1 divide-y" role="listbox">
-          <li
-            v-for="option in options"
-            :key="String(option.value)"
-            :aria-selected="modelValue === option.value"
-            :disabled="option.disabled"
-            :class="twMerge('flex h-12 items-center justify-start text-base', modelValue === option.value && '')"
-            @click="handleSelect(option.value)"
-          >
-            <Icon :name="option.icon" v-if="option.icon" class="mr-3 h-5 w-5" />
-            <span v-if="option.symbol" class="text-muted-foreground mr-2">{{ option.symbol }}</span>
-            {{ option.label }}
-            <Icon v-if="modelValue === option.value" name="check" class="text-primary ml-auto h-5 w-5" />
-          </li>
-        </ul>
-      </div>
-      <DrawerFooter class="pt-2">
-        <DrawerClose as-child>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
-      </DrawerFooter>
+
+      <ul class="flex flex-col gap-1 pb-2" role="listbox">
+        <Button
+          variant="menu"
+          v-for="option in options"
+          :key="String(option.value)"
+          :aria-selected="modelValue === option.value"
+          :disabled="option.disabled"
+          :class="twMerge('flex h-12 items-center justify-start text-base', modelValue === option.value && '')"
+          @click="handleSelect(option.value)"
+        >
+          <Icon :name="option.icon" v-if="option.icon" />
+
+          <span v-if="option.symbol" class="text-muted-foreground mr-2">{{ option.symbol }}</span>
+
+          {{ option.label }}
+
+          <Icon v-if="modelValue === option.value" name="check" class="text-primary ml-auto" />
+        </Button>
+      </ul>
     </DrawerContent>
   </Drawer>
 </template>
