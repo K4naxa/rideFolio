@@ -18,10 +18,13 @@ import { getInitials } from "@/lib/utils";
 import { useModalStore } from "@/stores/modal";
 import { EllipsisVerticalIcon } from "lucide-vue-next";
 import { ref } from "vue";
+import { DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@/components/ui/dropdown-menu";
+import { useThemeStore } from "@/stores/theme.ts";
 
 const isMobile = useIsMobile();
 const { currentUser: user } = useCurrentUser();
 const modalStore = useModalStore();
+const themeStore = useThemeStore();
 
 const auth = useAuth();
 
@@ -45,12 +48,7 @@ const isOpen = ref(false);
         <EllipsisVerticalIcon class="ml-auto" />
       </SidebarMenuButton>
     </DropdownMenuTrigger>
-    <DropdownMenuContent
-      class="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-      side="right"
-      align="end"
-      :sideOffset="4"
-    >
+    <DropdownMenuContent class="min-w-56" side="right" align="end" :sideOffset="4">
       <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <Avatar class="h-8 w-8 rounded-lg">
@@ -65,13 +63,36 @@ const isOpen = ref(false);
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
+        <DropdownMenuSub @click="modalStore.onOpen('settings')">
+          <DropdownMenuSubTrigger>
+            <Icon
+              :name="
+                themeStore.theme === 'light' ? 'lightMode' : themeStore.theme === 'dark' ? 'darkMode' : 'systemMode'
+              "
+            />
+            Display Theme
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent :side-offset="4">
+            <DropdownMenuItem @click="themeStore.setTheme('light')">
+              <Icon name="lightMode" />
+              Light
+              <Icon v-if="themeStore.theme === 'light'" name="check" class="text-primary ml-auto" />
+            </DropdownMenuItem>
+            <DropdownMenuItem @click="themeStore.setTheme('dark')">
+              <Icon name="darkMode" />
+              Dark
+              <Icon v-if="themeStore.theme === 'dark'" name="check" class="text-primary ml-auto" />
+            </DropdownMenuItem>
+            <DropdownMenuItem @click="themeStore.setTheme('system')">
+              <Icon name="systemMode" />
+              System
+              <Icon v-if="themeStore.theme === 'system'" name="check" class="text-primary ml-auto" />
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuItem @click="modalStore.onOpen('settings')">
           <Icon name="settings" />
           Settings
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Icon name="billing" />
-          Billing
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuItem @click="auth.signOut()">

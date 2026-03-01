@@ -20,6 +20,7 @@ import { getInitials } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
 import { useAuth } from "@/lib/authClient";
+import { useThemeStore } from "@/stores/theme.ts";
 
 const modalStore = useModalStore();
 const { currentUser: user } = useCurrentUser();
@@ -89,6 +90,8 @@ function handleLogout() {
   auth.signOut();
   isProfileDrawerOpen.value = false;
 }
+
+const themeStore = useThemeStore();
 </script>
 
 <template>
@@ -218,6 +221,62 @@ function handleLogout() {
 
           <!-- Menu items -->
           <nav class="flex flex-col gap-1">
+            <Drawer v-slot="{ onOpenChange }">
+              <DrawerTrigger asChild>
+                <Button variant="menu" class="justify-start">
+                  <Icon
+                    :name="
+                      themeStore.theme === 'light'
+                        ? 'lightMode'
+                        : themeStore.theme === 'dark'
+                          ? 'darkMode'
+                          : 'systemMode'
+                    "
+                  />
+                  Display Theme
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Display Mode</DrawerTitle>
+                  <DrawerDescription>Select the display mode for the app.</DrawerDescription>
+                </DrawerHeader>
+
+                <Button
+                  variant="menu"
+                  @click="
+                    themeStore.setTheme('light');
+                    onOpenChange(false);
+                  "
+                >
+                  <Icon name="lightMode" />
+                  Light
+                  <Icon v-if="themeStore.theme === 'light'" name="check" class="text-primary ml-auto" />
+                </Button>
+                <Button
+                  variant="menu"
+                  @click="
+                    themeStore.setTheme('dark');
+                    onOpenChange(false);
+                  "
+                >
+                  <Icon name="darkMode" />
+                  Dark
+                  <Icon v-if="themeStore.theme === 'dark'" name="check" class="text-primary ml-auto" />
+                </Button>
+                <Button
+                  variant="menu"
+                  @click="
+                    themeStore.setTheme('system');
+                    onOpenChange(false);
+                  "
+                >
+                  <Icon name="systemMode" />
+                  System preference
+                  <Icon v-if="themeStore.theme === 'system'" name="check" class="text-primary ml-auto" />
+                </Button>
+              </DrawerContent>
+            </Drawer>
             <Button variant="menu" @click="handleSettingsClick">
               <Icon name="settings" />
               <span class="">Settings</span>

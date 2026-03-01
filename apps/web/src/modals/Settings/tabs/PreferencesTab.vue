@@ -9,7 +9,6 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useUserPreferenceUpdate } from "@/lib/queries/user/user-mutations";
 
-import { type ThemeType, useThemeStore } from "@/stores/theme";
 import {
   consumptionUnits_distance,
   consumptionUnits_hour,
@@ -23,7 +22,6 @@ import {
 import { computed } from "vue";
 
 const { currentUser } = useCurrentUser();
-const themeStore = useThemeStore();
 
 const { mutateAsync: updatePreference } = useUserPreferenceUpdate();
 
@@ -53,10 +51,6 @@ const consumptionUnitsHour = consumptionUnits_hour.map((unit) => {
     label: getConsumptionUnitNamekey(unit.code),
   };
 });
-
-function handleThemeChange(value: ThemeType) {
-  themeStore.setTheme(value as typeof themeStore.theme);
-}
 </script>
 
 <template>
@@ -66,35 +60,7 @@ function handleThemeChange(value: ThemeType) {
       <DialogDescription> Manage your preference settings such as units and theme. </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-10">
-      <div>
-        <header class="mb-4">
-          <h3>Preferences</h3>
-          <Separator class="my-2" />
-        </header>
-
-        <div class="flex items-center justify-between gap-4">
-          <div>
-            <Label> Theme </Label>
-            <span class="text-muted-foreground text-sm">Used for application appearance</span>
-          </div>
-
-          <ResponsiveSelect
-            :options="[
-              { icon: 'lightMode', value: 'light', label: 'Light' },
-              { icon: 'darkMode', value: 'dark', label: 'Dark' },
-              { icon: 'systemMode', value: 'system', label: 'System' },
-            ]"
-            :modelValue="themeStore.theme"
-            @select="handleThemeChange"
-            placeholder="Select Theme"
-            title="Theme"
-            description="Choose your preferred theme for the application"
-            triggerClass="w-40 md:w-50"
-          />
-        </div>
-      </div>
-
+    <div class="gaps-lg flex flex-col">
       <div class="space-y-6">
         <header class="mb-4">
           <h3>Units</h3>

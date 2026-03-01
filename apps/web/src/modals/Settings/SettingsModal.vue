@@ -31,14 +31,13 @@ const activeTab = ref("preferences");
 interface Tab {
   id: string;
   label: string;
-  icon?: IconProps["name"];
-  avatar?: boolean;
+  icon: IconProps["name"];
 }
 const tabs: Tab[] = [
   {
     id: "account",
     label: user.currentUser.value?.name || "Account",
-    avatar: true,
+    icon: "user",
   },
   {
     id: "preferences",
@@ -64,8 +63,6 @@ const initials = getInitials(user.currentUser.value?.name || "");
 function setActiveTab(tabId: string) {
   activeTab.value = tabId;
 }
-
-const showTestDialog = ref(false);
 </script>
 
 <template>
@@ -73,41 +70,27 @@ const showTestDialog = ref(false);
     <DialogScrollContent class="w-full max-w-7xl gap-0 overflow-hidden p-0! md:h-200">
       <div class="flex h-full flex-col">
         <!-- Mobile Tabs Navigation (sticky) -->
-        <div v-if="isMobile" class="bg-background sticky top-0 z-10 border-b">
+        <div v-if="isMobile" class="bg-background sticky top-0 z-10">
           <DialogHeader class="p-4 pb-2">
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
 
-          <Tabs :model-value="activeTab" class="w-full px-4 pb-3">
-            <TabsList class="w-full justify-start overflow-x-auto">
-              <TabsTrigger
-                v-for="tab in tabs"
-                :key="tab.id"
-                :value="tab.id"
-                class="flex items-center gap-1.5 px-3 py-2"
-                @click="setActiveTab(tab.id)"
-              >
-                <div class="size-5 w-5">
-                  <template v-if="tab.avatar">
-                    <Avatar class="h-5 w-5">
-                      <AvatarImage
-                        v-if="user.currentUser.value?.image"
-                        :src="user.currentUser.value?.image"
-                        :alt="user.currentUser.value?.name"
-                      />
-                      <AvatarFallback class="text-[10px]">
-                        {{ initials }}
-                      </AvatarFallback>
-                    </Avatar>
-                  </template>
-                  <template v-else-if="tab.icon">
-                    <Icon :name="tab.icon" class="h-4 w-4" />
-                  </template>
-                </div>
-                <span>{{ tab.label }}</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div class="mobileOffScreenScroll scrollbar-none">
+            <Tabs :model-value="activeTab" class="scrollbar-none overflow-x-auto">
+              <TabsList class="min-w-fit">
+                <TabsTrigger
+                  v-for="tab in tabs"
+                  :key="tab.id"
+                  :value="tab.id"
+                  class="flex items-center gap-1.5 px-3 py-2"
+                  @click="setActiveTab(tab.id)"
+                >
+                  <Icon :name="tab.icon" />
+                  <span>{{ tab.label }}</span>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         <!-- Desktop Layout with Sidebar -->
