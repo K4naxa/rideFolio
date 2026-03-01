@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
@@ -76,8 +75,6 @@ const isMobile = useIsMobile();
     class="bg-background transition-size sticky top-0 z-20 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-4 ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
   >
     <div class="flex w-full items-center gap-1 overflow-hidden lg:gap-2">
-      <SidebarTrigger class="-ml-1" />
-      <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
       <h3 class="truncate">{{ title }}</h3>
     </div>
 

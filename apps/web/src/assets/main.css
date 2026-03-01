@@ -48,7 +48,7 @@ img {
   --font-roboto: "Roboto", sans-serif;
 
   /* Core Colors */
-  --color-background: var(--color-white);
+  --color-background: hsl(0, 0%, 100%);
   --color-foreground: oklch(20.5% 0 0); /* Neutral 950 */
   --color-card: hsl(0, 0%, 100%); /* white */
   --color-card-foreground: oklch(27.546% 0.03701 260.041); /* slate-800 */
@@ -69,25 +69,24 @@ img {
   --color-input: var(--color-neutral-50);
   --color-ring: var(--color-primary);
 
-  --color-primary: #ff8c00; /* indigo-500 */
+  --color-primary: #ff8c00; /* orange */
   --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
   --color-secondary: var(--color-neutral-800);
   --color-secondary-foreground: var(--color-neutral-50);
 
-  --color-destructive: hsl(10, 100%, 53%); /* red-600 */
+  --color-destructive: hsl(0, 84%, 60%); /* red-500 */
   --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
-  --color-success: hsl(142, 76%, 36%); /* green-600 */
+  --color-success: hsl(142, 71%, 45%); /* emerald-600 */
   --color-success-foreground: hsl(210, 40%, 98%); /* slate-50 */
-  --color-error: hsl(0, 72%, 51%); /* red-600 */
+  --color-error: hsl(0, 84%, 60%); /* red-500 */
   --color-error-foreground: hsl(210, 40%, 98%); /* slate-50 */
-  --color-warning: rgb(245 158 11); /* amber-500 */
+  --color-warning: hsl(38, 92%, 50%); /* amber-500 */
   --color-warning-foreground: rgb(30 41 59); /* slate-800 */
-  --color-chart-1: hsl(18, 100%, 48%);
-  --color-chart-2: hsl(175, 100%, 29%);
-  --color-chart-3: hsl(196, 72%, 23%);
-  --color-chart-4: hsl(44, 100%, 50%);
-  --color-chart-5: hsl(36, 100%, 50%);
-
+  --color-chart-1: hsl(33, 100%, 50%); /* orange — matches primary */
+  --color-chart-2: hsl(142, 71%, 45%); /* emerald */
+  --color-chart-3: hsl(220, 85%, 57%); /* blue */
+  --color-chart-4: hsl(262, 80%, 62%); /* violet */
+  --color-chart-5: hsl(0, 84%, 60%);   /* red */
   /* Scrollbar */
   --color-scrollbar-thumb: var(--color-neutral-300);
   --color-scrollbar-track: var(--color-neutral-100);
@@ -100,7 +99,7 @@ img {
   --color-maintenance-foreground: var(--color-white);
 
   /* Log - Notes */
-  --color-notes: var(--color-slate-500); /* sky-500 */
+  --color-notes: var(--color-slate-500); /* slate-500 */
   --color-notes-foreground: var(--color-slate-50); /* slate-50 */
   /* Log - Todo */
   --color-todo: var(--color-violet-500); /* violet-500 */
@@ -135,13 +134,14 @@ img {
 
   .dark {
     /* Core Colors */
-    --color-background: hsl(0, 0%, 1%); /* slate-950 */
+    --color-background: hsl(0, 0%, 3%); /* slate-950 */
     --color-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-card: oklch(12.5% 0 0); /* slate-900 */
+
+    --color-card: hsl(0, 0%, 5%); /* slate-900 */
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
-    --color-background-light: oklch(16.5% 0 0);
+    --color-background-light: hsl(0, 0%, 5%);
 
     --color-muted: oklch(20.9% 0 0);
     --color-muted-foreground: var(--color-neutral-400);
@@ -149,11 +149,14 @@ img {
     --color-accent: oklch(30.1% 0 0);
     --color-accent-foreground: var(--color-neutral-50);
 
+    --color-popover: var(--color-card);
+    --color-popover-foreground: var(--color-card-foreground);
+
     --color-border: var(--color-neutral-800); /* slate-700 */
     --color-input: var(--color-neutral-900); /* slate-700 */
-    --color-ring: var(--color-primary); /* indigo-500 */
+    --color-ring: var(--color-primary); /* orange */
 
-    --color-primary: var(--color-amber-600); /* indigo-500 */
+    --color-primary: var(--color-amber-500); /* amber-500 — bright orange for dark bg */
 
     --color-secondary: oklch(0.269 0 0);
     --color-secondary-foreground: oklch(0.985 0 0);
@@ -162,17 +165,23 @@ img {
     --color-table-header-foreground: var(--color-neutral-50);
     --color-table-row-hover: var(--color-neutral-900);
 
-    --color-destructive: var(--color-red-700);
+    --color-destructive: var(--color-red-500);
     --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */
 
-    --color-success: var(--color-green-700);
+    --color-success: hsl(142, 65%, 45%);
     --color-success-foreground: var(--color-neutral-50); /* slate-50 */
 
-    --color-error: var(--color-red-700); /* red-700 */
+    --color-error: var(--color-red-500); /* red-500 */
     --color-error-foreground: var(--color-neutral-50); /* slate-50 */
 
-    --color-warning: var(--color-amber-600); /* amber-600 */
+    --color-warning: hsl(48, 96%, 53%); /* golden-yellow — clearly distinct from primary */
     --color-warning-foreground: var(--color-neutral-900); /* slate-900 */
+
+    --color-chart-1: hsl(33, 95%, 55%); /* orange */
+    --color-chart-2: hsl(142, 65%, 50%); /* emerald */
+    --color-chart-3: hsl(220, 80%, 65%); /* blue */
+    --color-chart-4: hsl(262, 75%, 68%); /* violet */
+    --color-chart-5: hsl(0, 78%, 65%); /* red */
 
     /* Scrollbar */
     --color-scrollbar-thumb: var(--color-neutral-600);
