@@ -3,7 +3,7 @@ import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import Input from "@/components/ui/input/Input.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
@@ -56,7 +56,7 @@ const submit = handleSubmit(async (values) => {
     description="Add vehicles to your group"
   >
     <template #default>
-      <Input type="text" name="poolId" :initial-value="props.pool.id" hidden />
+      <FormInput type="text" name="poolId" :initial-value="props.pool.id" hidden />
 
       <div class="grid min-h-36">
         <div v-if="filteredVehicles.length < 1" class="place-self-center">

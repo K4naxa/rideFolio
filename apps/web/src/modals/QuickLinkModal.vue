@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import { useQuicklinkCreate } from "@/lib/queries/quicklinks/quicklink-mutation";
@@ -9,6 +8,7 @@ import { QuicklinkSchema } from "@repo/validation";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { computed, watch } from "vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "quicklink");
@@ -53,9 +53,9 @@ watch(isModalOpen, () => {
     icon="link"
     content-class="max-w-lg"
   >
-    <Input name="name" label="Name" placeholder="My favourite garage" type="text" />
-    <Input name="url" label="URL" placeholder="https://example.com" type="text" />
-    <Input
+    <FormInput name="name" label="Name" placeholder="My favourite garage" type="text" />
+    <FormInput name="url" label="URL" placeholder="example.com" type="text" prefix="https://" />
+    <FormInput
       name="description"
       label="Description"
       placeholder="Shown as tooltip on hover (optional)"

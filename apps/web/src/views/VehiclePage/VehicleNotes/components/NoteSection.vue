@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
-import Input from "@/components/ui/input/Input.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
@@ -245,7 +245,7 @@ watch(
           class="min-h-40"
         >
           <div>
-            <Input
+            <FormInput
               name="title"
               type="text"
               placeholder="Title"

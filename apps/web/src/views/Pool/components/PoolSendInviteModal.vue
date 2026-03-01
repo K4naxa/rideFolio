@@ -3,7 +3,7 @@ import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
 import Button from "@/components/ui/button/Button.vue";
 
-import Input from "@/components/ui/input/Input.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { usePoolInviteUser } from "@/lib/queries/pools/pool-mutations";
 import { POOL_MEMBER_ROLES, type PoolDetails, PoolInviteSchema } from "@repo/validation";
@@ -68,8 +68,8 @@ const submit = handleSubmit(async (values) => {
     description="Invite a new member to your group"
   >
     <template #default>
-      <Input type="text" name="poolId" :initial-value="props.pool.id" hidden />
-      <Input type="text" name="email" placeholder="user@example.com" label="Email" />
+      <FormInput type="text" name="poolId" :initial-value="props.pool.id" hidden />
+      <FormInput type="text" name="email" placeholder="user@example.com" label="Email" />
       <Field name="roleToGrant" v-slot="{ value, handleChange }">
         <div>
           <ResponsiveSelect

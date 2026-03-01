@@ -16,6 +16,7 @@ import DrawerTitle from "@/components/ui/drawer/DrawerTitle.vue";
 import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
 import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
 import DrawerClose from "@/components/ui/drawer/DrawerClose.vue";
+import { Label } from "@/components/ui/label";
 
 const props = withDefaults(
   defineProps<{
@@ -73,15 +74,16 @@ const formattedDate = computed(() => (props.modelValue ? df.value.format(props.m
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
-    <label v-if="label" class="group-aria-invalid:text-destructive text-sm font-semibold"> {{ label }} </label>
+  <div class="">
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-1 ml-1 font-medium">{{ label }}</Label>
+
     <Popover v-if="!isMobile" v-model:open="open" key="DateInput">
       <PopoverTrigger as-child>
-        <Button variant="input">
+        <button class="inputField items-center gap-2">
           <CalendarIcon :class="['mr-2 h-4 w-4', modelValue ? '' : 'stroke-muted-foreground']" />
           <span v-if="modelValue">{{ formattedDate }}</span>
           <span v-else class="text-muted-foreground">{{ placeholder || "Pick a date" }}</span>
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0" key="DateInputContent">
         <Calendar
@@ -95,11 +97,11 @@ const formattedDate = computed(() => (props.modelValue ? df.value.format(props.m
 
     <Drawer v-else v-model:open="open" title="Select Date" key="DateInputDrawer">
       <DrawerTrigger as-child>
-        <Button variant="input">
+        <button class="inputField items-center gap-2">
           <CalendarIcon :class="['mr-2 h-4 w-4', modelValue ? '' : 'stroke-muted-foreground']" />
           <span v-if="modelValue">{{ formattedDate }}</span>
           <span v-else class="text-muted-foreground">{{ placeholder || "Pick a date" }}</span>
-        </Button>
+        </button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

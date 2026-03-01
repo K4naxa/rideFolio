@@ -3,7 +3,6 @@ import Button from "@/components/ui/button/Button.vue";
 import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
-import Input from "@/components/ui/input/Input.vue";
 
 import { authClient } from "@/lib/authClient";
 import { RegisterSchema } from "@repo/validation";

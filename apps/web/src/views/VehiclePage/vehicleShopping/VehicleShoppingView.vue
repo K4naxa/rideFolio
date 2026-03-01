@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import Input from "@/components/ui/input/Input.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { ShoppingListItemSchema } from "@repo/validation";
@@ -35,14 +35,14 @@ const onSubmit = handleSubmit(async (values) => {
   <main class="flex-1 space-y-6">
     <form @submit="onSubmit">
       <div class="flex flex-wrap items-start justify-evenly gap-4 sm:justify-normal">
-        <Input
+        <FormInput
           name="name"
           type="text"
           placeholder="Name"
           class="min-w-xs flex-1 sm:max-w-md"
           :validate-on-blur="false"
         />
-        <Input
+        <FormInput
           name="price"
           type="number"
           placeholder="Price"
