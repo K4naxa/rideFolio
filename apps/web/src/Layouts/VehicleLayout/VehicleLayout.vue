@@ -7,6 +7,7 @@ import type { IconProps } from "@/components/icons/Icon.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 
 interface VehicleTab {
   to: string;
@@ -16,7 +17,7 @@ interface VehicleTab {
   isLoading?: boolean;
 }
 
-const { currentVehicleId } = useCurrentVehicle();
+const { currentVehicleId, currentVehicle } = useCurrentVehicle();
 
 const VEHICLE_TABS = computed<VehicleTab[]>(() => [
   { to: `/vehicles/${currentVehicleId.value}`, icon: "overview", label: "Overview", id: "overview" },
@@ -44,6 +45,9 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 <template>
   <div class="flex min-w-0 flex-1 flex-col">
     <!-- Vehicle layout Hero -->
+    <MobilePageHeader>
+      <h1>{{ currentVehicle?.vehicleData.name }}</h1>
+    </MobilePageHeader>
 
     <VehicleHero class="" />
 

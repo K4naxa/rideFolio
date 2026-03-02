@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AppHeader from "@/components/ui/AppHeader.vue";
 import AppSidebar from "@/components/ui/AppSidebar.vue";
 import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
 import MobileBottomNav from "./components/MobileBottomNav.vue";
@@ -9,9 +8,8 @@ import MobileBottomNav from "./components/MobileBottomNav.vue";
     <SidebarProvider>
       <AppSidebar />
 
-      <main class="mb-24 flex min-w-0 flex-1 flex-col lg:mb-0" id="authMainSection">
-        <AppHeader />
-        <div class="flex flex-1">
+      <main class="mb-24 flex min-w-0 flex-1 flex-col md:mb-0" id="authMainSection">
+        <div class="flex flex-1 flex-col">
           <RouterView />
         </div>
       </main>

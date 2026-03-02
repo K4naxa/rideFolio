@@ -1,18 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
 import { useModalStore } from "@/stores/modal";
-import Icons from "../icons/Icon.vue";
-import Icon from "../icons/Icon.vue";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";
-import NotificationsPopover from "../ResponsiveNotification.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
 const route = useRoute();
@@ -72,38 +63,17 @@ const isMobile = useIsMobile();
 
 <template>
   <header
-    class="bg-background transition-size sticky top-0 z-20 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-4 ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
+    v-if="!isMobile"
+    class="bg-card transition-size sticky top-0 z-10 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-4 ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
   >
     <div class="flex w-full items-center gap-1 overflow-hidden lg:gap-2">
       <h3 class="truncate">{{ title }}</h3>
     </div>
-
-    <NotificationsPopover />
-
-    <Separator v-if="!isMobile" orientation="vertical" class="mx-2 data-[orientation=vertical]:h-5" />
-
-    <DropdownMenu v-if="!isMobile">
-      <DropdownMenuTrigger as-child>
-        <Button variant="default"> <Icons name="plus" class="lg:flex" /> Add Activity </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" class="">
-        <DropdownMenuItem
-          v-for="button in headerButtons"
-          :key="button.label"
-          size="sm"
-          @click="button.onClick"
-          :data-cy="button.cypressDataAttr"
-        >
-          <Icon :name="button.icon" />
-          {{ button.label }}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
   </header>
 </template>
 
 <style>
 :root {
-  --app-header-height: 3.5rem;
+  --app-header-height: 3rem;
 }
 </style>

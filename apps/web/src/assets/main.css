@@ -9,6 +9,9 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   min-width: 400px;
+
+  /*  hide scroll bar on mobile */
+  @apply scrollbar-none md:scrollbar-thin;
 }
 
 /* !IMPORTANT: Fixes pixelation from downscaled images with object-cover */
@@ -60,6 +63,9 @@ img {
 
   --color-accent: var(--color-neutral-100);
   --color-accent-foreground: var(--color-foreground);
+
+  --color-sidebar-accent: var(--color-accent);
+  --color-sidebar-accent-foreground: var(--color-accent-foreground);
 
   --color-table-header-background: var(--color-neutral-50);
   --color-table-header-foreground: var(--color-neutral-800);
@@ -117,7 +123,7 @@ img {
 
 @layer base {
   h1 {
-    @apply text-foreground text-xl font-bold;
+    @apply text-foreground text-xl font-medium;
   }
 
   h2 {
@@ -160,6 +166,9 @@ img {
 
     --color-secondary: oklch(0.269 0 0);
     --color-secondary-foreground: oklch(0.985 0 0);
+
+    --color-sidebar-accent: var(--color-accent);
+    --color-sidebar-accent-foreground: var(--color-accent-foreground);
 
     --color-table-header-background: var(--color-neutral-800);
     --color-table-header-foreground: var(--color-neutral-50);

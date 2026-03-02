@@ -24,7 +24,7 @@ const isMobile = useIsMobile();
 
 <template>
   <div
-    v-if="collapsible === 'none'"
+    v-if="collapsible === 'none' && !isMobile"
     data-slot="sidebar"
     :class="cn('bg-background text-foreground flex h-full w-(--sidebar-width) flex-col', props.class)"
     v-bind="$attrs"
@@ -55,7 +55,7 @@ const isMobile = useIsMobile();
 
   <div
     v-else
-    class="group peer text-foreground hidden md:block"
+    class="group peer text-foreground z-20 hidden md:block"
     data-slot="sidebar"
     :data-state="state"
     :data-collapsible="state === 'collapsed' ? collapsible : ''"

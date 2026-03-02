@@ -12,6 +12,9 @@ import { computed, ref } from "vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import DateInput from "@/components/forms/DateInput.vue";
 import ResponsivePopover from "@/components/forms/ResponsivePopover.vue";
+import { useIsMobile } from "@/lib/composables/useMediaQuery.ts";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
+import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 
 // ─── Filters state ──────────────────────────────────────────────────────────
 
@@ -156,15 +159,16 @@ const typeConfig = {
     bgClass: "bg-green-500/10 dark:bg-green-500/15",
   },
 } as const;
+
+const isMobile = useIsMobile();
 </script>
 
 <template>
   <MainContentWrapper>
-    <div class="flex w-full flex-col py-4 lg:py-8">
-      <!-- ── Header ──────────────────────────────────────────────── -->
-      <header class="mb-5 flex items-center justify-between gap-3">
-        <h3 class="shrink-0">Timeline</h3>
-
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <template #mobile-header>
+      <MobilePageHeader class="flex justify-between gap-4">
+        <h1>Timeline</h1>
         <div class="flex items-center gap-2">
           <!-- Clear all – visible only when any filter is active -->
           <Button
@@ -216,43 +220,99 @@ const typeConfig = {
             </template>
           </ResponsivePopover>
         </div>
-      </header>
+      </MobilePageHeader>
+    </template>
 
+    <div class="flex w-full flex-col">
       <!-- ── Event-type chip row ──────────────────────────────────── -->
-      <div class="scrollbar-none mobileOffScreenScroll mb-5 flex gap-2 overflow-x-auto">
-        <!-- All -->
-        <button
-          :class="
-            twMerge(
-              'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-              allTypesActive
-                ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
-            )
-          "
-          @click="setAllTypes"
-        >
-          All
-        </button>
+      <ScrollableNav class="scrollbar-none mb-5 flex justify-between gap-8">
+        <div class="flex items-center gap-2 overflow-x-auto">
+          <!-- All -->
+          <button
+            :class="
+              twMerge(
+                'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+                allTypesActive
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
+              )
+            "
+            @click="setAllTypes"
+          >
+            All
+          </button>
 
-        <!-- Per-type chips -->
-        <button
-          v-for="tf in typeFilters"
-          :key="tf.type"
-          :class="
-            twMerge(
-              'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-              isTypeActive(tf.type)
-                ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
-            )
-          "
-          @click="toggleEventType(tf.type)"
-        >
-          <Icon :name="tf.icon" size="sm" />
-          {{ tf.label }}
-        </button>
-      </div>
+          <!-- Per-type chips -->
+          <button
+            v-for="tf in typeFilters"
+            :key="tf.type"
+            :class="
+              twMerge(
+                'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+                isTypeActive(tf.type)
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
+              )
+            "
+            @click="toggleEventType(tf.type)"
+          >
+            <Icon :name="tf.icon" size="sm" />
+            {{ tf.label }}
+          </button>
+        </div>
+
+        <div v-if="!isMobile" class="flex items-center gap-2">
+          <!-- Clear all – visible only when any filter is active -->
+          <Button
+            v-if="activeFilterCount > 0"
+            variant="ghost"
+            size="sm"
+            class="text-muted-foreground"
+            @click="clearAllFilters"
+          >
+            <Icon name="close" />
+            <span class="hidden sm:inline">Clear</span>
+          </Button>
+
+          <!-- Advanced filter button -->
+
+          <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
+            <template #trigger>
+              <Button variant="outline" size="sm" class="relative">
+                <Icon name="filter" />
+                <span class="hidden sm:inline">Filters</span>
+                <span
+                  v-if="advancedFilterCount > 0"
+                  class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
+                >
+                  {{ advancedFilterCount }}
+                </span>
+              </Button>
+            </template>
+
+            <template #content>
+              <div class="gaps-sm flex flex-col md:w-sm">
+                <div>
+                  <VehicleSelect
+                    placeholder="Select a vehicle"
+                    :value="tempVehicleId"
+                    @value-change="(value) => (tempVehicleId = value)"
+                  />
+                </div>
+                <div class="gaps-sm grid grid-cols-2">
+                  <date-input placeholder="Select a date" label="From" v-model="tempStartDate" />
+                  <date-input placeholder="Select a date" label="To" v-model="tempEndDate" />
+                </div>
+              </div>
+            </template>
+
+            <template #footer="{ close }">
+              <Button variant="outline" @click="clearAdvancedFilters(close)">Clear filters</Button>
+              <Button variant="default" @click="applyFilters(close)">Apply</Button>
+            </template>
+          </ResponsivePopover>
+        </div>
+      </ScrollableNav>
 
       <!-- ── Active advanced-filter badges ───────────────────────── -->
       <div
@@ -307,7 +367,14 @@ const typeConfig = {
       <div v-else class="flex flex-col">
         <template v-for="([dateGroup, groupItems], groupIdx) in groupedItems" :key="dateGroup">
           <!-- Date-group divider -->
-          <div :class="twMerge('mb-4 flex items-center gap-3', groupIdx > 0 && 'mt-8')">
+          <div
+            :class="
+              twMerge(
+                'from-background mobileOffScreenScroll sticky top-(--app-header-height) z-10 mb-4 flex items-center gap-3 bg-linear-to-b to-transparent py-1 backdrop-blur-sm',
+                groupIdx > 0 && 'mt-8',
+              )
+            "
+          >
             <span class="text-muted-foreground shrink-0 text-xs font-semibold tracking-widest uppercase">
               {{ dateGroup }}
             </span>

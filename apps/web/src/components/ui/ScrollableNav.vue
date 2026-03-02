@@ -39,7 +39,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full min-w-0">
+  <div class="relative -mx-4 h-fit min-w-0 sm:-mx-6 lg:-mx-8">
     <!-- Left fade + chevron -->
     <Transition name="fade">
       <div v-if="canScrollLeft" class="pointer-events-none absolute top-0 left-0 z-10 flex h-full items-center">
@@ -51,8 +51,10 @@ onUnmounted(() => {
     </Transition>
 
     <!-- Scrollable content -->
-    <div ref="scrollContainer" class="scrollbar-macos min-w-0 overflow-x-auto scroll-smooth">
-      <slot />
+    <div ref="scrollContainer" class="scrollbar-none overflow-x-auto scroll-smooth px-4 sm:px-6 lg:px-8">
+      <div class="min-w-fit">
+        <slot />
+      </div>
     </div>
 
     <!-- Right fade + chevron -->

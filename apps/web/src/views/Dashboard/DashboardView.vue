@@ -21,14 +21,18 @@ import { formatBytesToMB } from "@/lib/utils";
 import QuickLinkSection from "@/views/Dashboard/components/QuickLinkSection.vue";
 import { useTimeAgoIntl } from "@vueuse/core";
 import { twMerge } from "tailwind-merge";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 
-const { preferredCurrencySymbol, currentUser, isLoading } = useCurrentUser();
+const { currentUser } = useCurrentUser();
 
 const { data: upcomingActivity } = useUpcomingActivityQuery();
 </script>
 
 <template>
   <MainContentWrapper class="flex min-w-0 flex-1 flex-col space-y-8 p-4 lg:p-8">
+    <template #mobile-header>
+      <MobilePageHeader class=""> <h1>Dashboard</h1> </MobilePageHeader>
+    </template>
     <VehicleScrollArea size="lg" />
 
     <!-- second row -->

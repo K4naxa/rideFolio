@@ -96,8 +96,10 @@ watch([isModalOpen, pool], ([open, poolData]) => {
 });
 
 const onSubmit = handleSubmit(async (values) => {
+  console.log("Submitting pool form:", values);
   if (pool.value) {
     try {
+      console.log("Updating pool:", values);
       await updatePool(
         { poolId: pool.value.id, values },
         {
@@ -114,6 +116,7 @@ const onSubmit = handleSubmit(async (values) => {
       console.log("Failed to update pool:", error);
     }
   } else {
+    console.log("Creating pool:", values);
     await createPool(values, {
       onSuccess: (data) => {
         toast.success("Group created successfully!");
@@ -296,7 +299,6 @@ const onSubmit = handleSubmit(async (values) => {
               <!-- Manage existing vehicles if editing -->
               <ul v-else class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
                 <li
-                  for="selectedVehicle"
                   v-for="{ data } in pool?.vehicles"
                   :key="data.id"
                   @click="
@@ -322,14 +324,13 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
 
         <DialogFooter class="pt-8">
-          <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn">
+          <Button type="submit" :disabled="isSubmitting" data-cy="submit-refill-btn" @click="onSubmit">
             <span v-if="!isSubmitting">
-              <p v-if="pool">Save Changes</p>
-              <p v-else>Create Group</p>
+              {{ pool ? "Save Changes" : "Create Group" }}
             </span>
             <span v-else>
               <Spinner />
-              <p>Processing...</p>
+              {{ pool ? "Saving.." : "Creating.." }}
             </span>
           </Button>
           <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>

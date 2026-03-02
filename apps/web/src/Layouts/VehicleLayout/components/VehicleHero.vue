@@ -35,17 +35,15 @@ const deleteModalDescription = computed(() =>
     ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
     : "Are you sure you want to delete this vehicle? This action cannot be undone.",
 );
-
-const statsOpen = ref(false);
 </script>
 
 <template>
   <div class="mb-2 w-full md:mb-3 lg:mb-6" data-cy="vehicle-hero">
-    <div class="relative h-52 overflow-hidden">
+    <div class="relative h-60 overflow-hidden">
       <VehicleAvatar
         :src="currentVehicle?.vehicleData.image"
         :type="currentVehicle?.vehicleData.type.code"
-        class="absolute inset-0 h-52 w-full rounded-none"
+        class="absolute inset-0 h-60 w-full rounded-none"
       />
       <div class="absolute inset-0 bg-black/40" />
     </div>
