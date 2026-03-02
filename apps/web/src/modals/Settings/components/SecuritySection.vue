@@ -2,7 +2,6 @@
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
@@ -14,6 +13,7 @@ import { Field, Form } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import z from "zod";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const user = useCurrentUser();
 const redirectUrl = import.meta.env.VITE_FRONTEND_URL + "/dashboard";
@@ -124,7 +124,7 @@ async function onEmailChangeSubmit(values: any) {
           @submit="onEmailChangeSubmit"
           class="flex flex-col gap-4"
         >
-          <Input name="newEmail" type="email" placeholder="New email address" />
+          <FormInput name="newEmail" type="email" placeholder="New email address" />
         </Form>
       </template>
 
@@ -157,20 +157,15 @@ async function onEmailChangeSubmit(values: any) {
           @submit="onPasswordChangeSubmit"
           class="flex flex-col gap-4"
         >
-          <Input
+          <FormInput
             type="password"
             name="currentPassword"
             placeholder="Current password"
             autocomplete="current-password"
           />
 
-          <Input type="password" name="newPassword" placeholder="New password" autocomplete="new-password" />
-          <Input
-            type="password"
-            name="newPasswordConfirmation"
-            placeholder="new password"
-            autocomplete="new-password"
-          />
+          <FormInput type="password" name="newPassword" placeholder="New password" autocomplete="new-password" />
+          <FormInput type="password" name="newPasswordConfirmation" placeholder="new password" autoco />
           <Field v-slot="{ value, handleChange }" name="revokeOtherSessions">
             <Label class="flex items-center gap-2">
               <Checkbox class="size-5" :model-value="value" @update:model-value="handleChange" />

@@ -3,7 +3,6 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
@@ -23,6 +22,7 @@ import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import { useTodoById } from "@/lib/queries/todos/todo-queries";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const { currentVehicle } = useCurrentVehicle();
 
@@ -133,7 +133,7 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
       </Field>
 
-      <Input
+      <FormInput
         name="title"
         label="Title"
         placeholder="What needs to be done?"
@@ -188,7 +188,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
           <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormDateInput name="dueDate" label="Due date" placeholder="Select due date" data-cy="due-date-input" />
-            <Input
+            <FormInput
               name="dueOdometer"
               type="number"
               label="Due odometer"

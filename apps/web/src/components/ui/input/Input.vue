@@ -43,7 +43,7 @@ const emit = defineEmits<{
 
 function handleInput(event: Event) {
   let val: string | number | null = (event.target as HTMLInputElement).value;
-  if (props.toUpperCase && typeof val === "string") val = val.toUpperCase();
+  if (props.toUpperCase) val = val.toUpperCase();
   emit("update:modelValue", val);
   emit("change", val);
 }

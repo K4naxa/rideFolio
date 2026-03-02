@@ -11,7 +11,6 @@ import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
@@ -34,11 +33,12 @@ import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const router = useRouter();
 const { mutateAsync: createPool } = usePoolCreate();
 const { mutateAsync: updatePool } = usePoolUpdate();
-const { handleSubmit, values, isSubmitting, resetForm } = useForm({
+const { handleSubmit, values, isSubmitting, resetForm, errors } = useForm({
   validationSchema: toTypedSchema(PoolSchema),
   initialValues: {
     name: "",
@@ -150,7 +150,7 @@ const onSubmit = handleSubmit(async (values) => {
           <div class="gaps-md flex flex-col">
             <!-- name / type -->
             <div class="gaps-md grid grid-cols-1 place-content-end items-end md:grid-cols-2">
-              <Input name="name" type="text" label="Name" placeholder="Family Group" maxlength="50" required />
+              <FormInput name="name" type="text" label="Name" placeholder="Family Group" maxlength="50" required />
               <Field v-slot="{ value, handleChange }" name="type">
                 <Select :model-value="value" @update:model-value="handleChange">
                   <SelectTrigger class="w-full">

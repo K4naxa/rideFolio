@@ -6,13 +6,13 @@ import { LoginSchema } from "@repo/validation";
 import { authClient } from "@/lib/authClient";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import Input from "@/components/ui/input/Input.vue";
 import Card from "@/components/ui/card/Card.vue";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
 import LoginTabs from "./components/LoginTabs.vue";
 import Label from "@/components/ui/label/Label.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -85,7 +85,7 @@ const quickLogin = async (email: string, password: string) => {
               <!-- Error message -->
               <p v-if="loginError" data-cy="error" class="text-destructive text-center text-sm">{{ loginError }}</p>
 
-              <Input
+              <FormInput
                 label="Email"
                 type="email"
                 name="email"
@@ -100,7 +100,7 @@ const quickLogin = async (email: string, password: string) => {
                     <Label> Password </Label>
                     <a href="#" class="ml-auto inline-block text-sm underline"> Forgot your password? </a>
                   </div>
-                  <input
+                  <FormInput
                     type="password"
                     name="password"
                     placeholder="******"

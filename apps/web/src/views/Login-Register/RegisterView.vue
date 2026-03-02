@@ -13,6 +13,7 @@ import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { z } from "zod";
 import LoginTabs from "./components/LoginTabs.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const redirectUrl = import.meta.env.VITE_FRONTEND_URL + "/dashboard";
 const clientSchema = toTypedSchema(
@@ -92,13 +93,13 @@ const onSubmit = handleSubmit(async (values) => {
               <span v-if="registrationError" class="text-destructive text-center text-sm">
                 {{ registrationError }}</span
               >
-              <Input placeholder="Username" name="name" type="text" data-cy="name-input" />
+              <FormInput placeholder="Username" name="name" type="text" data-cy="name-input" />
 
-              <Input type="email" placeholder="Email" name="email" data-cy="email-input" />
+              <FormInput type="email" placeholder="Email" name="email" data-cy="email-input" />
 
-              <Input type="password" placeholder="Password" name="password" data-cy="password-input" />
+              <FormInput type="password" placeholder="Password" name="password" data-cy="password-input" />
 
-              <Input
+              <FormInput
                 type="password"
                 placeholder="Confirm Password"
                 name="confirmPassword"

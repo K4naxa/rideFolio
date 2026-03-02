@@ -7,7 +7,6 @@ import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
@@ -27,6 +26,7 @@ import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import z from "zod";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const router = useRouter();
 
@@ -175,7 +175,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <!-- Name -->
 
-            <Input placeholder="Nickname *" name="name" type="text" data-cy="name" />
+            <FormInput placeholder="Nickname *" name="name" type="text" data-cy="name" />
 
             <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
@@ -214,14 +214,14 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
 
           <!-- Make and Model -->
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <Input placeholder="Make" name="make" type="text" data-cy="make" />
+            <FormInput placeholder="Make" name="make" type="text" data-cy="make" />
 
-            <Input placeholder="Model" name="model" type="text" data-cy="model" />
+            <FormInput placeholder="Model" name="model" type="text" data-cy="model" />
           </div>
 
           <!-- Year and Odometer Type -->
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <Input
+            <FormInput
               placeholder="Year"
               type="number"
               name="year"
@@ -270,11 +270,11 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <!-- VIN -->
 
-            <Input placeholder="VIN" toUpperCase name="vin" type="text" data-cy="vin" />
+            <FormInput placeholder="VIN" toUpperCase name="vin" type="text" data-cy="vin" />
 
             <!-- License Plate -->
 
-            <Input
+            <FormInput
               placeholder="License plate"
               toUpperCase
               name="licensePlate"
@@ -295,7 +295,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <!-- Odometer -->
 
-            <Input
+            <FormInput
               :disabled="!isCreatingNew"
               placeholder="Odometer"
               name="odometer"

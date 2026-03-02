@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
@@ -20,6 +19,7 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { PartsFieldKey } from "@/modals/Maintenance/composables/injection-keys";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 // Modal store
 const modalStore = useModalStore();
@@ -103,7 +103,7 @@ watch(isModalOpen, (open) => {
 
         <div class="grid grid-cols-2 gap-4">
           <FormDateInput name="date" label="Date" :initial-value="new Date()" disableFuture />
-          <Input
+          <FormInput
             name="odometer"
             type="number"
             label="Odometer"
@@ -113,8 +113,8 @@ watch(isModalOpen, (open) => {
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Input name="title" type="text" label="Title" placeholder="e.g. Oil change" :maxlength="100" />
-          <Input
+          <FormInput name="title" type="text" label="Title" placeholder="e.g. Oil change" :maxlength="100" />
+          <FormInput
             name="totalCost"
             type="number"
             label="Total cost"
@@ -123,7 +123,7 @@ watch(isModalOpen, (open) => {
           />
         </div>
 
-        <Input
+        <FormInput
           name="serviceProvider"
           type="text"
           label="Service provider"

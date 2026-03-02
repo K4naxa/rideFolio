@@ -43,7 +43,6 @@ const filteredTodos = computed(() => {
       <Input
         v-model="searchQuery"
         type="text"
-        name="search"
         id="VehicleTodoSearch"
         placeholder="Search todos..."
         class="w-full sm:max-w-md sm:min-w-72"
