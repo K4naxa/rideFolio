@@ -3,12 +3,9 @@ import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 
-import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import AccountSection from "@/modals/Settings/components/AccountSection.vue";
 import DangerSection from "@/modals/Settings/components/DangerSection.vue";
 import SecuritySection from "@/modals/Settings/components/SecuritySection.vue";
-
-const { currentUser } = useCurrentUser();
 </script>
 
 <template>

@@ -52,8 +52,7 @@ export class VehiclesController {
 
   @Get('accessible')
   async getAccessibleVehicles(@Session() userSession: UserSession): Promise<TAccessibleVehicle[]> {
-    const vehicles = await this.vehiclesService.getAccessibleVehicles(userSession);
-    return vehicles;
+    return this.vehiclesService.getAccessibleVehicles(userSession);
   }
 
   @Get('upcoming-activity')

@@ -27,21 +27,21 @@ const formatDate = (dateString: string | Date) => {
 >
 
 <template>
-  <Card :class="['group gaps-sm cardHover cursor-pointer']" @click="emit('note-click', note)">
+  <Card :class="['group gaps-sm cardHover cursor-pointer']" @click="emit('note-click', props.note)">
     <CardHeader>
       <CardTitle class="relative flex justify-between gap-4">
-        {{ note.title }}
+        {{ props.note.title }}
 
-        <Icon v-if="note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
+        <Icon v-if="props.note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
       </CardTitle>
     </CardHeader>
     <CardContent class="flex w-full flex-col">
-      <span v-if="note.content" class="text-muted-foreground mt-1 line-clamp-5 overflow-hidden text-sm break-all">
-        {{ getTextSnippet(String(note.content), 500) }}
+      <span v-if="props.note.content" class="text-muted-foreground mt-1 line-clamp-5 overflow-hidden text-sm break-all">
+        {{ getTextSnippet(String(props.note.content), 500) }}
       </span>
     </CardContent>
     <CardFooter class="mt-auto flex flex-col items-start gap-2">
-      <span class="text-muted-foreground ml-auto text-xs">Last edited: {{ formatDate(note.updatedAt) }}</span>
+      <span class="text-muted-foreground ml-auto text-xs">Last edited: {{ formatDate(props.note.updatedAt) }}</span>
     </CardFooter>
   </Card>
 </template>

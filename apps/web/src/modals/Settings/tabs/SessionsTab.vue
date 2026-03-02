@@ -57,23 +57,6 @@ function handleSessionRevoke(sessionToken: string) {
     },
   );
 }
-
-function handleRevokeOtherSessions() {
-  authClient.revokeOtherSessions(
-    {},
-    {
-      onSuccess: async () => {
-        toast.success("All other sessions logged out successfully");
-
-        // Update the sessions list
-        refreshSessions();
-      },
-      onError: () => {
-        toast.error("Failed to log out other sessions. Please try again.");
-      },
-    },
-  );
-}
 </script>
 
 <template>

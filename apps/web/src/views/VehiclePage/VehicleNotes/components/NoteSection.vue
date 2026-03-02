@@ -44,10 +44,9 @@ const { mutateAsync: updateNote, isPending: isUpdating } = useUpdateNote();
 // Component state
 const isNew = computed(() => !props.note?.id);
 const hasHeaderSlot = computed(() => !!slots.header);
-const tagInput = ref("");
 
-// Keep track of last server state to determine if there are unsaved changes
-// This gets updated on every successful save, and is used to compare against form values to determine if there are changes worth saving
+// Keep track of the last server state to determine if there are unsaved changes
+// This gets updated on every successful save and is used to compare against form values to determine if there are changes worth saving
 const lastServerState = ref<Note | undefined>(props.note);
 
 const isPinned = computed(() => lastServerState.value?.pinned || false);
@@ -69,7 +68,7 @@ async function handleSave(noteId: string | undefined, data: NoteSchemaType): Pro
   // We have no previous server state, so this must be a new note - create it
   if (!noteId) {
     savedNote = await createNote(data);
-    // Update local state with the newly created note
+    // Update the local state with the newly created note
     lastServerState.value = savedNote;
     // Notify parent that a note was created
     emit("created", savedNote);
@@ -127,8 +126,7 @@ async function handleDelete() {
 
 async function handleTogglePin() {
   if (!lastServerState.value) return;
-  const updatedNote = await togglePinNote({ noteId: lastServerState.value?.id, pinned: !isPinned.value });
-  lastServerState.value = updatedNote;
+  lastServerState.value = await togglePinNote({ noteId: lastServerState.value?.id, pinned: !isPinned.value });
 }
 
 function handleClose() {

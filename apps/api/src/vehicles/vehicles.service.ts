@@ -140,23 +140,23 @@ export class VehiclesService {
 
       await this.prisma.$transaction(async (tx) => {
         await Promise.all([
-          await tx.vehicle.delete({ where: { id: vehicle.id } }),
-          await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'VEHICLE', vehicleBytes),
-          refillsBytes > 0 &&
-            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'REFILL', refillsBytes)),
-          maintenancesBytes > 0 &&
-            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'MAINTENANCE', maintenancesBytes)),
-          todosBytes > 0 &&
-            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'TODO', todosBytes)),
-          notesBytes > 0 &&
-            (await this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'NOTE', notesBytes)),
-          shoppingListItemsBytes > 0 &&
-            (await this.limitsService.decrementStorageUsage(
-              tx,
-              userSession.user.id,
-              'SHOPPING_LIST',
-              shoppingListItemsBytes,
-            )),
+          tx.vehicle.delete({ where: { id: vehicle.id } }),
+          this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'VEHICLE', vehicleBytes),
+          refillsBytes > 0
+            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'REFILL', refillsBytes)
+            : Promise.resolve(),
+          maintenancesBytes > 0
+            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'MAINTENANCE', maintenancesBytes)
+            : Promise.resolve(),
+          todosBytes > 0
+            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'TODO', todosBytes)
+            : Promise.resolve(),
+          notesBytes > 0
+            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'NOTE', notesBytes)
+            : Promise.resolve(),
+          shoppingListItemsBytes > 0
+            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'SHOPPING_LIST', shoppingListItemsBytes)
+            : Promise.resolve(),
         ]);
       });
     } catch (error) {

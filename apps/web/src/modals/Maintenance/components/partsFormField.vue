@@ -11,7 +11,6 @@ import type {
 import { computed, inject, ref, watch } from "vue";
 
 import ResponsiveCombobox from "@/components/forms/ResponsiveCombobox.vue";
-import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import MobilePartSelection from "@/modals/Maintenance/components/MobilePartSelection.vue";
 import { useMaintenancePartCategories } from "@/lib/queries/maintenances/maintenance-queries";
 import { usePartCleaner } from "@/modals/Maintenance/composables/usePartCleaner";
@@ -44,8 +43,6 @@ const { cleanupPartsForVehicleType } = usePartCleaner();
 
 const selectedCategory = ref<MaintenanceCategoryWithParts | null>(null);
 const selectedPart = ref<MaintenanceCategoryPart | null>(null);
-const customTypeInput = ref<string>("");
-const isMobile = useIsMobile();
 
 function getPossibleLocations(part: MaintenancePartInput): PartLocation[] {
   return (
@@ -209,7 +206,7 @@ watch(
                 select locations
               </Badge>
               <Badge v-else variant="outline" class="h-full cursor-pointer">
-                <span v-for="loc in part.locations" class="text-primary text-sm">
+                <span v-for="loc in part.locations" :key="loc.id" class="text-primary text-sm">
                   {{
                     loc.code
                       .split("_")

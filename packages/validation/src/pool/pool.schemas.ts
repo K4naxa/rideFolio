@@ -12,39 +12,19 @@ export const PoolSchema = z.object({
   vehicleIds: z.array(z.string()),
 
   membersCanAddLogs: z.preprocess(
-    (val) =>
-      typeof val === "string" ?
-        val === "false" ?
-          false
-        : true
-      : val,
+    (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),
   ),
   membersCanEditLogs: z.preprocess(
-    (val) =>
-      typeof val === "string" ?
-        val === "false" ?
-          false
-        : true
-      : val,
+    (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),
   ),
   membersCanDeleteLogs: z.preprocess(
-    (val) =>
-      typeof val === "string" ?
-        val === "false" ?
-          false
-        : true
-      : val,
+    (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),
   ),
   membersCanAddVehicles: z.preprocess(
-    (val) =>
-      typeof val === "string" ?
-        val === "false" ?
-          false
-        : true
-      : val,
+    (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),
   ),
 });

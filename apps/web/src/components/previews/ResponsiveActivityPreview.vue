@@ -30,18 +30,18 @@ const isOpen = ref(false);
       <DialogContent>
         <DialogTitle class="sr-only">Your activity</DialogTitle>
         <DialogDescription class="sr-only"> Manage your upcoming activity and view details here. </DialogDescription>
-        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item.data" />
+        <TodoActivityPreviewItem v-if="props.item.type === 'todo'" :activity="props.item.data" />
       </DialogContent>
     </Dialog>
   </template>
 
   <template v-else>
     <Popover v-model:open="isOpen">
-      <PopoverTrigger as-child v-if="item.type === 'todo'">
+      <PopoverTrigger as-child v-if="props.item.type === 'todo'">
         <slot name="trigger" />
       </PopoverTrigger>
       <PopoverContent side="top" class="cardBackground w-xs">
-        <TodoActivityPreviewItem v-if="item.type === 'todo'" :activity="item.data" />
+        <TodoActivityPreviewItem v-if="props.item.type === 'todo'" :activity="props.item.data" />
       </PopoverContent>
     </Popover>
   </template>

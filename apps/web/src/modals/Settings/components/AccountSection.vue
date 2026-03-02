@@ -92,12 +92,7 @@ async function onUsernameChangeSubmit(values: any) {
           @submit="onUsernameChangeSubmit"
           class="flex flex-col gap-4"
         >
-          <Input
-            type="text"
-            name="name"
-            :placeholder="user?.currentUser.value?.name || 'Username'"
-            autocomplete="username"
-          />
+          <Input type="text" name="name" :placeholder="user?.currentUser.value?.name || 'Username'" />
         </Form>
       </template>
       <template #footer>

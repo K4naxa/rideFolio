@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailTemplateService {
-  getVerificationEmail(verificationUrl: string, userName?: string): string {
-    const displayName = userName || 'there';
-
+  getVerificationEmail(verificationUrl: string): string {
     return `
     <!DOCTYPE html>
     <html lang="en">

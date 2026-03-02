@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { consumptionUnitCodes_distance, consumptionUnitCodes_hour, currencyCodes, volumeUnitCodes } from "./user.types";
+import {
+  consumptionUnitCodes_distance,
+  consumptionUnitCodes_hour,
+  currencyCodes,
+  volumeUnitCodes,
+} from "./user.types";
 import { odometerTypeCodes } from "../vehicle";
 
 export const nameSchema = z.object({
@@ -12,7 +17,9 @@ export const RegisterSchema = z
   .object({
     name: nameSchema.shape.name,
     email: z.email({ message: "Email has incorrect form" }),
-    password: z.string().min(8, { message: "Password must be atleast 8 characters" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be atleast 8 characters" }),
     image: z.string().nullable().optional(),
   })
   .refine((data) => data.password, {
@@ -37,9 +44,15 @@ export type ProfileUpdateValues = z.infer<typeof profileUpdateSchema>;
 
 export const passwordUpdateSchema = z
   .object({
-    currentPassword: z.string().min(1, { message: "Current password is required" }),
-    newPassword: z.string().min(8, { message: "New password must be at least 8 characters" }),
-    newPasswordConfirmation: z.string().min(1, { message: "Please confirm your new password" }),
+    currentPassword: z
+      .string()
+      .min(1, { message: "Current password is required" }),
+    newPassword: z
+      .string()
+      .min(8, { message: "New password must be at least 8 characters" }),
+    newPasswordConfirmation: z
+      .string()
+      .min(1, { message: "Please confirm your new password" }),
   })
   .refine((data) => data.newPassword === data.newPasswordConfirmation, {
     message: "New password and confirmation do not match",
@@ -47,7 +60,7 @@ export const passwordUpdateSchema = z
   })
   .extend({
     revokeOtherSessions: z.preprocess(
-      (val) => (typeof val === "string" ? (val === "false" ? false : true) : val),
+      (val) => (typeof val === "string" ? val !== "false" : val),
       z.boolean("Invalid value"),
     ),
   });

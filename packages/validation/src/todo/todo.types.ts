@@ -15,6 +15,7 @@ export type BaseTodo = {
   id: string;
   title: string;
   description: string | null;
+  vehicleId: string;
   priority: TodoPriorityType | null;
   isCompleted: boolean;
   dueDate: TodoDueDate | null;

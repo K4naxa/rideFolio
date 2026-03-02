@@ -21,8 +21,7 @@ export class UsersController {
 
   @Get('me')
   async getProfile(@Session() session: UserSession) {
-    const value = await this.usersService.getBasicProfile(session.user.id);
-    return value;
+    return this.usersService.getBasicProfile(session.user.id);
   }
 
   @Patch('profile')
@@ -38,11 +37,11 @@ export class UsersController {
     @Session() session: UserSession,
     @Body(new ZodValidationPipe(UpdatePreferenceSchema as ZodType)) data: UpdatePreferenceValues,
   ): Promise<TBasicProfile> {
-    return await this.usersService.updatePreferences(session.user.id, data);
+    return this.usersService.updatePreferences(session.user.id, data);
   }
 
   @Get('storageBreakdown')
   async getStorageBreakdown(@Session() session: UserSession) {
-    return await this.limitsService.getStorageBreakdown(session.user.id);
+    return this.limitsService.getStorageBreakdown(session.user.id);
   }
 }

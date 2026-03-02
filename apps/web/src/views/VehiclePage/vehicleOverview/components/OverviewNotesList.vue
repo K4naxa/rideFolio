@@ -8,7 +8,6 @@ import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
 import { useModalStore } from "@/stores/modal";
 import type { Note } from "@repo/validation";
@@ -21,7 +20,6 @@ function handleNoteClick(note: Note) {
   modalStore.onOpen("createNote", note.id);
 }
 
-const isMobile = useIsMobile();
 const modalStore = useModalStore();
 </script>
 

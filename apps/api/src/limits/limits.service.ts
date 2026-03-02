@@ -19,8 +19,7 @@ export class LimitsService {
   calculateSizeBytes(data: unknown): number {
     if (data === null || data === undefined) return CREATION_SYSTEM_OVERHEAD_BUFFER;
 
-    const payloadBytes = Buffer.byteLength(JSON.stringify(data), 'utf8');
-    return payloadBytes;
+    return Buffer.byteLength(JSON.stringify(data), 'utf8');
   }
 
   calculateSizeWithChildrenBytes(parentData: unknown, children: unknown[] = []): number {
@@ -215,7 +214,6 @@ export class LimitsService {
   // USAGE SUMMARY FOR FRONTEND
   async getStorageBreakdown(userId: string): Promise<StorageBreakdown> {
     const user = await this.getUserWithPlan(userId);
-    const isUnlimited = this.isUnlimited(user.plan.maxStorageBytes);
 
     const storageUsage = await this.prisma.storageUsage.findMany({
       where: { userId },

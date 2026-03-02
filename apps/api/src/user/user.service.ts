@@ -53,7 +53,7 @@ export class UsersService {
       throw new NotFoundException(`user not found or unauthorized access`);
     }
 
-    const basicProfile: TBasicProfile = {
+    return {
       id: user.id,
       name: user.name,
       email: user.email,
@@ -76,8 +76,6 @@ export class UsersService {
         priceCents: user.plan.priceCents,
       },
     };
-
-    return basicProfile;
   }
 
   async updateProfile(id: string, data: ProfileUpdateValues): Promise<void> {

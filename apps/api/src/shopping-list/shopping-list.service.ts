@@ -19,7 +19,7 @@ export class ShoppingListService {
 
     return await this.prisma.$transaction(async (tx) => {
       await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'SHOPPING_LIST', sizeBytes);
-      return await tx.shoppingListItem.create({
+      return tx.shoppingListItem.create({
         data: {
           ...itemDto,
           createdById: userSession.user.id,
@@ -33,13 +33,11 @@ export class ShoppingListService {
   async getItemsForVehicle(userSession: UserSession, vehicleId: string): Promise<ShoppingItem[]> {
     await this.authValidation.hasAccessToVehicle(userSession.user.id, vehicleId);
 
-    const items = await this.prisma.shoppingListItem.findMany({
+    return this.prisma.shoppingListItem.findMany({
       where: { vehicleId },
       select: ShoppingListDB_Select,
       orderBy: { createdAt: 'asc' },
     });
-
-    return items;
   }
 
   async toggleItemPurchased(userSession: UserSession, itemId: string, isPurchased: boolean): Promise<ShoppingItem> {
@@ -51,7 +49,7 @@ export class ShoppingListService {
 
     await this.authValidation.canEditLogs(userSession.user.id, item.vehicle.id);
 
-    return await this.prisma.shoppingListItem.update({
+    return this.prisma.shoppingListItem.update({
       where: { id: itemId },
       data: {
         isPurchased,

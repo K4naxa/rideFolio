@@ -61,10 +61,7 @@ export function useTodoUpdate() {
         queryClient.setQueryData<ActivityItem[]>(queryKeys.user.upcomingActivity, (old) => {
           if (!old) return old;
           return old.filter((activity) => {
-            if (activity.type === "todo" && activity.data.id === updatedTodo.id) {
-              return false; // remove from upcoming activity
-            }
-            return true;
+            return !(activity.type === "todo" && activity.data.id === updatedTodo.id);
           });
         });
       }

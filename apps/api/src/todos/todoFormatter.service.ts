@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BaseTodo } from '@repo/validation/dist/types/todo/todo.types';
+import { BaseTodo } from '@repo/validation';
 import { Todo, Vehicle } from 'prisma/generated/client';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { TodoGetPayload, TodoInclude } from '../../prisma/generated/models/Todo';
@@ -56,7 +56,7 @@ export class TodoFormatterService {
     };
   }
 
-  toBaseTodo(baseTodo: DB_baseTodo) {
+  toBaseTodo(baseTodo: DB_baseTodo): BaseTodo {
     return {
       id: baseTodo.id,
       title: baseTodo.title,

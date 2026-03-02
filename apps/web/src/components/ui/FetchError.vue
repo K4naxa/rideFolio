@@ -23,10 +23,10 @@ const props = withDefaults(
   <Empty>
     <EmptyHeader class="gap-0">
       <Icon name="alert" class="text-destructive stroke-destructive size-12" />
-      <EmptyTitle class="text-destructive mt-2"> {{ title }} </EmptyTitle>
+      <EmptyTitle class="text-destructive mt-2"> {{ props.title }} </EmptyTitle>
       <EmptyContent class="flex flex-col gap-2 text-center">
-        <p class="text-muted-foreground">{{ message }}</p>
-        <Button variant="outline" size="sm" :disabled="isFetching" @click="refetch">Retry</Button>
+        <p class="text-muted-foreground">{{ props.message }}</p>
+        <Button variant="outline" size="sm" :disabled="props.isFetching" @click="props.refetch">Retry</Button>
       </EmptyContent>
     </EmptyHeader>
   </Empty>

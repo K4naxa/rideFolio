@@ -15,7 +15,6 @@ import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
 import AppLogo from "../icons/AppLogo.vue";
 import Icon, { type IconProps } from "../icons/Icon.vue";
-import Button from "./button/Button.vue";
 import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
 import { useCurrentPool } from "@/lib/composables/useCurrentPool";

@@ -83,10 +83,10 @@ function handleSelect(value: string) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent :class="contentClass" same-width align="start">
-        <div v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
-          <div
+        <ul v-if="filteredVehicles.length > 0" class="scrollbar-macos max-h-72 w-full space-y-2 overflow-y-auto">
+          <li
             v-for="vehicle in filteredVehicles"
-            key="vehicle.vehicleData.id"
+            v-bind:key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
             class="listHover flex cursor-pointer items-center justify-between rounded select-none"
           >
@@ -102,8 +102,8 @@ function handleSelect(value: string) {
               v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id"
               class="text-muted-foreground mr-2"
             />
-          </div>
-        </div>
+          </li>
+        </ul>
         <Empty v-else class="p-12!">
           <EmptyDescription class="">Vehicles not found</EmptyDescription>
         </Empty>
@@ -130,8 +130,9 @@ function handleSelect(value: string) {
           <DrawerDescription v-if="description"> {{ description }} </DrawerDescription>
         </DrawerHeader>
         <ul v-if="filteredVehicles.length > 0" class="divide-y px-4 pb-4">
-          <div
+          <li
             v-for="vehicle in filteredVehicles"
+            :key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
             class="flex cursor-pointer items-center justify-between gap-2"
           >
@@ -147,7 +148,7 @@ function handleSelect(value: string) {
               v-if="selectedVehicle?.vehicleData.id === vehicle.vehicleData.id"
               class="text-muted-foreground mr-2"
             />
-          </div>
+          </li>
         </ul>
         <DrawerFooter>
           <DrawerClose as-child>

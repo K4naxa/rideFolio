@@ -17,13 +17,13 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
   const pendingSaves = ref(new Map<string | undefined, NoteSchemaType>());
   const isSaving = ref(false);
 
-  // Check if note has actual changes worth saving
+  // Check if the note has actual changes worth saving
   function hasContentChanged(initial: Note | undefined, current: NoteSchemaType): boolean {
     if (!initial) return true;
     return current.title !== initial.title || current.content !== initial.content;
   }
 
-  // Check if note has minimum required content
+  // Check if the note has minimum required content
   function hasMinimumContent(note: NoteSchemaType): boolean {
     // Vehicle Id always required
     if (!note.vehicleId) return false;
@@ -35,8 +35,7 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
   function shouldAutoSave(): boolean {
     if (!isFormDirty.value) return false;
     if (!hasContentChanged(serverState.value, formValues.value)) return false;
-    if (!hasMinimumContent(formValues.value)) return false;
-    return true;
+    return hasMinimumContent(formValues.value);
   }
 
   // Perform the actual save
@@ -46,10 +45,8 @@ export function useNoteAutoSave(options: AutoSaveOptions) {
     isSaving.value = true;
     for (const [noteId, data] of pendingSaves.value.entries()) {
       try {
-        const result = await onSave(noteId, data);
-
-        // Update server state to match what we just saved
-        serverState.value = result;
+        // Update the server state to match what we just saved
+        serverState.value = await onSave(noteId, data);
         pendingSaves.value.delete(noteId);
       } catch (error) {
         toast.error("Failed to save note", {

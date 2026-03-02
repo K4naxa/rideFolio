@@ -44,7 +44,6 @@ const isMobile = useIsMobile();
 const isOpen = ref(false);
 const isDrawerOpen = ref(false);
 const inputRef = ref<HTMLInputElement | null>(null);
-const inputFocused = ref(false);
 const searchQuery = ref("");
 
 function handleInteractOutside(event: Event) {

@@ -12,8 +12,7 @@ export class ZodValidationPipe implements PipeTransform {
         throw new BadRequestException('No validation schema provided');
       }
 
-      const parsedValue = this.schema.parse(value);
-      return parsedValue;
+      return this.schema.parse(value);
     } catch (error) {
       // Check if the error is a ZodError
       if (error instanceof ZodError) {

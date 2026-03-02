@@ -45,8 +45,8 @@ const getPercentage = (used: number): number => {
 
     <FetchError v-if="isError" :refetch="refetch" :isFetching="isFetching" />
 
-    <template v-if="isLoading" class="flex flex-col gap-6">
-      <div v-for="n in 4" class="space-y-2">
+    <template v-if="isLoading">
+      <div v-for="(n, index) in 4" :key="index" class="space-y-2">
         <Skeleton class="h-4 w-32" />
         <Skeleton class="h-3 w-full" />
       </div>

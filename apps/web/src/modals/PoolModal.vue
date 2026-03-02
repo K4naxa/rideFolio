@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
+import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
@@ -38,7 +38,7 @@ import FormInput from "@/components/forms/FormInput.vue";
 const router = useRouter();
 const { mutateAsync: createPool } = usePoolCreate();
 const { mutateAsync: updatePool } = usePoolUpdate();
-const { handleSubmit, values, isSubmitting, resetForm, errors } = useForm({
+const { handleSubmit, values, isSubmitting, resetForm } = useForm({
   validationSchema: toTypedSchema(PoolSchema),
   initialValues: {
     name: "",

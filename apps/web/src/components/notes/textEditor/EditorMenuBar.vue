@@ -178,7 +178,8 @@ const menuOptions = computed<MenuOptions[]>(() => {
       :class="twMerge('bg-background flex w-full min-w-fit items-center gap-1.5 rounded border p-1', props.class)"
     >
       <Toggle
-        v-for="(option, index) in menuOptions"
+        v-for="option in menuOptions"
+        :key="`${option.label} - ${option.isActive}`"
         v-model="option.isActive"
         @mousedown.prevent="option.onClick"
         :aria-label="option.label"

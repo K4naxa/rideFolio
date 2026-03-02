@@ -9,8 +9,6 @@ import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
 import NotesList from "@/components/notes/NotesList.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
-const router = useRouter();
-const route = useRoute();
 const { onOpen } = useModalStore();
 const isMobile = useIsMobile();
 

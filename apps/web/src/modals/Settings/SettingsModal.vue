@@ -4,12 +4,9 @@ import { computed, ref } from "vue";
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from "@/components/ui/dialog";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useModalStore } from "@/stores/modal";
-import { getInitials } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
 import { twMerge } from "tailwind-merge";
@@ -57,9 +54,8 @@ const tabs: Tab[] = [
 ] as const;
 
 // Get user initials for avatar fallback
-const initials = getInitials(user.currentUser.value?.name || "");
 
-// Set active tab
+// Set an active tab
 function setActiveTab(tabId: string) {
   activeTab.value = tabId;
 }
@@ -111,23 +107,7 @@ function setActiveTab(tabId: string) {
                   )
                 "
               >
-                <div class="size-5 w-5">
-                  <template v-if="tab.avatar">
-                    <Avatar class="h-5 w-5">
-                      <AvatarImage
-                        v-if="user.currentUser.value?.image"
-                        :src="user.currentUser.value?.image"
-                        :alt="user.currentUser.value?.name"
-                      />
-                      <AvatarFallback class="text-[10px]">
-                        {{ initials }}
-                      </AvatarFallback>
-                    </Avatar>
-                  </template>
-                  <template v-else-if="tab.icon">
-                    <Icon :name="tab.icon" class="h-4 w-4" />
-                  </template>
-                </div>
+                <Icon :name="tab.icon" class="h-4 w-4" />
 
                 {{ tab.label }}
               </li>

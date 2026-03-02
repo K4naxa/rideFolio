@@ -9,8 +9,6 @@ import { useStorageBreakdown } from "@/lib/queries/user/user-queries";
 import StorageBreakdownElement from "@/modals/Settings/components/StorageBreakdownElement.vue";
 import StorageUsageSection from "@/modals/Settings/components/StorageUsageSection.vue";
 import VehicleSlotElement from "@/modals/Settings/components/VehicleSlotElement.vue";
-
-const { data, isLoading, isError, refetch, isFetching } = useStorageBreakdown();
 </script>
 
 <template>

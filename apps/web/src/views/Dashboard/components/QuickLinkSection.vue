@@ -60,7 +60,9 @@ async function handleDeleteQuicklink(id: string) {
     <!-- Content -->
     <div class="scrollbar-macos cardBackground flex flex-col divide-y overflow-y-auto rounded border">
       <!-- Loader -->
-      <li v-if="isLoading" v-for="n in 4" :key="n" class="bg-muted h-8 w-28 animate-pulse rounded-md" />
+      <template v-if="isLoading">
+        <li v-for="n in 4" :key="n" class="bg-muted h-8 w-28 animate-pulse rounded-md" />
+      </template>
 
       <!-- Quicklinks -->
       <Tooltip placement="top" v-else v-for="link in links" :key="link.id" :delay-duration="200">

@@ -42,7 +42,7 @@ function handleClose() {
 }
 
 const { mutateAsync: createVehicleAsync, isPending: createPending } = useVehicleCreate();
-const { mutateAsync: updateVehicleAsync, isPending: updatePending } = useVehicleUpdate();
+const { mutateAsync: updateVehicleAsync } = useVehicleUpdate();
 const { data: vehicles } = useVehiclesAll();
 const { data: vehicleTypes } = useVehicleTypes({ enabled: isModalOpen });
 
