@@ -39,7 +39,7 @@ export class EmailService {
       await this.sendEmail({
         to: userEmail,
         subject: 'Verify your email for RideFolio',
-        html: this.emailTemplates.getVerificationEmail(url, user.name),
+        html: this.emailTemplates.getVerificationEmail(url),
         text: `Please verify your email by clicking the following link: ${verificationUrl}`,
       });
 

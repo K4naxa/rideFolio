@@ -104,7 +104,6 @@ const quickLogin = async (email: string, password: string) => {
                     type="password"
                     name="password"
                     placeholder="******"
-                    class="inputField"
                     :value="value"
                     @input="handleChange"
                     data-cy="password-input"

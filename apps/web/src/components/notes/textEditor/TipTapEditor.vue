@@ -124,7 +124,8 @@ defineExpose({
     <div
       :class="
         twMerge(
-          'scrollbar flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto px-1',
+          'scrollbar bg-input ! [&_input]: [&_input]: flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto rounded border-0 p-4 [&_input]:focus-visible:ring-0! [&_input]:focus-visible:outline-0! ' +
+            '[&_input]:text-foreground/90',
           characterCountIsAtLimit ? 'border-destructive rounded border' : '',
           props.class,
         )
@@ -133,7 +134,7 @@ defineExpose({
       <!-- Free slot inside the editor container ( used for title ) -->
       <slot :focus="focus" />
 
-      <editor-content :editor="editor" class="flex w-full flex-1" />
+      <editor-content :editor="editor" class="text-foreground/80 flex w-full flex-1" />
       <span v-if="error" class="text-destructive mt-2 text-sm">{{ error }}</span>
     </div>
   </div>

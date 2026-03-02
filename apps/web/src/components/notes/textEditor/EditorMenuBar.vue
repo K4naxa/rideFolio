@@ -172,7 +172,7 @@ const menuOptions = computed<MenuOptions[]>(() => {
 });
 </script>
 <template>
-  <ScrollableNav class="mb-1">
+  <ScrollableNav class="mb-2">
     <div
       v-if="props.editor"
       :class="twMerge('bg-background flex w-full min-w-fit items-center gap-1.5 rounded border p-1', props.class)"

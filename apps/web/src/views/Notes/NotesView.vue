@@ -7,6 +7,7 @@ import { type Note } from "@repo/validation";
 import { useAllNotes } from "@/lib/queries/notes/note-queries";
 import NoteSection from "@/views/VehiclePage/VehicleNotes/components/NoteSection.vue";
 import NotesList from "@/components/notes/NotesList.vue";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 
 const { onOpen } = useModalStore();
 const isMobile = useMediaQuery("(max-width: 1024px)");
@@ -35,7 +36,7 @@ const handleNoteCreated = (note: Note) => {
 </script>
 
 <template>
-  <div class="flex flex-1 gap-8 p-4 lg:max-h-[calc(100vh-var(--app-header-height))] lg:p-8">
+  <div class="flex flex-1 gap-8 p-4 lg:max-h-[calc(100vh-AppHeader)] lg:p-8">
     <!-- left side -->
 
     <NotesList

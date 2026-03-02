@@ -20,7 +20,7 @@ const { hasUnreadNotifications } = useNotifications();
 <template>
   <header
     v-if="isMobile"
-    class="sticky top-0 z-20 flex h-(--app-header-height) w-screen items-center gap-2 border-none px-4"
+    class="h-AppHeader sticky top-0 z-20 flex w-screen items-center gap-2 border-none px-4"
     :class="twMerge(transparent ? 'bg-transparent' : 'bg-background border-b', wrapperClass)"
   >
     <!-- Left: always the sidebar trigger -->

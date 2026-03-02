@@ -176,7 +176,7 @@ watch(
 </script>
 
 <template>
-  <div class="bg-background mx-auto flex min-h-0 w-full max-w-5xl min-w-0 flex-1 flex-col p-0">
+  <div class="bg-background mx-auto flex min-h-0 w-full max-w-4xl min-w-0 flex-1 flex-col p-0">
     <form :class="twMerge('flex min-h-0 min-w-0 flex-1 flex-col space-y-4', props.classForm)" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot
@@ -240,19 +240,20 @@ watch(
           placeholder="Write your note here..."
           :editable="true"
           :error="errors.content ?? undefined"
-          class="min-h-40"
+          class="min-h-40 gap-2"
         >
           <div>
-            <FormInput
-              name="title"
-              type="text"
-              placeholder="Title"
-              maxlength="50"
-              class="flex-1"
-              input-class="bg-transparent border-none focus-visible:ring-0 px-0 text-2xl shadow-none"
-              :validate-on-blur="false"
-              @keydown.enter.prevent="focus()"
-            />
+            <Field v-slot="{ value, handleChange }" name="title">
+              <input
+                :value="value"
+                @change="handleChange"
+                type="text"
+                placeholder="Title"
+                maxlength="50"
+                class="w-full text-2xl"
+                @keydown.enter.prevent="focus()"
+              />
+            </Field>
           </div>
         </TipTapEditor>
       </div>

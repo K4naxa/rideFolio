@@ -5,8 +5,8 @@ import { EmailService } from 'src/email/email.service';
 import { prisma } from 'src/lib/prisma';
 
 // @ts-ignore
-export const createAuth = (emailService: EmailService) =>
-  betterAuth({
+export const createAuth = (emailService: EmailService) => {
+  return betterAuth({
     database: prismaAdapter(prisma, {
       provider: 'postgresql',
     }),
@@ -62,8 +62,8 @@ export const createAuth = (emailService: EmailService) =>
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: ({ user, url, token }) => {
-        return void emailService.sendEmailVerification({
+      sendVerificationEmail: async ({ user, url, token }) => {
+        void emailService.sendEmailVerification({
           user: user,
           userEmail: user.email,
           token: token,
@@ -97,3 +97,4 @@ export const createAuth = (emailService: EmailService) =>
     basePath: '/api/auth',
     appName: 'RideFolio',
   });
+};

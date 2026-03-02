@@ -21,7 +21,7 @@ const isMobile = useIsMobile();
 <template>
   <header
     v-if="!isMobile"
-    class="bg-card transition-size sticky top-0 z-10 flex h-(--app-header-height) w-full shrink-0 items-center gap-2 border-b px-4 ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
+    class="bg-card transition-size h-AppHeader sticky top-0 z-10 flex w-full shrink-0 items-center gap-2 border-b px-4 ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) md:px-6 lg:px-8"
   >
     <div class="flex w-full items-center gap-1 overflow-hidden lg:gap-2">
       <h3 class="truncate">{{ title }}</h3>
@@ -31,6 +31,6 @@ const isMobile = useIsMobile();
 
 <style>
 :root {
-  --app-header-height: 3rem;
+  --app-header-height: 3.5rem;
 }
 </style>

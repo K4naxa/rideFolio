@@ -139,7 +139,13 @@ watch(isModalOpen, (open) => {
           </Field>
         </div>
 
-        <Textarea name="notes" class="hidden lg:flex" label="Notes" placeholder="Maintenance notes" :maxlength="1000" />
+        <Textarea
+          name="notes"
+          class="hidden w-full flex-1 lg:flex"
+          label="Notes"
+          placeholder="Maintenance notes"
+          :maxlength="1000"
+        />
       </div>
 
       <!-- Right column — parts list -->

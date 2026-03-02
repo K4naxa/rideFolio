@@ -81,25 +81,25 @@ const isMobile = useIsMobile();
             v-for="note in filteredNotes"
             :key="note.id"
             :class="[
-              'bg-accent/50 hover:bg-accent/50 listHover group block cursor-pointer rounded border px-3 py-3 lg:border-transparent',
-              props.selectedNoteId === note.id ? 'bg-accent/60' : 'lg:bg-transparent',
+              'hover:bg-accent listHover group block cursor-pointer rounded bg-transparent px-3 py-3',
+              props.selectedNoteId === note.id && 'bg-accent!',
             ]"
             @click="selectNote(note)"
           >
-            <div class="flex w-full items-center justify-between gap-1">
+            <div class="flex w-full items-center justify-between">
               <span class="min-w-0 font-medium break-all">{{ note.title }}</span>
 
               <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
             </div>
-            <div class="text-muted-foreground mt-1 line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3">
+            <div class="text-muted-foreground line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3">
               {{ getTextSnippet(String(note.content), 80) }}
             </div>
           </li>
         </template>
 
-        <div class="gaps-md flex flex-col">
+        <template v-else>
           <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
-        </div>
+        </template>
       </ul>
       <Empty v-else-if="!notes?.length">
         <EmptyHeader>
