@@ -125,7 +125,7 @@ img {
 
 @layer base {
   h1 {
-    @apply text-foreground text-xl font-medium;
+    @apply text-foreground text-xl lg:text-2xl xl:text-3xl font-medium;
   }
 
   h2 {
@@ -146,18 +146,18 @@ img {
     --color-foreground: var(--color-neutral-200); /* slate-200 */
 
 
-    --color-card: hsl(0, 0%, 5%); /* slate-900 */
+    --color-card: oklch(18.1% 0 0);
     --color-card-foreground: var(--color-neutral-200); /* slate-200 */
 
     --color-background-light: hsl(0, 0%, 5%);
 
-    --color-muted: oklch(20.9% 0 0);
+    --color-muted: oklch(24.9% 0 0);
     --color-muted-foreground: var(--color-neutral-400);
 
     --color-accent: oklch(20.1% 0 0);
     --color-accent-foreground: var(--color-neutral-50);
 
-    --color-popover: var(--color-card);
+    --color-popover: oklch(15.1% 0 0);
     --color-popover-foreground: var(--color-card-foreground);
 
     --color-border: oklch(22.1% 0 0); /* slate-700 */
