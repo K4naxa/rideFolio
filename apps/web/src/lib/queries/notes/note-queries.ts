@@ -9,9 +9,7 @@ export const useAllNotes = () => {
   return useQuery({
     queryKey: queryKeys.notes.all,
     queryFn: async () => {
-      const response = await api.get<Note[]>("/notes");
-      console.log("Fetched notes:", response.data);
-      return response.data;
+      return fetchApi<Note[]>("/notes");
     },
   });
 };

@@ -13,25 +13,34 @@ import Input from "@/components/ui/input/Input.vue";
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
 import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
+import { useModalStore } from "@/stores/modal.ts";
+import { useAllNotes } from "@/lib/queries/notes/note-queries.ts";
 
-const notes: Note[] = [];
-const isLoading = ref(false);
+const { data: notes, isLoading } = useAllNotes();
+
+const modalStore = useModalStore();
 
 const searchQuery = ref("");
 const filteredNotes = computed(() => {
-  if (!searchQuery.value) return notes;
-  return notes.filter(
+  if (!notes.value) return [];
+  if (!searchQuery.value) return notes.value;
+
+  return notes.value.filter(
     (note) =>
       (note.title && note.title.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
       (note.content && String(note.content).toLowerCase().includes(searchQuery.value.toLowerCase())),
   );
 });
 
-const selectNote = (note: Note) => {};
-const handleNewClick = () => {};
+const selectNote = (note: Note) => {
+  modalStore.onOpen("createNote", note.id);
+};
+const handleNewClick = () => {
+  modalStore.onOpen("createNote");
+};
 </script>
 <template>
-  <div class="flex flex-1 flex-col gap-4 lg:max-w-96 lg:border-r">
+  <div class="flex flex-1 flex-col gap-4">
     <!-- controls -->
     <div class="flex flex-col gap-4 lg:pr-8">
       <Input
@@ -60,7 +69,10 @@ const handleNewClick = () => {};
     </div>
 
     <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!isLoading">
-      <ul v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-4 lg:gap-2">
+      <ul
+        v-if="filteredNotes && filteredNotes.length"
+        class="gaps-md grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+      >
         <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
       </ul>
       <Empty v-else-if="!notes?.length">
