@@ -34,7 +34,7 @@ const formatDate = (dateString: string | Date) => {
 };
 </script>
 <template>
-  <ul class="gaps-md grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+  <ul class="gaps-sm grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
     <li
       v-for="note in filteredNotes"
       :key="note.id"
