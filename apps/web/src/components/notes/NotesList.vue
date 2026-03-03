@@ -1,31 +1,20 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
-import Button from "@/components/ui/button/Button.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import Input from "@/components/ui/input/Input.vue";
+
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
-import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
 import { useModalStore } from "@/stores/modal.ts";
-import { useAllNotes } from "@/lib/queries/notes/note-queries.ts";
+import { getTextSnippet } from "@/lib/utils/noteUtils.ts";
 
-const { data: notes, isLoading } = useAllNotes();
+const props = defineProps<{ notes: Note[] }>();
 
 const modalStore = useModalStore();
 
 const searchQuery = ref("");
 const filteredNotes = computed(() => {
-  if (!notes.value) return [];
-  if (!searchQuery.value) return notes.value;
+  if (!searchQuery.value) return props.notes;
 
-  return notes.value.filter(
+  return props.notes.filter(
     (note) =>
       (note.title && note.title.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
       (note.content && String(note.content).toLowerCase().includes(searchQuery.value.toLowerCase())),
@@ -35,55 +24,41 @@ const filteredNotes = computed(() => {
 const selectNote = (note: Note) => {
   modalStore.onOpen("createNote", note.id);
 };
-const handleNewClick = () => {
-  modalStore.onOpen("createNote");
+
+const formatDate = (dateString: string | Date) => {
+  return new Date(dateString).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 </script>
 <template>
-  <div class="flex flex-1 flex-col gap-4">
-    <!-- controls -->
-    <div class="flex flex-col gap-4 lg:pr-8">
-      <Input
-        v-model="searchQuery"
-        type="text"
-        name="search"
-        id="VehicleNoteSearch"
-        placeholder="Search notes..."
-        class="w-full"
-      />
-      <div class="flex content-center justify-evenly gap-4">
-        <DropdownMenu :modal="false">
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" class="flex-1">
-              <Icon name="filter" /> <span class="md:hidden">Filter</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-52"> </DropdownMenuContent>
-        </DropdownMenu>
+  <ul class="gaps-md grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+    <li
+      v-for="note in filteredNotes"
+      :key="note.id"
+      class="card group hover:bg-accent flex cursor-pointer flex-col gap-2 p-5 transition-colors"
+      @click="selectNote(note)"
+    >
+      <!--      Header-->
+      <span class="relative flex justify-between gap-4 font-medium">
+        {{ note.title }}
 
-        <Button variant="default" class="flex-1 sm:w-auto" @click="handleNewClick">
-          <Icon name="plus" class="stroke-white" />
-          Create Note
-        </Button>
+        <Icon v-if="note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
+      </span>
+
+      <!--      Content-->
+      <div class="flex w-full flex-col">
+        <span v-if="note.content" class="text-muted-foreground mt-1 line-clamp-5 overflow-hidden text-sm break-all">
+          {{ getTextSnippet(String(note.content), 500) }}
+        </span>
       </div>
-    </div>
 
-    <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!isLoading">
-      <ul
-        v-if="filteredNotes && filteredNotes.length"
-        class="gaps-md grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
-      >
-        <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
-      </ul>
-      <Empty v-else-if="!notes?.length">
-        <EmptyHeader>
-          <EmptyTitle class="text-foreground"> You have no notes yet</EmptyTitle>
-          <EmptyDescription> Get started by creating a new note! </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button @click="handleNewClick"> Create Note </Button>
-        </EmptyContent>
-      </Empty>
-    </div>
-  </div>
+      <!--      footer-->
+      <div class="mt-auto flex flex-col items-start gap-2">
+        <span class="text-muted-foreground ml-auto text-xs">Last edited: {{ formatDate(note.updatedAt) }}</span>
+      </div>
+    </li>
+  </ul>
 </template>
