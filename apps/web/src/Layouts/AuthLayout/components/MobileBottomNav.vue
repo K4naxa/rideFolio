@@ -4,7 +4,8 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 
 import Button from "@/components/ui/button/Button.vue";
 import { useModalStore } from "@/stores/modal";
-import { computed, ref } from "vue";
+import { useActionOptions } from "@/lib/composables/useActionOptions";
+import { ref } from "vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import DrawerHeader from "@/components/ui/drawer/DrawerHeader.vue";
 import DrawerTitle from "@/components/ui/drawer/DrawerTitle.vue";
@@ -26,54 +27,7 @@ const modalStore = useModalStore();
 const { currentUser: user } = useCurrentUser();
 const auth = useAuth();
 
-interface ActionOption {
-  label: string;
-  description: string;
-  icon: IconProps["name"];
-  onClick: () => void;
-  iconBg: string;
-  iconColor: string;
-  cypressDataAttr: string;
-}
-
-const actionOptions = computed<ActionOption[]>(() => [
-  {
-    label: "Refill",
-    description: "Log a fuel refill",
-    icon: "refill",
-    onClick: () => modalStore.onOpen("createRefill"),
-    iconBg: "bg-refill",
-    iconColor: "text-refill-foreground",
-    cypressDataAttr: "create-refill-button",
-  },
-  {
-    label: "Maintenance",
-    description: "Log a service",
-    icon: "maintenance",
-    onClick: () => modalStore.onOpen("createMaintenance"),
-    iconBg: "bg-maintenance",
-    iconColor: "text-maintenance-foreground",
-    cypressDataAttr: "create-maintenance-button",
-  },
-  {
-    label: "Note",
-    description: "Add a note",
-    icon: "notes",
-    onClick: () => modalStore.onOpen("createNote"),
-    iconBg: "bg-notes",
-    iconColor: "text-notes-foreground",
-    cypressDataAttr: "create-note-button",
-  },
-  {
-    label: "Todo",
-    description: "Add a task",
-    icon: "todo",
-    onClick: () => modalStore.onOpen("createTodo"),
-    iconBg: "bg-todo",
-    iconColor: "text-todo-foreground",
-    cypressDataAttr: "create-todo-button",
-  },
-]);
+const { actionOptions } = useActionOptions();
 
 const isCreateDrawerOpen = ref(false);
 const isVehicleDrawerOpen = ref(false);

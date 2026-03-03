@@ -29,10 +29,11 @@ import NavUser from "@/components/NavUser.vue";
 import SidebarFooter from "@/components/ui/sidebar/SidebarFooter.vue";
 import Icons from "@/components/icons/Icon.vue";
 import NotificationsPopover from "@/components/ResponsiveNotification.vue";
-import { computed } from "vue";
 import { SidebarGroupAction } from "@/components/ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useIsMobile } from "@/lib/composables/useMediaQuery.ts";
+import { useActionOptions } from "@/lib/composables/useActionOptions";
+import ActionOptionItem from "@/components/ui/ActionOptionItem.vue";
 
 interface MainSideBarLinks {
   label: string;
@@ -58,54 +59,7 @@ const mainSidebarLinks: MainSideBarLinks[] = [
   },
 ];
 
-interface ActionOption {
-  label: string;
-  description: string;
-  icon: IconProps["name"];
-  onClick: () => void;
-  iconBg: string;
-  iconColor: string;
-  cypressDataAttr: string;
-}
-
-const actionOptions = computed<ActionOption[]>(() => [
-  {
-    label: "Refill",
-    description: "Log a fuel refill",
-    icon: "refill",
-    onClick: () => modalStore.onOpen("createRefill"),
-    iconBg: "bg-refill",
-    iconColor: "text-refill-foreground",
-    cypressDataAttr: "create-refill-button",
-  },
-  {
-    label: "Maintenance",
-    description: "Log a service",
-    icon: "maintenance",
-    onClick: () => modalStore.onOpen("createMaintenance"),
-    iconBg: "bg-maintenance",
-    iconColor: "text-maintenance-foreground",
-    cypressDataAttr: "create-maintenance-button",
-  },
-  {
-    label: "Note",
-    description: "Add a note",
-    icon: "notes",
-    onClick: () => modalStore.onOpen("createNote"),
-    iconBg: "bg-notes",
-    iconColor: "text-notes-foreground",
-    cypressDataAttr: "create-note-button",
-  },
-  {
-    label: "Todo",
-    description: "Add a task",
-    icon: "todo",
-    onClick: () => modalStore.onOpen("createTodo"),
-    iconBg: "bg-todo",
-    iconColor: "text-todo-foreground",
-    cypressDataAttr: "create-todo-button",
-  },
-]);
+const { actionOptions } = useActionOptions();
 
 const { data: vehicles } = useVehiclesAll();
 
@@ -156,19 +110,11 @@ const handleCreateVehicleClick = () => {
                 </sidebar-menu-button>
               </PopoverTrigger>
               <PopoverContent align="end" class="flex flex-col gap-1 p-1">
-                <button
+                <ActionOptionItem
                   v-for="option in actionOptions"
                   :key="option.label"
-                  :data-cy="option.cypressDataAttr"
-                  class="border-border hover:bg-sidebar-accent active:bg-muted flex items-center gap-3 rounded-md px-3 py-2 text-left"
-                  @click="option.onClick()"
-                >
-                  <Icon :name="option.icon" :class="['size-5', option.iconColor]" />
-                  <div>
-                    <p class="text-foreground text-sm leading-tight font-semibold">{{ option.label }}</p>
-                    <p class="text-muted-foreground text-xs leading-snug">{{ option.description }}</p>
-                  </div>
-                </button>
+                  :option="option"
+                />
               </PopoverContent>
             </Popover>
           </SidebarMenuItem>
