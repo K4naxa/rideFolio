@@ -62,7 +62,7 @@ defineExpose({ close, isOpen });
       </PopoverTrigger>
     </PopoverAnchor>
 
-    <PopoverContent align="end" class="flex flex-col space-y-4">
+    <PopoverContent align="end" class="flex min-w-fit flex-col space-y-4" >
       <slot name="header" :close="close" :is-open="isOpen">
         <div>
           <Label class="text-lg font-semibold">{{ props.title }}</Label>
