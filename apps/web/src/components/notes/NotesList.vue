@@ -12,38 +12,23 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import Input from "@/components/ui/input/Input.vue";
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
-import { getTextSnippet } from "@/lib/utils/noteUtils";
-import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
 
-const props = defineProps<{
-  notes: Note[] | undefined;
-  isLoading: boolean;
-  selectedNoteId?: string | null;
-}>();
+const notes: Note[] = [];
+const isLoading = ref(false);
 
 const searchQuery = ref("");
 const filteredNotes = computed(() => {
-  if (!searchQuery.value) return props.notes;
-  return props.notes?.filter(
+  if (!searchQuery.value) return notes;
+  return notes.filter(
     (note) =>
       (note.title && note.title.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
       (note.content && String(note.content).toLowerCase().includes(searchQuery.value.toLowerCase())),
   );
 });
-const emit = defineEmits<{
-  (e: "selectNote", note: Note): void;
-  (e: "createNewNote"): void;
-}>();
 
-const selectNote = (note: Note) => {
-  emit("selectNote", note);
-};
-const handleNewClick = () => {
-  emit("createNewNote");
-};
-
-const isMobile = useIsMobile();
+const selectNote = (note: Note) => {};
+const handleNewClick = () => {};
 </script>
 <template>
   <div class="flex flex-1 flex-col gap-4 lg:max-w-96 lg:border-r">
@@ -74,32 +59,9 @@ const isMobile = useIsMobile();
       </div>
     </div>
 
-    <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!props.isLoading">
+    <div class="scrollbar-thin flex overflow-y-auto lg:pr-8" v-if="!isLoading">
       <ul v-if="filteredNotes && filteredNotes.length" class="flex w-full flex-col gap-4 lg:gap-2">
-        <template v-if="!isMobile">
-          <li
-            v-for="note in filteredNotes"
-            :key="note.id"
-            :class="[
-              'hover:bg-accent listHover group block cursor-pointer rounded bg-transparent px-3 py-3',
-              props.selectedNoteId === note.id && 'bg-accent!',
-            ]"
-            @click="selectNote(note)"
-          >
-            <div class="flex w-full items-center justify-between">
-              <span class="min-w-0 font-medium break-all">{{ note.title }}</span>
-
-              <Icon name="pin" v-if="note.pinned" class="stroke-primary size-4" />
-            </div>
-            <div class="text-muted-foreground line-clamp-6 min-w-0 text-sm break-all lg:line-clamp-3">
-              {{ getTextSnippet(String(note.content), 80) }}
-            </div>
-          </li>
-        </template>
-
-        <template v-else>
-          <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
-        </template>
+        <NoteListMobileItem v-for="note in filteredNotes" :key="note.id" :note="note" @note-click="selectNote" />
       </ul>
       <Empty v-else-if="!notes?.length">
         <EmptyHeader>

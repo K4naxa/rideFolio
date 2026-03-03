@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
-import FormInput from "@/components/forms/FormInput.vue";
-import Button from "@/components/ui/button/Button.vue";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
-import Icon from "@/components/icons/Icon.vue";
-import { CheckIcon, SaveIcon } from "lucide-vue-next";
+
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type Note, NoteSchema, type NoteSchemaType } from "@repo/validation";
 import { computed, type HTMLAttributes, onUnmounted, ref, useSlots, watch } from "vue";
@@ -27,7 +22,6 @@ const props = defineProps<NoteSectionProps>();
 const emit = defineEmits<{
   close: [];
   deleted: [];
-  created: [Note];
 }>();
 
 const { currentVehicleId } = useCurrentVehicle();
@@ -70,8 +64,6 @@ async function handleSave(noteId: string | undefined, data: NoteSchemaType): Pro
     savedNote = await createNote(data);
     // Update the local state with the newly created note
     lastServerState.value = savedNote;
-    // Notify parent that a note was created
-    emit("created", savedNote);
   } else {
     // Otherwise, update the existing note
     savedNote = await updateNote({ noteId, data });
@@ -188,40 +180,7 @@ watch(
         :on-delete="handleDelete"
         :on-toggle-pin="handleTogglePin"
         :on-close="handleClose"
-      >
-        <header class="flex items-center justify-between">
-          <h2 class="text-xl font-semibold">{{ isNew ? "New Note" : "Edit Note" }}</h2>
-          <div class="flex items-center gap-4">
-            <!-- Status indicator -->
-            <div class="grid aspect-square w-9 place-items-center rounded-sm border">
-              <Spinner v-if="saveStatus === 'saving'" class="size-4" />
-              <SaveIcon v-else-if="saveStatus === 'pending'" class="stroke-warning size-4" />
-              <CheckIcon v-else class="stroke-success size-4" />
-            </div>
-
-            <!-- Control buttons -->
-            <template v-if="!isNew">
-              <Separator orientation="vertical" class="mx-2 h-6" />
-              <div class="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
-                  @click="handleDelete"
-                >
-                  <Icon name="trash" class="stroke-inherit" />
-                </Button>
-
-                <Button variant="outline" size="icon" class="group" @click="handleTogglePin">
-                  <Icon v-if="!isPinned" name="pin" class="group-hover:stroke-primary" />
-                  <Icon v-if="isPinned" name="pin" class="stroke-primary group-hover:hidden" />
-                  <Icon v-if="isPinned" name="pinOff" class="stroke-primary hidden group-hover:block" />
-                </Button>
-              </div>
-            </template>
-          </div>
-        </header>
-      </slot>
+      />
 
       <!-- Vehicle Selection -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
