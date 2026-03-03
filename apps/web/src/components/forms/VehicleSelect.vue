@@ -72,14 +72,14 @@ function handleSelect(value: string) {
   <template v-if="!isMobile">
     <DropdownMenu v-model:open="isOpen">
       <DropdownMenuTrigger class="w-full">
-        <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+        <button v-if="selectedVehicle" type="button" class="inputField h-fit w-full p-1!">
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
-        </Button>
-        <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+        </button>
+        <button v-else type="button" class="inputField h-fit w-full justify-center p-1!">
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
-        </Button>
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent :class="contentClass" same-width align="start">
