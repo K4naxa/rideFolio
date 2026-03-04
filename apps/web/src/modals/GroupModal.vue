@@ -129,9 +129,11 @@ const onSubmit = handleSubmit(async (values) => {
       <DialogHeader>
         <DialogTitle>{{ group?.name || "Create a New Group" }}</DialogTitle>
         <DialogDescription>
-          <p v-if="group">
-            Edit the details of your group <strong>{{ group.name }}</strong>
-          </p>
+          {{
+            group
+              ? "Edit your group details and manage its vehicles and permissions."
+              : "Fill out the details below to create a new group and start sharing your vehicles."
+          }}
         </DialogDescription>
       </DialogHeader>
 
