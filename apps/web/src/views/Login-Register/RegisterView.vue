@@ -83,7 +83,7 @@ const onSubmit = handleSubmit(async (values) => {
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-4">
         <LoginTabs />
-        <Card class="">
+        <Card class="bg-background-light">
           <CardHeader class="flex flex-col items-center text-center">
             <h1>Create your account</h1>
             <p class="text-muted-foreground">Fill the following fields to create a new account</p>
