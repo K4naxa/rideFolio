@@ -72,7 +72,7 @@ export class VehiclesService {
       });
       return { newVehicleId: vehicle.id };
 
-      // Link the vehicle to the user's private pool
+      // Link the vehicle to the user's private group
     } catch (error) {
       Logger.error('Error creating vehicle:', error);
       throw new BadRequestException({
@@ -187,7 +187,7 @@ export class VehiclesService {
 
   async getAccessibleVehicles(userSession: UserSession): Promise<TAccessibleVehicle[]> {
     try {
-      // 1. Fetch vehicles with pools where the user is a member or owner
+      // 1. Fetch vehicles with groups where the user is a member or owner
       const rawVehicles = await this.vehicleRepository.findAccessibleVehicles(userSession.user.id);
 
       return rawVehicles.map((v) => {

@@ -1,28 +1,28 @@
 import { Module } from '@nestjs/common';
-import { PoolsController } from './pools.controller';
-import { PoolsService } from './pools.service';
+import { GroupsController } from './groups.controller';
+import { GroupsService } from './groups.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { PoolsTransformerService } from './pools.transformer.service';
+import { GroupsTransformerService } from './groups.transformer.service';
 import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   imports: [NotificationsModule],
-  exports: [PoolsService, PoolsTransformerService],
-  controllers: [PoolsController],
+  exports: [GroupsService, GroupsTransformerService],
+  controllers: [GroupsController],
   providers: [
-    PoolsService,
+    GroupsService,
     PrismaService,
     VehicleRepository,
     VehicleTransformerService,
     OdometerService,
     UnitConversionService,
     AuthValidationService,
-    PoolsTransformerService,
+    GroupsTransformerService,
   ],
 })
-export class PoolsModule {}
+export class GroupsModule {}

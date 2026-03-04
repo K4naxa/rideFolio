@@ -8,7 +8,7 @@ import { useThemeStore } from "./stores/theme";
 import RefillModal from "./modals/RefillModal.vue";
 import NoteModal from "./modals/NoteModal.vue";
 import TodoModal from "./modals/TodoModal.vue";
-import PoolModal from "./modals/PoolModal.vue";
+import GroupModal from "./modals/GroupModal.vue";
 import QuickLinkModal from "@/modals/QuickLinkModal.vue";
 import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.vue";
 import SettingsModal from "@/modals/Settings/SettingsModal.vue";
@@ -40,7 +40,7 @@ const themeStore = useThemeStore();
   <TodoModal />
   <NoteModal />
   <CreateMaintenanceModal />
-  <PoolModal />
+  <GroupModal />
   <QuickLinkModal />
   <SettingsModal />
 </template>

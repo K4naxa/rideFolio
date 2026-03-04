@@ -1,6 +1,6 @@
 export * from "./user/index.js";
 export * from "./vehicle/index.js";
-export * from "./pool/index.js";
+export * from "./group/index.js";
 export * from "./refill/index.js";
 export * from "./statistics/index.js";
 export * from "./auth/index.js";

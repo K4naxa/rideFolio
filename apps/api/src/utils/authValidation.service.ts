@@ -1,6 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Pool, Vehicle } from 'prisma/generated/client';
+import { Group, Vehicle } from 'prisma/generated/client';
 
 @Injectable()
 export class AuthValidationService {
@@ -13,11 +13,11 @@ export class AuthValidationService {
         OR: [
           // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: user is in a pool that contains the vehicle
+          // Condition 2: user is in a group that contains the vehicle
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   members: {
                     some: {
                       userId,
@@ -44,26 +44,26 @@ export class AuthValidationService {
     }
   }
 
-  async hasAccessToPool(userId: string, poolId: string): Promise<void> {
-    const count = await this.prisma.poolMember.count({
+  async hasAccessToGroup(userId: string, groupId: string): Promise<void> {
+    const count = await this.prisma.groupMember.count({
       where: {
-        pool: { id: poolId },
+        group: { id: groupId },
         userId,
       },
     });
 
     if (count === 0) {
-      console.error('Access denied: user does not have access to the pool.');
-      throw new NotFoundException(`Pool not found or access denied.`);
+      console.error('Access denied: user does not have access to the group.');
+      throw new NotFoundException(`Group not found or access denied.`);
     }
   }
 
-  async canAddVehiclesToPool(userId: string, poolId: string): Promise<Pool> {
-    const pool = await this.prisma.pool.findUnique({
+  async canAddVehiclesToGroup(userId: string, groupId: string): Promise<Group> {
+    const group = await this.prisma.group.findUnique({
       where: {
-        id: poolId,
+        id: groupId,
         OR: [
-          // User is an owner or admin of the pool
+          // User is an owner or admin of the group
           { members: { some: { userId, OR: [{ role: 'OWNER' }, { role: 'ADMIN' }] } } },
           {
             membersCanAddVehicles: true,
@@ -73,14 +73,14 @@ export class AuthValidationService {
       },
     });
 
-    if (!pool) {
+    if (!group) {
       Logger.error(
-        'Permission denied: user: ' + userId + ' does not have permission to add vehicles to pool: ' + poolId,
+        'Permission denied: user: ' + userId + ' does not have permission to add vehicles to group: ' + groupId,
       );
-      throw new NotFoundException('Pool not found or access denied.');
+      throw new NotFoundException('Group not found or access denied.');
     }
 
-    return pool;
+    return group;
   }
 
   async canCreateLogs(userId: string, vehicleId: string): Promise<Vehicle> {
@@ -90,11 +90,11 @@ export class AuthValidationService {
         OR: [
           // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: user is in a pool that contains the vehicle
+          // Condition 2: user is in a group that contains the vehicle
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   membersCanAddLogs: true,
                   members: {
                     some: {
@@ -105,11 +105,11 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the group where the vehicle is registered
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   members: {
                     some: {
                       userId,
@@ -145,11 +145,11 @@ export class AuthValidationService {
         OR: [
           // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: user is in a pool that contains the vehicle
+          // Condition 2: user is in a group that contains the vehicle
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   membersCanEditLogs: true,
                   members: {
                     some: {
@@ -160,11 +160,11 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the group where the vehicle is registered
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   members: {
                     some: {
                       userId,
@@ -197,11 +197,11 @@ export class AuthValidationService {
         OR: [
           // Condition 1: user owns the vehicle
           { ownerId: userId },
-          // Condition 2: user is in a pool that contains the vehicle
+          // Condition 2: user is in a group that contains the vehicle
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   membersCanDeleteLogs: true,
                   members: {
                     some: {
@@ -212,11 +212,11 @@ export class AuthValidationService {
               },
             },
           },
-          // Condition 3: user is an admin or owner of the pool where the vehicle is registered
+          // Condition 3: user is an admin or owner of the group where the vehicle is registered
           {
-            pools: {
+            groups: {
               some: {
-                pool: {
+                group: {
                   members: {
                     some: {
                       userId,

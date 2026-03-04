@@ -1,16 +1,14 @@
 import * as z from "zod";
-import { poolMemberRoleCodes, poolTypeCodes } from "./pool.types";
+import { groupMemberRoleCodes, groupTypeCodes } from "./group.types";
 
-export const PoolSchema = z.object({
+export const GroupSchema = z.object({
   name: z.string().min(1, "Required").max(50, "50 Character limit passed"),
   description: z
     .string()
     .max(300, "300 Character limit passed")
     .optional()
     .nullable(),
-  type: z.enum(poolTypeCodes, { message: "Pool type is required" }),
   vehicleIds: z.array(z.string()),
-
   membersCanAddLogs: z.preprocess(
     (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),
@@ -29,12 +27,12 @@ export const PoolSchema = z.object({
   ),
 });
 
-export type PoolSchemaValues = z.infer<typeof PoolSchema>;
+export type GroupSchemaValues = z.infer<typeof GroupSchema>;
 
-export const PoolInviteSchema = z.object({
+export const GroupInviteSchema = z.object({
   email: z.email("Invalid email address"),
-  roleToGrant: z.enum(poolMemberRoleCodes, { message: "Role is required" }),
-  poolId: z.cuid("Invalid pool ID"),
+  roleToGrant: z.enum(groupMemberRoleCodes, { message: "Role is required" }),
+  groupId: z.cuid("Invalid group ID"),
 });
-export type PoolInviteValues = z.infer<typeof PoolInviteSchema>;
-export type PoolInviteInput = z.input<typeof PoolInviteSchema>;
+export type GroupInviteValues = z.infer<typeof GroupInviteSchema>;
+export type GroupInviteInput = z.input<typeof GroupInviteSchema>;

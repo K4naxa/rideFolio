@@ -105,7 +105,7 @@ export type TAccessibleVehicle = {
   canDeleteLogs: boolean;
   canEditLogs: boolean;
 
-  pool: { id: string; name: string } | null;
+  group: { id: string; name: string } | null;
 
   vehicleData: BasicVehicle;
 };

@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { PoolDetails, PoolMemberRoleCode } from '@repo/validation';
+import { GroupDetails, GroupMemberRoleCode } from '@repo/validation';
 import { Prisma } from 'prisma/generated/client';
 import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { VehicleTransformerService } from 'src/vehicles/vehicleTransformer.service';
 
 @Injectable()
-export class PoolsTransformerService {
+export class GroupsTransformerService {
   constructor(
     private readonly vehicleTransformer: VehicleTransformerService,
     private readonly vehicleRepository: VehicleRepository,
   ) {}
 
-  DB_PoolDetails_Inlcude() {
+  DB_GroupDetails_Inlcude() {
     return {
       members: {
         select: {
@@ -59,14 +59,14 @@ export class PoolsTransformerService {
           createdAt: true,
         },
       },
-    } satisfies Prisma.PoolInclude;
+    } satisfies Prisma.GroupInclude;
   }
 
-  toPoolDetails(pool: DB_PoolDetails, currentUserId: string): PoolDetails {
-    const userRole = pool.members.find((m) => m.user.id === currentUserId)?.role as PoolMemberRoleCode;
-    const userCanManagePool = userRole === 'OWNER' || userRole === 'ADMIN';
+  toGroupDetails(group: DB_GroupDetails, currentUserId: string): GroupDetails {
+    const userRole = group.members.find((m) => m.user.id === currentUserId)?.role as GroupMemberRoleCode;
+    const userCanManageGroup = userRole === 'OWNER' || userRole === 'ADMIN';
 
-    const poolInvites = pool.invites.map((invite) => ({
+    const groupInvites = group.invites.map((invite) => ({
       id: invite.id,
       email: invite.receiver.email,
       roleToGrant: invite.roleToGrant,
@@ -74,36 +74,35 @@ export class PoolsTransformerService {
       state: invite.status,
     }));
 
-    const poolMembers = pool.members.map((member) => {
-      return userCanManagePool ? member : { ...member, user: { ...member.user, email: undefined } };
+    const groupMembers = group.members.map((member) => {
+      return userCanManageGroup ? member : { ...member, user: { ...member.user, email: undefined } };
     });
 
     return {
-      id: pool.id,
-      type: pool.type,
-      name: pool.name,
-      description: pool.description,
-      createdAt: pool.createdAt,
+      id: group.id,
+      name: group.name,
+      description: group.description,
+      createdAt: group.createdAt,
       userRole: userRole,
-      members: poolMembers,
+      members: groupMembers,
       rules: {
-        membersCanAddLogs: pool.membersCanAddLogs,
-        membersCanAddVehicles: pool.membersCanAddVehicles,
-        membersCanEditLogs: pool.membersCanEditLogs,
-        membersCanDeleteLogs: pool.membersCanDeleteLogs,
+        membersCanAddLogs: group.membersCanAddLogs,
+        membersCanAddVehicles: group.membersCanAddVehicles,
+        membersCanEditLogs: group.membersCanEditLogs,
+        membersCanDeleteLogs: group.membersCanDeleteLogs,
       },
-      vehicles: pool.vehicles.map((v) => ({
+      vehicles: group.vehicles.map((v) => ({
         addedAt: v.addedAt,
         isCurrentUserOwner: v.vehicle.owner.id === currentUserId,
         data: this.vehicleTransformer.toBasicVehicle(v.vehicle),
         owner: v.vehicle.owner,
       })),
 
-      invites: userCanManagePool ? poolInvites : undefined,
+      invites: userCanManageGroup ? groupInvites : undefined,
     };
   }
 }
 
-export type DB_PoolDetails = Prisma.PoolGetPayload<{
-  include: ReturnType<PoolsTransformerService['DB_PoolDetails_Inlcude']>;
+export type DB_GroupDetails = Prisma.GroupGetPayload<{
+  include: ReturnType<GroupsTransformerService['DB_GroupDetails_Inlcude']>;
 }>;

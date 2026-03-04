@@ -86,15 +86,15 @@ const router = createRouter({
           ],
         },
         {
-          path: "/pools",
-          name: "Pools",
+          path: "/groups",
+          name: "Groups",
           meta: { requiresAuth: true },
           children: [
             {
-              path: ":poolId",
-              name: "Pool View",
+              path: ":groupId",
+              name: "Group View",
               meta: { requiresAuth: true },
-              component: () => import("@/views/Pool/PoolView.vue"),
+              component: () => import("@/views/Group/GroupView.vue"),
             },
           ],
         },

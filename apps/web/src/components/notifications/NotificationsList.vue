@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNotificationsQuery } from "@/lib/queries/notifications/notification-queries.ts";
-import PoolInvitationModal from "@/modals/PoolInvitationModal.vue";
+import GroupInvitationModal from "@/modals/GroupInvitationModal.vue";
 import { userNotificationMarkAsRead } from "@/lib/queries/notifications/notification-mutations.ts";
 import { ref } from "vue";
 import type { Notification } from "@repo/validation";
@@ -9,8 +9,8 @@ import { isNotificationType } from "@repo/validation";
 const { data: notifications } = useNotificationsQuery();
 const { mutate: markAsRead } = userNotificationMarkAsRead();
 
-const showPoolInviteModal = ref(false);
-const poolInviteModalData = ref<Notification<"POOL_INVITE"> | null>(null);
+const showGroupInviteModal = ref(false);
+const groupInviteModalData = ref<Notification<"GROUP_INVITE"> | null>(null);
 
 function handleNotificationClick(notification: Notification) {
   if (notification.isRead) return;
@@ -19,9 +19,9 @@ function handleNotificationClick(notification: Notification) {
     return;
   }
 
-  if (isNotificationType(notification, "POOL_INVITE")) {
-    poolInviteModalData.value = notification;
-    showPoolInviteModal.value = true;
+  if (isNotificationType(notification, "GROUP_INVITE")) {
+    groupInviteModalData.value = notification;
+    showGroupInviteModal.value = true;
   }
 }
 </script>
@@ -50,10 +50,10 @@ function handleNotificationClick(notification: Notification) {
   </ul>
   <p v-else class="text-muted-foreground my-4 px-4 text-center text-sm">No pending notifications</p>
 
-  <PoolInvitationModal
-    v-if="poolInviteModalData"
-    :notification="poolInviteModalData"
-    v-model:open="showPoolInviteModal"
+  <GroupInvitationModal
+    v-if="groupInviteModalData"
+    :notification="groupInviteModalData"
+    v-model:open="showGroupInviteModal"
   />
 </template>
 

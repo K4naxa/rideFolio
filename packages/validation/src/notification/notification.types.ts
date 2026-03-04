@@ -1,29 +1,29 @@
-// Insert poolId to values that get automatically deleted when the pool is deleted
-export interface PoolNotificationMeta {
-  POOL_INVITE: {
-    poolId: string;
-    poolName: string;
-    poolDescription: string | null;
+// Insert groupId to values that get automatically deleted when the group is deleted
+export interface GroupNotificationMeta {
+  GROUP_INVITE: {
+    groupId: string;
+    groupName: string;
+    groupDescription: string | null;
     membersCanAddVehicles: boolean;
     inviteId: string;
     sender: { name: string; image: string | null };
     roleToGrant: string;
   };
-  POOL_MEMBER_REMOVED: { poolName: string };
-  POOL_ROLE_UPDATED: { poolId: string; poolName: string; newRole: string };
-  POOL_VEHICLE_REMOVED: {
-    poolId: string;
-    poolName: string;
+  GROUP_MEMBER_REMOVED: { groupName: string };
+  GROUP_ROLE_UPDATED: { groupId: string; groupName: string; newRole: string };
+  GROUP_VEHICLE_REMOVED: {
+    groupId: string;
+    groupName: string;
     vehicleName: string;
   };
 
-  POOL_DISBANDED: {
-    poolName: string;
+  GROUP_DISBANDED: {
+    groupName: string;
   };
 }
 
 // Merge all notification meta-types into a single map
-export type NotificationMetaMap = PoolNotificationMeta;
+export type NotificationMetaMap = GroupNotificationMeta;
 // All notification types variable keys of the meta-map
 export type NotificationType = keyof NotificationMetaMap;
 

@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './user/user.module';
 import { VehiclesModule } from 'src/vehicles/vehicles.module';
-import { PoolsController } from './pools/pools.controller';
-import { PoolsModule } from './pools/pools.module';
+import { GroupsController } from './groups/groups.controller';
+import { GroupsModule } from './groups/groups.module';
 import { LogsModule } from './logs/logs.module';
 import { AppService } from 'src/app.service';
 import { TodosModule } from './todos/todos.module';
@@ -36,7 +36,7 @@ import { TimelineModule } from './timeline/timeline.module';
     }),
     UsersModule,
     VehiclesModule,
-    PoolsModule,
+    GroupsModule,
     LogsModule,
     TodosModule,
     NoteModule,
@@ -47,7 +47,7 @@ import { TimelineModule } from './timeline/timeline.module';
     NotificationsModule,
     TimelineModule,
   ],
-  controllers: [AppController, PoolsController, QuicklinksController],
+  controllers: [AppController, GroupsController, QuicklinksController],
   providers: [
     AppService,
     {

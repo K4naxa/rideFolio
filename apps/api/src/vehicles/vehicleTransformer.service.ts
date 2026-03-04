@@ -4,17 +4,17 @@ import { BasicVehicle, TAccessibleVehicle, VehicleMinimal } from '@repo/validati
 import { OdometerService } from 'src/utils/odometer.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 
-interface RawVehicleWithPools extends Vehicle {
+interface RawVehicleWithGroups extends Vehicle {
   vehicleType: {
     code: string;
     nameKey: string;
     icon: string | null;
   };
-  pools?: {
+  groups?: {
     membersCanAddLogs: boolean;
     membersCanEditLogs: boolean;
     membersCanDeleteLogs: boolean;
-    pool: {
+    group: {
       id: string;
       name: string;
     };
@@ -68,20 +68,20 @@ export class VehicleTransformerService {
     };
   }
 
-  // Transform raw vehicle with pools to TAccessibleVehicle
-  toAccessibleVehicle(rawVehicle: RawVehicleWithPools, userId: string): TAccessibleVehicle {
+  // Transform raw vehicle with groups to TAccessibleVehicle
+  toAccessibleVehicle(rawVehicle: RawVehicleWithGroups, userId: string): TAccessibleVehicle {
     const isOwnerUser = rawVehicle.ownerId === userId;
 
-    // Pool permission logic
+    // Group permission logic
     let canCreateLogs = false;
     let canEditLogs = false;
     let canDeleteLogs = false;
 
-    const poolAccess = rawVehicle.pools?.[0];
-    if (poolAccess) {
-      canCreateLogs = poolAccess.membersCanAddLogs;
-      canEditLogs = poolAccess.membersCanEditLogs;
-      canDeleteLogs = poolAccess.membersCanDeleteLogs;
+    const groupAccess = rawVehicle.groups?.[0];
+    if (groupAccess) {
+      canCreateLogs = groupAccess.membersCanAddLogs;
+      canEditLogs = groupAccess.membersCanEditLogs;
+      canDeleteLogs = groupAccess.membersCanDeleteLogs;
     }
 
     // Owner override
@@ -96,10 +96,10 @@ export class VehicleTransformerService {
       canCreateLogs,
       canEditLogs,
       canDeleteLogs,
-      pool: poolAccess
+      group: groupAccess
         ? {
-            id: poolAccess.pool.id,
-            name: poolAccess.pool.name,
+            id: groupAccess.group.id,
+            name: groupAccess.group.name,
           }
         : null,
       vehicleData: this.toBasicVehicle(rawVehicle),

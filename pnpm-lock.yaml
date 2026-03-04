@@ -6023,7 +6023,7 @@ packages:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
 
-  pg-pool@3.10.1:
+  pg-group@3.10.1:
     resolution: {integrity: sha512-Tu8jMlcX+9d8+QVzKIvM/uJtp07PKr82IUOYEphaWcoBhIYkoHpLXN3qO59nAI11ripznDsEzEv8nUxBVWajGg==}
     peerDependencies:
       pg: '>=8.0'
@@ -13833,7 +13833,7 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.10.1(pg@8.16.3):
+  pg-group@3.10.1(pg@8.16.3):
     dependencies:
       pg: 8.16.3
 
@@ -13850,7 +13850,7 @@ snapshots:
   pg@8.16.3:
     dependencies:
       pg-connection-string: 2.9.1
-      pg-pool: 3.10.1(pg@8.16.3)
+      pg-group: 3.10.1(pg@8.16.3)
       pg-protocol: 1.10.3
       pg-types: 2.2.0
       pgpass: 1.0.5

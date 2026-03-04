@@ -8,15 +8,15 @@ export class VehicleRepository {
 
   // Base vehicle query - reusable across all methods
 
-  // Complex query builder for vehicles with pool data
-  private getVehicleWithPoolsQuery(userId: string) {
+  // Complex query builder for vehicles with group data
+  private getVehicleWithGroupsQuery(userId: string) {
     return {
       where: {
         OR: [
           { ownerId: userId },
           {
-            pools: {
-              some: { pool: { members: { some: { userId } } } },
+            groups: {
+              some: { group: { members: { some: { userId } } } },
             },
           },
         ],
@@ -37,9 +37,9 @@ export class VehicleRepository {
             image: true,
           },
         },
-        pools: {
+        groups: {
           where: {
-            pool: {
+            group: {
               members: { some: { userId } },
             },
           },
@@ -47,7 +47,7 @@ export class VehicleRepository {
             membersCanAddLogs: true,
             membersCanEditLogs: true,
             membersCanDeleteLogs: true,
-            pool: {
+            group: {
               select: {
                 id: true,
                 name: true,
@@ -62,9 +62,9 @@ export class VehicleRepository {
     };
   }
 
-  private getPoolVehiclesQuery(poolId: string) {
+  private getGroupVehiclesQuery(groupId: string) {
     return {
-      where: { pool: { id: poolId } },
+      where: { group: { id: groupId } },
       select: {
         addedAt: true,
         vehicle: {
@@ -106,8 +106,8 @@ export class VehicleRepository {
         OR: [
           { ownerId: userId },
           {
-            pools: {
-              some: { pool: { members: { some: { userId } } } },
+            groups: {
+              some: { group: { members: { some: { userId } } } },
             },
           },
         ],
@@ -119,12 +119,12 @@ export class VehicleRepository {
     return vehicles.map((v) => v.id);
   }
 
-  async findPoolVehicles(poolId: string) {
-    return this.prisma.poolVehicle.findMany(this.getPoolVehiclesQuery(poolId));
+  async findGroupVehicles(groupId: string) {
+    return this.prisma.groupVehicle.findMany(this.getGroupVehiclesQuery(groupId));
   }
 
   async findAccessibleVehicles(userId: string) {
-    return this.prisma.vehicle.findMany(this.getVehicleWithPoolsQuery(userId));
+    return this.prisma.vehicle.findMany(this.getVehicleWithGroupsQuery(userId));
   }
 
   async findOwnVehicles(userId: string) {

@@ -9,7 +9,7 @@ import DialogContent from "@/components/ui/dialog/DialogContent.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { userNotificationMarkAsRead } from "@/lib/queries/notifications/notification-mutations";
-import { usePoolAddVehicles, usePoolInviteAccept, usePoolInviteDeny } from "@/lib/queries/pools/pool-mutations";
+import { useGroupAddVehicles, useGroupInviteAccept, useGroupInviteDeny } from "@/lib/queries/groups/group-mutations";
 import { getInitials } from "@/lib/utils";
 import type { Notification } from "@repo/validation";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
@@ -26,7 +26,7 @@ import Icon from "@/components/icons/Icon.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 
 const props = defineProps<{
-  notification: Notification<"POOL_INVITE">;
+  notification: Notification<"GROUP_INVITE">;
   open?: boolean;
 }>();
 
@@ -34,9 +34,9 @@ const emit = defineEmits<{
   "update:open": [value: boolean];
 }>();
 
-const { mutateAsync: acceptInvite, isPending: isAccepting } = usePoolInviteAccept();
-const { mutateAsync: denyInvite, isPending: isDenying } = usePoolInviteDeny();
-const { mutateAsync: addVehiclesToPool } = usePoolAddVehicles();
+const { mutateAsync: acceptInvite, isPending: isAccepting } = useGroupInviteAccept();
+const { mutateAsync: denyInvite, isPending: isDenying } = useGroupInviteDeny();
+const { mutateAsync: addVehiclesToGroup } = useGroupAddVehicles();
 
 const { mutate: markAsRead } = userNotificationMarkAsRead();
 const { usersOwnVehicles } = useCurrentUser();
@@ -75,15 +75,15 @@ function handleClose() {
 }
 
 const { handleSubmit, values, resetForm } = useForm({
-  validationSchema: toTypedSchema(object({ poolId: cuid(), vehicleIds: array(cuid()) })),
+  validationSchema: toTypedSchema(object({ groupId: cuid(), vehicleIds: array(cuid()) })),
   initialValues: {
-    poolId: props.notification.metadata.poolId,
+    groupId: props.notification.metadata.groupId,
     vehicleIds: [],
   },
 });
 
 const submit = handleSubmit(async (values) => {
-  await addVehiclesToPool(values, {
+  await addVehiclesToGroup(values, {
     onSuccess() {
       emit("update:open", false);
     },
@@ -125,12 +125,12 @@ watch(
 
           <!-- Body -->
           <div class="gaps-md flex flex-col">
-            <!-- Pool info -->
+            <!-- Group info -->
             <div class="">
               <Label class="text-muted-foreground mb-1 text-xs">Group</Label>
-              <p class="text-sm font-semibold">{{ notification.metadata.poolName }}</p>
-              <p v-if="notification.metadata.poolDescription" class="text-muted-foreground text-xs leading-relaxed">
-                {{ notification.metadata.poolDescription }}
+              <p class="text-sm font-semibold">{{ notification.metadata.groupName }}</p>
+              <p v-if="notification.metadata.groupDescription" class="text-muted-foreground text-xs leading-relaxed">
+                {{ notification.metadata.groupDescription }}
               </p>
             </div>
 
@@ -167,7 +167,7 @@ watch(
           <!-- Header band -->
           <DialogHeader>
             <DialogTitle>Share your vehicles with the group</DialogTitle>
-            <DialogDescription> You can always add them later from the pool settings.</DialogDescription>
+            <DialogDescription> You can always add them later from the group settings.</DialogDescription>
           </DialogHeader>
 
           <!-- Vehicle list -->

@@ -2,16 +2,16 @@
 import { computed } from "vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useRoute } from "vue-router";
-import { useCurrentPool } from "@/lib/composables/useCurrentPool";
+import { useCurrentGroup } from "@/lib/composables/useCurrentGroup";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
 
 const route = useRoute();
 const { currentVehicleName } = useCurrentVehicle();
-const { currentPoolName } = useCurrentPool();
+const { currentGroupName } = useCurrentGroup();
 
 const title = computed(() => {
   if (currentVehicleName.value) return `${currentVehicleName.value} ${route.name?.toString()}`;
-  if (currentPoolName.value) return `${currentPoolName.value} ${route.name?.toString()}`;
+  if (currentGroupName.value) return `${currentGroupName.value} ${route.name?.toString()}`;
   return route.name?.toString() ?? "RideFolio";
 });
 

@@ -3,7 +3,7 @@ import { NotificationsController } from './notifications.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { NotificationRegistry } from './registry/notification.registry';
 import { NotificationService } from './notification.service';
-import { POOL_NOTIFICATIONS } from './definitions/pool.notifications';
+import { GROUP_NOTIFICATIONS } from './definitions/group.notifications';
 
 @Module({
   imports: [PrismaModule],
@@ -18,6 +18,6 @@ export class NotificationsModule implements OnModuleInit {
     // Dynamically import and register all notification definitions
 
     // ADD NEW NOTIFICATIONS HERE
-    [...POOL_NOTIFICATIONS].forEach((def) => this.registry.register(def));
+    [...GROUP_NOTIFICATIONS].forEach((def) => this.registry.register(def));
   }
 }

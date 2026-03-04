@@ -50,7 +50,7 @@ const props = defineProps<{
 
           <div class="absolute top-1 right-1">
             <Badge v-if="vehicle.isOwnerUser" variant="accent"> <Icon name="user" /> Private</Badge>
-            <Badge v-else variant="secondary"> <Icon name="users" /> {{ vehicle.pool?.name }}</Badge>
+            <Badge v-else variant="secondary"> <Icon name="users" /> {{ vehicle.group?.name }}</Badge>
           </div>
         </div>
 

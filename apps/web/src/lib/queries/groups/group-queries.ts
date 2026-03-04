@@ -2,28 +2,28 @@ import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
-import type { AccessiblePool, PoolDetails } from "@repo/validation";
+import type { AccessibleGroup, GroupDetails } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
 import { useRouter } from "vue-router";
 
-export function usePoolsAll() {
+export function useGroupsAll() {
   const { isAuthenticated } = useAuth();
   return useQuery({
-    queryKey: queryKeys.pools.all,
-    queryFn: async () => fetchApi<AccessiblePool[]>("pools/accessible"),
+    queryKey: queryKeys.groups.all,
+    queryFn: async () => fetchApi<AccessibleGroup[]>("groups/accessible"),
     staleTime: 1000 * 60 * 30,
     enabled: isAuthenticated,
   });
 }
 
-export function usePoolDetails(poolId: MaybeRef<string | undefined>) {
+export function useGroupDetails(groupId: MaybeRef<string | undefined>) {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   return useQuery({
-    queryKey: computed(() => queryKeys.pools.detail(handleEmpty(poolId))),
-    queryFn: async () => await fetchApi<PoolDetails>(`pools/${unref(poolId)}`),
-    enabled: computed(() => isAuthenticated.value && !!unref(poolId)),
+    queryKey: computed(() => queryKeys.groups.detail(handleEmpty(groupId))),
+    queryFn: async () => await fetchApi<GroupDetails>(`groups/${unref(groupId)}`),
+    enabled: computed(() => isAuthenticated.value && !!unref(groupId)),
   });
 }

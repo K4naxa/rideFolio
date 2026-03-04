@@ -15,9 +15,9 @@ import { useModalStore } from "@/stores/modal";
 import { useSidebar } from "@/components/ui/sidebar/utils";
 import AppLogo from "../icons/AppLogo.vue";
 import Icon, { type IconProps } from "../icons/Icon.vue";
-import { usePoolsAll } from "@/lib/queries/pools/pool-queries";
+import { useGroupsAll } from "@/lib/queries/groups/group-queries";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
-import { useCurrentPool } from "@/lib/composables/useCurrentPool";
+import { useCurrentGroup } from "@/lib/composables/useCurrentGroup";
 
 import { toast } from "vue-sonner";
 import { capitalize, formatBytesToMB } from "@/lib/utils";
@@ -63,8 +63,8 @@ const { actionOptions } = useActionOptions();
 
 const { data: vehicles } = useVehiclesAll();
 
-const { data: pools } = usePoolsAll();
-const { currentPoolId } = useCurrentPool();
+const { data: groups } = useGroupsAll();
+const { currentGroupId } = useCurrentGroup();
 
 const { currentUser: user, canCreateVehicle } = useCurrentUser();
 
@@ -110,11 +110,7 @@ const handleCreateVehicleClick = () => {
                 </sidebar-menu-button>
               </PopoverTrigger>
               <PopoverContent align="end" class="flex flex-col gap-1 p-1">
-                <ActionOptionItem
-                  v-for="option in actionOptions"
-                  :key="option.label"
-                  :option="option"
-                />
+                <ActionOptionItem v-for="option in actionOptions" :key="option.label" :option="option" />
               </PopoverContent>
             </Popover>
           </SidebarMenuItem>
@@ -160,7 +156,7 @@ const handleCreateVehicleClick = () => {
         </SidebarGroupContent>
       </SidebarGroup>
 
-      <SidebarGroup data-slot="pools" class="mb-4">
+      <SidebarGroup data-slot="groups" class="mb-4">
         <SidebarGroupLabel>
           <Icon name="users" />
           Groups
@@ -170,18 +166,18 @@ const handleCreateVehicleClick = () => {
             variant="ghost"
             size="icon-sm"
             @click="
-              modalStore.onOpen('pool');
+              modalStore.onOpen('group');
               setOpenMobile(false);
             "
           >
             <Icon name="plus" />
           </SidebarGroupAction>
         </SidebarGroupLabel>
-        <SidebarGroupContent v-if="pools && pools.length > 0">
+        <SidebarGroupContent v-if="groups && groups.length > 0">
           <SidebarMenuSub>
-            <SidebarMenuSubItem v-for="pool in pools" :key="pool.id">
-              <SidebarMenuSubButton asChild :is-active="currentPoolId === pool.id">
-                <RouterLink :to="`/pools/${pool.id}`">{{ pool.name }}</RouterLink>
+            <SidebarMenuSubItem v-for="group in groups" :key="group.id">
+              <SidebarMenuSubButton asChild :is-active="currentGroupId === group.id">
+                <RouterLink :to="`/groups/${group.id}`">{{ group.name }}</RouterLink>
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>
           </SidebarMenuSub>

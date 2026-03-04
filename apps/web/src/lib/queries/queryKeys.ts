@@ -18,18 +18,18 @@ export const queryKeys = {
     heroStatCards: (vehicleId: string) => ["vehicles", "details", vehicleId, "hero-stat-cards"] as const,
   },
 
-  // ============ POOLS DOMAIN ============
-  pools: {
-    all: ["pools"] as const,
-    lists: () => ["pools", "list"] as const,
-    detail: (poolId: string) => ["pools", "detail", poolId] as const,
+  // ============ GROUPS DOMAIN ============
+  groups: {
+    all: ["groups"] as const,
+    lists: () => ["groups", "list"] as const,
+    detail: (groupId: string) => ["groups", "detail", groupId] as const,
   },
 
   // ============ TIMELINES DOMAIN (Cross-cutting) ============
   timelines: {
     all: ["timelines"] as const,
     byVehicle: (vehicleId: string) => ["timelines", "vehicle", vehicleId] as const,
-    byPool: (poolId: string) => ["timelines", "pool", poolId] as const,
+    byGroup: (groupId: string) => ["timelines", "group", groupId] as const,
     byUser: (userId: string) => ["timelines", "user", userId] as const,
     filtered: (query: object) => ["timelines", "filtered", query] as const,
   },
