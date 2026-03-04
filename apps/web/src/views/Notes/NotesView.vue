@@ -15,6 +15,7 @@ import ResponsivePopover from "@/components/forms/ResponsivePopover.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import Skeleton from "../../components/ui/skeleton/Skeleton.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 const { data: notes, isLoading } = useAllNotes();
 
@@ -44,7 +45,7 @@ const toggleType = (type: VehicleFilterType) => {
 };
 
 const hasFilters = computed(() => {
-  return Object.values(filters.value).some((value) => value);
+  return Object.values(filters.value).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
 });
 const clearAllFilters = () => {
   filters.value = {
@@ -225,18 +226,22 @@ const filteredNotes = computed(() => {
       </div>
 
       <!-- ── Empty state ──────────────────────────────────────────── -->
-      <div v-else-if="filteredNotes.length === 0" class="flex flex-col items-center justify-center py-20 text-center">
-        <div class="bg-muted mb-4 rounded-full p-4">
-          <Icon name="notes" class="text-muted-foreground" size="lg" />
-        </div>
-        <p class="font-medium">No notes found</p>
-        <p class="text-muted-foreground mt-1 max-w-xs text-sm">
-          {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new note!" }}
-        </p>
-        <Button v-if="hasFilters" variant="outline" size="sm" class="mt-5" @click="clearAllFilters">
-          Clear filters
-        </Button>
-      </div>
+      <Empty v-else-if="filteredNotes.length === 0" class="mt-20">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Icon name="notes" class="text-muted-foreground" size="lg" />
+          </EmptyMedia>
+          <EmptyTitle>No notes found</EmptyTitle>
+          <EmptyDescription>
+            {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new note!" }}
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button v-if="hasFilters" variant="outline" size="sm" class="mt-5" @click="clearAllFilters">
+            Clear filters
+          </Button>
+        </EmptyContent>
+      </Empty>
 
       <!--      Notes list -->
       <NotesList v-if="filteredNotes && filteredNotes.length > 0" :notes="filteredNotes" />
