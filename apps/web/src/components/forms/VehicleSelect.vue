@@ -134,7 +134,7 @@ function handleSelect(value: string) {
             v-for="vehicle in filteredVehicles"
             :key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
-            class="flex cursor-pointer items-center justify-between gap-2"
+            class="flex cursor-pointer items-center justify-between gap-2 py-2"
           >
             <VehicleItem
               variant="small"
