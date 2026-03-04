@@ -9,7 +9,7 @@ export { default as EmptyMedia } from "./EmptyMedia.vue";
 export { default as EmptyTitle } from "./EmptyTitle.vue";
 
 export const emptyMediaVariants = cva(
-  "mb-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "mb-4 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
