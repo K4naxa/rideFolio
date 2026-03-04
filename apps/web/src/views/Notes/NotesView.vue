@@ -100,15 +100,11 @@ const filteredNotes = computed(() => {
             </template>
 
             <template #content>
-              <div class="gaps-sm flex flex-col md:w-sm">
-                <div>
-                  <VehicleSelect
-                    placeholder="Select a vehicle"
-                    :value="filters.vehicleId"
-                    @value-change="(value) => (filters.vehicleId = value)"
-                  />
-                </div>
-              </div>
+              <VehicleSelect
+                placeholder="Select a vehicle"
+                :value="filters.vehicleId"
+                @value-change="(value) => (filters.vehicleId = value)"
+              />
             </template>
 
             <template #footer="{ close }">
@@ -118,8 +114,9 @@ const filteredNotes = computed(() => {
                   clearAllFilters;
                   close();
                 "
-                >Clear filters</Button
               >
+                Clear filters
+              </Button>
             </template>
           </ResponsivePopover>
 
