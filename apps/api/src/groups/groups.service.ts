@@ -351,6 +351,7 @@ export class GroupsService {
 
       // 2. Notify members that the group has been disbanded
       for (const member of groupToDelete.members) {
+        if (member.userId === userSession.user.id) continue; // Skip notifying the user who deleted the group
         await this.notificationService.create({
           type: GROUP_DISBANDED_NOTIFICATION.type,
           userId: member.userId,
