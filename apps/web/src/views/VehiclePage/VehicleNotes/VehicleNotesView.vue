@@ -9,44 +9,42 @@ import Empty from "../../../components/ui/empty/Empty.vue";
 import Input from "../../../components/ui/input/Input.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { useModalStore } from "@/stores/modal.ts";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle.ts";
-import { EmptyMedia } from "@/components/ui/empty";
+import { EmptyContent, EmptyMedia } from "@/components/ui/empty";
+import { useFilters } from "@/lib/composables/useFilters.ts";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { data: notes, isLoading } = useVehicleNotes(currentVehicleId);
 
 const modalStore = useModalStore();
 
-const filters = ref({
-  searchQuery: "",
-  types: [] as string[],
-});
-
 const TYPE_FILTERS = [{ type: "pinned", label: "Pinned" }];
-type VehicleFilterType = (typeof TYPE_FILTERS)[number]["type"];
-const allTypesActive = computed(() => filters.value.types.length === 0);
-const isTypeActive = (type: VehicleFilterType) => !allTypesActive.value && filters.value.types.includes(type);
-const toggleType = (type: VehicleFilterType) => {
-  const current = filters.value.types;
-  filters.value = {
-    ...filters.value,
-    types: current.includes(type) ? current.filter((t) => t !== type) : [...current, type],
-  };
-};
+type NoteFilterTypes = (typeof TYPE_FILTERS)[number]["type"];
+
+const {
+  searchQuery,
+  activeTypes,
+  allTypesActive,
+  isTypeActive,
+  toggleType,
+  hasActiveFilters,
+  clearAllFilters,
+  clearTypes,
+} = useFilters<NoteFilterTypes>({});
 
 const filteredNotes = computed(() => {
   if (!notes.value) return [];
 
   return notes.value.filter((note) => {
-    if (filters.value.searchQuery) {
-      const qr = filters.value.searchQuery.toLowerCase();
+    if (searchQuery.value) {
+      const qr = searchQuery.value.toLowerCase();
       if (!note.title?.toLowerCase().includes(qr) && !note.content?.toLowerCase().includes(qr)) return false;
     }
 
     // Type filters
-    if (filters.value.types.length > 0) {
-      const types = filters.value.types;
+    if (activeTypes.value.length > 0) {
+      const types = activeTypes.value;
       if (types.includes("pinned") && !note.pinned) return false;
     }
 
@@ -60,13 +58,7 @@ const filteredNotes = computed(() => {
     <!-- controls -->
     <div class="mb-6 flex w-full flex-col gap-4">
       <div class="flex w-full items-center justify-between gap-4">
-        <Input
-          v-model="filters.searchQuery"
-          type="text"
-          icon="search"
-          placeholder="Search notes..."
-          class="w-full max-w-96"
-        />
+        <Input v-model="searchQuery" type="text" icon="search" placeholder="Search notes..." class="w-full max-w-96" />
         <div class="flex content-center justify-evenly gap-4">
           <Button variant="default" class="flex-1 sm:w-auto" @click="modalStore.onOpen('createNote')">
             <Icon name="plus" class="stroke-white" />
@@ -75,12 +67,7 @@ const filteredNotes = computed(() => {
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <Button
-          size="sm"
-          class="rounded-full"
-          :variant="allTypesActive ? 'default' : 'outline'"
-          @click="filters.types = []"
-        >
+        <Button size="sm" class="rounded-full" :variant="allTypesActive ? 'default' : 'outline'" @click="clearTypes">
           All
         </Button>
 
@@ -109,6 +96,9 @@ const filteredNotes = computed(() => {
           <EmptyTitle>No notes found</EmptyTitle>
           <EmptyDescription> Get started by creating a new note </EmptyDescription>
         </EmptyHeader>
+        <EmptyContent>
+          <Button v-if="hasActiveFilters" variant="outline" size="sm" @click="clearAllFilters"> Clear filters </Button>
+        </EmptyContent>
       </Empty>
 
       <NotesList v-if="filteredNotes && filteredNotes.length > 0" :notes="filteredNotes" />

@@ -2,7 +2,7 @@
 import NotesList from "@/components/notes/NotesList.vue";
 import { useAllNotes } from "@/lib/queries/notes/note-queries.ts";
 import { useModalStore } from "@/stores/modal.ts";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 import Button from "../../components/ui/button/Button.vue";
 
@@ -16,6 +16,7 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import Skeleton from "../../components/ui/skeleton/Skeleton.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { useFilters } from "@/lib/composables/useFilters.ts";
 
 const { data: notes, isLoading } = useAllNotes();
 
@@ -23,53 +24,38 @@ const { usersOwnVehicles } = useCurrentUser();
 
 const modalStore = useModalStore();
 
-const filters = ref({
-  searchQuery: "",
-  vehicleId: "",
-  types: [] as string[],
-});
-
 const TYPE_FILTERS = [
   { type: "pinned", label: "Pinned" },
   { type: "own", label: "Own vehicles" },
 ];
-type VehicleFilterType = (typeof TYPE_FILTERS)[number]["type"];
-const allTypesActive = computed(() => filters.value.types.length === 0);
-const isTypeActive = (type: VehicleFilterType) => !allTypesActive.value && filters.value.types.includes(type);
-const toggleType = (type: VehicleFilterType) => {
-  const current = filters.value.types;
-  filters.value = {
-    ...filters.value,
-    types: current.includes(type) ? current.filter((t) => t !== type) : [...current, type],
-  };
-};
+type NoteFilterTypes = (typeof TYPE_FILTERS)[number]["type"];
 
-const hasFilters = computed(() => {
-  return Object.values(filters.value).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
-});
-const clearAllFilters = () => {
-  filters.value = {
-    ...filters.value,
-    searchQuery: "",
-    vehicleId: "",
-    types: [],
-  };
-};
+const {
+  vehicleIdFilter,
+  searchQuery,
+  activeTypes,
+  allTypesActive,
+  isTypeActive,
+  toggleType,
+  hasActiveFilters,
+  clearAllFilters,
+  clearTypes,
+} = useFilters<NoteFilterTypes>({});
 
 const filteredNotes = computed(() => {
   if (!notes.value) return [];
 
   return notes.value.filter((note) => {
-    if (filters.value.vehicleId && note.vehicle.id !== filters.value.vehicleId) return false;
+    if (vehicleIdFilter.value && note.vehicle.id !== vehicleIdFilter.value) return false;
 
-    if (filters.value.searchQuery) {
-      const qr = filters.value.searchQuery.toLowerCase();
+    if (searchQuery.value) {
+      const qr = searchQuery.value.toLowerCase();
       if (!note.title?.toLowerCase().includes(qr) && !note.content?.toLowerCase().includes(qr)) return false;
     }
 
     // Type filters
-    if (filters.value.types.length > 0) {
-      const types = filters.value.types;
+    if (activeTypes.value.length > 0) {
+      const types = activeTypes.value;
       if (types.includes("pinned") && !note.pinned) return false;
       if (types.includes("own") && !usersOwnVehicles.value.some((v) => v.vehicleData.id === note.vehicle.id))
         return false;
@@ -92,7 +78,7 @@ const filteredNotes = computed(() => {
               <Button variant="outline" size="icon" class="relative">
                 <Icon name="filter" />
                 <span
-                  v-if="filters.vehicleId"
+                  v-if="vehicleIdFilter"
                   class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
                 >
                   1
@@ -103,8 +89,8 @@ const filteredNotes = computed(() => {
             <template #content>
               <VehicleSelect
                 placeholder="Select a vehicle"
-                :value="filters.vehicleId"
-                @value-change="(value) => (filters.vehicleId = value)"
+                :value="vehicleIdFilter"
+                @value-change="(value) => (vehicleIdFilter = value)"
               />
             </template>
 
@@ -141,12 +127,7 @@ const filteredNotes = computed(() => {
     <div class="mb-4 flex w-full flex-col justify-between gap-4 md:flex-row">
       <!--      Type filters-->
       <div class="flex items-center gap-2">
-        <Button
-          size="sm"
-          class="rounded-full"
-          :variant="allTypesActive ? 'default' : 'outline'"
-          @click="filters.types = []"
-        >
+        <Button size="sm" class="rounded-full" :variant="allTypesActive ? 'default' : 'outline'" @click="clearTypes">
           All
         </Button>
 
@@ -163,7 +144,7 @@ const filteredNotes = computed(() => {
       </div>
       <div class="order-first flex items-center gap-2 md:order-last">
         <Input
-          v-model="filters.searchQuery"
+          v-model="searchQuery"
           type="text"
           icon="search"
           class="w-full max-w-96"
@@ -175,7 +156,7 @@ const filteredNotes = computed(() => {
               <Icon name="filter" />
               <span class="hidden sm:inline">Filters</span>
               <span
-                v-if="filters.vehicleId"
+                v-if="vehicleIdFilter"
                 class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
               >
                 1
@@ -188,8 +169,8 @@ const filteredNotes = computed(() => {
               <div>
                 <VehicleSelect
                   placeholder="Select a vehicle"
-                  :value="filters.vehicleId"
-                  @value-change="(value) => (filters.vehicleId = value)"
+                  :value="vehicleIdFilter"
+                  @value-change="(value) => (vehicleIdFilter = value)"
                 />
               </div>
             </div>
@@ -233,11 +214,13 @@ const filteredNotes = computed(() => {
           </EmptyMedia>
           <EmptyTitle>No notes found</EmptyTitle>
           <EmptyDescription>
-            {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new note!" }}
+            {{
+              hasActiveFilters ? "Try adjusting your filters or search query." : "Get started by creating a new note!"
+            }}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button v-if="hasFilters" variant="outline" size="sm" class="mt-5" @click="clearAllFilters">
+          <Button v-if="hasActiveFilters" variant="outline" size="sm" class="mt-5" @click="clearAllFilters">
             Clear filters
           </Button>
         </EmptyContent>
