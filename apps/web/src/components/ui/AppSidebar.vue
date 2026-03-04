@@ -104,21 +104,16 @@ const handleCreateVehicleClick = () => {
           <SidebarMenuItem v-if="!isMobile">
             <Popover>
               <PopoverTrigger as-child>
-                <sidebar-menu-button class="w-full">
+                <SidebarMenuButton variant="secondary">
                   <Icons name="plus" />
                   Add Activity
-                </sidebar-menu-button>
+                </SidebarMenuButton>
               </PopoverTrigger>
               <PopoverContent align="end" class="flex flex-col gap-1 p-1">
                 <ActionOptionItem v-for="option in actionOptions" :key="option.label" :option="option" />
               </PopoverContent>
             </Popover>
           </SidebarMenuItem>
-        </SidebarGroupContent>
-      </SidebarGroup>
-
-      <SidebarGroup>
-        <SidebarGroupContent>
           <SidebarMenuItem :key="link.label" v-for="link in mainSidebarLinks">
             <RouterLink custom v-slot="{ isActive, navigate }" :to="link.to">
               <SidebarMenuButton :isActive="isActive" @click="navigate">
