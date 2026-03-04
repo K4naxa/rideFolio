@@ -418,14 +418,12 @@ async function handleRemoveMember() {
         >
           <p>Removing the member will also remove their vehicles:</p>
           <ul class="max-h-48 space-y-2 overflow-y-auto rounded border">
-            <div
-              v-for="vehicle in data?.vehicles.filter(
-                (vehicle) => vehicle.owner.id === pendingMemberRemoval?.member.user.id,
-              )"
+            <li
+              v-for="vehicle in data?.vehicles.filter((v) => v.owner.id === pendingMemberRemoval?.member.user.id)"
               :key="vehicle.data.id"
             >
               <VehicleItem :vehicle="vehicle.data" variant="small" />
-            </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -447,14 +445,3 @@ async function handleRemoveMember() {
   <!-- Add vehicles form -->
   <GroupAddVehicleForm v-if="data" v-model:open="showAddVehicleModal" :group="data" />
 </template>
-
-<style scoped>
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
