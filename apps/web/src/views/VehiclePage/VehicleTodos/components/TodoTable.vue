@@ -1,38 +1,26 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
-import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 
 import Label from "@/components/ui/label/Label.vue";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
+import { useTodoToggle } from "@/lib/queries/todos/todo-mutations";
+import type { BaseTodo } from "@repo/validation";
 
-import { useModalStore } from "@/stores/modal";
-import { useTodoSettingsStore } from "@/stores/todoSettings";
-import { storeToRefs } from "pinia";
-import { computed } from "vue";
-import type { BaseTodo, TodoWithVehicle } from "@repo/validation";
+import { twMerge } from "tailwind-merge";
+import { capitalize } from "@/lib/utils.ts";
+import { useModalStore } from "@/stores/modal.ts";
+import { useVehicles } from "@/lib/composables/useVehicles.ts";
 
-import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
-
-const { mutate: toggleTodo } = useTodoToggle();
-const { mutate: deleteTodo } = useTodoDelete();
 interface TodoTableProps {
-  size?: "sm" | "md";
-  hideCompleted?: boolean;
-  searchQuery?: string;
-  todos: TodoWithVehicle[] | BaseTodo[] | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  showVehicle?: boolean;
+  todos: BaseTodo[];
+  showVehicleNames?: boolean;
 }
 const props = defineProps<TodoTableProps>();
-const { onOpen } = useModalStore();
+
+const { mutate: toggleTodo } = useTodoToggle();
+const modalStore = useModalStore();
+
+const { getVehicleNameById } = useVehicles();
 
 const PRIORITY_CONFIG = {
   CRITICAL: { color: "bg-purple-700 text-white", label: "Critical" },
@@ -50,41 +38,6 @@ const getPriorityConfig = (priority: string) => {
   );
 };
 
-// Dynamic grid template columns based on visible columns
-const settingsStore = useTodoSettingsStore();
-const { showCompleted, showDueInfo, showPriority, showCompletedInfo } = storeToRefs(settingsStore);
-const tableColumns = computed(() => {
-  const cols = ["3rem"];
-
-  if (props.showVehicle) cols.push("6rem");
-  if (showPriority.value) cols.push("4rem");
-  cols.push("1fr");
-  if (showDueInfo.value) cols.push("10rem");
-  // Completed date column
-  if (showCompletedInfo.value) cols.push("7rem");
-  cols.push("3rem");
-  return cols.join(" ");
-});
-
-const filteredTodos = computed(() => {
-  if (!props.todos) return [];
-
-  let filtered = [...props.todos];
-
-  // Always apply completed filter based on showCompleted setting
-  if (!showCompleted.value || props.hideCompleted) {
-    filtered = filtered.filter((todo) => !todo.isCompleted);
-  }
-
-  return filtered.sort((a, b) => {
-    // Incomplete todos first
-    if (a.isCompleted !== b.isCompleted) {
-      return a.isCompleted ? 1 : -1;
-    }
-    return 0;
-  });
-});
-
 const formatOdometer = (value: number, unit: string) => {
   return `${value.toLocaleString()} ${unit}`;
 };
@@ -97,138 +50,75 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const isTodoWithVehicle = (todo: BaseTodo | TodoWithVehicle): todo is TodoWithVehicle => {
-  return "vehicle" in todo;
-};
+function isOverdue(todo: BaseTodo) {
+  return (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && !todo.isCompleted;
+}
+
+function hasDueInfo(todo: BaseTodo) {
+  return todo.dueDate?.date || todo.dueOdometer?.value;
+}
 </script>
 <template>
-  <div class="flex min-h-0 w-full flex-col">
-    <div
-      v-if="!isLoading && filteredTodos.length"
-      class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1 overflow-auto"
-      key="scrollArea"
-    >
-      <div
-        class="text-accent-foreground bg-muted sticky z-10 grid w-fit min-w-full items-center gap-x-3 rounded-t-lg border-b px-2 shadow-sm"
-        :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
-        :style="{ gridTemplateColumns: tableColumns }"
+  <div class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1 overflow-auto" key="scrollArea">
+    <!-- Table Body -->
+    <ul class="gaps-sm grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+      <li
+        v-for="todo in props.todos"
+        :key="todo.id"
+        class="card p-4"
+        :class="
+          twMerge(
+            'card group cardHover hover:bg-accent/20 relative flex flex-col gap-2 p-2',
+            isOverdue(todo) && 'border-l-destructive border-l-3',
+          )
+        "
       >
-        <Label class="flex justify-center">State</Label>
-        <Label v-if="props.showVehicle">Vehicle</Label>
-        <Label v-if="showPriority">Priority</Label>
-        <Label class="max-w-96 min-w-60 md:max-w-none">Todo</Label>
-        <Label v-if="showDueInfo">Due</Label>
-        <Label v-if="showCompletedInfo">Completed</Label>
-        <Label></Label>
-      </div>
+        <!--        Completed Checkbox -->
+        <Checkbox
+          :model-value="todo.isCompleted"
+          @update:model-value="
+            toggleTodo({
+              todoId: todo.id,
+              complete: !todo.isCompleted,
+            })
+          "
+          class="group-hover:border-primary absolute top-4 right-4 size-6"
+        />
 
-      <!-- Table Body -->
-      <ul v-auto-animate class="divide-border divide-y">
-        <div
-          v-for="todo in filteredTodos"
-          :key="todo.id"
-          :class="[
-            'listHover grid w-fit min-w-full gap-x-3 px-2',
-            (todo.dueDate?.overdue || todo.dueOdometer?.overdue) &&
-              !todo.isCompleted &&
-              'border-l-destructive border-l-2',
-            props.size ? (props.size === 'sm' ? 'py-2 text-sm' : 'py-4 text-base') : 'py-4',
-          ]"
-          :style="{ gridTemplateColumns: tableColumns }"
-        >
-          <!-- Checkbox -->
-          <div class="flex items-center justify-center">
-            <Checkbox
-              :model-value="todo.isCompleted"
-              @update:model-value="
-                toggleTodo({
-                  todoId: todo.id,
-                  complete: !todo.isCompleted,
-                })
-              "
-              class="size-6"
-            />
-          </div>
+        <div v-if="todo.priority || showVehicleNames" class="flex gap-2">
+          <Badge v-if="todo.priority" :class="[getPriorityConfig(todo.priority).color]" class="mb-1">
+            {{ capitalize(getPriorityConfig(todo.priority).label) }}
+          </Badge>
 
-          <div v-if="props.showVehicle && isTodoWithVehicle(todo)" class="flex min-h-0 items-center gap-2">
-            <VehicleAvatar v-if="todo.vehicle.image" :src="todo.vehicle.image" :type="todo.vehicle.type" />
-            <div v-else class="bg-muted grid h-full flex-1 place-content-center rounded border">
-              <Label class="text-muted-foreground">{{ todo.vehicle.name }}</Label>
-            </div>
-          </div>
-
-          <!-- Priority Badge -->
-          <div v-if="showPriority" class="flex items-center justify-center">
-            <Badge
-              variant="outline"
-              v-if="todo.priority"
-              :class="['lowercase', getPriorityConfig(todo.priority).color]"
-            >
-              {{ getPriorityConfig(todo.priority).label }}
-            </Badge>
-          </div>
-
-          <!-- Todo Content -->
-          <div class="flex min-w-60 flex-col justify-center gap-1">
-            <span :class="{ 'text-muted-foreground line-through': todo.isCompleted }">
-              {{ todo.title }}
-            </span>
-            <span v-if="todo.description" class="text-muted-foreground text-sm">
-              {{ todo.description }}
-            </span>
-          </div>
-
-          <!-- Due Info -->
-          <div v-if="showDueInfo" class="flex flex-col justify-center gap-1 text-sm">
-            <div
-              v-if="todo.dueOdometer"
-              :class="{ 'text-destructive font-medium': todo.dueOdometer.overdue && !todo.isCompleted }"
-            >
-              {{ formatOdometer(todo.dueOdometer.value, todo.dueOdometer.unit) }}
-            </div>
-            <div
-              v-if="todo.dueDate"
-              :class="{ 'text-destructive font-medium': todo.dueDate.overdue && !todo.isCompleted }"
-            >
-              {{ formatDate(String(todo.dueDate.date)) }}
-            </div>
-          </div>
-          <div v-if="showCompletedInfo" class="text-muted-foreground flex flex-col justify-center gap-1 text-sm">
-            <p v-if="todo.completedData">{{ formatDate(String(todo.completedData?.date)) }}</p>
-            <p v-if="todo.completedData">
-              {{ formatOdometer(todo.completedData?.odometer.value, todo.completedData?.odometer.unit) }}
-            </p>
-          </div>
-
-          <!-- Actions (placeholder) -->
-          <div class="flex items-center justify-center">
-            <DropdownMenu :modal="false">
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost"> <Icon name="dotsHorizontal" /></Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem @click="onOpen('createTodo', todo.id)"> Edit </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant="destructive"
-                  @click="
-                    deleteTodo({
-                      todoId: todo.id,
-                      vehicleId: isTodoWithVehicle(todo) ? todo.vehicle.id : todo.vehicleId,
-                    })
-                  "
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <Badge v-if="showVehicleNames" variant="accent" class="h-fit">
+            {{ getVehicleNameById(todo.vehicleId) }}
+          </Badge>
         </div>
-      </ul>
-    </div>
 
-    <div v-else class="grid flex-1 place-content-center">
-      <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
-      <p v-else-if="isError" class="text-destructive">Error loading todos.</p>
-    </div>
+        <Label
+          :class="{ 'text-muted-foreground line-through': todo.isCompleted }"
+          class="text-base hover:cursor-pointer"
+          @click="modalStore.onOpen('createTodo', todo.id)"
+        >
+          {{ todo.title }}
+        </Label>
+
+        <span v-if="todo.description" class="text-muted-foreground text-sm">
+          {{ todo.description }}
+        </span>
+
+        <!--        Footer-->
+        <div v-if="hasDueInfo(todo)" class="mt-auto flex items-center justify-between gap-4">
+          <span v-if="hasDueInfo(todo)" class="text-muted-foreground text-xs">
+            {{
+              "Due " +
+              (todo.dueDate
+                ? formatDate(String(todo.dueDate.date))
+                : formatOdometer(todo.dueOdometer!.value, todo.dueOdometer!.unit))
+            }}
+          </span>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>

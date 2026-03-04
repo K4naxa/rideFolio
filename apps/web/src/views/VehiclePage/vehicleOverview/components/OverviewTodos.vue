@@ -27,7 +27,7 @@ const initialRenderTime = ref(Date.now());
 const { data: todos, isLoading: isTodosLoading, isError: isTodosError } = useVehicleTodos(currentVehicleId);
 const { mutate: toggleTodo } = useTodoToggle();
 
-// Filtered list to show uncompleted todos and recently completed todos (toggled after initial render)
+// Filter the list to show uncompleted todos and recently completed todos (toggled after initial render)
 const displayedTodos = computed(
   () =>
     todos.value?.filter(

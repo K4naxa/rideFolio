@@ -1,83 +1,241 @@
 <script lang="ts" setup>
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuCheckboxItem from "@/components/ui/dropdown-menu/DropdownMenuCheckboxItem.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+
 import Input from "@/components/ui/input/Input.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useTodosAll } from "@/lib/queries/todos/todo-queries";
 import { useModalStore } from "@/stores/modal";
-import { useTodoSettingsStore } from "@/stores/todoSettings";
 import TodoTable from "@/views/VehiclePage/VehicleTodos/components/TodoTable.vue";
-import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
+import ResponsivePopover from "@/components/forms/ResponsivePopover.vue";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
+import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
-const searchQuery = ref("");
+const modalStore = useModalStore();
 
-const { data: Todos, isLoading, isError } = useTodosAll();
-const filteredTodos = computed(() => {
-  if (!searchQuery.value) return Todos.value;
-  return Todos.value?.filter(
-    (todo) =>
-      todo.title.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.description?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicle.make?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicle.model?.toLowerCase().includes(searchQuery.value!.toLowerCase()) ||
-      todo.vehicle.name?.toLowerCase().includes(searchQuery.value!.toLowerCase()),
-  );
+const { data: todos, isLoading } = useTodosAll();
+
+const filters = ref({
+  searchQuery: "",
+  vehicleId: "",
+  types: ["pending"] as string[],
 });
-const settingsStore = useTodoSettingsStore();
-const { showCompleted, showDueInfo, showPriority, showCompletedInfo } = storeToRefs(settingsStore);
-const { onOpen } = useModalStore();
+
+const TYPE_FILTERS = [
+  { type: "pending", label: "Pending" },
+  { type: "completed", label: "Completed" },
+];
+type VehicleFilterType = (typeof TYPE_FILTERS)[number]["type"];
+const allTypesActive = computed(() => filters.value.types.length === 0);
+const isTypeActive = (type: VehicleFilterType) => !allTypesActive.value && filters.value.types.includes(type);
+const toggleType = (type: VehicleFilterType) => {
+  const current = filters.value.types;
+  filters.value = {
+    ...filters.value,
+    types: current.includes(type) ? current.filter((t) => t !== type) : [...current, type],
+  };
+};
+
+const hasFilters = computed(() => {
+  return Object.values(filters.value).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
+});
+
+const clearAllFilters = () => {
+  filters.value = {
+    ...filters.value,
+    searchQuery: "",
+    vehicleId: "",
+    types: [],
+  };
+};
+
+const filteredTodos = computed(() => {
+  if (!todos.value) return [];
+
+  return todos.value.filter((todo) => {
+    if (filters.value.vehicleId && todo.vehicle.id !== filters.value.vehicleId) return false;
+
+    if (filters.value.searchQuery) {
+      const qr = filters.value.searchQuery.toLowerCase();
+      if (!todo.title?.toLowerCase().includes(qr) && !todo.description?.toLowerCase().includes(qr)) return false;
+    }
+
+    // Type filters
+    if (filters.value.types.length > 0) {
+      const types = filters.value.types;
+      if (types.includes("completed") && !todo.isCompleted) return false;
+      if (types.includes("pending") && todo.isCompleted) return false;
+    }
+
+    return true;
+  });
+});
 </script>
 <template>
-  <MainContentWrapper>
-    <div class="flex h-full w-full flex-col py-4 lg:py-8">
-      <header class="mb-6 flex flex-col content-center justify-between gap-3 sm:flex-row">
-        <Input
-          v-model="searchQuery"
-          type="text"
-          name="search"
-          id="VehicleTodoSearch"
-          placeholder="Search todos..."
-          class="w-full sm:max-w-md sm:min-w-72"
-        />
-        <div class="flex content-center justify-evenly gap-4">
-          <DropdownMenu :modal="false">
-            <DropdownMenuTrigger as-child>
-              <Button variant="outline" class="flex-1">
-                <Icon name="filter" /> <span class="md:hidden">Filter</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent class="w-52">
-              <DropdownMenuCheckboxItem v-model:model-value="showPriority"> Show priority </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem v-model:model-value="showDueInfo"> Show due info </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem v-model:model-value="showCompletedInfo">
-                Show completed info
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem v-model:model-value="showCompleted"> Show completed </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+  <MainContentWrapper class="md:pt-8 lg:pt-20">
+    <template #mobile-header>
+      <MobilePageHeader class="justify-between">
+        <span class="text-lg font-medium"> Your Todos </span>
 
-          <Button variant="default" class="flex-1 sm:w-auto" @click="onOpen('createTodo')">
-            <Icon name="plus" className="stroke-white" />
-            Create To-do
+        <div class="flex gap-2">
+          <ResponsivePopover title="Filters">
+            <template #trigger>
+              <Button variant="outline" class="relative flex">
+                <Icon name="filter" />
+                <span class="hidden sm:inline">Filters</span>
+                <span
+                  v-if="filters.vehicleId"
+                  class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
+                >
+                  1
+                </span>
+              </Button>
+            </template>
+
+            <template #content>
+              <div class="gaps-sm flex flex-col md:w-sm">
+                <div>
+                  <VehicleSelect
+                    placeholder="Filter by vehicle"
+                    :value="filters.vehicleId"
+                    @value-change="(value) => (filters.vehicleId = value)"
+                  />
+                </div>
+              </div>
+            </template>
+
+            <template #footer="{ close }">
+              <Button
+                variant="outline"
+                @click="
+                  clearAllFilters();
+                  close();
+                "
+              >
+                Clear filters
+              </Button>
+            </template>
+          </ResponsivePopover>
+
+          <Button variant="default" size="icon" @click="modalStore.onOpen('createTodo')">
+            <Icon name="plus" class="stroke-current" />
           </Button>
         </div>
-      </header>
-      <div class="flex w-full rounded border">
-        <TodoTable
-          :todos="filteredTodos"
-          :isLoading="isLoading"
-          :isError="isError"
-          :search-query="searchQuery"
-          show-vehicle
-        />
+      </MobilePageHeader>
+    </template>
+
+    <!-- Header -->
+    <header class="mb-4 hidden justify-between gap-4 md:flex">
+      <h1>Your Todos</h1>
+
+      <Button variant="default" class="" @click="modalStore.onOpen('createTodo')">
+        <Icon name="plus" class="stroke-white" />
+        Create Todo
+      </Button>
+    </header>
+
+    <!-- controls -->
+    <div class="mb-4 flex w-full flex-col justify-between gap-4 md:flex-row">
+      <!--      Type filters-->
+      <div class="flex items-center gap-2">
+        <Button
+          size="sm"
+          class="rounded-full"
+          :variant="allTypesActive ? 'default' : 'outline'"
+          @click="filters.types = []"
+        >
+          All
+        </Button>
+
+        <Button
+          v-for="type in TYPE_FILTERS"
+          :key="type.type"
+          size="sm"
+          class="rounded-full"
+          :variant="isTypeActive(type.type) ? 'default' : 'outline'"
+          @click="toggleType(type.type)"
+        >
+          {{ type.label }}
+        </Button>
       </div>
+
+      <div class="order-first flex items-center gap-2 md:order-last">
+        <Input
+          v-model="filters.searchQuery"
+          type="text"
+          icon="search"
+          class="w-full max-w-96"
+          placeholder="Search from todos..."
+        />
+        <ResponsivePopover title="Filters">
+          <template #trigger>
+            <Button variant="outline" class="relative hidden h-full! md:flex">
+              <Icon name="filter" />
+              <span class="hidden sm:inline">Filters</span>
+              <span
+                v-if="filters.vehicleId"
+                class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
+              >
+                1
+              </span>
+            </Button>
+          </template>
+
+          <template #content>
+            <div class="gaps-sm flex flex-col md:w-sm">
+              <div>
+                <VehicleSelect
+                  placeholder="Filter by vehicle"
+                  :value="filters.vehicleId"
+                  @value-change="(value) => (filters.vehicleId = value)"
+                />
+              </div>
+            </div>
+          </template>
+
+          <template #footer="{ close }">
+            <Button
+              variant="outline"
+              type="button"
+              @click="
+                clearAllFilters();
+                console.log('filters: ' + JSON.stringify(filters));
+                close();
+              "
+            >
+              Clear filters
+            </Button>
+          </template>
+        </ResponsivePopover>
+      </div>
+    </div>
+
+    <div class="scrollbar-thin flex flex-1 flex-col md:overflow-y-auto">
+      <!-- ── Loading skeletons ────────────────────────────────────── -->
+      <div v-if="isLoading" class="flex flex-col">
+        <Spinner class="mx-auto my-10" />
+      </div>
+
+      <!-- ── Empty state ──────────────────────────────────────────── -->
+      <Empty v-else-if="!filteredTodos.length" class="mt-20">
+        <EmptyHeader>
+          <EmptyMedia variant="icon" class="bg-todo text-todo-foreground">
+            <Icon name="todo" />
+          </EmptyMedia>
+          <EmptyTitle>No todos found</EmptyTitle>
+          <EmptyDescription>
+            {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new todo!" }}
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button v-if="hasFilters" variant="outline" size="sm" @click="clearAllFilters"> Clear filters </Button>
+        </EmptyContent>
+      </Empty>
+
+      <TodoTable :todos="filteredTodos" showVehicleNames />
     </div>
   </MainContentWrapper>
 </template>
