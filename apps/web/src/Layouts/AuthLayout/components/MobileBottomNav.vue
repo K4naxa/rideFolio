@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import Icon from "@/components/icons/Icon.vue";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 
 import Button from "@/components/ui/button/Button.vue";
