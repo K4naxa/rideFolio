@@ -49,15 +49,15 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
       <h1>{{ currentVehicle?.vehicleData.name }}</h1>
     </MobilePageHeader>
 
-    <VehicleHero class="" />
+    <VehicleHero />
 
     <!-- Vehicle navigation tabs -->
     <div class="flex flex-1 flex-col">
       <nav class="bg-background sticky top-(--app-header-height) z-10 mb-0 h-(--vehicle-navbar-height) text-sm">
         <!-- Mobile nav -->
-        <MainContentWrapper class="px-1">
+        <MainContentWrapper>
           <Tabs class="w-full">
-            <TabsList class="bg-muted/50 w-full">
+            <TabsList class="bg-muted w-full rounded-sm">
               <TabsTrigger v-for="tab in VEHICLE_TABS" :key="tab.id" :value="tab.id" as-child>
                 <RouterLink
                   :to="tab.to"
