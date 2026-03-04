@@ -1,5 +1,3 @@
-import { TodoDueDate, TodoDueOdometer } from "../todo";
-
 // Vehicle Fuel Types
 export const FUEL_TYPES = {
   GASOLINE: {
@@ -48,12 +46,7 @@ export type TOdometerTypeShort =
 export const odometerTypeCodes = Object.keys(
   ODOMETER_TYPES,
 ) as OdometerTypeCode[];
-export const odometerTypeShortCodes = Object.values(ODOMETER_TYPES).map(
-  (value) => value.unit,
-);
-export function getOdometerNamekey(code: string): string {
-  return ODOMETER_TYPES[code as OdometerTypeCode]?.label;
-}
+
 export function getOdometerUnit(code: string | undefined): string {
   if (!code) return "";
   return ODOMETER_TYPES[code as OdometerTypeCode]?.unit;
