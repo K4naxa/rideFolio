@@ -233,34 +233,6 @@ const isTodoWithVehicle = (todo: BaseTodo | TodoWithVehicle): todo is TodoWithVe
     <div v-else class="grid flex-1 place-content-center">
       <p v-if="isLoading" class="text-muted-foreground"><Spinner /> Loading</p>
       <p v-else-if="isError" class="text-destructive">Error loading todos.</p>
-      <Empty v-else-if="searchQuery">
-        <EmptyHeader>
-          <EmptyTitle class="text-foreground"> No todos found </EmptyTitle>
-          <EmptyDescription> No todos match your search query. Try adjusting your search or filters. </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-
-      <Empty v-else-if="!todos?.length">
-        <EmptyHeader>
-          <EmptyTitle class="text-foreground"> You have no todos</EmptyTitle>
-          <EmptyDescription> Create new todos to get started! </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button @click="onOpen('createTodo')"> Create To-do </Button>
-        </EmptyContent>
-      </Empty>
-
-      <Empty v-else-if="!showCompleted || hideCompleted">
-        <EmptyHeader>
-          <EmptyTitle class="text-foreground"> All todos Completed </EmptyTitle>
-          <EmptyDescription>
-            You have not pending todos to show here. Create new todos to get started!
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button @click="onOpen('createTodo')"> Create To-do </Button>
-        </EmptyContent>
-      </Empty>
     </div>
   </div>
 </template>
