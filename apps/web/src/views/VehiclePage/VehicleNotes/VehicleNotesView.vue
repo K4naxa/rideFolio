@@ -5,13 +5,13 @@ import EmptyHeader from "../../../components/ui/empty/EmptyHeader.vue";
 import Button from "../../../components/ui/button/Button.vue";
 import EmptyTitle from "../../../components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "../../../components/ui/empty/EmptyDescription.vue";
-import EmptyContent from "../../../components/ui/empty/EmptyContent.vue";
 import Empty from "../../../components/ui/empty/Empty.vue";
 import Input from "../../../components/ui/input/Input.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { useModalStore } from "@/stores/modal.ts";
 import { computed, ref } from "vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle.ts";
+import { EmptyMedia } from "@/components/ui/empty";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { data: notes, isLoading } = useVehicleNotes(currentVehicleId);
@@ -100,27 +100,18 @@ const filteredNotes = computed(() => {
     <template v-if="isLoading"> loading... </template>
 
     <template v-else>
-      <Empty v-if="!notes?.length">
+      <!-- ── Empty state ──────────────────────────────────────────── -->
+      <Empty v-if="!notes?.length" class="">
         <EmptyHeader>
-          <EmptyTitle class="text-foreground"> You have no notes yet</EmptyTitle>
-          <EmptyDescription> Get started by creating a new note! </EmptyDescription>
+          <EmptyMedia variant="icon" class="bg-notes text-notes-foreground">
+            <Icon name="notes" />
+          </EmptyMedia>
+          <EmptyTitle>No notes found</EmptyTitle>
+          <EmptyDescription> Get started by creating a new note </EmptyDescription>
         </EmptyHeader>
-        <EmptyContent>
-          <Button @click="modalStore.onOpen('createNote')"> Create Note </Button>
-        </EmptyContent>
       </Empty>
 
       <NotesList v-if="filteredNotes && filteredNotes.length > 0" :notes="filteredNotes" />
-
-      <Empty v-else-if="!notes?.length">
-        <EmptyHeader>
-          <EmptyTitle class="text-foreground"> You have no notes yet</EmptyTitle>
-          <EmptyDescription> Get started by creating a new note! </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button @click="modalStore.onOpen('createNote')"> Create Note </Button>
-        </EmptyContent>
-      </Empty>
     </template>
   </div>
 </template>
