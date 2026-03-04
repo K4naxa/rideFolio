@@ -11,58 +11,41 @@ import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
+import { useFilters } from "@/lib/composables/useFilters.ts";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { data: todos, isLoading } = useVehicleTodos(currentVehicleId);
 const modalStore = useModalStore();
 
-const filters = ref({
-  searchQuery: "",
-  vehicleId: "",
-  types: ["pending"] as string[],
-});
-
 const TYPE_FILTERS = [
   { type: "pending", label: "Pending" },
   { type: "completed", label: "Completed" },
-] as const;
+];
+type TodoFilterType = (typeof TYPE_FILTERS)[number]["type"];
 
-type VehicleFilterType = (typeof TYPE_FILTERS)[number]["type"];
-const allTypesActive = computed(() => filters.value.types.length === 0);
-const isTypeActive = (type: VehicleFilterType) => !allTypesActive.value && filters.value.types.includes(type);
-const toggleType = (type: VehicleFilterType) => {
-  const current = filters.value.types;
-  filters.value = {
-    ...filters.value,
-    types: current.includes(type) ? current.filter((t) => t !== type) : [...current, type],
-  };
-};
-
-const hasFilters = computed(() => {
-  return Object.values(filters.value).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
-});
-
-const clearAllFilters = () => {
-  filters.value = {
-    ...filters.value,
-    searchQuery: "",
-    vehicleId: "",
-    types: [],
-  };
-};
+const {
+  searchQuery,
+  activeTypes,
+  allTypesActive,
+  isTypeActive,
+  toggleType,
+  hasActiveFilters,
+  clearAllFilters,
+  clearTypes,
+} = useFilters<TodoFilterType>({ types: ["pending"], mode: "radio" });
 
 const filteredTodos = computed(() => {
   if (!todos.value) return [];
 
   return todos.value.filter((todo) => {
-    if (filters.value.searchQuery) {
-      const qr = filters.value.searchQuery.toLowerCase();
+    if (searchQuery.value) {
+      const qr = searchQuery.value.toLowerCase();
       if (!todo.title?.toLowerCase().includes(qr) && !todo.description?.toLowerCase().includes(qr)) return false;
     }
 
     // Type filters
-    if (filters.value.types.length > 0) {
-      const types = filters.value.types;
+    if (activeTypes.value.length > 0) {
+      const types = activeTypes.value;
       if (types.includes("completed") && !todo.isCompleted) return false;
       if (types.includes("pending") && todo.isCompleted) return false;
     }
@@ -76,13 +59,7 @@ const filteredTodos = computed(() => {
   <div class="flex w-full flex-1 flex-col overflow-hidden">
     <div class="mb-6 flex flex-col content-center justify-between gap-3">
       <div class="flex w-full items-center justify-between gap-4">
-        <Input
-          v-model="filters.searchQuery"
-          type="text"
-          icon="search"
-          placeholder="Search todos..."
-          class="w-full max-w-96"
-        />
+        <Input v-model="searchQuery" type="text" icon="search" placeholder="Search todos..." class="w-full max-w-96" />
         <div class="flex content-center justify-evenly gap-4">
           <Button variant="default" class="flex-1 sm:w-auto" @click="modalStore.onOpen('createTodo')">
             <Icon name="plus" class="stroke-white" />
@@ -92,12 +69,7 @@ const filteredTodos = computed(() => {
       </div>
 
       <div class="flex items-center gap-2">
-        <Button
-          size="sm"
-          class="rounded-full"
-          :variant="allTypesActive ? 'default' : 'outline'"
-          @click="filters.types = []"
-        >
+        <Button size="sm" class="rounded-full" :variant="allTypesActive ? 'default' : 'outline'" @click="clearTypes">
           All
         </Button>
 
@@ -127,11 +99,13 @@ const filteredTodos = computed(() => {
           </EmptyMedia>
           <EmptyTitle>No todos found</EmptyTitle>
           <EmptyDescription>
-            {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new todo!" }}
+            {{
+              hasActiveFilters ? "Try adjusting your filters or search query." : "Get started by creating a new todo!"
+            }}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button v-if="hasFilters" variant="outline" class="" @click="clearAllFilters"> Clear filters </Button>
+          <Button v-if="hasActiveFilters" variant="outline" class="" @click="clearAllFilters"> Clear filters </Button>
         </EmptyContent>
       </Empty>
 
