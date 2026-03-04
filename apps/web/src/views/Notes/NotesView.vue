@@ -112,7 +112,7 @@ const filteredNotes = computed(() => {
               <Button
                 variant="outline"
                 @click="
-                  clearAllFilters;
+                  clearAllFilters();
                   close();
                 "
               >
@@ -129,7 +129,7 @@ const filteredNotes = computed(() => {
     </template>
 
     <header class="mb-4 hidden justify-between gap-4 md:flex">
-      <h1>Your notes</h1>
+      <h1>Your Notes</h1>
 
       <Button variant="default" class="" @click="modalStore.onOpen('createNote')">
         <Icon name="plus" class="stroke-white" />
@@ -199,7 +199,7 @@ const filteredNotes = computed(() => {
             <Button
               variant="outline"
               @click="
-                clearAllFilters;
+                clearAllFilters();
                 close();
               "
             >
