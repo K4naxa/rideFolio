@@ -7,11 +7,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import Empty from "@/components/ui/empty/Empty.vue";
-import EmptyContent from "@/components/ui/empty/EmptyContent.vue";
-import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
-import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
-import EmptyTitle from "@/components/ui/empty/EmptyTitle.vue";
+
 import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useTodoDelete, useTodoToggle } from "@/lib/queries/todos/todo-mutations";
