@@ -53,7 +53,7 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 
     <!-- Vehicle navigation tabs -->
     <div class="flex flex-1 flex-col">
-      <nav class="bg-background sticky top-(--app-header-height) z-20 mb-0 h-(--vehicle-navbar-height) text-sm">
+      <nav class="bg-background sticky top-(--app-header-height) z-10 mb-0 h-(--vehicle-navbar-height) text-sm">
         <!-- Mobile nav -->
         <MainContentWrapper class="px-1">
           <Tabs class="w-full">
