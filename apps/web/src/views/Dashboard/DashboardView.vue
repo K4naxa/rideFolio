@@ -29,7 +29,7 @@ const { data: upcomingActivity } = useUpcomingActivityQuery();
 </script>
 
 <template>
-  <MainContentWrapper class="flex min-w-0 flex-1 flex-col space-y-8 p-4 lg:p-8">
+  <MainContentWrapper class="flex min-w-0 flex-1 flex-col space-y-8 p-4 lg:pt-20">
     <template #mobile-header>
       <MobilePageHeader class=""> <h1>Dashboard</h1> </MobilePageHeader>
     </template>
