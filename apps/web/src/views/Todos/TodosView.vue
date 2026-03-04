@@ -7,65 +7,50 @@ import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import { useTodosAll } from "@/lib/queries/todos/todo-queries";
 import { useModalStore } from "@/stores/modal";
 import TodoTable from "@/views/VehiclePage/VehicleTodos/components/TodoTable.vue";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import ResponsivePopover from "@/components/forms/ResponsivePopover.vue";
 import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
+import { useFilters } from "@/lib/composables/useFilters.ts";
 
 const modalStore = useModalStore();
 
 const { data: todos, isLoading } = useTodosAll();
 
-const filters = ref({
-  searchQuery: "",
-  vehicleId: "",
-  types: ["pending"] as string[],
-});
-
 const TYPE_FILTERS = [
   { type: "pending", label: "Pending" },
   { type: "completed", label: "Completed" },
 ];
-type VehicleFilterType = (typeof TYPE_FILTERS)[number]["type"];
-const allTypesActive = computed(() => filters.value.types.length === 0);
-const isTypeActive = (type: VehicleFilterType) => !allTypesActive.value && filters.value.types.includes(type);
-const toggleType = (type: VehicleFilterType) => {
-  const current = filters.value.types;
-  filters.value = {
-    ...filters.value,
-    types: current.includes(type) ? current.filter((t) => t !== type) : [...current, type],
-  };
-};
+type TodoFilterType = (typeof TYPE_FILTERS)[number]["type"];
 
-const hasFilters = computed(() => {
-  return Object.values(filters.value).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
-});
-
-const clearAllFilters = () => {
-  filters.value = {
-    ...filters.value,
-    searchQuery: "",
-    vehicleId: "",
-    types: [],
-  };
-};
+const {
+  vehicleIdFilter,
+  searchQuery,
+  activeTypes,
+  allTypesActive,
+  isTypeActive,
+  toggleType,
+  hasActiveFilters,
+  clearAllFilters,
+  clearTypes,
+} = useFilters<TodoFilterType>({ types: ["pending"], mode: "radio" });
 
 const filteredTodos = computed(() => {
   if (!todos.value) return [];
 
   return todos.value.filter((todo) => {
-    if (filters.value.vehicleId && todo.vehicle.id !== filters.value.vehicleId) return false;
+    if (vehicleIdFilter.value && todo.vehicle.id !== vehicleIdFilter.value) return false;
 
-    if (filters.value.searchQuery) {
-      const qr = filters.value.searchQuery.toLowerCase();
+    if (searchQuery.value) {
+      const qr = searchQuery.value.toLowerCase();
       if (!todo.title?.toLowerCase().includes(qr) && !todo.description?.toLowerCase().includes(qr)) return false;
     }
 
     // Type filters
-    if (filters.value.types.length > 0) {
-      const types = filters.value.types;
+    if (activeTypes.value.length > 0) {
+      const types = activeTypes.value;
       if (types.includes("completed") && !todo.isCompleted) return false;
       if (types.includes("pending") && todo.isCompleted) return false;
     }
@@ -87,7 +72,7 @@ const filteredTodos = computed(() => {
                 <Icon name="filter" />
                 <span class="hidden sm:inline">Filters</span>
                 <span
-                  v-if="filters.vehicleId"
+                  v-if="vehicleIdFilter"
                   class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
                 >
                   1
@@ -100,8 +85,8 @@ const filteredTodos = computed(() => {
                 <div>
                   <VehicleSelect
                     placeholder="Filter by vehicle"
-                    :value="filters.vehicleId"
-                    @value-change="(value) => (filters.vehicleId = value)"
+                    :value="vehicleIdFilter"
+                    @value-change="(value) => (vehicleIdFilter = value)"
                   />
                 </div>
               </div>
@@ -141,12 +126,7 @@ const filteredTodos = computed(() => {
     <div class="mb-4 flex w-full flex-col justify-between gap-4 md:flex-row">
       <!--      Type filters-->
       <div class="flex items-center gap-2">
-        <Button
-          size="sm"
-          class="rounded-full"
-          :variant="allTypesActive ? 'default' : 'outline'"
-          @click="filters.types = []"
-        >
+        <Button size="sm" class="rounded-full" :variant="allTypesActive ? 'default' : 'outline'" @click="clearTypes">
           All
         </Button>
 
@@ -164,7 +144,7 @@ const filteredTodos = computed(() => {
 
       <div class="order-first flex items-center gap-2 md:order-last">
         <Input
-          v-model="filters.searchQuery"
+          v-model="searchQuery"
           type="text"
           icon="search"
           class="w-full max-w-96"
@@ -176,7 +156,7 @@ const filteredTodos = computed(() => {
               <Icon name="filter" />
               <span class="hidden sm:inline">Filters</span>
               <span
-                v-if="filters.vehicleId"
+                v-if="vehicleIdFilter"
                 class="bg-primary text-primary-foreground absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold"
               >
                 1
@@ -189,8 +169,8 @@ const filteredTodos = computed(() => {
               <div>
                 <VehicleSelect
                   placeholder="Filter by vehicle"
-                  :value="filters.vehicleId"
-                  @value-change="(value) => (filters.vehicleId = value)"
+                  :value="vehicleIdFilter"
+                  @value-change="(value) => (vehicleIdFilter = value)"
                 />
               </div>
             </div>
@@ -202,7 +182,6 @@ const filteredTodos = computed(() => {
               type="button"
               @click="
                 clearAllFilters();
-                console.log('filters: ' + JSON.stringify(filters));
                 close();
               "
             >
@@ -227,11 +206,13 @@ const filteredTodos = computed(() => {
           </EmptyMedia>
           <EmptyTitle>No todos found</EmptyTitle>
           <EmptyDescription>
-            {{ hasFilters ? "Try adjusting your filters or search query." : "Get started by creating a new todo!" }}
+            {{
+              hasActiveFilters ? "Try adjusting your filters or search query." : "Get started by creating a new todo!"
+            }}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button v-if="hasFilters" variant="outline" size="sm" @click="clearAllFilters"> Clear filters </Button>
+          <Button v-if="hasActiveFilters" variant="outline" size="sm" @click="clearAllFilters"> Clear filters </Button>
         </EmptyContent>
       </Empty>
 
