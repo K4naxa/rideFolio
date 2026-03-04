@@ -228,8 +228,8 @@ const filteredNotes = computed(() => {
       <!-- ── Empty state ──────────────────────────────────────────── -->
       <Empty v-else-if="filteredNotes.length === 0" class="mt-20">
         <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Icon name="notes" class="text-muted-foreground" size="lg" />
+          <EmptyMedia variant="icon" class="bg-notes text-notes-foreground">
+            <Icon name="notes" />
           </EmptyMedia>
           <EmptyTitle>No notes found</EmptyTitle>
           <EmptyDescription>
