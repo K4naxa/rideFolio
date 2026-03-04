@@ -143,7 +143,7 @@ img {
   .dark {
     /* Core Colors */
     --color-background: hsl(0, 0%, 3%); /* slate-950 */
-    --color-foreground: var(--color-neutral-200); /* slate-200 */
+    --color-foreground: var(--color-white); /* slate-200 */
 
 
     --color-card: oklch(18.1% 0 0);
