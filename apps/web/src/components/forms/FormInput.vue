@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "vue";
 import { useField } from "vee-validate";
 import Input from "@/components/ui/input/Input.vue";
+import type { IconProps } from "@/components/icons/Icon.vue";
 
 /**
  * FormInput — vee-validate bridge component.
@@ -16,6 +17,7 @@ const props = defineProps<{
 
   prefix?: string;
   suffix?: string;
+  icon?: IconProps["name"];
 
   toUpperCase?: boolean;
 
@@ -62,6 +64,7 @@ async function handleBlur() {
     v-bind="$attrs"
     :model-value="value"
     :type="props.type"
+    :icon="props.icon"
     :label="props.label"
     :placeholder="props.placeholder"
     :data-cy="props.dataCy"
