@@ -44,6 +44,7 @@ import {
   LogOut,
   type LucideIcon,
   Mail,
+  MapPinIcon,
   Minus,
   Moon,
   MoreHorizontal,
@@ -163,6 +164,7 @@ type IconName =
   | "database"
   | "help"
   | "timeline"
+  | "location"
   | "preferences"
   | "systemMode"
   | "circleCheck";
@@ -218,6 +220,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   home: Home,
   timeline: RouteIcon,
   settings: Settings,
+  location: MapPinIcon,
   search: Search,
   files: Files,
   mail: Mail,
