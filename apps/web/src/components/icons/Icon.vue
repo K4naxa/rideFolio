@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue";
+import { type HTMLAttributes, ref, useTemplateRef } from "vue";
 import { computed } from "vue";
 import {
   AlertTriangle,
@@ -70,6 +70,7 @@ import {
   TrendingDown,
   TrendingUp,
   TvMinimalIcon,
+  UndoDotIcon,
   User,
   UserLock,
   UserPlus,
@@ -82,6 +83,8 @@ import { twMerge } from "tailwind-merge";
 import TooltipTrigger from "../ui/tooltip/TooltipTrigger.vue";
 import Tooltip from "../ui/tooltip/Tooltip.vue";
 import TooltipContent from "../ui/tooltip/TooltipContent.vue";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { onClickOutside } from "@vueuse/core";
 
 type IconSize = "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -148,11 +151,13 @@ type IconName =
   | "subscription"
   | "dotsVertical"
   | "billing"
+  | "skipped"
   | "stats"
   | "link"
   | "save"
   | "distance"
   | "circle"
+  | "fullRefill"
   | "overview"
   | "retry"
   | "database"
@@ -209,6 +214,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   users: Users,
   userLock: UserLock,
   userPlus: UserPlus,
+  fullRefill: Droplets,
   home: Home,
   timeline: RouteIcon,
   settings: Settings,
@@ -233,6 +239,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   trash: Trash2,
   calendar: Calendar,
   droplets: Droplets,
+  skipped: UndoDotIcon,
   camera: Camera,
   subscription: Sparkle,
   billing: CreditCard,
@@ -261,14 +268,32 @@ const iconMap: Record<IconName, LucideIcon> = {
 
 const iconComponent = computed(() => iconMap[props.name]);
 const iconClass = computed(() => twMerge(iconSizes[props.size], "stroke-current text-current", props.class));
+
+const tooltipOpen = ref(false);
+
+const tooltipTriggerRef = useTemplateRef("tooltipTriggerRef");
+onClickOutside(tooltipTriggerRef, () => (tooltipOpen.value = false));
 </script>
 
 <template>
-  <Tooltip v-if="props.tooltip && props.name" :delay-duration="300">
-    <TooltipTrigger>
-      <component :is="iconComponent" :class="iconClass" />
-    </TooltipTrigger>
-    <TooltipContent>{{ props.tooltip }}</TooltipContent>
-  </Tooltip>
+  <tooltip-provider v-if="props.tooltip && props.name" @click.prevent>
+    <Tooltip :delay-duration="300" :open="tooltipOpen" :side-offset="5">
+      <TooltipTrigger
+        type="button"
+        ref="tooltipTriggerRef"
+        class="cursor-pointer"
+        @click="tooltipOpen = tooltipOpen = true"
+        onmouseenter="tooltipOpen = true"
+        onmouseleave="tooltipOpen = false"
+        onkeydown="
+          (e) => e.preventDefault();
+          e.key === 'Enter' && (tooltipOpen = !tooltipOpen);
+        "
+      >
+        <component :is="iconComponent" :class="iconClass" />
+      </TooltipTrigger>
+      <TooltipContent>{{ props.tooltip }}</TooltipContent>
+    </Tooltip>
+  </tooltip-provider>
   <component v-else-if="props.name" :is="iconComponent" :class="iconClass" />
 </template>
