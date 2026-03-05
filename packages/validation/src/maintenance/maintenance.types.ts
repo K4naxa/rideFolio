@@ -38,6 +38,7 @@ export type ClientMaintenance = {
   date: Date;
   title: string;
   serviceProvider: string | null;
+  vehicleId: string;
   notes: string | null;
   image: string | null;
   costTotal: number | null;
