@@ -7,19 +7,18 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";
 import { toast } from "vue-sonner";
-import Input from "@/components/ui/input/Input.vue";
 import Switch from "@/components/ui/switch/Switch.vue";
-import HelpTooltip from "@/components/ui/HelpTooltip.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import Label from "@/components/ui/label/Label.vue";
 import z from "zod";
 import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
+import Icon from "@/components/icons/Icon.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol, preferredVolumeUnit } = useCurrentUser();
@@ -29,14 +28,14 @@ const modalStore = useModalStore();
 const isModalOpen = computed(() => modalStore.isOpen && modalStore.type === "createRefill");
 const handleClose = () => modalStore.onClose();
 
-const { selectedVehicle, selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSelectedVehicle(
+const { selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSelectedVehicle(
   computed(() => values.vehicleId),
 );
 
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
   validationSchema: toTypedSchema(
     RefillSchema.extend({
-      odometer: z.number().refine(
+      odometer: z.coerce.number().refine(
         async (value): Promise<boolean> => {
           if (!value) return true;
           if (!selectedVehicleLastRefillOdometer.value) return true;
@@ -55,9 +54,9 @@ const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  createRefill(values, {
+  await createRefill(values, {
     onSuccess: () => {
-      toast.success("Refill created succesfully");
+      toast.success("Refill created successfully");
       handleClose();
     },
   });
@@ -92,17 +91,33 @@ const handleCostTotalChange = (value: string | number) => {
 };
 
 watch(isModalOpen, (open) => {
-  if (open && currentVehicleId.value) {
-    resetForm({
-      values: {
-        ...values,
-        vehicleId: currentVehicleId.value,
-        date: new Date(),
-        fullRefill: true,
-        skippedRefill: false,
-      },
-    });
+  if (open) {
+    if (currentVehicleId.value)
+      resetForm({
+        values: {
+          ...values,
+          vehicleId: currentVehicleId.value,
+          date: new Date(),
+          fullRefill: true,
+          skippedRefill: false,
+        },
+      });
+    else
+      resetForm({
+        values: {
+          ...values,
+          vehicleId: "",
+          date: new Date(),
+          fullRefill: true,
+          skippedRefill: false,
+        },
+      });
   }
+});
+
+const odometerPlaceholder = computed(() => {
+  if (!selectedVehicleLastRefillOdometer.value) return "0";
+  return String(selectedVehicleLastRefillOdometer.value);
 });
 </script>
 
@@ -116,67 +131,58 @@ watch(isModalOpen, (open) => {
     content-class="max-w-xl"
     key="CreateRefillModal"
   >
-    <form data-cy="create-refill-form" class="contents">
+    <form data-cy="create-refill-form" class="gaps-md flex flex-col">
       <!-- Vehicle -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <div>
-          <VehicleSelect
-            :value="value"
-            @valueChange="handleChange"
-            placeholder="Select a vehicle"
-            data-cy="vehicle-select"
-            :description="'Select from vehicles you have access to.'"
-          />
-          <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
-        </div>
+        <VehicleSelect
+          :value="value"
+          @valueChange="handleChange"
+          placeholder="Select a vehicle"
+          data-cy="vehicle-select"
+          :description="'Select from vehicles you have access to.'"
+        />
+        <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
       </Field>
 
       <!-- Date & Odometer -->
-      <div class="grid gap-3 sm:grid-cols-2">
+      <div class="gaps-md grid sm:grid-cols-2">
         <FormDateInput name="date" label="Date" :initial-value="new Date()" disableFuture data-cy="date-input" />
-        <div class="relative">
-          <Input
-            name="odometer"
-            type="number"
-            label="Odometer"
-            placeholder="Current reading"
-            :suffix="selectedVehicle?.vehicleData.odometerData.unit"
-            data-cy="odometer-input"
-          />
-          <span
-            v-if="selectedVehicleLastRefillOdometer"
-            class="text-muted-foreground absolute -bottom-4 left-2 text-xs"
-          >
-            Last: {{ selectedVehicleLastRefillOdometer }} {{ selectedVehicleOdometerUnit }}
-          </span>
-        </div>
+        <FormInput
+          name="odometer"
+          type="number"
+          label="Odometer"
+          :placeholder="odometerPlaceholder"
+          :suffix="selectedVehicleOdometerUnit"
+          data-cy="odometer-input"
+        />
       </div>
 
       <!-- Fill Type -->
-      <div class="grid grid-cols-2 gap-3">
+      <div class="gaps-md grid grid-cols-2">
         <Field v-slot="{ value, handleChange }" name="fullRefill">
-          <Label
-            class="flex items-center gap-3 rounded border px-3 py-3 leading-none select-none"
-            data-cy="full-refill-switch"
-          >
-            <Switch :model-value="value" @update:model-value="handleChange" />
-            <p class="text-sm font-medium">Full refill</p>
-          </Label>
+          <label class="bg-input flex h-10 items-center rounded border p-3 select-none" data-cy="full-refill-switch">
+            <span class="flex items-center gap-2.5"> <Icon name="fullRefill" class="h-5" /> Full refill</span>
+            <Switch class="ml-auto" :model-value="value" @update:model-value="handleChange" />
+          </label>
         </Field>
         <Field v-slot="{ value, handleChange }" name="skippedRefill">
-          <label class="flex items-center gap-3 rounded border px-3 py-3 select-none" data-cy="skipped-refill-switch">
-            <Switch :model-value="value" @update:model-value="handleChange" />
-            <p class="text-sm font-medium">Skipped</p>
-            <HelpTooltip message="Was last refill not logged?" />
+          <label
+            for="skippedRefill"
+            data-cy="skipped-refill-switch"
+            class="bg-input flex h-10 items-center rounded border p-3 select-none"
+          >
+            <span class="flex items-center gap-2.5 text-sm">
+              <Icon name="skipped" class="h-5 rotate-y-180" tooltip="Previous refill was not logged" /> Missed prev.
+            </span>
+            <Switch id="skippedRefill" class="ml-auto" :model-value="value" @update:model-value="handleChange" />
           </label>
         </Field>
       </div>
 
       <!-- Cost breakdown -->
-      <div class="flex flex-col gap-1">
-        <p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Cost breakdown</p>
+      <div class="gaps-sm flex flex-col">
         <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
-          <Input
+          <FormInput
             name="fuelAmount"
             type="number"
             step="0.01"
@@ -187,7 +193,7 @@ watch(isModalOpen, (open) => {
             data-cy="fuel-amount-input"
             class="col-span-2 md:col-span-1"
           />
-          <Input
+          <FormInput
             name="pricePerUnit"
             type="number"
             step="0.001"
@@ -197,7 +203,7 @@ watch(isModalOpen, (open) => {
             :onValueChange="handlePricePerUnitChange"
             data-cy="price-per-unit-input"
           />
-          <Input
+          <FormInput
             name="costTotal"
             type="number"
             step="0.01"
