@@ -441,21 +441,27 @@ const isMobile = useIsMobile();
               >
                 <!-- ── Refill ── -->
                 <template v-if="item.type === 'refill'">
-                  <div class="flex items-start gap-3 border-b px-3 py-2">
-                    <Badge :class="typeConfig['refill'].badgeClass" class="font-medium"> Fuel Refill</Badge>
-                    <div class="ml-auto flex items-center gap-4">
-                      <Badge v-if="!filters.vehicleId" variant="accent">
-                        {{ getVehicleNameById(item.data.vehicleId) }}
-                      </Badge>
-                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                        <Icon name="calendar" size="sm" />
-                        {{ new Date(item.timestamp).toLocaleDateString() }}
-                      </span>
+                  <div class="border-b px-3 py-2">
+                    <div class="flex items-start gap-3">
+                      <Badge :class="typeConfig['refill'].badgeClass" class="font-medium"> Fuel Refill</Badge>
+                      <div class="ml-auto flex items-center gap-4">
+                        <Badge v-if="!filters.vehicleId" variant="accent">
+                          {{ getVehicleNameById(item.data.vehicleId) }}
+                        </Badge>
+                        <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                          <Icon name="calendar" size="sm" />
+                          {{ new Date(item.timestamp).toLocaleDateString() }}
+                        </span>
+                      </div>
                     </div>
+
+                    <p v-if="item.data.notes" class="text-muted-foreground mt-1.5 text-sm">
+                      {{ item.data.notes }}
+                    </p>
                   </div>
                   <!--    Info -->
                   <div class="infoSectionWrapper">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-1">
                       <Label class="text-xs"><Icon name="refill" size="sm" /> Amount</Label>
                       <span>
                         <span class="text-card-foreground font-medium">{{ item.data.fuelVolume.value }}</span>
@@ -463,7 +469,7 @@ const isMobile = useIsMobile();
                       </span>
                     </div>
 
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-1">
                       <Label class="text-xs"> <Icon name="odoDistance" size="sm" /> Odometer</Label>
                       <span>
                         <span class="text-card-foreground font-medium"> {{ item.data.odometer.value }} </span>
@@ -471,7 +477,7 @@ const isMobile = useIsMobile();
                       </span>
                     </div>
 
-                    <div v-if="item.data.costTotal" class="flex flex-col items-center">
+                    <div v-if="item.data.costTotal" class="flex flex-col gap-1">
                       <Label class="text-xs"> <Icon name="billing" size="sm" /> Cost </Label>
                       <span>
                         <span class="text-card-foreground font-medium">
@@ -481,9 +487,6 @@ const isMobile = useIsMobile();
                       </span>
                     </div>
                   </div>
-                  <p v-if="item.data.notes" class="text-muted-foreground mt-1.5 line-clamp-2 text-xs">
-                    {{ item.data.notes }}
-                  </p>
                 </template>
 
                 <!-- ── Maintenance ── -->
@@ -524,14 +527,14 @@ const isMobile = useIsMobile();
 
                   <!--    Info -->
                   <div class="infoSectionWrapper">
-                    <div v-if="item.data.serviceProvider" class="flex flex-col">
+                    <div v-if="item.data.serviceProvider" class="flex flex-col gap-1">
                       <Label class="text-xs"> <Icon name="location" size="sm" /> Service</Label>
                       <span class="text-card-foreground">
                         {{ item.data.serviceProvider }}
                       </span>
                     </div>
 
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-1">
                       <Label class="text-xs"><Icon name="odoDistance" size="sm" /> Odometer</Label>
                       <span>
                         <span class="text-card-foreground font-medium">
@@ -541,7 +544,7 @@ const isMobile = useIsMobile();
                       </span>
                     </div>
 
-                    <div v-if="item.data.costTotal" class="flex flex-col">
+                    <div v-if="item.data.costTotal" class="flex flex-col gap-1">
                       <Label class="text-xs"> <Icon name="billing" size="sm" /> Cost </Label>
                       <span class="text-card-foreground font-medium">
                         {{ item.data.costTotal.toFixed(2) }}
@@ -625,6 +628,6 @@ const isMobile = useIsMobile();
 <style scoped>
 @reference "@/assets/main.css";
 .infoSectionWrapper {
-  @apply text-muted-foreground bg-background-light flex flex-wrap gap-x-8 gap-y-1 px-3 py-2 text-sm md:justify-normal;
+  @apply text-muted-foreground bg-background-light flex flex-wrap gap-x-8 gap-y-2 px-3 py-2 text-sm md:justify-normal;
 }
 </style>
