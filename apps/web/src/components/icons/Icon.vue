@@ -157,6 +157,7 @@ type IconName =
   | "retry"
   | "database"
   | "help"
+  | "timeline"
   | "preferences"
   | "systemMode"
   | "circleCheck";
@@ -209,6 +210,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   userLock: UserLock,
   userPlus: UserPlus,
   home: Home,
+  timeline: RouteIcon,
   settings: Settings,
   search: Search,
   files: Files,
