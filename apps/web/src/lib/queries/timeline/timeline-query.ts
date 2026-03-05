@@ -14,5 +14,6 @@ export function useTimelineQuery(filters: Ref<TimelineQueryInput>) {
     },
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     initialPageParam: undefined as string | undefined,
+    staleTime: 1000 * 60 * 3, // 3 minutes
   });
 }
