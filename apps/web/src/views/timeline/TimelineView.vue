@@ -17,6 +17,7 @@ import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.v
 import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import { Label } from "@/components/ui/label";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
+import { useVehicles } from "@/lib/composables/useVehicles.ts";
 
 // ─── Filters state ──────────────────────────────────────────────────────────
 
@@ -36,6 +37,7 @@ const tempEndDate = ref<Date | undefined>(undefined);
 // ─── Query ───────────────────────────────────────────────────────────────────
 
 const user = useCurrentUser();
+const { getVehicleNameById } = useVehicles();
 const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useTimelineQuery(filters);
 const { data: vehicles } = useVehiclesAll();
 
@@ -439,12 +441,17 @@ const isMobile = useIsMobile();
               >
                 <!-- ── Refill ── -->
                 <template v-if="item.type === 'refill'">
-                  <div class="flex items-start justify-between gap-2 border-b px-3 py-2">
+                  <div class="flex items-start gap-3 border-b px-3 py-2">
                     <Badge :class="typeConfig['refill'].badgeClass" class="font-medium"> Fuel Refill</Badge>
-                    <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                      <Icon name="calendar" size="sm" />
-                      {{ new Date(item.timestamp).toLocaleDateString() }}
-                    </span>
+                    <div class="ml-auto flex items-center gap-4">
+                      <Badge v-if="!filters.vehicleId" variant="accent">
+                        {{ getVehicleNameById(item.data.vehicleId) }}
+                      </Badge>
+                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                        <Icon name="calendar" size="sm" />
+                        {{ new Date(item.timestamp).toLocaleDateString() }}
+                      </span>
+                    </div>
                   </div>
                   <!--    Info -->
                   <div class="infoSectionWrapper">
@@ -482,14 +489,17 @@ const isMobile = useIsMobile();
                 <!-- ── Maintenance ── -->
                 <template v-else-if="item.type === 'maintenance'">
                   <div class="border-b px-3 py-2">
-                    <div class="mb-2 flex items-start justify-between gap-2">
-                      <div>
-                        <Badge :class="typeConfig['maintenance'].badgeClass" class="font-medium">Maintenance</Badge>
+                    <div class="mb-2 flex items-start justify-between gap-3">
+                      <Badge :class="typeConfig['maintenance'].badgeClass" class="font-medium">Maintenance</Badge>
+                      <div class="ml-auto flex items-center gap-4">
+                        <Badge v-if="!filters.vehicleId" variant="accent">
+                          {{ getVehicleNameById(item.data.vehicleId) }}
+                        </Badge>
+                        <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                          <Icon name="calendar" size="sm" />
+                          {{ new Date(item.timestamp).toLocaleDateString() }}
+                        </span>
                       </div>
-                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                        <Icon name="calendar" size="sm" />
-                        {{ new Date(item.timestamp).toLocaleDateString() }}
-                      </span>
                     </div>
 
                     <p class="text-sm font-medium">{{ item.data.title }}</p>
@@ -542,12 +552,17 @@ const isMobile = useIsMobile();
 
                 <!-- ── Todo Created ── -->
                 <template v-else-if="item.type === 'todo-created'">
-                  <div class="flex items-start justify-between gap-2 px-3 py-2">
+                  <div class="flex items-start justify-between gap-3 px-3 py-2">
                     <Badge :class="typeConfig['todo-created'].badgeClass" class="font-medium"> Task Created</Badge>
-                    <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                      <Icon name="calendar" size="sm" />
-                      {{ new Date(item.timestamp).toLocaleDateString() }}
-                    </span>
+                    <div class="ml-auto flex items-center gap-4">
+                      <Badge v-if="!filters.vehicleId" variant="accent">
+                        {{ getVehicleNameById(item.data.vehicleId) }}
+                      </Badge>
+                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                        <Icon name="calendar" size="sm" />
+                        {{ new Date(item.timestamp).toLocaleDateString() }}
+                      </span>
+                    </div>
                   </div>
                   <div class="space-y-1.5 px-3 pb-3">
                     <p class="text-sm font-medium">
@@ -561,12 +576,18 @@ const isMobile = useIsMobile();
 
                 <!-- ── Todo Completed ── -->
                 <template v-else-if="item.type === 'todo-completed'">
-                  <div class="flex items-start justify-between gap-2 px-3 py-2">
+                  <div class="flex items-start justify-between gap-3 px-3 py-2">
                     <Badge :class="typeConfig['todo-completed'].badgeClass" class="font-medium"> Task Completed</Badge>
-                    <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                      <Icon name="calendar" size="sm" />
-                      {{ new Date(item.timestamp).toLocaleDateString() }}
-                    </span>
+
+                    <div class="ml-auto flex items-center gap-4">
+                      <Badge v-if="!filters.vehicleId" variant="accent">
+                        {{ getVehicleNameById(item.data.vehicleId) }}
+                      </Badge>
+                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                        <Icon name="calendar" size="sm" />
+                        {{ new Date(item.timestamp).toLocaleDateString() }}
+                      </span>
+                    </div>
                   </div>
                   <div class="space-y-1.5 px-3 pb-3">
                     <p class="text-sm font-medium">
