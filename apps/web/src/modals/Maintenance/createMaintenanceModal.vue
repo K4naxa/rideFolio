@@ -113,7 +113,7 @@ watch(isModalOpen, (open) => {
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <FormInput name="title" type="text" label="Title" placeholder="e.g. Oil change" :maxlength="100" />
+          <FormInput name="title" type="text" label="Title" placeholder="Oil change" :maxlength="100" />
           <FormInput
             name="totalCost"
             type="number"
@@ -126,8 +126,9 @@ watch(isModalOpen, (open) => {
         <FormInput
           name="serviceProvider"
           type="text"
+          icon="location"
           label="Service provider"
-          placeholder="e.g. City Auto Garage"
+          placeholder="Service provider name"
           :validate-on-blur="false"
           :maxlength="255"
         />
