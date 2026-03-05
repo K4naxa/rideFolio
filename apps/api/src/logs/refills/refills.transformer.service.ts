@@ -53,6 +53,7 @@ export class RefillsTransformerService {
       fullRefill: refill.fullRefill,
       skippedRefill: refill.skippedRefill,
       notes: refill.notes,
+      vehicleId: refill.vehicle.id,
       pricePerUnit: refill.pricePerUnit,
       costTotal: refill.costTotal,
 

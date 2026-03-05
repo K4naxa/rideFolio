@@ -8,6 +8,7 @@ export interface TRefillForClient {
   odometer: TConversionResult;
   fullRefill: boolean;
   skippedRefill: boolean;
+  vehicleId: string;
   fuelVolume: TConversionResult;
   pricePerUnit: number | null;
   costTotal: number | null;
