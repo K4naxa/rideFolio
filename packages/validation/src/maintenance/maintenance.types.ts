@@ -37,6 +37,7 @@ export type ClientMaintenance = {
   id: string;
   date: Date;
   title: string;
+  serviceProvider: string | null;
   notes: string | null;
   image: string | null;
   costTotal: number | null;

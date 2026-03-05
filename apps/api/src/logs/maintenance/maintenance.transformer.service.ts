@@ -31,6 +31,7 @@ export class MaintenanceTransformerService {
       date: maintenance.date,
       title: maintenance.title,
       notes: maintenance.notes,
+      serviceProvider: maintenance.serviceProvider,
       image: maintenance.image,
       costTotal: maintenance.costTotal,
       odometerData,
