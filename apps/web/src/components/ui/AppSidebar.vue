@@ -57,6 +57,11 @@ const mainSidebarLinks: MainSideBarLinks[] = [
     icon: "todo",
     to: "/todos",
   },
+  {
+    label: "Timeline",
+    icon: "timeline",
+    to: "/timeline",
+  },
 ];
 
 const { actionOptions } = useActionOptions();
