@@ -36,7 +36,6 @@ export class TodosService {
           vehicleId: todoDto.vehicleId,
           title: todoDto.title,
           description: todoDto.description,
-          priority: todoDto.priority,
           isCompleted: false,
           dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
           dueOdometer_km,
@@ -190,7 +189,7 @@ export class TodosService {
         where: { id: todoId },
         data: {
           ...directFields,
-          dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : null,
+          dueDate: dueDate ? new Date(dueDate) : null,
           dueOdometer_km,
           dueOdometer_hour,
           sizeBytes: newSizeBytes,

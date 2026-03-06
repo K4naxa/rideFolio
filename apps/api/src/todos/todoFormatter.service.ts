@@ -61,7 +61,6 @@ export class TodoFormatterService {
       id: baseTodo.id,
       title: baseTodo.title,
       description: baseTodo.description,
-      priority: baseTodo.priority || null,
       isCompleted: baseTodo.isCompleted,
       vehicleId: baseTodo.vehicleId,
       dueDate: this.formatDueDate(baseTodo.dueDate),
@@ -140,6 +139,3 @@ export class TodoFormatterService {
 }
 
 export type DB_baseTodo = TodoGetPayload<{ include: ReturnType<TodoFormatterService['DB_include_baseTodo']> }>;
-export type DB_todoWithVehicle = TodoGetPayload<{
-  include: ReturnType<TodoFormatterService['DB_include_todoWithVehicle']>;
-}>;

@@ -16,7 +16,6 @@ export type BaseTodo = {
   title: string;
   description: string | null;
   vehicleId: string;
-  priority: TodoPriorityType | null;
   isCompleted: boolean;
   dueDate: TodoDueDate | null;
   dueOdometer: TodoDueOdometer | null;
@@ -34,6 +33,3 @@ export type BaseTodo = {
 export interface TodoWithVehicle extends BaseTodo {
   vehicle: VehicleMinimal;
 }
-
-export const TodoPriority = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
-export type TodoPriorityType = (typeof TodoPriority)[number];

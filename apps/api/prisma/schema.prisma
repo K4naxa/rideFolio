@@ -80,26 +80,6 @@ enum GroupInviteStatus {
   DECLINED // Invite has been declined
 }
 
-// ---- TODO ENUMS
-enum TodoDueType {
-  DATE
-  ODOMETER
-  HOUR
-}
-
-enum TodoStatus {
-  PENDING
-  COMPLETED
-  CANCELED
-}
-
-enum TodoPriority {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
-}
-
 model SubscriptionPlan {
   id       String  @id @default(cuid())
   code     String  @unique // e.g. 'FREE', 'PRO', 'ENTERPRISE'
@@ -449,13 +429,12 @@ model MaintenancePart {
 }
 
 model Todo {
-  id          String        @id @default(cuid())
+  id          String  @id @default(cuid())
   vehicleId   String
-  vehicle     Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle     Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   title       String
-  description String?       @default("")
-  priority    TodoPriority?
-  isCompleted Boolean       @default(false)
+  description String? @default("")
+  isCompleted Boolean @default(false)
 
   dueDate          DateTime?
   dueOdometer_km   Float?

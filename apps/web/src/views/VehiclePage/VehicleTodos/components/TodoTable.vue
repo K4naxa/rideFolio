@@ -7,9 +7,10 @@ import { useTodoToggle } from "@/lib/queries/todos/todo-mutations";
 import type { BaseTodo } from "@repo/validation";
 
 import { twMerge } from "tailwind-merge";
-import { capitalize } from "@/lib/utils.ts";
 import { useModalStore } from "@/stores/modal.ts";
 import { useVehicles } from "@/lib/composables/useVehicles.ts";
+import { useTimeAgo } from "@vueuse/core";
+import Icon from "@/components/icons/Icon.vue";
 
 interface TodoTableProps {
   todos: BaseTodo[];
@@ -21,34 +22,6 @@ const { mutate: toggleTodo } = useTodoToggle();
 const modalStore = useModalStore();
 
 const { getVehicleNameById } = useVehicles();
-
-const PRIORITY_CONFIG = {
-  CRITICAL: { color: "bg-purple-700 text-white", label: "Critical" },
-  HIGH: { color: "bg-orange-700 text-white", label: "High" },
-  MEDIUM: { color: "bg-yellow-700 text-white", label: "Medium" },
-  LOW: { color: "bg-green-700 text-white", label: "Low" },
-} as const;
-
-const getPriorityConfig = (priority: string) => {
-  return (
-    PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG] || {
-      color: "bg-gray-500",
-      label: priority,
-    }
-  );
-};
-
-const formatOdometer = (value: number, unit: string) => {
-  return `${value.toLocaleString()} ${unit}`;
-};
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
 
 function isOverdue(todo: BaseTodo) {
   return (todo.dueDate?.overdue || todo.dueOdometer?.overdue) && !todo.isCompleted;
@@ -85,11 +58,7 @@ function hasDueInfo(todo: BaseTodo) {
           class="group-hover:border-primary absolute top-4 right-4 size-6"
         />
 
-        <div v-if="todo.priority || showVehicleNames" class="flex gap-2">
-          <Badge v-if="todo.priority" :class="[getPriorityConfig(todo.priority).color]" class="mb-1">
-            {{ capitalize(getPriorityConfig(todo.priority).label) }}
-          </Badge>
-
+        <div v-if="showVehicleNames" class="flex gap-2">
           <Badge v-if="showVehicleNames" variant="accent" class="h-fit">
             {{ getVehicleNameById(todo.vehicleId) }}
           </Badge>
@@ -108,15 +77,21 @@ function hasDueInfo(todo: BaseTodo) {
         </span>
 
         <!--        Footer-->
-        <div v-if="hasDueInfo(todo)" class="mt-auto flex items-center justify-between gap-4">
-          <span v-if="hasDueInfo(todo)" class="text-muted-foreground text-xs">
+        <div v-if="hasDueInfo(todo)" class="mt-auto flex items-center gap-2 text-xs [&_svg]:size-4">
+          <Label class="text-muted-foreground text-xs">Due: </Label>
+
+          <Badge v-if="todo.dueDate" :variant="todo.dueDate.overdue ? 'destructive' : 'muted'">
+            <Icon name="calendar" /> {{ useTimeAgo(new Date(todo.dueDate.date)) }}
+          </Badge>
+
+          <Badge v-if="todo.dueOdometer" :variant="todo.dueOdometer.overdue ? 'destructive' : 'muted'">
+            <Icon name="odoDistance" />
             {{
-              "Due " +
-              (todo.dueDate
-                ? formatDate(String(todo.dueDate.date))
-                : formatOdometer(todo.dueOdometer!.value, todo.dueOdometer!.unit))
+              todo.dueOdometer.overdue
+                ? todo.dueOdometer.remaining + " " + todo.dueOdometer.unit + " " + "ago"
+                : "in" + " " + todo.dueOdometer.remaining + " " + todo.dueOdometer.unit
             }}
-          </span>
+          </Badge>
         </div>
       </li>
     </ul>

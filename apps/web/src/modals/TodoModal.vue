@@ -150,29 +150,6 @@ const onSubmit = handleSubmit(async (values) => {
       />
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Field v-slot="{ value, handleChange }" name="priority">
-          <div class="flex flex-col gap-1.5">
-            <Label class="ml-1 text-sm font-medium">Priority</Label>
-            <Select :model-value="value" @update:model-value="handleChange" class="w-full" data-cy="priority-select">
-              <SelectTrigger class="w-full" data-cy="priority-trigger">
-                <SelectValue placeholder="Select priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  :value="null"
-                  data-cy="priority-select-none"
-                  class="text-muted-foreground hover:text-muted-foreground!"
-                  >None</SelectItem
-                >
-                <SelectItem value="LOW" data-cy="priority-select-low">Low</SelectItem>
-                <SelectItem value="MEDIUM" data-cy="priority-select-medium">Medium</SelectItem>
-                <SelectItem value="HIGH" data-cy="priority-select-high">High</SelectItem>
-                <SelectItem value="CRITICAL" data-cy="priority-select-critical">Critical</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Field>
-
         <Label class="flex items-center gap-3 text-base select-none" data-cy="due-checkbox-label">
           <Checkbox
             :model-value="showDueOptions"
