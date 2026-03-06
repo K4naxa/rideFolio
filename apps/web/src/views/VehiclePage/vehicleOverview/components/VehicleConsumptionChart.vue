@@ -68,7 +68,6 @@ const chartOptions = computed((): EChartsOption => {
       padding: 0,
       extraCssText: "box-shadow: none; z-index: 0; ",
       z: 0,
-      zlevel: 0,
     },
 
     xAxis: {
@@ -78,8 +77,9 @@ const chartOptions = computed((): EChartsOption => {
       axisLabel: {
         color: themeStore.colors.mutedForeground,
         fontSize: 10,
-        margin: 12,
+        margin: 16,
         opacity: 0.8,
+        overflow: "truncate",
         formatter: (value: string) =>
           new Date(value).toLocaleDateString(undefined, {
             month: "short",
@@ -104,18 +104,19 @@ const chartOptions = computed((): EChartsOption => {
         axisLine: {
           show: false,
         },
+        splitNumber: 4,
+        minInterval: 1,
         axisLabel: {
           color: themeStore.colors.mutedForeground,
-          fontSize: 10,
+          fontSize: 12,
           opacity: 0.8,
           margin: 20,
-          formatter: (value: number) => (Number.isInteger(value) ? value.toString() : ""),
           align: "center",
         },
         splitLine: {
           lineStyle: {
             color: themeStore.colors.muted,
-            opacity: 0.4,
+            opacity: 0.5,
           },
         },
       },
@@ -126,6 +127,7 @@ const chartOptions = computed((): EChartsOption => {
       right: "0",
       bottom: "0",
       top: "0",
+      containLabel: true,
     },
 
     series: {
@@ -209,13 +211,23 @@ onClickOutside(chartContainer, () => {
 
     <!-- Chart -->
     <div class="border-border/50 relative flex h-full w-full flex-1" ref="chartContainer">
+      <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
+        <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
+      </div>
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
       >
         <span class="text-muted-foreground animate-pulse"> <Spinner class="size-12" /> </span>
       </div>
-      <VChart :option="chartOptions" autoresize class="chart h-full w-full" ref="chart">
+      <VChart
+        :option="chartOptions"
+        v-if="chartData"
+        autoresize
+        class="chart h-full w-full"
+        ref="chart"
+        :update-options="{ notMerge: true }"
+      >
         <template #tooltip="params: any">
           <div class="bg-background/90 text-foreground rounded p-2 text-sm shadow-lg">
             <div v-for="({ data }, i) in params" :key="i" class="flex flex-col gap-2">
@@ -238,9 +250,6 @@ onClickOutside(chartContainer, () => {
       </VChart>
       <div v-if="chartData && chartData.length < 1" class="absolute inset-0 grid place-items-center">
         <p class="text-muted-foreground m-auto text-center">Not enough data to display consumption chart.</p>
-      </div>
-      <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
-        <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
       </div>
     </div>
   </div>
