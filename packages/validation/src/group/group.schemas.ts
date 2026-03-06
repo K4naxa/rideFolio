@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { groupMemberRoleCodes, groupTypeCodes } from "./group.types";
+import { groupMemberRoleCodes } from "./group.types";
 
 export const GroupSchema = z.object({
   name: z.string().min(1, "Required").max(50, "50 Character limit passed"),
