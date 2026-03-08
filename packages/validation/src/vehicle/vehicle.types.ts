@@ -94,10 +94,6 @@ export type BasicVehicle = {
 
 export type TAccessibleVehicle = {
   isOwnerUser: boolean;
-  canCreateLogs: boolean;
-  canDeleteLogs: boolean;
-  canEditLogs: boolean;
-
   group: { id: string; name: string } | null;
 
   vehicleData: BasicVehicle;

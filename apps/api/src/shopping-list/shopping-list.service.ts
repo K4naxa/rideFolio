@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ShoppingItem, ShoppingItemValues, ShoppingListDB_Select } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { LimitsService } from 'src/limits/limits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
+import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
 
 @Injectable()
 export class ShoppingListService {
@@ -14,7 +15,7 @@ export class ShoppingListService {
   ) {}
 
   async createItem(userSession: UserSession, itemDto: ShoppingItemValues): Promise<ShoppingItem> {
-    const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, itemDto.vehicleId);
+    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, itemDto.vehicleId);
     const sizeBytes = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, itemDto);
 
     return await this.prisma.$transaction(async (tx) => {
@@ -41,38 +42,30 @@ export class ShoppingListService {
   }
 
   async toggleItemPurchased(userSession: UserSession, itemId: string, isPurchased: boolean): Promise<ShoppingItem> {
-    const item = await this.prisma.shoppingListItem.findUnique({
-      where: { id: itemId },
-      select: { vehicle: { select: { id: true } } },
-    });
-    if (!item) throw new Error('Shopping list item not found');
-
-    await this.authValidation.canEditLogs(userSession.user.id, item.vehicle.id);
-
-    return this.prisma.shoppingListItem.update({
-      where: { id: itemId },
+    const result = await this.prisma.shoppingListItem.update({
+      where: { id: itemId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
       data: {
         isPurchased,
         purchasedAt: isPurchased ? new Date() : null,
       },
       select: ShoppingListDB_Select,
     });
+
+    if (!result) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+
+    return result;
   }
 
   async deleteItem(userSession: UserSession, itemId: string) {
     const item = await this.prisma.shoppingListItem.findUnique({
-      where: { id: itemId },
-      include: { vehicle: { select: { id: true } } },
+      where: { id: itemId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
+      include: { vehicle: { select: { ownerId: true } } },
     });
-    if (!item) {
-      throw new Error('Shopping list item not found');
-    }
-
-    const vehicle = await this.authValidation.canDeleteLogs(userSession.user.id, item.vehicle.id);
+    if (!item) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
 
     await this.prisma.$transaction(async (tx) => {
-      await this.limitsService.decrementStorageUsage(tx, vehicle.ownerId, 'SHOPPING_LIST', item.sizeBytes);
-      await tx.shoppingListItem.delete({ where: { id: itemId } });
+      await this.limitsService.decrementStorageUsage(tx, item.vehicle.ownerId, 'SHOPPING_LIST', item.sizeBytes);
+      await tx.shoppingListItem.delete({ where: { id: item.id } });
     });
   }
 }

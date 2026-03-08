@@ -73,10 +73,7 @@ export type GroupDetails = {
   userRole: GroupMemberRoleCode;
 
   rules: {
-    membersCanAddLogs: boolean;
     membersCanAddVehicles: boolean;
-    membersCanEditLogs: boolean;
-    membersCanDeleteLogs: boolean;
   };
 
   members: GroupMember[];

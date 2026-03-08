@@ -11,7 +11,7 @@ export class GroupsTransformerService {
     private readonly vehicleRepository: VehicleRepository,
   ) {}
 
-  DB_GroupDetails_Inlcude() {
+  DB_GroupDetails_Include() {
     return {
       members: {
         select: {
@@ -30,9 +30,6 @@ export class GroupsTransformerService {
       vehicles: {
         select: {
           addedAt: true,
-          membersCanAddLogs: true,
-          membersCanDeleteLogs: true,
-          membersCanEditLogs: true,
           vehicle: {
             include: {
               ...this.vehicleRepository.DBInclude_BasicVehicle,
@@ -86,10 +83,7 @@ export class GroupsTransformerService {
       userRole: userRole,
       members: groupMembers,
       rules: {
-        membersCanAddLogs: group.membersCanAddLogs,
         membersCanAddVehicles: group.membersCanAddVehicles,
-        membersCanEditLogs: group.membersCanEditLogs,
-        membersCanDeleteLogs: group.membersCanDeleteLogs,
       },
       vehicles: group.vehicles.map((v) => ({
         addedAt: v.addedAt,
@@ -104,5 +98,5 @@ export class GroupsTransformerService {
 }
 
 export type DB_GroupDetails = Prisma.GroupGetPayload<{
-  include: ReturnType<GroupsTransformerService['DB_GroupDetails_Inlcude']>;
+  include: ReturnType<GroupsTransformerService['DB_GroupDetails_Include']>;
 }>;

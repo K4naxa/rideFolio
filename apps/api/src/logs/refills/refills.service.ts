@@ -1,6 +1,6 @@
 import { UnitConversionService } from '../../utils/unit-conversion.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, Refill, Vehicle } from 'prisma/generated/client';
+import { Prisma, Refill } from 'prisma/generated/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -18,16 +18,17 @@ export class RefillsService {
     private refillTransformer: RefillsTransformerService,
   ) {}
 
-  async createRefill(UserSession: UserSession, refillData: RefillSchemaOutput): Promise<void> {
+  async createRefill(userSession: UserSession, refillData: RefillSchemaOutput): Promise<void> {
     // 1. Check if the user has permission to create logs for the vehicle
-    const vehicle: Vehicle = await this.authValidation.canCreateLogs(UserSession.user.id, refillData.vehicleId);
+    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, refillData.vehicleId);
+
     // validate user storage limits
-    const byteSize = await this.limitsService.canCreateLog(UserSession.user.id, vehicle.ownerId, refillData);
+    const byteSize = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, refillData);
 
     // 2. Fetch user, vehicle and previous log data
     const [user, previousLog] = await Promise.all([
       this.prisma.user.findUnique({
-        where: { id: UserSession.user.id },
+        where: { id: userSession.user.id },
         select: {
           volumeUnit: true,
         },
@@ -74,7 +75,7 @@ export class RefillsService {
       await tx.refill.create({
         data: {
           vehicleId: refillData.vehicleId,
-          userId: UserSession.user.id,
+          userId: userSession.user.id,
           date: refillData.date,
           odometer_hour: isOdometerHourly ? normalizedOdometer : null,
           odometer_km: isOdometerHourly ? null : normalizedOdometer,
@@ -90,7 +91,7 @@ export class RefillsService {
         },
       });
 
-      // Update vehicle with new odometer + lifetime stats
+      // Update the vehicle with new odometer + lifetime stats
       await tx.vehicle.update({
         where: { id: vehicle.id },
         data: {
@@ -228,7 +229,7 @@ export class RefillsService {
     }> = [];
 
     for (const refill of refillsBackwards) {
-      // if we find a skipped refill before finding a full refill, period is invalid
+      // if we find a skipped refill before finding a full refill, the period is invalid
       if (refill.skippedRefill) {
         return { consumption: null, validFuel: null, validUnits: null };
       }
@@ -277,7 +278,7 @@ export class RefillsService {
 
     const delta = currentOdometer - previousOdometer;
 
-    // Ensure delta is positive (should be guaranteed by validation, but safety check)
+    // Ensure delta is positive (should be guaranteed by validation but safety check)
     const safeDelta = Math.max(0, delta);
 
     return {

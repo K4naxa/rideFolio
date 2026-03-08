@@ -9,18 +9,6 @@ export const GroupSchema = z.object({
     .optional()
     .nullable(),
   vehicleIds: z.array(z.string()),
-  membersCanAddLogs: z.preprocess(
-    (val) => (typeof val === "string" ? val !== "false" : val),
-    z.boolean("Invalid value"),
-  ),
-  membersCanEditLogs: z.preprocess(
-    (val) => (typeof val === "string" ? val !== "false" : val),
-    z.boolean("Invalid value"),
-  ),
-  membersCanDeleteLogs: z.preprocess(
-    (val) => (typeof val === "string" ? val !== "false" : val),
-    z.boolean("Invalid value"),
-  ),
   membersCanAddVehicles: z.preprocess(
     (val) => (typeof val === "string" ? val !== "false" : val),
     z.boolean("Invalid value"),

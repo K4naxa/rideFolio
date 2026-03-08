@@ -69,8 +69,8 @@ export class MaintenanceService {
   }
 
   async createMaintenance(userSession: UserSession, maintenanceData: MaintenanceInput) {
-    // 1. Check if the user has permission to create logs for the vehicle
-    const vehicle = await this.authValidation.canCreateLogs(userSession.user.id, maintenanceData.vehicleId);
+    // 1. validate access and return
+    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, maintenanceData.vehicleId);
 
     // validate storage limits
     const sizeBytes = await this.limitsService.canCreateMaintenance(

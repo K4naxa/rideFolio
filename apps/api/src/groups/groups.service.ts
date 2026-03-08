@@ -113,7 +113,7 @@ export class GroupsService {
       return tx.group.update({
         where: { id: groupId },
         data: { ...groupData },
-        include: this.groupTransformer.DB_GroupDetails_Inlcude(),
+        include: this.groupTransformer.DB_GroupDetails_Include(),
       });
     });
 
@@ -134,7 +134,7 @@ export class GroupsService {
 
       return tx.group.findUnique({
         where: { id: groupId },
-        include: this.groupTransformer.DB_GroupDetails_Inlcude(),
+        include: this.groupTransformer.DB_GroupDetails_Include(),
       });
     });
 
@@ -259,7 +259,7 @@ export class GroupsService {
     // Validate that the user has access to the group
     const groupDetails = await this.prisma.group.findUnique({
       where: { id: groupId, members: { some: { userId: userSession.user.id } } },
-      include: this.groupTransformer.DB_GroupDetails_Inlcude(),
+      include: this.groupTransformer.DB_GroupDetails_Include(),
     });
 
     if (!groupDetails) throw new NotFoundException(`Group not found or access denied.`);

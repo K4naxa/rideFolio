@@ -503,17 +503,13 @@ model Group {
   updatedAt DateTime @updatedAt
 
   // A group has many members.
-  members  GroupMember[]
+  members               GroupMember[]
   // A group has many vehicles linked to it.
-  vehicles GroupVehicle[]
+  vehicles              GroupVehicle[]
   // A group has pending invites.
-  invites  GroupInvite[]
-
-  // Settings that override default member permissions.
-  membersCanAddLogs     Boolean @default(true)
-  membersCanEditLogs    Boolean @default(false)
-  membersCanDeleteLogs  Boolean @default(false)
-  membersCanAddVehicles Boolean @default(false)
+  invites               GroupInvite[]
+  // member permissions
+  membersCanAddVehicles Boolean        @default(false)
 }
 
 model GroupMember {
@@ -540,11 +536,6 @@ model GroupVehicle {
 
   vehicleId String
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
-  // Settings that override default member permissions.
-  membersCanAddLogs    Boolean @default(true)
-  membersCanEditLogs   Boolean @default(false)
-  membersCanDeleteLogs Boolean @default(false)
 
   // The vehicle was added to the group at a specific time.
   addedAt DateTime @default(now())

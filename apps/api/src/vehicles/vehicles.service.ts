@@ -7,8 +7,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { LimitsService } from 'src/limits/limits.service';
-import { TodosService } from 'src/todos/todos.service';
 import { TodoFormatterService } from 'src/todos/todoFormatter.service';
+import { Vehicle } from 'prisma/generated/client';
 
 @Injectable()
 export class VehiclesService {
@@ -19,7 +19,6 @@ export class VehiclesService {
     private vehicleTransformer: VehicleTransformerService,
     private authValidationService: AuthValidationService,
     private limitsService: LimitsService,
-    private todoService: TodosService,
     private todoFormatter: TodoFormatterService,
   ) {}
 
@@ -39,6 +38,7 @@ export class VehiclesService {
 
       // Extract and remove the odometer value from vehicleData
       // TODO: add image logic later
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { odometer, image, ...formattedVehicleData } = vehicleData;
       formattedDistanceOdometer = odometer ? odometer : null;
 
@@ -82,89 +82,76 @@ export class VehiclesService {
   }
 
   async update(userSession: UserSession, vehicleId: string, vehicleData: VehicleInput) {
-    // validate rights
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: vehicleId, ownerId: userSession.user.id },
-    });
-
-    if (!vehicle) {
-      throw new NotFoundException({
-        message: 'Vehicle not found or access denied',
-      });
-    }
-
     await this.validateVehicleType(vehicleData.type);
 
-    try {
-      // Extract image to handle separately
-      const { image, odometer, odometerType, ...updateData } = vehicleData;
+    // Extract image to handle separately
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { image, odometer, odometerType, ...updateData } = vehicleData;
 
-      await this.prisma.vehicle.update({
-        where: { id: vehicleId },
-        data: updateData,
-      });
+    const result = await this.prisma.vehicle.update({
+      where: { id: vehicleId, ownerId: userSession.user.id },
+      data: updateData,
+    });
 
-      // TODO: Handle image upload separately if provided
-    } catch (error) {
-      throw new BadRequestException({
-        message: 'Failed to update vehicle',
+    if (!result)
+      throw new NotFoundException({
+        code: 'NOT_FOUND_OR_ACCESS_DENIED',
+        message: 'Vehicle not found or access denied.',
       });
-    }
   }
 
   async delete(userSession: UserSession, vehicleId: string) {
     console.log('Deleting vehicle with ID:', vehicleId);
 
     // TODO: Delete images from storage and update storage usage accordingly
-    try {
-      const vehicle = await this.prisma.vehicle.findUniqueOrThrow({
-        where: { id: vehicleId, ownerId: userSession.user.id },
-        select: {
-          sizeBytes: true,
-          id: true,
-          image: true,
-          refills: { select: { sizeBytes: true } },
-          maintenances: { select: { sizeBytes: true } },
-          todos: { select: { sizeBytes: true } },
-          notes: { select: { sizeBytes: true } },
-          shoppingListItems: { select: { sizeBytes: true } },
-        },
+
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: vehicleId, ownerId: userSession.user.id },
+      select: {
+        sizeBytes: true,
+        id: true,
+        image: true,
+        refills: { select: { sizeBytes: true } },
+        maintenances: { select: { sizeBytes: true } },
+        todos: { select: { sizeBytes: true } },
+        notes: { select: { sizeBytes: true } },
+        shoppingListItems: { select: { sizeBytes: true } },
+      },
+    });
+    if (!vehicle)
+      throw new NotFoundException({
+        code: 'NOT_FOUND_OR_ACCESS_DENIED',
+        message: 'Vehicle not found or access denied.',
       });
 
-      const vehicleBytes = vehicle.sizeBytes;
-      const refillsBytes = vehicle.refills.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-      const maintenancesBytes = vehicle.maintenances.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-      const todosBytes = vehicle.todos.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-      const notesBytes = vehicle.notes.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-      const shoppingListItemsBytes = vehicle.shoppingListItems.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const vehicleBytes = vehicle.sizeBytes;
+    const refillsBytes = vehicle.refills.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const maintenancesBytes = vehicle.maintenances.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const todosBytes = vehicle.todos.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const notesBytes = vehicle.notes.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const shoppingListItemsBytes = vehicle.shoppingListItems.reduce((acc, curr) => acc + curr.sizeBytes, 0);
 
-      await this.prisma.$transaction(async (tx) => {
-        await Promise.all([
-          tx.vehicle.delete({ where: { id: vehicle.id } }),
-          this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'VEHICLE', vehicleBytes),
-          refillsBytes > 0
-            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'REFILL', refillsBytes)
-            : Promise.resolve(),
-          maintenancesBytes > 0
-            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'MAINTENANCE', maintenancesBytes)
-            : Promise.resolve(),
-          todosBytes > 0
-            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'TODO', todosBytes)
-            : Promise.resolve(),
-          notesBytes > 0
-            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'NOTE', notesBytes)
-            : Promise.resolve(),
-          shoppingListItemsBytes > 0
-            ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'SHOPPING_LIST', shoppingListItemsBytes)
-            : Promise.resolve(),
-        ]);
-      });
-    } catch (error) {
-      console.error('Error deleting vehicle:', error);
-      throw new BadRequestException({
-        message: 'Error deleting vehicle.',
-      });
-    }
+    await this.prisma.$transaction(async (tx) => {
+      await Promise.all([
+        tx.vehicle.delete({ where: { id: vehicle.id } }),
+        this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'VEHICLE', vehicleBytes),
+        refillsBytes > 0
+          ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'REFILL', refillsBytes)
+          : Promise.resolve(),
+        maintenancesBytes > 0
+          ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'MAINTENANCE', maintenancesBytes)
+          : Promise.resolve(),
+        todosBytes > 0
+          ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'TODO', todosBytes)
+          : Promise.resolve(),
+        notesBytes > 0
+          ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'NOTE', notesBytes)
+          : Promise.resolve(),
+        shoppingListItemsBytes > 0
+          ? this.limitsService.decrementStorageUsage(tx, userSession.user.id, 'SHOPPING_LIST', shoppingListItemsBytes)
+          : Promise.resolve(),
+      ]);
+    });
   }
   // ***       FETCH       ***
   async getVehicleTypes(): Promise<VehicleType[]> {
@@ -209,9 +196,10 @@ export class VehiclesService {
   async getUpcomingActivity(userSession: UserSession, vehicleId?: string): Promise<ActivityItem[]> {
     // If vehicleId is provided, validate access to that vehicle
     // If no vehicleId is provided, fetch upcoming events for all accessible vehicles
-    const vehicles = vehicleId
-      ? await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId)
-      : await this.vehicleRepository.findAccessibleVehicles(userSession.user.id);
+    let vehicles: Vehicle[] = [];
+
+    if (vehicleId) vehicles.push(await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId));
+    else vehicles = await this.vehicleRepository.findAccessibleVehicles(userSession.user.id);
 
     if (!vehicles || vehicles.length === 0) return [];
 

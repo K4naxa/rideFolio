@@ -5,27 +5,26 @@ import { Prisma } from 'prisma/generated/client';
 import { LimitsService } from 'src/limits/limits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
-import { VehicleRepository } from 'src/vehicles/vehicleRepository';
+import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
 
 @Injectable()
 export class NoteService {
   constructor(
     private readonly validation: AuthValidationService,
-    private readonly vehicleRepo: VehicleRepository,
     private readonly limitsService: LimitsService,
     private prisma: PrismaService,
   ) {}
 
-  async createNote(UserSession: UserSession, data: NoteSchemaType): Promise<Note> {
-    const vehicle = await this.validation.canCreateLogs(UserSession.user.id, data.vehicleId);
-    const sizeBytes = await this.limitsService.canCreateLog(UserSession.user.id, vehicle.ownerId, data);
+  async createNote(userSession: UserSession, data: NoteSchemaType): Promise<Note> {
+    const vehicle = await this.validation.hasAccessToVehicle(userSession.user.id, data.vehicleId);
+    const sizeBytes = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, data);
 
     const newNote = await this.prisma.$transaction(async (tx) => {
       await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'NOTE', sizeBytes);
-      return await tx.note.create({
+      return tx.note.create({
         data: {
           ...data,
-          createdById: UserSession.user.id,
+          createdById: userSession.user.id,
           sizeBytes,
         },
         include: {
@@ -47,7 +46,7 @@ export class NoteService {
     }
 
     // Validate permissions
-    const vehicle = await this.validation.canEditLogs(userSession.user.id, data.vehicleId);
+    const vehicle = await this.validation.hasAccessToVehicle(userSession.user.id, note.vehicleId);
 
     // Calculate new size from merged data
     const mergedNote = { ...note, ...data };
@@ -90,27 +89,28 @@ export class NoteService {
   }
 
   async notePinnedToggle(UserSession: UserSession, noteId: string, pinned: boolean): Promise<Note> {
-    const note = await this.prisma.note.findUnique({ where: { id: noteId } });
-    await this.validation.canEditLogs(UserSession.user.id, note?.vehicleId);
     const updatedNote = await this.prisma.note.update({
-      where: { id: noteId },
+      where: { id: noteId, ...VehicleAccessPrisma.nestedForUser(UserSession.user.id) },
       data: { pinned },
       include: { vehicle: true },
     });
+
+    if (!updatedNote) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+
     return this.toNoteFormat(updatedNote);
   }
 
   async deleteNote(UserSession: UserSession, noteId: string) {
     const note = await this.prisma.note.findUnique({
-      where: { id: noteId },
+      where: { id: noteId, ...VehicleAccessPrisma.nestedForUser(UserSession.user.id) },
+      include: { vehicle: { select: { ownerId: true } } },
     });
-    if (!note) {
-      throw new Error('Note not found');
-    }
-    const vehicle = await this.validation.canDeleteLogs(UserSession.user.id, note.vehicleId);
+
+    if (!note) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+
     await this.prisma.$transaction(async (tx) => {
-      await this.limitsService.decrementStorageUsage(tx, vehicle.ownerId, 'NOTE', note.sizeBytes);
-      await tx.note.delete({ where: { id: noteId } });
+      await this.limitsService.decrementStorageUsage(tx, note.vehicle.ownerId, 'NOTE', note.sizeBytes);
+      await tx.note.delete({ where: { id: note.id } });
     });
   }
 
@@ -118,35 +118,26 @@ export class NoteService {
     const note = await this.prisma.note.findUnique({
       where: {
         id: noteId,
+        ...VehicleAccessPrisma.nestedForUser(userId),
       },
       include: {
         vehicle: true,
       },
     });
-    if (!note) {
-      throw new NotFoundException('Not found or access denied');
-    }
-
-    await this.validation.hasAccessToVehicle(userId, note.vehicleId);
+    if (!note) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
 
     return this.toNoteFormat(note);
   }
 
   async getAccessibleNotes(userId: string): Promise<Note[]> {
-    const accessibleVehicleIds = await this.vehicleRepo
-      .findAccessibleVehicles(userId)
-      .then((vehicles) => vehicles.map((v) => v.id));
-
     const notes = await this.prisma.note.findMany({
       where: {
-        vehicleId: {
-          in: accessibleVehicleIds,
-        },
+        ...VehicleAccessPrisma.nestedForUser(userId),
       },
       include: {
         vehicle: true,
       },
-      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
+      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
     });
 
     return notes.map((note) => this.toNoteFormat(note));
@@ -156,15 +147,13 @@ export class NoteService {
     await this.validation.hasAccessToVehicle(UserSession.user.id, vehicleId);
     const notes = await this.prisma.note.findMany({
       where: { vehicleId },
-      include: {
-        vehicle: true,
-      },
-      orderBy: [{ pinned: 'desc' }, { updatedAt: 'desc' }],
+      include: { vehicle: true },
+      orderBy: [{ pinned: 'desc' }, { createdAt: 'desc' }],
     });
     return notes.map((note) => this.toNoteFormat(note));
   }
 
-  // Format note to Note type expected by frontend
+  // Format note to a Note type expected by frontend
   private toNoteFormat(note: Prisma.NoteGetPayload<{ include: { vehicle: true } }>): Note {
     return {
       id: note.id,

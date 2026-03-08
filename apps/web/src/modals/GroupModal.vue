@@ -38,10 +38,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     name: "",
     description: "",
     vehicleIds: [],
-    membersCanAddLogs: true,
     membersCanAddVehicles: false,
-    membersCanDeleteLogs: true,
-    membersCanEditLogs: true,
   },
 });
 
@@ -64,10 +61,7 @@ watch([isModalOpen, group], ([open, groupData]) => {
         name: groupData.name,
         description: groupData.description || "",
         vehicleIds: groupData.vehicles.map((v) => v.data.id),
-        membersCanAddLogs: Boolean(groupData.rules.membersCanAddLogs),
         membersCanAddVehicles: Boolean(groupData.rules.membersCanAddVehicles),
-        membersCanDeleteLogs: Boolean(groupData.rules.membersCanDeleteLogs),
-        membersCanEditLogs: Boolean(groupData.rules.membersCanEditLogs),
       },
     });
   } else {
@@ -76,10 +70,7 @@ watch([isModalOpen, group], ([open, groupData]) => {
         name: "",
         description: "",
         vehicleIds: [],
-        membersCanAddLogs: true,
         membersCanAddVehicles: false,
-        membersCanDeleteLogs: true,
-        membersCanEditLogs: true,
       },
     });
   }
@@ -152,39 +143,6 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="overflow-hidden">
           <Label class="text-muted-foreground mb-1">Member Permissions</Label>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Field v-slot="{ value, handleChange }" name="membersCanAddLogs">
-              <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanAddLogs-checkbox">
-                <Checkbox :model-value="value" @update:model-value="handleChange" />
-                <div>
-                  <h4>Allow members to create logs</h4>
-                  <p class="text-muted-foreground text-sm">Members can create new logs for the groups vehicles</p>
-                </div>
-                <ErrorMessage name="membersCanAddLogs" class="text-destructive mt-1 ml-2 text-sm" />
-              </label>
-            </Field>
-
-            <Field v-slot="{ value, handleChange }" name="membersCanEditLogs">
-              <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanEditLogs-checkbox">
-                <Checkbox :model-value="value" @update:model-value="handleChange" />
-                <div>
-                  <h4>Allow members to edit logs</h4>
-                  <p class="text-muted-foreground text-sm">Members can edit existing logs for the groups vehicles</p>
-                </div>
-                <ErrorMessage name="membersCanEditLogs" class="text-destructive mt-1 ml-2 text-sm" />
-              </label>
-            </Field>
-
-            <Field v-slot="{ value, handleChange }" name="membersCanDeleteLogs">
-              <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanDeleteLogs-checkbox">
-                <Checkbox :model-value="value" @update:model-value="handleChange" />
-                <div>
-                  <h4>Allow members to delete logs</h4>
-                  <p class="text-muted-foreground text-sm">Members can delete existing logs for the groups vehicles</p>
-                </div>
-                <ErrorMessage name="membersCanDeleteLogs" class="text-destructive mt-1 ml-2 text-sm" />
-              </label>
-            </Field>
-
             <Field v-slot="{ value, handleChange }" name="membersCanAddVehicles">
               <label class="flex items-center gap-4 rounded border p-3" data-cy="membersCanAddVehicles-checkbox">
                 <Checkbox :model-value="value" @update:model-value="handleChange" />

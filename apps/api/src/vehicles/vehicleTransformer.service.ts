@@ -11,9 +11,6 @@ interface RawVehicleWithGroups extends Vehicle {
     icon: string | null;
   };
   groups?: {
-    membersCanAddLogs: boolean;
-    membersCanEditLogs: boolean;
-    membersCanDeleteLogs: boolean;
     group: {
       id: string;
       name: string;
@@ -71,31 +68,10 @@ export class VehicleTransformerService {
   // Transform raw vehicle with groups to TAccessibleVehicle
   toAccessibleVehicle(rawVehicle: RawVehicleWithGroups, userId: string): TAccessibleVehicle {
     const isOwnerUser = rawVehicle.ownerId === userId;
-
-    // Group permission logic
-    let canCreateLogs = false;
-    let canEditLogs = false;
-    let canDeleteLogs = false;
-
     const groupAccess = rawVehicle.groups?.[0];
-    if (groupAccess) {
-      canCreateLogs = groupAccess.membersCanAddLogs;
-      canEditLogs = groupAccess.membersCanEditLogs;
-      canDeleteLogs = groupAccess.membersCanDeleteLogs;
-    }
-
-    // Owner override
-    if (isOwnerUser) {
-      canCreateLogs = true;
-      canEditLogs = true;
-      canDeleteLogs = true;
-    }
 
     return {
       isOwnerUser,
-      canCreateLogs,
-      canEditLogs,
-      canDeleteLogs,
       group: groupAccess
         ? {
             id: groupAccess.group.id,
