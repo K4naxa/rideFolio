@@ -41,7 +41,7 @@ const filteredTodos = computed(() => {
   if (!todos.value) return [];
 
   return todos.value.filter((todo) => {
-    if (vehicleIdFilter.value && todo.vehicle.id !== vehicleIdFilter.value) return false;
+    if (vehicleIdFilter.value && todo.vehicleId !== vehicleIdFilter.value) return false;
 
     if (searchQuery.value) {
       const qr = searchQuery.value.toLowerCase();

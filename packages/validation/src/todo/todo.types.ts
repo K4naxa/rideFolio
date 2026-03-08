@@ -29,7 +29,3 @@ export type BaseTodo = {
     date: Date | null;
   } | null;
 };
-
-export interface TodoWithVehicle extends BaseTodo {
-  vehicle: VehicleMinimal;
-}

@@ -2,7 +2,7 @@ import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
-import type { BaseTodo, TodoWithVehicle } from "@repo/validation";
+import type { BaseTodo } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
 
@@ -20,7 +20,7 @@ export function useTodosAll() {
   const { isAuthenticated } = useAuth();
   return useQuery({
     queryKey: queryKeys.todos.all,
-    queryFn: async () => await fetchApi<TodoWithVehicle[]>(`/todos/with-vehicles`),
+    queryFn: async () => await fetchApi<BaseTodo[]>(`/todos/`),
     staleTime: 1000 * 60 * 10,
     enabled: computed(() => isAuthenticated.value),
   });

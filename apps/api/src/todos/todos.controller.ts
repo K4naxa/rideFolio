@@ -18,9 +18,9 @@ export class TodosController {
     return await this.todoservice.createTodo(userSession, todoDto);
   }
 
-  @Get('with-vehicles')
+  @Get()
   async getAllTodosWithVehicles(@Session() userSession: UserSession) {
-    return await this.todoservice.getUserTodosWithVehicles(userSession);
+    return await this.todoservice.getAllTodos(userSession);
   }
 
   @Get(':todoId')
