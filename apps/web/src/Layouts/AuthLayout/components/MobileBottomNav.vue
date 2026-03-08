@@ -174,7 +174,7 @@ const themeStore = useThemeStore();
           </DrawerHeader>
 
           <!-- Menu items -->
-          <nav class="flex flex-col gap-1">
+          <nav class="flex flex-col">
             <Drawer v-slot="{ onOpenChange }">
               <DrawerTrigger asChild>
                 <Button variant="menu" class="justify-start">
