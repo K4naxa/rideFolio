@@ -8,7 +8,6 @@ import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { LimitsService } from 'src/limits/limits.service';
 import { TodoFormatterService } from 'src/todos/todoFormatter.service';
 import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
-import { safeDelete } from '../prisma/prisma.utils';
 
 @Injectable()
 export class TodosService {
