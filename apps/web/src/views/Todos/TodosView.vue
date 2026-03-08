@@ -216,7 +216,7 @@ const filteredTodos = computed(() => {
         </EmptyContent>
       </Empty>
 
-      <TodoTable :todos="filteredTodos" showVehicleNames />
+      <TodoTable :todos="filteredTodos" :showVehicle="!vehicleIdFilter" />
     </div>
   </MainContentWrapper>
 </template>
