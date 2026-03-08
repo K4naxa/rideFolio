@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
-import TodoActivityPreviewItem from "@/components/previews/todo/TodoActivityPreviewItem.vue";
-import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogContent from "@/components/ui/dialog/DialogContent.vue";
-import DialogTrigger from "@/components/ui/dialog/DialogTrigger.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useVehicleTodos } from "@/lib/queries/todos/todo-queries";
@@ -11,7 +7,7 @@ import { useModalStore } from "@/stores/modal";
 import { computed, ref } from "vue";
 import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 
-import TodoItem from "@/components/todos/TodoItem.vue";
+import TodoInteractive from "@/components/todos/TodoInteractive.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const modalStore = useModalStore();
@@ -47,15 +43,8 @@ const displayedTodos = computed(
           class="gaps-sm grid w-full grid-flow-col flex-col overflow-x-auto pb-2 md:flex"
           :style="{ gridTemplateRows: `repeat(${Math.min(displayedTodos.length, 3)}, minmax(0, 1fr))` }"
         >
-          <Dialog v-for="todo in displayedTodos" :key="todo.id" v-slot="{ close }">
-            <DialogTrigger as-child>
-              <TodoItem :todo="todo" />
-            </DialogTrigger>
+          <TodoInteractive v-for="todo in displayedTodos" :key="todo.id" :todo="todo" />
 
-            <DialogContent class="max-w-xl">
-              <TodoActivityPreviewItem :activity="todo" @close="close" />
-            </DialogContent>
-          </Dialog>
           <li
             class="text-muted-foreground hover:text-primary-foreground hidden cursor-pointer list-none items-center gap-4 px-1.5 py-2.5 transition-colors duration-100 md:flex"
             @click="modalStore.onOpen('createTodo')"
@@ -68,25 +57,3 @@ const displayedTodos = computed(
     </ScrollableNav>
   </div>
 </template>
-
-<style scoped>
-.line-through {
-  text-decoration: none;
-  position: relative;
-}
-.line-through::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background-color: currentColor;
-  transform: scaleX(0);
-  transition: transform 0.1s ease-in-out;
-  transform-origin: left;
-}
-.line-through.purchased::after {
-  transform: scaleX(1);
-}
-</style>
