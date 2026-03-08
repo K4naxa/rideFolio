@@ -72,7 +72,6 @@ export class GroupsService {
 
   async updateGroup(userSession: UserSession, groupId: string, updateDate: GroupSchemaValues): Promise<GroupDetails> {
     const { vehicleIds, ...groupData } = updateDate;
-    // TODO: add logic for updating vehicles in the group. Send notification to users if their vehicle has been removed
 
     const group = await this.prisma.group.findUnique({
       where: {
@@ -88,6 +87,12 @@ export class GroupsService {
         vehicles: {
           select: {
             vehicleId: true,
+            vehicle: {
+              select: {
+                ownerId: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -95,18 +100,36 @@ export class GroupsService {
 
     if (!group) throw new NotFoundException(`Group not found or access denied.`);
 
-    const vehiclesToRemove = group.vehicles
-      .filter((v) => !vehicleIds.some((id) => id === v.vehicleId))
-      .map((v) => v.vehicleId);
+    const vehiclesToRemove = group.vehicles.filter((v) => !vehicleIds.some((id) => id === v.vehicleId));
+
+    const vehicleToRemoveIds = vehiclesToRemove.map((v) => v.vehicleId);
 
     const updatedGroup = await this.prisma.$transaction(async (tx) => {
       if (vehiclesToRemove.length > 0) {
+        // delete vehicles from the group
         await tx.groupVehicle.deleteMany({
           where: {
             groupId,
-            vehicleId: { in: vehiclesToRemove },
+            vehicleId: { in: vehicleToRemoveIds },
           },
         });
+
+        //   Notify users about the removal of vehicles
+        for (const vehicle of vehiclesToRemove) {
+          // Skip notifying if the vehicle belongs to the sessionUser
+          if (userSession.user.id === vehicle.vehicle.ownerId) continue;
+
+          await this.notificationService.create({
+            type: GROUP_VEHICLE_REMOVED_NOTIFICATION.type,
+            userId: vehicle.vehicle.ownerId,
+            meta: {
+              groupId,
+              groupName: group.name,
+              vehicleName: vehicle.vehicle.name,
+            },
+            transactionClient: tx,
+          });
+        }
       }
 
       // update group details
@@ -175,7 +198,7 @@ export class GroupsService {
       },
     });
 
-    if (!group || !groupVehicle) throw new NotFoundException('Group not found or access denied.');
+    if (!group || !groupVehicle) throw new NotFoundException(`Group or vehicle not found, or access denied.`);
 
     await this.prisma.$transaction(async (tx) => {
       // Delete the vehicle
