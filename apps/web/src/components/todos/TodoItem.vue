@@ -2,13 +2,13 @@
 import type { BaseTodo } from "@repo/validation";
 import { computed } from "vue";
 import { twMerge } from "tailwind-merge";
-import { capitalize } from "@/lib/utils.ts";
 import { useTimeAgo } from "@vueuse/core";
 import Badge from "../ui/badge/Badge.vue";
 import Checkbox from "../ui/checkbox/Checkbox.vue";
 import { Label } from "@/components/ui/label";
 import Icon from "@/components/icons/Icon.vue";
 import { useTodoToggle } from "@/lib/queries/todos/todo-mutations.ts";
+import { useVehicles } from "@/lib/composables/useVehicles.ts";
 
 const props = defineProps<{
   todo: BaseTodo;
@@ -17,6 +17,8 @@ const props = defineProps<{
 }>();
 
 const { mutate: toggleTodo } = useTodoToggle();
+
+const { getVehicleNameById } = useVehicles();
 
 const isOverdue = computed(
   () => (props.todo.dueOdometer?.overdue || props.todo.dueDate?.overdue) && !props.todo.isCompleted,
@@ -34,15 +36,13 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
     "
   >
     <div class="flex w-full items-center gap-4">
+      <Badge v-if="props.showVehicle" variant="accent">{{ getVehicleNameById(todo.vehicleId) }}</Badge>
       <span
-        class="w-fit truncate text-sm font-medium"
-        :class="todo.isCompleted && 'text-muted-foreground line-through'"
+        class="w-fit truncate text-sm font-medium line-through"
+        :class="todo.isCompleted && 'text-muted-foreground completed'"
       >
         {{ todo.title }}
       </span>
-      <Badge v-if="todo.priority" variant="outline" :class="twMerge('priority-' + todo.priority, 'text-xs')">
-        {{ capitalize(todo.priority || "") }}
-      </Badge>
 
       <Checkbox
         :model-value="todo.isCompleted"
@@ -59,9 +59,8 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
     </div>
     <!-- Description -->
     <span
-      v-if="todo.description"
-      class="text-muted-foreground hidden overflow-hidden text-start text-sm md:block"
-      :class="todo.isCompleted && 'purchased'"
+      v-if="todo.description || !props.minimized"
+      class="text-muted-foreground block overflow-hidden text-start text-sm"
     >
       {{ todo.description }}
     </span>
@@ -69,11 +68,11 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
     <div v-if="hasDueInfo" class="mt-2 flex items-center gap-2 text-xs [&_svg]:size-4">
       <Label class="text-muted-foreground text-xs">Due: </Label>
 
-      <Badge v-if="todo.dueDate" :variant="todo.dueDate.overdue ? 'destructive' : 'muted'">
+      <Badge v-if="todo.dueDate" :variant="todo.dueDate.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
         <Icon name="calendar" /> {{ useTimeAgo(new Date(todo.dueDate.date)) }}
       </Badge>
 
-      <Badge v-if="todo.dueOdometer" :variant="todo.dueOdometer.overdue ? 'destructive' : 'muted'">
+      <Badge v-if="todo.dueOdometer" :variant="todo.dueOdometer.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
         <Icon name="odoDistance" />
         {{
           todo.dueOdometer.overdue
@@ -102,7 +101,7 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
   transition: transform 0.1s ease-in-out;
   transform-origin: left;
 }
-.line-through.purchased::after {
+.line-through.completed::after {
   transform: scaleX(1);
 }
 </style>
