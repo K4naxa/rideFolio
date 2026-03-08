@@ -137,14 +137,23 @@ export class TodosService {
   }
 
   async deleteTodo(userSession: UserSession, todoId: string) {
-    return safeDelete(
-      this.prisma.todo.delete({
+    const todo = await this.prisma.todo.findUnique({
+      where: { id: todoId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
+      include: { vehicle: { select: { ownerId: true } } },
+    });
+    if (!todo) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.todo.delete({
         where: {
           id: todoId,
           ...VehicleAccessPrisma.nestedForUser(userSession.user.id),
         },
-      }),
-    );
+      });
+
+      // Decrement vehicle owner's storage usage
+      await this.limitsService.decrementStorageUsage(tx, todo.vehicle.ownerId, 'TODO', todo.sizeBytes);
+    });
   }
 
   async updateTodo(userSession: UserSession, todoId: string, todoDto: TodoSchemaType): Promise<BaseTodo> {
