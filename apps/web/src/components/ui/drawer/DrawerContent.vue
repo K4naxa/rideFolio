@@ -19,6 +19,7 @@ const forwarded = useForwardPropsEmits(props, emits);
 <template>
   <DrawerPortal>
     <DrawerOverlay />
+
     <DrawerContent
       data-slot="drawer-content"
       v-bind="{ ...$attrs, ...forwarded }"
@@ -34,6 +35,13 @@ const forwarded = useForwardPropsEmits(props, emits);
         )
       "
     >
+      <!-- Floating item anchored to the top edge of the drawer -->
+      <div
+        class="absolute inset-x-0 -top-4 z-50 -translate-y-full px-4 transition-opacity duration-200 group-data-[state=closed]/drawer-content:opacity-0 group-data-[state=open]/drawer-content:opacity-100"
+      >
+        <slot name="floatingItem" />
+      </div>
+
       <!-- Normal pill for when whole content is draggable.-->
       <div
         class="bg-muted mx-auto mt-4 hidden h-2 w-28 shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block"
