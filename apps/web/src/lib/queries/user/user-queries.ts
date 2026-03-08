@@ -10,6 +10,7 @@ export function useUserQuery() {
     queryKey: ["user", "basic-profile"],
     queryFn: async () => await fetchApi<TBasicProfile>("/users/me"),
     enabled: isAuthenticated,
+    staleTime: 1000 * 60 * 10,
   });
 }
 
