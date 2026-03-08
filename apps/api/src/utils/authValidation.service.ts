@@ -1,6 +1,7 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Group, Vehicle } from 'prisma/generated/client';
+import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
 
 @Injectable()
 export class AuthValidationService {
@@ -8,32 +9,11 @@ export class AuthValidationService {
 
   async hasAccessToVehicle(userId: string, vehicleId: string): Promise<Vehicle> {
     const vehicle = await this.prisma.vehicle.findFirst({
-      where: {
-        id: vehicleId,
-        OR: [
-          // Condition 1: user owns the vehicle
-          { ownerId: userId },
-          // Condition 2: user is in a group that contains the vehicle
-          {
-            groups: {
-              some: {
-                group: {
-                  members: {
-                    some: {
-                      userId,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        ],
-      },
+      where: { id: vehicleId, ...VehicleAccessPrisma.forUser(userId) },
     });
 
     // If no vehicle is found, throw an exception.
     if (!vehicle) {
-      console.error('Access denied: user does not have access to the vehicle.');
       throw new NotFoundException({
         code: 'NOT_FOUND_OR_ACCESS_DENIED',
         message: 'Vehicle not found or access denied.',
