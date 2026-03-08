@@ -43,20 +43,6 @@ export class AuthValidationService {
     return vehicle;
   }
 
-  async hasAccessToGroup(userId: string, groupId: string): Promise<void> {
-    const count = await this.prisma.groupMember.count({
-      where: {
-        group: { id: groupId },
-        userId,
-      },
-    });
-
-    if (count === 0) {
-      console.error('Access denied: user does not have access to the group.');
-      throw new NotFoundException(`Group not found or access denied.`);
-    }
-  }
-
   async canAddVehiclesToGroup(userId: string, groupId: string): Promise<Group> {
     const group = await this.prisma.group.findUnique({
       where: {
