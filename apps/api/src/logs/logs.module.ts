@@ -7,14 +7,14 @@ import { AuthValidationService } from 'src/utils/authValidation.service';
 import { OdometerService } from 'src/utils/odometer.service';
 import { MaintenanceService } from './maintenance/maintenance.service';
 import { RefillsService } from './refills/refills.service';
-import { VehicleRepository } from 'src/vehicles/vehicleRepository';
 import { LimitsModule } from 'src/limits/limits.module';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
 import { RefillsTransformerService } from './refills/refills.transformer.service';
 import { MaintenanceTransformerService } from './maintenance/maintenance.transformer.service';
+import { VehiclesModule } from '../vehicles/vehicles.module';
 
 @Module({
-  imports: [PrismaModule, forwardRef(() => LimitsModule)],
+  imports: [PrismaModule, forwardRef(() => LimitsModule), forwardRef(() => VehiclesModule)],
   exports: [
     LogsService,
     RefillsService,
@@ -30,7 +30,6 @@ import { MaintenanceTransformerService } from './maintenance/maintenance.transfo
     OdometerService,
     MaintenanceService,
     RefillsService,
-    VehicleRepository,
     MaintenancePartTransformer,
     MaintenanceTransformerService,
     RefillsTransformerService,

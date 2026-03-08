@@ -1,39 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { Vehicle } from 'prisma/generated/client';
+import { Prisma } from 'prisma/generated/client';
+
 import { BasicVehicle, TAccessibleVehicle, VehicleMinimal } from '@repo/validation';
 import { OdometerService } from 'src/utils/odometer.service';
-import { UnitConversionService } from 'src/utils/unit-conversion.service';
-
-interface RawVehicleWithGroups extends Vehicle {
-  vehicleType: {
-    code: string;
-    nameKey: string;
-    icon: string | null;
-  };
-  groups?: {
-    group: {
-      id: string;
-      name: string;
-    };
-  }[];
-}
-
-interface RawBasicVehicle extends Vehicle {
-  vehicleType: {
-    code: string;
-    nameKey: string;
-    icon: string | null;
-  };
-}
 
 @Injectable()
 export class VehicleTransformerService {
-  constructor(
-    private odometerService: OdometerService,
-    private unitConversion: UnitConversionService,
-  ) {}
+  constructor(private odometerService: OdometerService) {}
 
-  toMinimalVehicle(rawVehicle: RawBasicVehicle): VehicleMinimal {
+  DBInclude_BasicVehicle = {
+    vehicleType: {
+      select: {
+        code: true,
+        nameKey: true,
+        icon: true,
+      },
+    },
+  } satisfies Prisma.VehicleInclude;
+
+  DBInclude_BasicVehicleWithGroups(userId: string) {
+    return {
+      ...this.DBInclude_BasicVehicle,
+      groups: {
+        where: {
+          group: {
+            members: { some: { userId } },
+          },
+        },
+        select: {
+          group: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    } satisfies Prisma.VehicleInclude;
+  }
+
+  toMinimalVehicle(rawVehicle: DB_BasicVehicle): VehicleMinimal {
     return {
       id: rawVehicle.id,
       name: rawVehicle.name,
@@ -45,7 +51,7 @@ export class VehicleTransformerService {
   }
 
   // Transform raw vehicle to TBasicVehicle
-  toBasicVehicle(rawVehicle: RawBasicVehicle): BasicVehicle {
+  toBasicVehicle(rawVehicle: DB_BasicVehicle): BasicVehicle {
     return {
       id: rawVehicle.id,
       name: rawVehicle.name,
@@ -66,7 +72,7 @@ export class VehicleTransformerService {
   }
 
   // Transform raw vehicle with groups to TAccessibleVehicle
-  toAccessibleVehicle(rawVehicle: RawVehicleWithGroups, userId: string): TAccessibleVehicle {
+  toAccessibleVehicle(rawVehicle: DB_BasicVehicleWithGroups, userId: string): TAccessibleVehicle {
     const isOwnerUser = rawVehicle.ownerId === userId;
     const groupAccess = rawVehicle.groups?.[0];
 
@@ -82,3 +88,10 @@ export class VehicleTransformerService {
     };
   }
 }
+
+export type DB_BasicVehicle = Prisma.VehicleGetPayload<{
+  include: VehicleTransformerService['DBInclude_BasicVehicle'];
+}>;
+export type DB_BasicVehicleWithGroups = Prisma.VehicleGetPayload<{
+  include: ReturnType<VehicleTransformerService['DBInclude_BasicVehicleWithGroups']>;
+}>;

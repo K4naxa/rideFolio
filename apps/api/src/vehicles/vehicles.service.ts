@@ -9,6 +9,7 @@ import { UserSession } from '@thallesp/nestjs-better-auth';
 import { LimitsService } from 'src/limits/limits.service';
 import { TodoFormatterService } from 'src/todos/todoFormatter.service';
 import { Vehicle } from 'prisma/generated/client';
+import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
 
 @Injectable()
 export class VehiclesService {
@@ -187,9 +188,14 @@ export class VehiclesService {
   }
 
   async getVehicleById(userSession: UserSession, vehicleId: string): Promise<BasicVehicle> {
-    await this.authValidationService.hasAccessToVehicle(userSession.user.id, vehicleId);
+    const vehicle = await this.prisma.vehicle.findFirst({
+      where: {
+        id: vehicleId,
+        ...VehicleAccessPrisma.forUser(userSession.user.id),
+      },
+      include: this.vehicleTransformer.DBInclude_BasicVehicleWithGroups(userSession.user.id),
+    });
 
-    const vehicle = await this.vehicleRepository.findVehicleById(vehicleId);
     return this.vehicleTransformer.toBasicVehicle(vehicle!);
   }
 

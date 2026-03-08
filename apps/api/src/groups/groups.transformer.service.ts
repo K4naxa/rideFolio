@@ -32,7 +32,7 @@ export class GroupsTransformerService {
           addedAt: true,
           vehicle: {
             include: {
-              ...this.vehicleRepository.DBInclude_BasicVehicle,
+              ...this.vehicleTransformer.DBInclude_BasicVehicle,
               owner: {
                 select: {
                   id: true,
