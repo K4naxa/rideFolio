@@ -63,7 +63,6 @@ const displayedItems = computed(() =>
 <template>
   <div class="flex h-full max-h-96 min-h-0 flex-col">
     <h2 class="mb-1">Shopping list</h2>
-    <Separator class="mb-2" />
 
     <div class="scrollbar-macos h-full overflow-y-auto">
       <div v-if="isShoppingLoading" class="grid flex-1 place-items-center">
@@ -73,11 +72,11 @@ const displayedItems = computed(() =>
         <span class="text-destructive">Error loading shopping list.</span>
       </div>
 
-      <ul v-else class="flex flex-col">
+      <ul v-else class="card divide-y">
         <li
           v-for="item in displayedItems"
           :key="item.id"
-          class="group cardHover flex items-center gap-4 rounded-sm px-3 py-2 shadow-none"
+          class="group cardHover flex items-center gap-4 px-3 py-2.5 shadow-none"
         >
           <Checkbox
             :model-value="item.isPurchased"
@@ -98,12 +97,14 @@ const displayedItems = computed(() =>
         </li>
 
         <!-- New item Form -->
-        <div
-          class="text-muted-foreground hover:text-foreground list-none transition-colors duration-100"
+        <li
+          class="text-muted-foreground hover:text-foreground list-none px-3 py-2.5 transition-colors duration-100"
           @click="isCreatingItem = true"
         >
-          <div v-if="!isCreatingItem" class="flex cursor-pointer items-center gap-4 px-1.5 py-2">
-            <Icon name="plus" class="size-4" />
+          <div v-if="!isCreatingItem" class="flex cursor-pointer items-center gap-4">
+            <div class="grid size-6 place-items-center">
+              <Icon name="plus" />
+            </div>
             <span class="">Add new item</span>
           </div>
 
@@ -130,7 +131,7 @@ const displayedItems = computed(() =>
               />
             </Field>
           </Form>
-        </div>
+        </li>
       </ul>
     </div>
   </div>
