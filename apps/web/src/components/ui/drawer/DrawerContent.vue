@@ -53,7 +53,7 @@ const forwarded = useForwardPropsEmits(props, emits);
       <div
         :style="props.dismissFromPill ? 'touch-action: pan-y;' : undefined"
         :data-vaul-no-drag="props.dismissFromPill ? '' : undefined"
-        class="flex min-h-0 flex-1 flex-col overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden pb-1.5"
       >
         <slot />
       </div>
