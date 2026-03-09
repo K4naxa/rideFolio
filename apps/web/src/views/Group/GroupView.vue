@@ -47,7 +47,14 @@ import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
 import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const isMobile = useIsMobile();
 
@@ -245,22 +252,28 @@ async function handleRemoveMember() {
                             </Button>
                           </DrawerTrigger>
                           <DrawerContent>
-                            <Button
-                              v-for="role in Object.values(GROUP_MEMBER_ROLES).filter(
-                                (r) => r.code !== 'OWNER' || data?.userRole === 'OWNER',
-                              )"
-                              :key="role.code"
-                              variant="menu"
-                              class="justify-between"
-                              @click="
-                                handleUpdateRoleClick(member.user.id, role.code as GroupMemberRoleCode);
-                                onRoleDrawerOpenChange(false);
-                                onOpenChange(false);
-                              "
-                            >
-                              {{ role.label }}
-                              <Icon name="check" v-if="member.role === role.code" />
-                            </Button>
+                            <DrawerHeader>
+                              <DrawerTitle> Update role </DrawerTitle>
+                              <DrawerDescription> Update the role of the member. </DrawerDescription>
+                            </DrawerHeader>
+                            <div>
+                              <Button
+                                v-for="role in Object.values(GROUP_MEMBER_ROLES).filter(
+                                  (r) => r.code !== 'OWNER' || data?.userRole === 'OWNER',
+                                )"
+                                :key="role.code"
+                                variant="menu"
+                                class="justify-between"
+                                @click="
+                                  handleUpdateRoleClick(member.user.id, role.code as GroupMemberRoleCode);
+                                  onRoleDrawerOpenChange(false);
+                                  onOpenChange(false);
+                                "
+                              >
+                                {{ role.label }}
+                                <Icon name="check" v-if="member.role === role.code" />
+                              </Button>
+                            </div>
                           </DrawerContent>
                         </Drawer>
                         <Button
