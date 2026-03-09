@@ -4,12 +4,13 @@ import { useGroupDelete, useGroupLeave } from "@/lib/queries/groups/group-mutati
 import AlertModal from "@/modals/alertModal.vue";
 import { useModalStore } from "@/stores/modal";
 import type { GroupDetails } from "@repo/validation";
-import { computed, ref } from "vue";
+import { computed, type HTMLAttributes, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
 interface GroupManagementDropdownProps {
   details: GroupDetails | undefined;
+  class?: HTMLAttributes["class"];
 }
 
 const router = useRouter();
@@ -65,6 +66,7 @@ function handleEditGroup() {
 
 <template>
   <ResponsiveDropdown
+    :trigger-class="props.class"
     :items="[
       {
         label: 'Edit Group',

@@ -20,7 +20,7 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Avatar from "@/components/ui/avatar/Avatar.vue";
 import AvatarImage from "@/components/ui/avatar/AvatarImage.vue";
 import AvatarFallback from "@/components/ui/avatar/AvatarFallback.vue";
-import { getInitials } from "@/lib/utils";
+import { capitalize, getInitials } from "@/lib/utils";
 import Badge from "@/components/ui/badge/Badge.vue";
 
 import { toast } from "vue-sonner";
@@ -45,6 +45,11 @@ import Label from "@/components/ui/label/Label.vue";
 import { useTimeAgoIntl } from "@vueuse/core";
 import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
+import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
+import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+
+const isMobile = useIsMobile();
 
 const { currentGroupId } = useCurrentGroup();
 const { mutateAsync: cancelGroupInvite } = useGroupInviteCancel();
@@ -134,234 +139,388 @@ async function handleRemoveMember() {
 </script>
 
 <template lang="html">
-  <MainContentWrapper class="py-8">
+  <MainContentWrapper class="md:pt-12 lg:pt-20">
+    <template #mobile-header>
+      <MobilePageHeader class="justify-between">
+        <span class="text-lg font-medium"> {{ data?.name }} </span>
+        <GroupManagementDropdown v-if="!isLoading && !isError" :details="data" />
+      </MobilePageHeader>
+    </template>
+
     <!-- Error State -->
     <GroupErrorState v-if="isError" />
 
     <!-- Main Content -->
     <div v-else-if="data" class="gaps-md flex w-full flex-col">
-      <header class="">
+      <!-- Page header (desktop only) -->
+      <header class="hidden md:block">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold tracking-tight">{{ data.name }}</h1>
-          <div class="flex items-center gap-8">
-            <Badge variant="secondary" class="">
+          <h1 class="font-bold tracking-tight">{{ data.name }}</h1>
+          <div class="flex items-center gap-4">
+            <Badge variant="secondary">
               {{ getGroupMemberRoleNameKey(data.userRole) }}
             </Badge>
-
             <GroupManagementDropdown v-if="!isLoading && !isError" :details="data" />
           </div>
         </div>
-        <CardDescription class="text-base">{{ data.description }}</CardDescription>
+        <CardDescription>{{ data.description }}</CardDescription>
       </header>
 
+      <!-- Mobile: description below header -->
+      <CardDescription v-if="data.description" class="md:hidden">{{ data.description }}</CardDescription>
+
       <div class="gaps-lg flex flex-col">
-        <!-- Members -->
-        <div class="mb-1 flex items-end justify-between gap-4">
-          <h3 class="flex items-center gap-2.5"><Icon name="users" /> Members</h3>
-          <Button v-if="canManageGroup" variant="outline" @click="showInviteModal = true">
-            <Icon name="userPlus" class="mr-2" />
-            Invite Member
-          </Button>
-        </div>
-        <!-- Users table -->
-        <ScrollableNav>
-          <ul class="card flex w-full min-w-fit flex-col divide-y overflow-hidden">
-            <li
-              :class="[
-                canManageGroup
-                  ? 'grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem]'
-                  : 'grid-cols-[2rem_minmax(12rem,1fr)_8rem]',
-              ]"
-              class="bg-table-header-background text-table-header-foreground gaps-md grid min-w-fit px-2.5 py-1"
-            >
-              <!-- empty header for avatar column -->
-              <div />
-              <Label class="py-1 text-sm">User</Label>
-              <Label v-if="canManageGroup" class="py-1 text-sm">Joined</Label>
-              <Label class="py-1 text-sm">Role</Label>
-              <!-- empty header for actions column -->
-              <div v-if="canManageGroup" class="w-6" />
-            </li>
-            <li
-              v-for="member in data?.members"
-              :key="member.user.id"
-              class="listHover gaps-md grid min-w-fit items-center px-2.5 py-2.5"
-              :class="[
-                canManageGroup
-                  ? 'grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem]'
-                  : 'grid-cols-[2rem_minmax(12rem,1fr)_8rem]',
-              ]"
-            >
-              <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
-                <AvatarFallback class="rounded-lg text-center text-sm">
-                  {{ getInitials(member.user.name) }}
-                </AvatarFallback>
-              </Avatar>
+        <!-- ── Members ──────────────────────────────────────────── -->
+        <section>
+          <div class="mb-3 flex items-center justify-between gap-4">
+            <h3 class="flex items-center gap-2"><Icon name="users" /> Members</h3>
+            <Button v-if="canManageGroup" variant="outline" size="sm" @click="showInviteModal = true">
+              <Icon name="userPlus" class="mr-1.5" />
+              Invite
+            </Button>
+          </div>
 
-              <div>
-                <p class="">{{ member.user.name }}</p>
-                <p v-if="member.user.email" class="text-muted-foreground text-sm">{{ member.user.email }}</p>
-              </div>
+          <!-- ── Mobile: stacked member cards ── -->
+          <ul v-if="isMobile" class="gaps-sm flex flex-col">
+            <!-- Active members -->
+            <li v-for="member in data?.members" :key="member.user.id" class="card gaps-sm flex flex-col px-4 py-3">
+              <div class="flex items-center gap-3">
+                <Avatar class="h-9 w-9 shrink-0 rounded-lg">
+                  <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                  <AvatarFallback class="rounded-lg text-sm">
+                    {{ getInitials(member.user.name) }}
+                  </AvatarFallback>
+                </Avatar>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-medium">{{ member.user.name }}</p>
+                  <p v-if="member.user.email" class="text-muted-foreground truncate text-xs">{{ member.user.email }}</p>
+                </div>
 
-              <span v-if="canManageGroup" class="text-muted-foreground text-sm">
-                {{ useTimeAgoIntl(member.createdAt) }}
-              </span>
+                <!-- Mobile member actions -->
+                <div v-if="canManageGroup && member.role !== 'OWNER'">
+                  <Drawer v-slot="{ onOpenChange }">
+                    <DrawerTrigger asChild>
+                      <Button variant="ghost">
+                        <Icon name="dotsVertical" />
+                      </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <template #floatingItem>
+                        <div class="card flex flex-col gap-4 p-3">
+                          <div class="flex items-center gap-3">
+                            <Avatar class="h-9 w-9 shrink-0 rounded-lg">
+                              <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                              <AvatarFallback class="rounded-lg text-sm">
+                                {{ getInitials(member.user.name) }}
+                              </AvatarFallback>
+                            </Avatar>
 
-              <div class="w-32">
-                <ResponsiveSelect
-                  v-if="canManageGroup"
-                  title="Member role"
-                  description="User role in the group, determines permissions"
-                  trigger-class="text-sm w-full "
-                  :disabled="member.role === 'OWNER'"
-                  :options="
-                    Object.values(GROUP_MEMBER_ROLES)
-                      .filter((role) => role.code !== 'OWNER' || data?.userRole === 'OWNER')
-                      .map((role) => ({
-                        label: role.label,
-                        value: role.code,
-                      }))
-                  "
-                  :modelValue="member.role"
-                  @select="(value) => handleUpdateRoleClick(member.user.id, value as GroupMemberRoleCode)"
-                  placeholder="Role"
-                >
-                </ResponsiveSelect>
+                            <div class="min-w-0 flex-1">
+                              <p class="truncate font-medium">{{ member.user.name }}</p>
+                              <p v-if="member.user.email" class="text-muted-foreground truncate text-xs">
+                                {{ member.user.email }}
+                              </p>
+                            </div>
+                          </div>
 
-                <span v-else class="text-muted-foreground text-sm">
-                  {{ getGroupMemberRoleNameKey(member.role) }}
-                </span>
-              </div>
-
-              <div v-if="canManageGroup && member.role !== 'OWNER'">
-                <ResponsiveDropdown
-                  title="Member actions"
-                  description="Manage member"
-                  :items="[
-                    {
-                      label: 'Remove Member',
-                      icon: 'logout',
-                      action: () => {
-                        if (!data) return;
-                        showRemoveMemberAlert = true;
-                        pendingMemberRemoval = { member, groupId: data.id };
-                      },
-                    },
-                  ]"
-                >
-                  <template #trigger>
-                    <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
-                  </template>
-                  <template #header>
-                    <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar class="h-8 w-8 rounded-lg">
-                        <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
-                        <AvatarFallback class="bg-accent rounded-lg">
-                          {{ getInitials(member?.user?.name) }}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div class="grid flex-1 text-left text-sm leading-tight">
-                        <span class="truncate font-medium">{{ member?.user?.name }}</span>
-                        <span class="text-muted-foreground truncate text-xs"> {{ member?.user?.email }} </span>
+                          <div class="flex items-center gap-2 text-sm">
+                            <span class="text-muted-foreground text-sm font-medium">Joined:</span>
+                            {{
+                              new Date(member.createdAt).toLocaleDateString(undefined, {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })
+                            }}
+                          </div>
+                        </div>
+                      </template>
+                      <DrawerHeader> <DrawerTitle> Member actions </DrawerTitle></DrawerHeader>
+                      <div>
+                        <Drawer v-slot="{ onOpenChange: onRoleDrawerOpenChange }">
+                          <DrawerTrigger asChild>
+                            <Button variant="menu" class="justify-between">
+                              <span class="flex items-center gap-2.5"><Icon name="user" /> Update role</span>
+                              <span class="text-sm">{{ capitalize(member.role) }}</span>
+                            </Button>
+                          </DrawerTrigger>
+                          <DrawerContent>
+                            <Button
+                              v-for="role in Object.values(GROUP_MEMBER_ROLES).filter(
+                                (r) => r.code !== 'OWNER' || data?.userRole === 'OWNER',
+                              )"
+                              :key="role.code"
+                              variant="menu"
+                              class="justify-between"
+                              @click="
+                                handleUpdateRoleClick(member.user.id, role.code as GroupMemberRoleCode);
+                                onRoleDrawerOpenChange(false);
+                                onOpenChange(false);
+                              "
+                            >
+                              {{ role.label }}
+                              <Icon name="check" v-if="member.role === role.code" />
+                            </Button>
+                          </DrawerContent>
+                        </Drawer>
+                        <Button
+                          variant="menu"
+                          @click="
+                            showRemoveMemberAlert = true;
+                            pendingMemberRemoval = { member, groupId: data.id };
+                            onOpenChange(false);
+                          "
+                        >
+                          <Icon name="logout" /> Remove member
+                        </Button>
                       </div>
-                    </div>
-                  </template>
-                </ResponsiveDropdown>
+                    </DrawerContent>
+                  </Drawer>
+                </div>
               </div>
             </li>
 
-            <!-- Member Invites -->
+            <!-- Pending invites (mobile) -->
+            <li v-for="invite in data?.invites" :key="invite.id" class="card gaps-sm flex flex-col px-4 py-3">
+              <div class="flex items-center gap-3">
+                <Avatar class="h-9 w-9 shrink-0 rounded-lg">
+                  <AvatarFallback class="rounded-lg text-sm">{{ getInitials(invite.email) }}</AvatarFallback>
+                </Avatar>
+                <div class="min-w-0 flex-1">
+                  <p class="text-muted-foreground truncate text-sm">{{ invite.email }}</p>
+                </div>
+                <div v-if="canManageGroup">
+                  <ResponsiveDropdown
+                    title="Invite actions"
+                    description="Manage invite"
+                    :items="[{ label: 'Cancel Invite', icon: 'close', action: () => cancelGroupInvite(invite.id) }]"
+                  >
+                    <template #trigger>
+                      <Button variant="ghost" size="icon" class="h-8 w-8 shrink-0"><Icon name="dotsVertical" /></Button>
+                    </template>
+                  </ResponsiveDropdown>
+                </div>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <Badge variant="secondary" class="text-xs">{{ getGroupMemberRoleNameKey(invite.roleToGrant) }}</Badge>
+                <Badge variant="muted" class="text-xs">{{ getGroupInviteStateNameKey(invite.state) }}…</Badge>
+              </div>
+            </li>
+
+            <!-- Mobile empty state -->
             <li
-              v-for="invite in data?.invites"
-              :key="invite.id"
-              class="listHover gaps-md grid min-w-fit grid-cols-[2rem_minmax(15rem,1fr)_6rem_8rem_3rem] items-center px-2.5 py-2.5"
+              v-if="!data?.members?.length && !data?.invites?.length"
+              class="card flex flex-col items-center gap-2 py-8 text-center"
             >
-              <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarFallback class="rounded-lg">{{ getInitials(invite.email) }}</AvatarFallback>
-              </Avatar>
-
-              <p class="text-muted-foreground text-sm">{{ invite.email }}</p>
-
-              <Badge class="px-3 text-sm" variant="muted">{{ getGroupInviteStateNameKey(invite.state) }}... </Badge>
-
-              <div class="w-32">
-                <Select v-if="canManageGroup" disabled>
-                  <SelectTrigger class="w-full">
-                    <SelectValue class="text-sm" :placeholder="getGroupMemberRoleNameKey(invite.roleToGrant)" />
-                  </SelectTrigger>
-                </Select>
-                <Badge v-else variant="outline" class="text-sm">
-                  {{ getGroupMemberRoleNameKey(invite.roleToGrant) }}
-                </Badge>
-              </div>
-
-              <div v-if="canManageGroup">
-                <ResponsiveDropdown
-                  title="Member actions"
-                  description="Manage member"
-                  :items="[
-                    {
-                      label: 'Cancel Invite',
-                      icon: 'close',
-                      action: () => cancelGroupInvite(invite.id),
-                    },
-                  ]"
-                >
-                  <template #trigger>
-                    <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
-                  </template>
-                </ResponsiveDropdown>
-              </div>
+              <Icon name="users" class="text-muted-foreground size-6" />
+              <p class="text-sm font-medium">No members yet</p>
+              <CardDescription>Invite people to collaborate in this group.</CardDescription>
             </li>
           </ul>
-        </ScrollableNav>
 
-        <!-- Vehicles -->
-        <div class="space-y-2">
-          <div class="flex items-end">
-            <h3 class="flex items-center gap-2.5"><Icon name="carFront" /> Vehicles</h3>
+          <!-- ── Desktop: table layout ── -->
+          <ScrollableNav v-else>
+            <ul class="card flex w-full min-w-fit flex-col divide-y overflow-hidden">
+              <li
+                :class="[
+                  canManageGroup
+                    ? 'grid-cols-[2rem_minmax(15rem,1fr)_7rem_9rem_3rem]'
+                    : 'grid-cols-[2rem_minmax(12rem,1fr)_9rem]',
+                ]"
+                class="bg-table-header-background text-table-header-foreground gaps-md grid min-w-fit px-3 py-1.5"
+              >
+                <div />
+                <Label class="py-1 text-sm">User</Label>
+                <Label v-if="canManageGroup" class="py-1 text-sm">Joined</Label>
+                <Label class="py-1 text-sm">Role</Label>
+                <div v-if="canManageGroup" class="w-6" />
+              </li>
+
+              <!-- Members rows -->
+              <li
+                v-for="member in data?.members"
+                :key="member.user.id"
+                class="listHover gaps-md grid min-w-fit items-center px-3 py-2.5"
+                :class="[
+                  canManageGroup
+                    ? 'grid-cols-[2rem_minmax(15rem,1fr)_7rem_9rem_3rem]'
+                    : 'grid-cols-[2rem_minmax(12rem,1fr)_9rem]',
+                ]"
+              >
+                <Avatar class="h-8 w-8 rounded-lg">
+                  <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                  <AvatarFallback class="rounded-lg text-center text-sm">
+                    {{ getInitials(member.user.name) }}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div>
+                  <p>{{ member.user.name }}</p>
+                  <p v-if="member.user.email" class="text-muted-foreground text-sm">{{ member.user.email }}</p>
+                </div>
+
+                <span v-if="canManageGroup" class="text-muted-foreground text-sm">
+                  {{ useTimeAgoIntl(member.createdAt) }}
+                </span>
+
+                <div class="w-36">
+                  <ResponsiveSelect
+                    v-if="canManageGroup"
+                    title="Member role"
+                    description="User role in the group, determines permissions"
+                    trigger-class="text-sm w-full"
+                    :disabled="member.role === 'OWNER'"
+                    :options="
+                      Object.values(GROUP_MEMBER_ROLES)
+                        .filter((role) => role.code !== 'OWNER' || data?.userRole === 'OWNER')
+                        .map((role) => ({ label: role.label, value: role.code }))
+                    "
+                    :modelValue="member.role"
+                    @select="(value) => handleUpdateRoleClick(member.user.id, value as GroupMemberRoleCode)"
+                    placeholder="Role"
+                  />
+                  <span v-else class="text-muted-foreground text-sm">
+                    {{ getGroupMemberRoleNameKey(member.role) }}
+                  </span>
+                </div>
+
+                <div v-if="canManageGroup && member.role !== 'OWNER'">
+                  <ResponsiveDropdown
+                    title="Member actions"
+                    description="Manage member"
+                    :items="[
+                      {
+                        label: 'Remove Member',
+                        icon: 'logout',
+                        action: () => {
+                          if (!data) return;
+                          showRemoveMemberAlert = true;
+                          pendingMemberRemoval = { member, groupId: data.id };
+                        },
+                      },
+                    ]"
+                  >
+                    <template #trigger>
+                      <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
+                    </template>
+                    <template #header>
+                      <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                        <Avatar class="h-8 w-8 rounded-lg">
+                          <AvatarImage :src="member.user.image ?? ''" :alt="member.user.name ?? 'user'" />
+                          <AvatarFallback class="bg-accent rounded-lg">
+                            {{ getInitials(member?.user?.name) }}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div class="grid flex-1 text-left text-sm leading-tight">
+                          <span class="truncate font-medium">{{ member?.user?.name }}</span>
+                          <span class="text-muted-foreground truncate text-xs">{{ member?.user?.email }}</span>
+                        </div>
+                      </div>
+                    </template>
+                  </ResponsiveDropdown>
+                </div>
+              </li>
+
+              <!-- Pending invite rows -->
+              <li
+                v-for="invite in data?.invites"
+                :key="invite.id"
+                class="listHover gaps-md grid min-w-fit grid-cols-[2rem_minmax(15rem,1fr)_7rem_9rem_3rem] items-center px-3 py-2.5"
+              >
+                <Avatar class="h-8 w-8 rounded-lg">
+                  <AvatarFallback class="rounded-lg">{{ getInitials(invite.email) }}</AvatarFallback>
+                </Avatar>
+
+                <p class="text-muted-foreground text-sm">{{ invite.email }}</p>
+
+                <Badge class="w-fit px-2 text-xs" variant="muted"
+                  >{{ getGroupInviteStateNameKey(invite.state) }}…</Badge
+                >
+
+                <div class="w-36">
+                  <Select v-if="canManageGroup" disabled>
+                    <SelectTrigger class="w-full">
+                      <SelectValue class="text-sm" :placeholder="getGroupMemberRoleNameKey(invite.roleToGrant)" />
+                    </SelectTrigger>
+                  </Select>
+                  <Badge v-else variant="outline" class="text-sm">
+                    {{ getGroupMemberRoleNameKey(invite.roleToGrant) }}
+                  </Badge>
+                </div>
+
+                <div v-if="canManageGroup">
+                  <ResponsiveDropdown
+                    title="Invite actions"
+                    description="Manage invite"
+                    :items="[{ label: 'Cancel Invite', icon: 'close', action: () => cancelGroupInvite(invite.id) }]"
+                  >
+                    <template #trigger>
+                      <Button variant="ghost" size="sm"><Icon name="dotsVertical" /></Button>
+                    </template>
+                  </ResponsiveDropdown>
+                </div>
+              </li>
+
+              <!-- Desktop empty state row -->
+              <li
+                v-if="!data?.members?.length && !data?.invites?.length"
+                class="flex flex-col items-center gap-2 py-10 text-center"
+              >
+                <Icon name="users" class="text-muted-foreground size-6" />
+                <p class="text-sm font-medium">No members yet</p>
+                <CardDescription>Invite people to collaborate in this group.</CardDescription>
+              </li>
+            </ul>
+          </ScrollableNav>
+        </section>
+
+        <!-- ── Vehicles ──────────────────────────────────────────── -->
+        <section>
+          <div class="mb-3 flex items-center justify-between gap-4">
+            <h3 class="flex items-center gap-2"><Icon name="carFront" /> Vehicles</h3>
             <Button
               v-if="canManageGroup || data?.rules.membersCanAddVehicles"
               variant="outline"
-              class="ml-auto"
               size="sm"
               type="button"
               @click="showAddVehicleModal = true"
             >
-              <PlusIcon class="mr-2" />
+              <PlusIcon class="mr-1.5" />
               Add Vehicle
             </Button>
           </div>
           <Separator />
 
           <!-- Vehicle list -->
-
-          <div class="">
-            <ul class="scrollbar-thin overflow-x-auto">
-              <li
-                v-for="vehicle in data?.vehicles"
-                :key="vehicle.data.id"
-                class="group listHover flex items-center justify-between gap-4 rounded py-2.5 md:p-4"
+          <ul v-if="data?.vehicles?.length" class="mt-2 flex flex-col divide-y overflow-hidden rounded border">
+            <li
+              v-for="vehicle in data?.vehicles"
+              :key="vehicle.data.id"
+              class="group listHover flex items-center justify-between gap-4 px-3 py-2.5"
+            >
+              <VehicleItem :vehicle="vehicle.data" variant="small" />
+              <Button
+                class="shrink-0 opacity-100 transition-opacity duration-150 md:opacity-0 md:group-hover:opacity-100"
+                v-if="canManageGroup || data?.rules.membersCanAddVehicles"
+                variant="ghost"
+                size="icon"
+                @click="
+                  showRemoveVehicleAlert = true;
+                  pendingVehicleRemoval = { groupId: data.id, vehicleId: vehicle.data.id };
+                "
               >
-                <VehicleItem :vehicle="vehicle.data" variant="small" />
+                <Icon name="trash" class="text-muted-foreground size-4" />
+              </Button>
+            </li>
+          </ul>
 
-                <Button
-                  class="opacity-100 transition-opacity duration-150 group-hover:opacity-100 md:opacity-0"
-                  v-if="canManageGroup || data?.rules.membersCanAddVehicles"
-                  variant="outline"
-                  size="sm"
-                  @click="
-                    showRemoveVehicleAlert = true;
-                    pendingVehicleRemoval = { groupId: data.id, vehicleId: vehicle.data.id };
-                  "
-                >
-                  <Icon name="trash" />
-                </Button>
-              </li>
-            </ul>
+          <!-- Vehicles empty state -->
+          <div v-else class="card mt-2 flex flex-col items-center gap-2 py-8 text-center">
+            <Icon name="carFront" class="text-muted-foreground size-6" />
+            <p class="text-sm font-medium">No vehicles in this group</p>
+            <CardDescription>Add a vehicle to start tracking it as a group.</CardDescription>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   </MainContentWrapper>
