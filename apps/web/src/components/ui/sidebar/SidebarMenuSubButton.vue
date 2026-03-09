@@ -33,11 +33,11 @@ const { setOpenMobile } = useSidebar();
     @click="setOpenMobile(false)"
     :class="
       cn(
-        'text-foreground ring-ring hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground' +
+        'text-foreground ring-ring hover:bg-sidebar-accent hover:text-accent-foreground active:bg-sidebar-accent active:text-accent-foreground' +
           ' [&>svg]:text-accent-foreground flex h-fit min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 py-0.5' +
           ' text-base outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50' +
           ' aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
-        'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground',
+        'data-[active=true]:bg-sidebar-accent data-[active=true]:text-accent-foreground',
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',
         'group-data-[collapsible=icon]:hidden',
