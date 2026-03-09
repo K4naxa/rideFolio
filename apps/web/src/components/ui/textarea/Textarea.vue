@@ -50,8 +50,8 @@ async function handleBlur() {
 </script>
 
 <template>
-  <div :aria-invalid="!!errorMessage" :class="cn('w-full', props.class)">
-    <Label v-if="label" class="group-aria-invalid:text-destructive mb-2">{{ label }}</Label>
+  <div :aria-invalid="!!errorMessage" :class="cn('flex w-full flex-col', props.class)">
+    <Label v-if="label" class="group-aria-invalid:text-destructive mb-2 ml-1 font-medium">{{ label }}</Label>
 
     <div class="relative">
       <textarea
