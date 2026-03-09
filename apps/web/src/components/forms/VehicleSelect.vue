@@ -18,12 +18,12 @@ import DrawerDescription from "@/components/ui/drawer/DrawerDescription.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import DrawerFooter from "@/components/ui/drawer/DrawerFooter.vue";
 import DrawerClose from "@/components/ui/drawer/DrawerClose.vue";
+import { twMerge } from "tailwind-merge";
 
 interface VehicleSelectProps {
   value?: string;
   placeholder?: string;
   disabled?: boolean;
-  canCreateValidation?: boolean;
   title?: string;
   description?: string;
   triggerClass?: HTMLAttributes["class"];
@@ -41,19 +41,13 @@ const filteredVehicles = computed(() => {
   const searchLower = search.value.toLowerCase();
   if (!vehicles?.value) return [];
 
-  const filtered = vehicles.value.filter(
+  return vehicles.value.filter(
     ({ vehicleData }) =>
       vehicleData.name.toLowerCase().includes(searchLower) ||
       vehicleData.licensePlate?.toLowerCase().includes(searchLower) ||
       vehicleData.model?.toLowerCase().includes(searchLower) ||
       vehicleData.make?.toLowerCase().includes(searchLower),
   );
-
-  if (props.canCreateValidation) {
-    return filtered.filter((v) => v.canCreateLogs);
-  }
-
-  return filtered;
 });
 
 const { data: vehicles } = useVehiclesAll();
@@ -72,11 +66,15 @@ function handleSelect(value: string) {
   <template v-if="!isMobile">
     <DropdownMenu v-model:open="isOpen">
       <DropdownMenuTrigger class="w-full">
-        <button v-if="selectedVehicle" type="button" class="inputField h-fit w-full p-1!">
+        <button
+          v-if="selectedVehicle"
+          type="button"
+          :class="twMerge('inputField h-fit w-full p-1!', props.triggerClass)"
+        >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
         </button>
-        <button v-else type="button" class="inputField h-fit w-full justify-center p-1!">
+        <button v-else type="button" :class="twMerge('inputField h-fit w-full p-1!', props.triggerClass)">
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
         </button>
@@ -115,11 +113,16 @@ function handleSelect(value: string) {
   <template v-else>
     <Drawer v-model:open="isOpen">
       <DrawerTrigger as-child>
-        <Button variant="outline" v-if="selectedVehicle" type="button" class="h-fit w-full p-1!">
+        <Button
+          variant="outline"
+          v-if="selectedVehicle"
+          type="button"
+          :class="twMerge('h-fit w-full p-0!', props.triggerClass)"
+        >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
         </Button>
-        <Button variant="outline" v-else type="button" class="h-fit w-full p-1!">
+        <Button variant="outline" v-else type="button" :class="twMerge('h-fit w-full p-0!', props.triggerClass)">
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
         </Button>
@@ -129,12 +132,12 @@ function handleSelect(value: string) {
           <DrawerTitle>Select a Vehicle</DrawerTitle>
           <DrawerDescription v-if="description"> {{ description }} </DrawerDescription>
         </DrawerHeader>
-        <ul v-if="filteredVehicles.length > 0" class="divide-y px-4 pb-4">
+        <ul v-if="filteredVehicles.length > 0" class="px-3 pb-4">
           <li
             v-for="vehicle in filteredVehicles"
             :key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
-            class="flex cursor-pointer items-center justify-between gap-2 py-2"
+            class="bg-card flex cursor-pointer items-center justify-between gap-2 rounded"
           >
             <VehicleItem
               variant="small"
