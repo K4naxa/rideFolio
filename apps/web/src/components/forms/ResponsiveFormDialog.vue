@@ -68,31 +68,31 @@ function handleOpenChange(value: boolean) {
   <template v-else>
     <Drawer :open="props.open" @update:open="handleOpenChange">
       <DrawerContent class="data-[vaul-drawer-direction=bottom]:max-h-[90vh]" dismiss-from-pill>
-        <DrawerHeader class="border-b text-left">
-          <div class="flex items-start justify-between gap-2">
-            <div class="flex flex-col gap-1">
-              <DrawerTitle class="flex items-center gap-2">
-                <Icon v-if="icon" :name="icon" />
-                {{ props.title }}
-              </DrawerTitle>
-              <DrawerDescription v-if="props.description" class="text-left text-xs">
-                {{ props.description }}
-              </DrawerDescription>
-            </div>
-            <Button variant="ghost" size="icon-sm" class="mt-0.5 shrink-0" @click="handleOpenChange(false)">
-              <Icon name="close" class="size-4" />
-            </Button>
-          </div>
-        </DrawerHeader>
-
         <!-- Scrollable body -->
-        <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain p-4">
-          <div class="flex flex-1 flex-col gap-4">
+        <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain">
+          <DrawerHeader class="-px-4 border-b text-left">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex flex-col gap-1">
+                <DrawerTitle class="flex items-center gap-2">
+                  <Icon v-if="icon" :name="icon" />
+                  {{ props.title }}
+                </DrawerTitle>
+                <DrawerDescription v-if="props.description" class="text-left text-xs">
+                  {{ props.description }}
+                </DrawerDescription>
+              </div>
+              <Button variant="ghost" size="icon-sm" class="shrink-0" @click="handleOpenChange(false)">
+                <Icon name="close" class="size-4" />
+              </Button>
+            </div>
+          </DrawerHeader>
+
+          <div class="flex flex-1 flex-col gap-4 px-3">
             <slot />
           </div>
 
           <!--  Footer -->
-          <div class="flex flex-col gap-2 [&>button]:w-full">
+          <div class="flex flex-col gap-2 px-3 [&>button]:w-full">
             <slot name="footer" />
           </div>
         </div>
