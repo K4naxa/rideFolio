@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { PartsFieldKey } from "@/modals/Maintenance/composables/injection-keys";
 import {
   type MaintenanceCategoryPart,
   type MaintenanceCategoryWithParts,
@@ -22,19 +21,16 @@ import {
 } from "@repo/validation";
 import { timestamp } from "@vueuse/core";
 import { twMerge } from "tailwind-merge";
-import { inject, ref } from "vue";
+import { ref } from "vue";
 
-interface Props {
+const props = defineProps<{
   partCategories: MaintenanceCategoryWithParts[] | undefined;
   isLoading: boolean;
-}
+}>();
 
-const props = defineProps<Props>();
-
-const partsField = inject(PartsFieldKey);
-if (!partsField) {
-  throw new Error("MobilePartSelection must be used within a form that provides PartsFieldKey");
-}
+const emit = defineEmits<{
+  (e: "addPart", part: MaintenancePartInput): void;
+}>();
 
 const newPart = ref<MaintenancePartInput>({
   groupId: "",
@@ -105,13 +101,19 @@ function handleLocationToggle(location: PartLocation) {
 }
 
 function addPart() {
+  console.log("Adding part:", newPart.value);
   if (!newPart.value.partId) return;
-  partsField?.push({ ...newPart.value });
 
-  resetNewPart();
-  selectedCategory.value = null;
-  selectedPart.value = null;
+  console.log("still adding part");
+
+  emit("addPart", newPart.value);
   isDrawerOpen.value = false;
+
+  setTimeout(() => {
+    resetNewPart();
+    selectedCategory.value = null;
+    selectedPart.value = null;
+  }, 200);
 }
 
 function handleCancel() {
@@ -127,7 +129,7 @@ function handleCancel() {
 <template>
   <Drawer v-model:open="isDrawerOpen">
     <DrawerTrigger as-child>
-      <Button type="button" @click="openDrawer" class="w-full"> Add part v2 </Button>
+      <Button type="button" @click="openDrawer" class="w-full"> Add part </Button>
     </DrawerTrigger>
 
     <DrawerContent>
@@ -156,10 +158,9 @@ function handleCancel() {
             variant="outline"
             type="button"
             class="flex h-fit flex-col items-start gap-1 p-4"
-            v-for="category in partCategories"
+            v-for="category in props.partCategories"
             :key="category.id"
             @click="selectCategory(category)"
-            v-if="!selectedCategory"
           >
             <Label>{{ category.code }}</Label>
             <span class="text-muted-foreground text-sm">{{ category.parts.length }} parts</span>
