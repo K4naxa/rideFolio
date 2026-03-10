@@ -13,6 +13,7 @@ import { toast } from "vue-sonner";
 import LoginTabs from "./components/LoginTabs.vue";
 import Label from "@/components/ui/label/Label.vue";
 import FormInput from "@/components/forms/FormInput.vue";
+import { Separator } from "@/components/ui/separator";
 
 const route = useRoute();
 const router = useRouter();
@@ -78,7 +79,7 @@ const quickLogin = async (email: string, password: string) => {
           <Card class="bg-card">
             <CardContent class="space-y-6">
               <div class="flex flex-col items-center text-center">
-                <h1 class="text-2xl font-bold">Welcome back</h1>
+                <h1 class="text-xl">Welcome back</h1>
                 <p class="text-muted-foreground text-balance">Log in to your account to continue</p>
               </div>
 
@@ -116,10 +117,10 @@ const quickLogin = async (email: string, password: string) => {
                 {{ form.isSubmitting.value ? "Logging in..." : "Log in" }}
               </Button>
 
-              <div
-                class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
-              >
-                <span class="bg-card text-muted-foreground relative z-10 px-2"> or continue with </span>
+              <div class="flex w-full items-center gap-2">
+                <div class="bg-muted h-px w-full rounded-full" />
+                <span class="text-muted-foreground relative z-10 shrink-0 px-2"> or continue with </span>
+                <div class="bg-muted h-px w-full rounded-full" />
               </div>
 
               <div class="grid grid-cols-3 gap-4">

@@ -17,6 +17,8 @@ const delegatedProps = reactiveOmit(props, "class");
   <Separator
     data-slot="separator-root"
     v-bind="delegatedProps"
-    :class="cn('bg-border shrink-0', props.orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px', props.class)"
+    :class="
+      cn('bg-border shrink-0 rounded', props.orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px', props.class)
+    "
   />
 </template>

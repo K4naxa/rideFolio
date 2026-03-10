@@ -83,9 +83,9 @@ const onSubmit = handleSubmit(async (values) => {
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-4">
         <LoginTabs />
-        <Card class="bg-background-light">
+        <Card class="bg-card">
           <CardHeader class="flex flex-col items-center text-center">
-            <h1>Create your account</h1>
+            <h1 class="text-xl">Create your account</h1>
             <p class="text-muted-foreground">Fill the following fields to create a new account</p>
           </CardHeader>
           <form @submit="onSubmit" data-cy="register-form">
@@ -108,12 +108,12 @@ const onSubmit = handleSubmit(async (values) => {
 
               <Button type="submit" class="w-full" data-cy="submit"> Register </Button>
 
-              <div
-                class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
-              >
-                <span class="bg-card text-muted-foreground relative z-10 px-2">
+              <div class="flex w-full items-center gap-2">
+                <div class="bg-muted h-px w-full rounded-full" />
+                <span class="text-muted-foreground relative z-10 shrink-0 px-2">
                   Or continue with one of the following methods
                 </span>
+                <div class="bg-muted h-px w-full rounded-full" />
               </div>
 
               <div class="grid grid-cols-3 gap-4">
