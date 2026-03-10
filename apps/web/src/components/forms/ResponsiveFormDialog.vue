@@ -20,7 +20,7 @@ interface Props {
   description?: string;
   /** Optional icon shown next to the title */
   icon?: IconProps["name"];
-  /** Extra classes applied to the desktop DialogScrollContent (e.g. max-w-2xl) */
+  /** Extra classes applied to the desktop DialogScrollContent */
   contentClass?: HTMLAttributes["class"];
 }
 
@@ -70,22 +70,24 @@ function handleOpenChange(value: boolean) {
       <DrawerContent class="data-[vaul-drawer-direction=bottom]:max-h-[90vh]" dismiss-from-pill>
         <!-- Scrollable body -->
         <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain">
-          <DrawerHeader class="-px-4 border-b text-left">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex flex-col gap-1">
-                <DrawerTitle class="flex items-center gap-2">
-                  <Icon v-if="icon" :name="icon" />
-                  {{ props.title }}
-                </DrawerTitle>
-                <DrawerDescription v-if="props.description" class="text-left text-xs">
-                  {{ props.description }}
-                </DrawerDescription>
+          <slot name="mobileHeader">
+            <DrawerHeader class="-px-4 border-b text-left">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex flex-col gap-1">
+                  <DrawerTitle class="flex items-center gap-2">
+                    <Icon v-if="icon" :name="icon" />
+                    {{ props.title }}
+                  </DrawerTitle>
+                  <DrawerDescription v-if="props.description" class="text-left text-xs">
+                    {{ props.description }}
+                  </DrawerDescription>
+                </div>
+                <Button variant="ghost" size="icon-sm" class="shrink-0" @click="handleOpenChange(false)">
+                  <Icon name="close" class="size-4" />
+                </Button>
               </div>
-              <Button variant="ghost" size="icon-sm" class="shrink-0" @click="handleOpenChange(false)">
-                <Icon name="close" class="size-4" />
-              </Button>
-            </div>
-          </DrawerHeader>
+            </DrawerHeader>
+          </slot>
 
           <div class="flex flex-1 flex-col gap-4 px-3">
             <slot />
