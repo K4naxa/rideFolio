@@ -8,7 +8,7 @@ defineProps<{ option: ActionOption }>();
 <template>
   <button
     :data-cy="option.cypressDataAttr"
-    class="border-border hover:bg-sidebar-accent active:bg-muted flex items-center gap-3 rounded-md px-3 py-2 text-left"
+    class="hover:bg-popover-hover flex items-center gap-3 rounded-md px-3 py-2 text-left"
     @click="option.onClick()"
   >
     <Icon :name="option.icon" class="size-5" />

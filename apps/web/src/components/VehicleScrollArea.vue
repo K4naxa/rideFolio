@@ -44,9 +44,9 @@ const props = defineProps<{
             :src="vehicle.vehicleData.image"
             :type="vehicle.vehicleData.type.code"
             hover-effect
-            class="bg-muted relative overflow-hidden rounded-b-none"
+            class="bg-card relative overflow-hidden rounded-b-none"
           />
-          <div class="to-card dark:to-background absolute bottom-0 h-1/4 bg-linear-to-b from-transparent" />
+          <div class="to-background-light dark:to-background absolute bottom-0 h-1/4 bg-linear-to-b from-transparent" />
 
           <div class="absolute top-1 right-1">
             <Badge v-if="vehicle.isOwnerUser" variant="accent"> <Icon name="user" /> Private</Badge>

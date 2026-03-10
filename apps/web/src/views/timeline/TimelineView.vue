@@ -191,7 +191,7 @@ const isMobile = useIsMobile();
 
           <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
             <template #trigger>
-              <Button variant="outline" size="sm" class="relative">
+              <Button variant="secondary" size="sm" class="relative">
                 <Icon name="filter" />
                 <span class="hidden sm:inline">Filters</span>
                 <span
@@ -285,7 +285,7 @@ const isMobile = useIsMobile();
 
         <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
           <template #trigger>
-            <Button variant="outline" size="sm" class="relative">
+            <Button variant="secondary" size="sm" class="relative">
               <Icon name="filter" />
               <span class="hidden sm:inline">Filters</span>
               <span

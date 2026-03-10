@@ -195,7 +195,7 @@ onClickOutside(chartContainer, () => {
 
 <template>
   <div class="flex h-full w-full flex-col">
-    <header class="mb-4 flex items-center justify-between gap-4">
+    <header class="mb-2 flex items-center justify-between gap-4">
       <h2 class="flex items-center gap-2 font-medium"><Icon name="refill" class="size-5" /> Fuel consumption</h2>
       <div class="flex items-center gap-2">
         <span class="text-muted-foreground text-sm">Avg.</span>
@@ -210,7 +210,7 @@ onClickOutside(chartContainer, () => {
     </header>
 
     <!-- Chart -->
-    <div class="border-border/50 relative flex h-full w-full flex-1" ref="chartContainer">
+    <div class="relative flex h-full w-full flex-1" ref="chartContainer">
       <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
         <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
       </div>
@@ -220,14 +220,7 @@ onClickOutside(chartContainer, () => {
       >
         <span class="text-muted-foreground animate-pulse"> <Spinner class="size-12" /> </span>
       </div>
-      <VChart
-        :option="chartOptions"
-        v-if="chartData"
-        autoresize
-        class="chart h-full w-full"
-        ref="chart"
-        :update-options="{ notMerge: true }"
-      >
+      <VChart :option="chartOptions" v-if="chartData" autoresize ref="chart" :update-options="{ notMerge: true }">
         <template #tooltip="params: any">
           <div class="bg-background/90 text-foreground rounded p-2 text-sm shadow-lg">
             <div v-for="({ data }, i) in params" :key="i" class="flex flex-col gap-2">

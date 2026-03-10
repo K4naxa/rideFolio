@@ -10,7 +10,9 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const props = defineProps<DialogContentProps & { class?: HTMLAttributes["class"]; dismissFromPill?: boolean }>();
+const props = defineProps<
+  DialogContentProps & { class?: HTMLAttributes["class"]; dismissFromPill?: boolean; scrollable?: boolean }
+>();
 const emits = defineEmits<DialogContentEmits>();
 
 const forwarded = useForwardPropsEmits(props, emits);
@@ -54,6 +56,7 @@ const forwarded = useForwardPropsEmits(props, emits);
         :style="props.dismissFromPill ? 'touch-action: pan-y;' : undefined"
         :data-vaul-no-drag="props.dismissFromPill ? '' : undefined"
         class="flex min-h-0 flex-1 flex-col overflow-hidden pb-1.5"
+        :class="props.scrollable ? 'overflow-y-auto overscroll-contain' : undefined"
       >
         <slot />
       </div>

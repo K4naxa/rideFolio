@@ -64,7 +64,7 @@ const displayedItems = computed(() =>
   <div class="flex h-full max-h-96 min-h-0 flex-col">
     <h2 class="mb-1">Shopping list</h2>
 
-    <div class="scrollbar-macos h-full overflow-y-auto">
+    <div class="scrollbar-macos h-full overflow-y-auto rounded">
       <div v-if="isShoppingLoading" class="grid flex-1 place-items-center">
         <Spinner class="text-muted-foreground size-10" />
       </div>

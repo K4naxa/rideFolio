@@ -17,6 +17,7 @@ import { ref } from "vue";
 import { useQuicklinkDelete } from "@/lib/queries/quicklinks/quicklink-mutation";
 import { getFaviconUrl } from "@/lib/utils";
 import { ExternalLinkIcon } from "lucide-vue-next";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const isEditing = ref(false);
 
@@ -47,7 +48,7 @@ async function handleDeleteQuicklink(id: string) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Quicklinks</DropdownMenuLabel>
+          <DropdownMenuLabel>Quick links</DropdownMenuLabel>
           <Separator />
           <DropdownMenuItem @click="handleEditing(true)"> Edit </DropdownMenuItem>
         </DropdownMenuContent>
@@ -58,16 +59,16 @@ async function handleDeleteQuicklink(id: string) {
     </header>
 
     <!-- Content -->
-    <div class="scrollbar-macos cardBackground flex flex-col divide-y overflow-y-auto rounded border">
+    <div class="scrollbar-macos card flex flex-col divide-y overflow-y-auto rounded border">
       <!-- Loader -->
       <template v-if="isLoading">
-        <li v-for="n in 4" :key="n" class="bg-muted h-8 w-28 animate-pulse rounded-md" />
+        <Skeleton v-for="n in 4" :key="n" class="h-8 w-28 rounded-md" />
       </template>
 
       <!-- Quicklinks -->
       <Tooltip placement="top" v-else v-for="link in links" :key="link.id" :delay-duration="200">
         <TooltipTrigger>
-          <a :href="link.url" target="_blank" class="listHover flex items-center justify-between gap-2.5 p-3 py-3">
+          <a :href="link.url" target="_blank" class="cardHover flex items-center justify-between gap-2.5 p-3 py-3">
             <div class="flex items-center gap-3 text-base font-medium">
               <img
                 v-if="link.url"
@@ -94,14 +95,14 @@ async function handleDeleteQuicklink(id: string) {
         <TooltipContent v-if="link.description && !isEditing">{{ link.description }}</TooltipContent>
       </Tooltip>
 
-      <li
+      <div
         v-if="!isEditing"
         class="text-muted-foreground hover:text-foreground flex cursor-pointer list-none items-center gap-3 px-3 py-2.5 transition-colors duration-100"
         @click="handleNewQuickLink"
       >
         <Icon name="plus" class="size-4" />
         <span class="">Add new link</span>
-      </li>
+      </div>
     </div>
   </section>
 </template>

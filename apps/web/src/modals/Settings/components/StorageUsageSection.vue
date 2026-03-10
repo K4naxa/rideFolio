@@ -41,7 +41,7 @@ const gaugeOptions = computed<EChartsOption>(() => {
         overlap: false,
         roundCap: true,
         lineStyle: {
-          color: themeStore.colors.primary,
+          color: themeStore.colors.accent,
         },
       },
       axisLine: {

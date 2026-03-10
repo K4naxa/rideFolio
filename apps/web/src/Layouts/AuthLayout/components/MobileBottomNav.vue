@@ -56,8 +56,8 @@ const themeStore = useThemeStore();
       <!-- Dashboard -->
       <RouterLink
         to="/dashboard"
-        active-class="text-primary!"
-        class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+        active-class="text-accent!  bg-sidebar-accent!"
+        class="text-muted-foreground flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
       >
         <Icon name="home" class="size-6" />
         <span>Dashboard</span>
@@ -78,13 +78,12 @@ const themeStore = useThemeStore();
             <DrawerTitle>Your Vehicles</DrawerTitle>
             <DrawerDescription>Navigate to a vehicle page</DrawerDescription>
           </DrawerHeader>
-          <div class="scrollbar-thin flex max-h-[55vh] flex-col gap-1 overflow-y-auto overscroll-contain px-2 pb-5">
+          <div class="scrollbar-none flex max-h-[70vh] flex-col gap-1 overflow-y-auto overscroll-contain px-2 pb-5">
             <RouterLink
               v-for="vehicle in vehicles"
               :key="vehicle.vehicleData.id"
               :to="`/vehicles/${vehicle.vehicleData.id}`"
               @click="isVehicleDrawerOpen = false"
-              class="hover:bg-accent rounded-xl px-2 py-1 transition-colors duration-75"
             >
               <VehicleItem :vehicle="vehicle.vehicleData" />
             </RouterLink>
@@ -135,8 +134,8 @@ const themeStore = useThemeStore();
       <!-- Timeline -->
       <RouterLink
         to="/timeline"
-        active-class="text-primary!"
-        class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+        active-class="text-accent!  bg-sidebar-accent!"
+        class="text-muted-foreground flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
       >
         <RouteIcon class="size-6" />
         <span>Timeline</span>
@@ -146,7 +145,7 @@ const themeStore = useThemeStore();
       <Drawer v-model:open="isProfileDrawerOpen" placement="bottom">
         <DrawerTrigger asChild>
           <button
-            class="text-muted-foreground active:text-primary flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
+            class="text-muted-foreground active:text-accent flex h-fit flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[0.625rem] font-medium tracking-wide transition-colors duration-100"
           >
             <Icon name="user" class="size-6" />
             <span>Profile</span>
@@ -159,7 +158,7 @@ const themeStore = useThemeStore();
             <DrawerDescription class="sr-only">Profile navigation menu</DrawerDescription>
 
             <!-- User identity card -->
-            <div class="bg-accent/60 flex items-center gap-3 rounded-xl p-3">
+            <div class="bg-sidebar-accent flex items-center gap-3 rounded-xl p-3">
               <Avatar class="size-14 rounded-xl">
                 <AvatarImage v-if="user?.image" :src="user?.image" :alt="user?.name" />
                 <AvatarFallback v-else class="bg-primary/15 text-primary rounded-xl text-xl font-bold">

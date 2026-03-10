@@ -40,66 +40,114 @@ img {
   }
 }
 
-@custom-variant dark (&:is(.dark *));
+/* Custom colors */
 @theme {
-  --animate-spinner-dash: spinner-dash 2s ease-in-out infinite;
   /* Sizing & Spacing */
   --radius: 0.5rem; /* Base radius for buttons, inputs, etc. */
   --radius-sm: 0.375rem; /* Smaller radius for buttons, badges */
+  --radius-md: 0.6rem;
   --radius-lg: 0.75rem; /* Larger radius for containers, modals */
   /* Fonts (Recommended: Add Inter from Google Fonts) */
   --font-roboto: "Roboto", sans-serif;
 
   --height-AppHeader: 3.5rem;
 
-  /* Core Colors */
-  --color-background: hsl(0, 0%, 100%);
-  --color-foreground: oklch(20.5% 0 0); /* Neutral 950 */
-  --color-card: hsl(0, 0%, 100%); /* white */
-  --color-card-foreground: oklch(27.546% 0.03701 260.041); /* slate-800 */
-  --color-background-light: hsl(0, 0%, 98%); /* white */
-  --color-muted: oklch(95.2% 0 0); /* slate-300 */
-  --color-muted-foreground: var(--color-neutral-500); /* slate-500 */
-  --color-popover: var(--color-card);
+
+  --color-sand-850: hsl(40 10% 12%);
+
+  --color-sand-50: hsl(30 33.3% 98.8%);
+  --color-sand-100: hsl(37.5 30.8% 93.9%);
+  --color-sand-150: hsl(37.5 29.4% 92.5%);
+  --color-sand-200: hsl(41.7 31.5% 85.7%);
+  --color-sand-300: hsl(41.4 25.2% 77.5%);
+  --color-sand-400: hsl(41.5 16.9% 69.8%);
+  --color-sand-500: hsl(40.9 10% 56.9%);
+  --color-sand-600: hsl(42.4 7.6% 44.1%);
+  --color-sand-700: hsl(41.5 8% 32%);
+  --color-sand-800: hsl(46.7 8.6% 20.6%);
+  --color-sand-900: hsl(36 9.4% 10.4%);
+  --color-sand-950: hsl(40 14.3% 4.1%);
+
+
+  --color-gold-400: hsl(39, 53%, 60%);
+  --color-gold-500: hsl(37, 45%, 50%);
+  --color-gold-600: hsl(37, 40%, 40%);
+
+}
+
+
+/* Light theme colors */
+@custom-variant dark (&:is(.dark *));
+@theme {
+  --animate-spinner-dash: spinner-dash 2s ease-in-out infinite;
+
+  --surface-0: var(--color-white); /* page background */
+  --surface-1: var(--color-sand-50); /* cards, panels */
+  --surface-2: var(--color-sand-100); /* popovers, dropdowns (float above cards) */
+  --surface-3: var(--color-sand-200); /* tooltips, modals */
+  /* Foreground always reads off its surface number */
+  --on-surface-strong: hsl(40, 7%, 8%);
+  --on-surface-medium: hsl(40, 6%, 40%);
+  --on-surface-subtle: hsl(40, 5%, 75%);
+
+
+  /* Backgrounds */
+  --color-background: var(--surface-0); /* slate-950 */
+  --color-background-light: var(--color-sand-100);
+
+  --color-card: var(--surface-1);
+  --color-muted: var(--surface-2);
+  --color-popover: var(--surface-1);
+
+  /* Hover */
+  --color-card-hover: var(--surface-2);
+  --color-popover-hover: var(--surface-3);
+
+
+  /* Texts */
+  --color-foreground: var(--on-surface-strong);
+  --color-card-foreground: var(--on-surface-strong);
   --color-popover-foreground: var(--color-card-foreground);
-
-  --color-accent: var(--color-neutral-100);
-  --color-accent-foreground: var(--color-foreground);
-
-  --color-sidebar-accent: var(--color-accent);
-  --color-sidebar-accent-foreground: var(--color-accent-foreground);
-
-  --color-table-header-background: var(--color-neutral-50);
-  --color-table-header-foreground: var(--color-neutral-800);
-  --color-table-row-hover: var(--color-neutral-100);
-
-  --color-border: var(--color-neutral-200);
-  --color-input: hsl(0, 0%, 100%);;
-  --color-ring: var(--color-primary);
-
-  --color-primary: #ff8c00; /* orange */
-  --color-primary-foreground: var(--color-neutral-50); /* slate-50 */
-  --color-secondary: var(--color-neutral-800);
-  --color-secondary-foreground: var(--color-neutral-50);
-  --color-secondary-hover: var(--color-neutral-700);
+  --color-muted-foreground: var(--on-surface-medium);
 
 
-  --color-destructive: hsl(0, 84%, 60%); /* red-500 */
-  --color-destructive-foreground: var(--color-neutral-100); /* slate-50 */
-  --color-success: hsl(142, 71%, 45%); /* emerald-600 */
-  --color-success-foreground: hsl(210, 40%, 98%); /* slate-50 */
-  --color-error: hsl(0, 84%, 60%); /* red-500 */
-  --color-error-foreground: hsl(210, 40%, 98%); /* slate-50 */
-  --color-warning: hsl(38, 92%, 50%); /* amber-500 */
-  --color-warning-foreground: rgb(30 41 59); /* slate-800 */
-  --color-chart-1: hsl(33, 100%, 50%); /* orange — matches primary */
-  --color-chart-2: hsl(142, 71%, 45%); /* emerald */
-  --color-chart-3: hsl(220, 85%, 57%); /* blue */
-  --color-chart-4: hsl(262, 80%, 62%); /* violet */
-  --color-chart-5: hsl(0, 84%, 60%);   /* red */
+  /* App Colors */
+  --color-primary: var(--color-gold-500);
+  --color-primary-foreground: hsl(40, 8%, 98%);
+  --color-accent: var(--color-gold-600);
+  --color-accent-foreground: hsl(39, 10%, 98%);
+  --color-secondary: hsl(39, 23%, 70%);
+  --color-secondary-foreground: hsl(40, 7%, 20%);
+  --color-secondary-hover: hsl(39, 20%, 72%);
+
+  /* Lines */
+  --color-border: var(--surface-3); /* slate-700 */
+  --color-input: var(--surface-2); /* slate-800 */
+  --color-ring: var(--color-primary); /* orange */
+  --color-sidebar-accent: var(--surface-2);
+  --color-sidebar-accent-foreground: var(--on-surface-strong);
+
+  /* Tables */
+  --color-table-header-background: var(--surface-2);
+  --color-table-header-foreground: var(--on-surface-strong);
+  --color-table-row-hover: var(--surface-2);
+
+
+  /* ── Status ──────────────────────────────── */
+  --color-success: hsl(142, 65%, 45%);
+  --color-warning: hsl(48, 96%, 53%);
+  --color-destructive: hsl(0, 72%, 55%);
+  --color-status-fg: hsl(0, 0%, 98%); /* one fg for all status colors */
+  /* ── Charts ──────────────────────────────── */
+  --chart-1: hsl(33, 95%, 55%);
+  --chart-2: hsl(142, 65%, 50%);
+  --chart-3: hsl(220, 80%, 65%);
+  --chart-4: hsl(262, 75%, 68%);
+  --chart-5: hsl(0, 78%, 65%);
+
   /* Scrollbar */
-  --color-scrollbar-thumb: var(--color-neutral-300);
-  --color-scrollbar-track: var(--color-neutral-100);
+  --color-scrollbar-thumb: var(--color-sand-600);
+  --color-scrollbar-track: var(--color-sand-900);
 
   /* Log - Refill */
   --color-refill: var(--color-teal-500); /* teal-500 */
@@ -107,7 +155,6 @@ img {
   /* Log - Maintenance */
   --color-maintenance: var(--color-amber-500);
   --color-maintenance-foreground: var(--color-white);
-
   /* Log - Notes */
   --color-notes: var(--color-slate-500); /* slate-500 */
   --color-notes-foreground: var(--color-slate-50); /* slate-50 */
@@ -143,68 +190,42 @@ img {
   }
 
   .dark {
-    /* Core Colors */
-    --color-background: var(--color-neutral-950); /* slate-950 */
-    --color-foreground: var(--color-white); /* slate-200 */
+
+    --surface-0: var(--color-sand-950); /* page background */
+    --surface-1: var(--color-sand-900); /* cards, panels */
+    --surface-2: var(--color-sand-800); /* popovers, dropdowns (float above cards) */
+    --surface-3: var(--color-sand-700); /* tooltips, modals */
+
+    /* Foreground always reads off its surface number */
+    --on-surface-strong: hsl(40, 7%, 92%);
+    --on-surface-medium: hsl(40, 6%, 60%);
+    --on-surface-subtle: hsl(40, 5%, 35%);
+
+    --color-border: var(--surface-2);
+    --color-background-light: var(--color-sand-850);
 
 
-    --color-card: var(--color-neutral-900);
-    --color-card-foreground: var(--color-neutral-100); /* slate-200 */
-
-    --color-background-light: hsl(0, 0%, 5%);
-
-    --color-muted: oklch(24.9% 0 0);
-    --color-muted-foreground: var(--color-neutral-400);
-
-    --color-accent: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
-
-    --color-popover: oklch(15.1% 0 0);
-    --color-popover-foreground: var(--color-card-foreground);
-
-    --color-border: oklch(22.1% 0 0); /* slate-700 */
-    --color-input: oklch(17% 0 0); /* slate-700 */
-    --color-ring: var(--color-primary); /* orange */
-
-    --color-primary: var(--color-amber-500); /* amber-500 — bright orange for dark bg */
-
-    --color-secondary: hsl(0, 0%, 82%);
-    --color-secondary-foreground: hsl(0, 0%, 0%);
-    --color-secondary-hover: hsl(0, 0%, 72%);
-
-    --color-sidebar-accent: var(--color-accent);
-    --color-sidebar-accent-foreground: var(--color-accent-foreground);
-
-    --color-table-header-background: var(--color-neutral-800);
-    --color-table-header-foreground: var(--color-neutral-50);
-    --color-table-row-hover: var(--color-neutral-900);
-
-    --color-destructive: var(--color-red-500);
-    --color-destructive-foreground: var(--color-neutral-50); /* slate-50 */
-
+    /* ── Status ──────────────────────────────── */
     --color-success: hsl(142, 65%, 45%);
-    --color-success-foreground: var(--color-neutral-50); /* slate-50 */
+    --color-warning: hsl(48, 96%, 53%);
+    --color-destructive: hsl(0, 72%, 55%);
+    --color-status-fg: hsl(0, 0%, 98%); /* one fg for all status colors */
 
-    --color-error: var(--color-red-500); /* red-500 */
-    --color-error-foreground: var(--color-neutral-50); /* slate-50 */
-
-    --color-warning: hsl(48, 96%, 53%); /* golden-yellow — clearly distinct from primary */
-    --color-warning-foreground: var(--color-neutral-900); /* slate-900 */
-
-    --color-chart-1: hsl(33, 95%, 55%); /* orange */
-    --color-chart-2: hsl(142, 65%, 50%); /* emerald */
-    --color-chart-3: hsl(220, 80%, 65%); /* blue */
-    --color-chart-4: hsl(262, 75%, 68%); /* violet */
-    --color-chart-5: hsl(0, 78%, 65%); /* red */
+    /* ── Charts ──────────────────────────────── */
+    --chart-1: hsl(33, 95%, 55%);
+    --chart-2: hsl(142, 65%, 50%);
+    --chart-3: hsl(220, 80%, 65%);
+    --chart-4: hsl(262, 75%, 68%);
+    --chart-5: hsl(0, 78%, 65%);
 
     /* Scrollbar */
-    --color-scrollbar-thumb: var(--color-neutral-600);
-    --color-scrollbar-track: var(--color-neutral-900);
+    --color-scrollbar-thumb: var(--color-sand-600);
+    --color-scrollbar-track: var(--color-sand-900);
   }
 
   body {
     @apply text-foreground bg-background font-normal antialiased;
-    font-family: var(--font-roboto);
+    font-family: var(--font-roboto), serif;
   }
 
   * {
@@ -222,11 +243,11 @@ img {
 
 @layer components {
   .card {
-    @apply bg-card text-card-foreground rounded border transition-colors;
+    @apply bg-card text-card-foreground rounded shadow-xs ;
   }
 
   .cardHover {
-    @apply hover:bg-card/80 dark:hover:bg-background-light transition-colors duration-100;
+    @apply hover:bg-card-hover transition-all  duration-100;
   }
 
   .iconBackground {
@@ -246,10 +267,14 @@ img {
   }
 
   .inputField {
-    @apply file:text-foreground placeholder:text-muted-foreground selection:bg-primary  selection:text-primary-foreground bg-input
+    @apply file:text-foreground  placeholder:text-muted-foreground selection:bg-primary  selection:text-primary-foreground bg-input
     focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive
-    flex h-10 w-full min-w-0 appearance-none rounded-md border px-3 py-2 text-base  transition-[color] outline-none file:inline-flex file:h-7 file:border-0
+    flex h-12 w-full min-w-0 appearance-none rounded  px-3 py-2 text-base  transition-[color] outline-none file:inline-flex file:h-7 file:border-0
     file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .input {
+    @apply bg-input rounded px-3 py-2 h-12 w-full appearance-none text-base
   }
 
   .inputMinimal {
@@ -291,7 +316,7 @@ img {
 }
 
 @utility listHover {
-  @apply hover:border-border hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors;
+  @apply hover:border-border hover:bg-card-hover transition-colors;
   transition-property: background-color, border-color;
   transition-duration: 75ms;
 }
@@ -433,6 +458,11 @@ img {
     @apply gap-10 md:gap-12 lg:gap-12 xl:gap-14;
   }
 
+  .p-lg {
+    @apply p-10 md:p-12 lg:p-12 xl:p-14;
+  }
+
+
   .gaps-md {
     @apply gap-6;
   }
@@ -508,3 +538,4 @@ html.theme-transitioning * {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
+

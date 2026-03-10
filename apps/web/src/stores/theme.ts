@@ -15,6 +15,7 @@ export const useThemeStore = defineStore("theme", () => {
     foreground: getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim(),
     mutedForeground: getComputedStyle(document.documentElement).getPropertyValue("--color-muted-foreground").trim(),
     muted: getComputedStyle(document.documentElement).getPropertyValue("--color-muted").trim(),
+    accent: getComputedStyle(document.documentElement).getPropertyValue("--color-accent").trim(),
   });
   watch(
     () => resolvedTheme.value,
@@ -25,6 +26,7 @@ export const useThemeStore = defineStore("theme", () => {
         foreground: getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim(),
         mutedForeground: getComputedStyle(document.documentElement).getPropertyValue("--color-muted-foreground").trim(),
         muted: getComputedStyle(document.documentElement).getPropertyValue("--color-muted").trim(),
+        accent: getComputedStyle(document.documentElement).getPropertyValue("--color-accent").trim(),
       };
     },
   );
@@ -36,7 +38,7 @@ export const useThemeStore = defineStore("theme", () => {
     return theme.value;
   };
 
-  // Apply theme with smooth transition
+  // Apply theme with a smooth transition
   const applyTheme = (withTransition = false) => {
     const resolved = getResolvedTheme();
     const root = document.documentElement;
@@ -62,13 +64,13 @@ export const useThemeStore = defineStore("theme", () => {
           resolvedTheme.value = resolved;
         });
 
-        // Remove transition class after animation completes
+        // Remove the transition class after animation completes
         setTimeout(() => {
           root.classList.remove("theme-transitioning");
         }, 250);
       }
     } else {
-      // No transition on initial load
+      // No transition on an initial load
       root.classList.remove("light", "dark");
       root.classList.add(resolved);
       resolvedTheme.value = resolved;
@@ -78,7 +80,7 @@ export const useThemeStore = defineStore("theme", () => {
   const setTheme = (newTheme: ThemeType) => {
     theme.value = newTheme;
     localStorage.setItem("theme", newTheme);
-    applyTheme(true); // WITH transition when user changes theme
+    applyTheme(true); // with transition when the user changes theme
   };
 
   const toggleTheme = () => {
@@ -86,14 +88,14 @@ export const useThemeStore = defineStore("theme", () => {
     setTheme(newTheme);
   };
 
-  const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+  const handleSystemThemeChange = () => {
     if (theme.value === "system") {
       applyTheme(true); // WITH transition on system change
     }
   };
 
   const initialize = () => {
-    applyTheme(false); // NO transition on initial load
+    applyTheme(false); // NO transition on an initial load
     mediaQuery.addEventListener("change", handleSystemThemeChange);
   };
 

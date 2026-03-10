@@ -53,7 +53,7 @@ const onSubmit = handleSubmit(async (values) => {
       </div>
     </form>
 
-    <div class="flex min-h-0 flex-1 rounded border">
+    <div class="flex min-h-0 flex-1">
       <ShoppingTable />
     </div>
   </main>

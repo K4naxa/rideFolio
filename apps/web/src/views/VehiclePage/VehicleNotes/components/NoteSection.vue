@@ -168,7 +168,7 @@ watch(
 </script>
 
 <template>
-  <div class="bg-background mx-auto flex min-h-0 w-full max-w-4xl min-w-0 flex-1 flex-col p-0">
+  <div class="mx-auto flex min-h-0 w-full max-w-4xl min-w-0 flex-1 flex-col">
     <form :class="twMerge('flex min-h-0 min-w-0 flex-1 flex-col space-y-4', props.classForm)" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot

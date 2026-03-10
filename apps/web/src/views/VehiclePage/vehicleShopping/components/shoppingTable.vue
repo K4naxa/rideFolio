@@ -83,11 +83,11 @@ onMounted(updateLongestPriceWidth);
 watch(filteredItems, updateLongestPriceWidth, { deep: true });
 </script>
 <template>
-  <div class="flex min-h-0 flex-1 flex-col">
+  <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded border">
     <!-- Table Header -->
-    <div v-if="filteredItems.length && !isLoading" as-child class="scrollbar-thin min-h-0 w-full min-w-0 flex-1">
+    <div v-if="filteredItems.length && !isLoading" class="scrollbar-thin min-h-0 w-full min-w-0 flex-1">
       <div
-        class="text-accent-foreground bg-muted sticky top-0 left-0 z-10 grid items-center gap-4 rounded-t-lg border-b px-2 shadow-sm lg:gap-6"
+        class="bg-table-header-background text-shadow-table-header-foreground sticky top-0 left-0 z-10 grid items-center gap-4 px-2 shadow-sm lg:gap-6"
         :class="props.size ? (props.size === 'sm' ? 'h-10' : 'h-12') : 'h-12'"
         :style="gridColStyle"
       >
@@ -96,11 +96,11 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
         <Label>Price</Label>
         <Button
           variant="outline"
-          class="hover:stroke-muted-foreground stroke-accent-foreground"
+          class="border-table-header-foreground text-table-header-foreground"
           size="icon-sm"
           @click="handleCleanup()"
         >
-          <BrushCleaningIcon class="stroke-inherit" />
+          <BrushCleaningIcon class="stroke-current" />
         </Button>
       </div>
 
@@ -109,7 +109,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
         <div
           v-for="item in filteredItems"
           :key="item.id"
-          class="listHover grid gap-4 px-2 lg:gap-6"
+          class="hover:bg-card grid gap-4 px-2 lg:gap-6"
           :class="[props.size ? (props.size === 'sm' ? 'py-2' : 'py-4') : 'py-4']"
           :style="gridColStyle"
         >

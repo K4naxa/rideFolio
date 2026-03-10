@@ -34,10 +34,12 @@ const isOpen = ref(false);
 <template>
   <DropdownMenu v-if="!isMobile" v-model:open="isOpen">
     <DropdownMenuTrigger asChild>
-      <SidebarMenuButton class="hover:bg-accent/50 h-fit py-2">
-        <Avatar class="h-9 w-9 rounded-lg">
+      <SidebarMenuButton class="h-fit py-2">
+        <Avatar class="h-9 w-9">
           <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-          <AvatarFallback v-else class="bg-accent rounded-lg">{{ getInitials(user?.name) }}</AvatarFallback>
+          <AvatarFallback v-else class="bg-accent text-accent-foreground">
+            {{ getInitials(user?.name) }}
+          </AvatarFallback>
         </Avatar>
         <div class="grid flex-1 text-left text-sm leading-tight">
           <span class="truncate font-medium">{{ user?.name }}</span>
@@ -51,9 +53,11 @@ const isOpen = ref(false);
     <DropdownMenuContent class="min-w-56" side="right" align="end" :sideOffset="4">
       <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-          <Avatar class="h-8 w-8 rounded-lg">
+          <Avatar class="h-8 w-8">
             <AvatarImage v-if="user?.image" :src="user?.image || ''" :alt="user?.name" />
-            <AvatarFallback v-else class="bg-accent rounded-lg">{{ getInitials(user?.name) }}</AvatarFallback>
+            <AvatarFallback v-else class="bg-accent text-accent-foreground">
+              {{ getInitials(user?.name) }}
+            </AvatarFallback>
           </Avatar>
           <div class="grid flex-1 text-left text-sm leading-tight">
             <span class="truncate font-medium">{{ user?.name }}</span>

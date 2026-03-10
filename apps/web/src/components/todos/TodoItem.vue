@@ -30,7 +30,7 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
   <div
     :class="
       twMerge(
-        'card group listHover cursor-pointer p-3 transition-[border] duration-150 md:max-h-full md:w-full',
+        'card group cardHover cursor-pointer px-3 py-2 transition-[border] duration-150 md:max-h-full md:w-full',
         isOverdue && 'border-l-destructive! border-l-3!',
       )
     "

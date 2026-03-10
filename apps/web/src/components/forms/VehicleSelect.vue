@@ -65,16 +65,25 @@ function handleSelect(value: string) {
   <!-- Desktop Dropdown-->
   <template v-if="!isMobile">
     <DropdownMenu v-model:open="isOpen">
-      <DropdownMenuTrigger class="w-full">
+      <DropdownMenuTrigger asChild class="w-full">
         <button
           v-if="selectedVehicle"
           type="button"
-          :class="twMerge('inputField h-fit w-full p-1!', props.triggerClass)"
+          :class="twMerge('inputField h-fit w-full bg-transparent! p-0!', props.triggerClass)"
         >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
         </button>
-        <button v-else type="button" :class="twMerge('inputField h-fit w-full p-1!', props.triggerClass)">
+        <button
+          v-else
+          type="button"
+          :class="
+            twMerge(
+              'inputField flex h-fit w-full items-center justify-between border bg-transparent',
+              props.triggerClass,
+            )
+          "
+        >
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
         </button>
@@ -86,7 +95,7 @@ function handleSelect(value: string) {
             v-for="vehicle in filteredVehicles"
             v-bind:key="vehicle.vehicleData.id"
             @click="handleSelect(vehicle.vehicleData.id)"
-            class="listHover flex cursor-pointer items-center justify-between rounded select-none"
+            class="hover:bg-popover-hover flex cursor-pointer items-center justify-between rounded select-none"
           >
             <VehicleItem
               variant="small"

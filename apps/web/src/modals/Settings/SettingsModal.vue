@@ -63,10 +63,10 @@ function setActiveTab(tabId: string) {
 
 <template>
   <Dialog :open="isOpen" @update:open="modalStore.onClose" class="max-w-7xl">
-    <DialogScrollContent class="w-full max-w-7xl gap-0 overflow-hidden p-0! md:h-200">
+    <DialogScrollContent class="bg-background w-full max-w-7xl gap-0 overflow-hidden p-0! md:h-200">
       <div class="flex h-full flex-col">
         <!-- Mobile Tabs Navigation (sticky) -->
-        <div v-if="isMobile" class="bg-background sticky top-0 z-10">
+        <div v-if="isMobile" class="sticky top-0 z-10">
           <DialogHeader class="p-4 pb-2">
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
@@ -93,7 +93,7 @@ function setActiveTab(tabId: string) {
         <div class="flex flex-1 overflow-hidden">
           <!-- Desktop Sidebar -->
 
-          <div class="bg-muted/20 hidden w-60 flex-col gap-4 border-r px-2 py-4 md:flex lg:px-3 lg:py-6">
+          <div class="bg-card hidden w-60 flex-col gap-4 border-r px-2 py-4 md:flex lg:px-3 lg:py-6">
             <Label class="text-muted-foreground text-xs">Settings</Label>
             <ul class="flex flex-col gap-1">
               <li
@@ -102,8 +102,8 @@ function setActiveTab(tabId: string) {
                 @click="setActiveTab(tab.id)"
                 :class="
                   twMerge(
-                    'hover:bg-accent/50 text-foreground/80 flex w-full cursor-pointer items-center gap-2.5 rounded-sm px-2 py-1 text-sm font-medium',
-                    activeTab === tab.id ? 'bg-accent hover:bg-accent text-foreground' : '',
+                    'hover:bg-sidebar-accent text-foreground/80 flex w-full cursor-pointer items-center gap-2.5 rounded-sm px-2 py-1 text-sm font-medium',
+                    activeTab === tab.id ? 'bg-sidebar-accent text-sidebar-accent-foreground' : '',
                   )
                 "
               >

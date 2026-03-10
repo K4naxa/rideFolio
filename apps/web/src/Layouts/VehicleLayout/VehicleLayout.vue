@@ -53,22 +53,29 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
 
     <!-- Vehicle navigation tabs -->
     <div class="flex flex-1 flex-col">
-      <nav class="bg-background sticky top-(--app-header-height) z-10 mb-0 h-(--vehicle-navbar-height) text-sm">
+      <nav class="sticky top-(--app-header-height) z-10 mb-0 h-(--vehicle-navbar-height) text-sm">
         <!-- Mobile nav -->
         <MainContentWrapper>
           <Tabs class="w-full">
-            <TabsList class="bg-muted w-full rounded-sm">
-              <TabsTrigger v-for="tab in VEHICLE_TABS" :key="tab.id" :value="tab.id" as-child>
-                <RouterLink
-                  :to="tab.to"
-                  exact-active-class="text-accent-foreground! bg-background!"
-                  class="text-muted-foreground hover:text-foreground flex w-full items-center gap-2 px-3 py-2 font-medium select-none"
-                  draggable="false"
+            <TabsList class="w-full">
+              <RouterLink
+                v-for="tab in VEHICLE_TABS"
+                :key="tab.id"
+                :to="tab.to"
+                v-slot:="{ isActive, navigate }"
+                draggable="false"
+                custom
+              >
+                <TabsTrigger
+                  :value="tab.id"
+                  @click="navigate"
+                  :data-state="isActive ? 'active' : 'inactive'"
+                  class="flex cursor-pointer items-center gap-2"
                 >
                   <Icon v-if="tab.icon" :name="tab.icon" class="h-4 w-4" />
                   <span class="hidden lg:block">{{ tab.label }}</span>
-                </RouterLink>
-              </TabsTrigger>
+                </TabsTrigger>
+              </RouterLink>
             </TabsList>
           </Tabs>
         </MainContentWrapper>

@@ -51,7 +51,7 @@ function handleEdit() {
 
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger asChild>
-      <TodoItem :todo />
+      <TodoItem class="min-w-80" :todo />
     </DrawerTrigger>
 
     <DrawerContent class="overflow-visible!">

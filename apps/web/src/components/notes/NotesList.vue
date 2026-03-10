@@ -38,7 +38,7 @@ const formatDate = (dateString: string | Date) => {
     <li
       v-for="note in filteredNotes"
       :key="note.id"
-      class="card group hover:bg-accent flex cursor-pointer flex-col gap-2 p-5 transition-colors"
+      class="card group cardHover flex cursor-pointer flex-col gap-2 p-5 transition-colors"
       @click="selectNote(note)"
     >
       <!--      Header-->

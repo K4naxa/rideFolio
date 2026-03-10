@@ -34,11 +34,11 @@ const isMobile = useIsMobile();
       </div>
     </div>
 
-    <div v-else class="flex w-full items-center gap-4" v-bind="$attrs">
+    <div v-else class="flex w-full items-center gap-4 rounded p-1" v-bind="$attrs">
       <VehicleAvatar
         :src="props.vehicle?.image"
         :type="props.vehicle?.type.code"
-        :class="twMerge('aspect-video h-16 w-fit shrink-0', props.variant === 'small' && 'h-14')"
+        :class="twMerge('aspect-video h-16 w-fit shrink-0 rounded-sm', props.variant === 'small' && 'h-14')"
       />
       <div class="">
         <h3
@@ -60,7 +60,7 @@ const isMobile = useIsMobile();
 
   <!-- Desktop template -->
   <template v-else>
-    <div class="flex w-full items-center gap-3" v-bind="$attrs">
+    <div class="flex w-full items-center gap-3 p-1" v-bind="$attrs">
       <VehicleAvatar
         :src="props.vehicle?.image"
         :type="props.vehicle?.type.code"

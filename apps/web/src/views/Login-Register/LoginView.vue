@@ -75,7 +75,7 @@ const quickLogin = async (email: string, password: string) => {
       <div class="flex flex-col gap-4">
         <LoginTabs />
         <form @submit="onSubmit" class="" data-cy="login-form">
-          <Card class="bg-background-light">
+          <Card class="bg-card">
             <CardContent class="space-y-6">
               <div class="flex flex-col items-center text-center">
                 <h1 class="text-2xl font-bold">Welcome back</h1>

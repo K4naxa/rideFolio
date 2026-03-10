@@ -34,6 +34,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useIsMobile } from "@/lib/composables/useMediaQuery.ts";
 import { useActionOptions } from "@/lib/composables/useActionOptions";
 import ActionOptionItem from "@/components/ui/ActionOptionItem.vue";
+import { Button } from "@/components/ui/button";
 
 interface MainSideBarLinks {
   label: string;
@@ -109,10 +110,10 @@ const handleCreateVehicleClick = () => {
           <SidebarMenuItem v-if="!isMobile">
             <Popover>
               <PopoverTrigger as-child>
-                <SidebarMenuButton variant="secondary">
+                <Button size="sm" class="mb-4 w-full" variant="default">
                   <Icons name="plus" />
                   Add Activity
-                </SidebarMenuButton>
+                </Button>
               </PopoverTrigger>
               <PopoverContent align="end" class="flex flex-col gap-1 p-1">
                 <ActionOptionItem v-for="option in actionOptions" :key="option.label" :option="option" />

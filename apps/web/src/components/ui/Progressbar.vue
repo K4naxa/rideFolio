@@ -14,7 +14,7 @@ const props = defineProps<{
       tag="div"
       :initial="{ width: 0 }"
       :animate="{ width: percent.transform(props.percent) }"
-      :class="['bg-foreground/80 h-full rounded-full shadow transition-all duration-300', props.barClass]"
+      :class="['bg-accent h-full rounded-full shadow transition-all duration-300', props.barClass]"
     />
   </div>
 </template>
