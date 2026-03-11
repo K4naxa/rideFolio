@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { RouterView } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import { computed } from "vue";
 import VehicleHero from "./components/VehicleHero.vue";
 import type { IconProps } from "@/components/icons/Icon.vue";
@@ -40,6 +40,14 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
     id: "shopping-list",
   },
 ]);
+
+const route = useRoute();
+
+// Derive the active tab id from the current route
+const activeTab = computed(() => {
+  const matched = VEHICLE_TABS.value.find((tab) => route.path === tab.to);
+  return matched?.id ?? "overview";
+});
 </script>
 
 <template>
@@ -56,22 +64,17 @@ const VEHICLE_TABS = computed<VehicleTab[]>(() => [
       <nav class="sticky top-(--app-header-height) z-10 mb-0 h-(--vehicle-navbar-height) text-sm">
         <!-- Mobile nav -->
         <MainContentWrapper>
-          <Tabs class="w-full">
+          <Tabs :model-value="activeTab" class="w-full">
             <TabsList class="w-full">
               <RouterLink
                 v-for="tab in VEHICLE_TABS"
                 :key="tab.id"
                 :to="tab.to"
-                v-slot:="{ isActive, navigate }"
+                v-slot="{ navigate }"
                 draggable="false"
                 custom
               >
-                <TabsTrigger
-                  :value="tab.id"
-                  @click="navigate"
-                  :data-state="isActive ? 'active' : 'inactive'"
-                  class="flex cursor-pointer items-center gap-2"
-                >
+                <TabsTrigger :value="tab.id" @click="navigate" class="flex cursor-pointer items-center gap-2">
                   <Icon v-if="tab.icon" :name="tab.icon" class="h-4 w-4" />
                   <span class="hidden lg:block">{{ tab.label }}</span>
                 </TabsTrigger>
