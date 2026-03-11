@@ -7,7 +7,7 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { authClient } from "@/lib/authClient";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
-import { passwordUpdateSchema } from "@repo/validation";
+import { passwordUpdateSchema, type PasswordUpdateValues } from "@repo/validation";
 import { Field, Form } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -26,7 +26,7 @@ const passwordFormRef = ref<InstanceType<typeof Form> | null>(null);
 const isEmailChanging = ref(false);
 const emailFormRef = ref<InstanceType<typeof Form> | null>(null);
 
-async function onPasswordChangeSubmit(values: any) {
+async function onPasswordChangeSubmit(values: PasswordUpdateValues) {
   console.log("Submitting password change with values:", values);
   isPasswordChanging.value = true;
 
@@ -59,7 +59,7 @@ const emailSchema = z.object({
   newEmail: z.email("Invalid email address"),
 });
 
-async function onEmailChangeSubmit(values: any) {
+async function onEmailChangeSubmit(values: z.infer<typeof emailSchema>) {
   await authClient.changeEmail(
     { ...values, callbackURL: redirectUrl },
 
@@ -71,9 +71,6 @@ async function onEmailChangeSubmit(values: any) {
       onSuccess: () => {
         toast.success("Confirmation email sent to your new address.");
         showEmailChangeDialog.value = false;
-      },
-      onResponse: (res) => {
-        console.log("Email change request completed." + JSON.stringify(res));
       },
     },
   );
@@ -112,15 +109,13 @@ async function onEmailChangeSubmit(values: any) {
       title="Change Email"
       description="We'll send a confirmation email to the email address you provide to confirm that it's really you"
     >
-      <template #trigger> </template>
-
       <template #default>
         <Form
           name="emailChange"
           ref="emailFormRef"
           :validation-schema="emailSchema"
           :initial-values="{ newEmail: '' }"
-          @submit="onEmailChangeSubmit"
+          @submit="(values) => onEmailChangeSubmit(values as z.infer<typeof emailSchema>)"
           class="flex flex-col gap-4"
         >
           <FormInput name="newEmail" type="email" placeholder="New email address" />
@@ -153,7 +148,7 @@ async function onEmailChangeSubmit(values: any) {
             newPasswordConfirmation: '',
             revokeOtherSessions: true,
           }"
-          @submit="onPasswordChangeSubmit"
+          @submit="(values) => onPasswordChangeSubmit(values as PasswordUpdateValues)"
           class="flex flex-col gap-4"
         >
           <FormInput

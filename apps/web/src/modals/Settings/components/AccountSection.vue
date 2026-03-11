@@ -8,7 +8,7 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { authClient } from "@/lib/authClient";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import { nameSchema } from "@repo/validation";
+import { nameSchema, type NameSchemaInput } from "@repo/validation";
 import { useQueryClient } from "@tanstack/vue-query";
 import { Form } from "vee-validate";
 import { ref, useTemplateRef } from "vue";
@@ -20,7 +20,7 @@ const showUsernameChangeDialog = ref(false);
 
 const isUsernameChanging = ref(false);
 const usernameFormRef = useTemplateRef<InstanceType<typeof Form>>("usernameFormRef");
-async function onUsernameChangeSubmit(values: any) {
+async function onUsernameChangeSubmit(values: NameSchemaInput) {
   console.log("Submitting username change with values:", values);
   isUsernameChanging.value = true;
 
@@ -88,7 +88,7 @@ async function onUsernameChangeSubmit(values: any) {
           :initial-values="{
             name: '',
           }"
-          @submit="onUsernameChangeSubmit"
+          @submit="(values) => onUsernameChangeSubmit(values as NameSchemaInput)"
           class="flex flex-col gap-4"
         >
           <Input type="text" name="name" :placeholder="user?.currentUser.value?.name || 'Username'" />

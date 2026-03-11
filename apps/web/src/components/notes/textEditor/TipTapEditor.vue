@@ -30,7 +30,7 @@ const props = withDefaults(
 );
 
 defineSlots<{
-  default?: (props: { focus: () => void }) => any;
+  default?: (props: { focus: () => void }) => unknown;
 }>();
 
 const editor = useEditor({

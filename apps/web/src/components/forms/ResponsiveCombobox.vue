@@ -56,11 +56,11 @@ function handleInteractOutside(event: Event) {
 }
 
 const inputValue = computed(() => {
-  // Always prioritize searchQuery when user is actively typing
+  // Always prioritize searchQuery when the user is actively typing
   if (searchQuery.value !== "") {
     return searchQuery.value;
   }
-  // Only show modelValue label when not typing
+  // Only show the modelValue label when not typing
   if (props.modelValue && !isOpen.value) {
     return getLabel(props.modelValue);
   }
@@ -104,7 +104,7 @@ function handleInput(event: Event) {
     }
   }
 
-  // Update search query for input events
+  // Update the search query for input events
   if (event.type === "input") {
     searchQuery.value = target.value;
   }
@@ -116,14 +116,14 @@ function handleFocus() {
 }
 
 function getKey(item: T): string | number {
-  return (item as any)[props.valueKey];
+  return (item as never)[props.valueKey];
 }
 function getLabel(item: T): string {
   if (props.labelFn) {
     return props.labelFn(item);
   }
 
-  return (item as any)[props.labelKey];
+  return (item as never)[props.labelKey];
 }
 
 function select(item: T) {
@@ -138,11 +138,11 @@ function isSelected(item: T): boolean {
   return getKey(item) === getKey(props.modelValue);
 }
 
-// Watch for external modelValue changes (e.g., when parent resets selection)
+// Watch for external modelValue changes (e.g., when the parent resets selection)
 watch(
   () => props.modelValue,
   (newValue) => {
-    // If modelValue is cleared externally, reset search query
+    // If modelValue is cleared externally, reset a search query
     if (newValue === null || newValue === undefined) {
       searchQuery.value = "";
     }

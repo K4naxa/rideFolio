@@ -6,7 +6,7 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useShoppingCreate, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
-import { ShoppingListItemSchema } from "@repo/validation";
+import { type ShoppingItemValues, ShoppingListItemSchema } from "@repo/validation";
 import { Field, Form } from "vee-validate";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 
@@ -26,7 +26,7 @@ const { mutate: createItem } = useShoppingCreate();
 const isCreatingItem = ref(false);
 const inputRef = useTemplateRef<HTMLInputElement>("inputRef");
 
-const handleCreateItem = (values: any) => {
+const handleCreateItem = (values: ShoppingItemValues) => {
   console.log("Creating item with values:", values);
   createItem(
     {
@@ -109,9 +109,8 @@ const displayedItems = computed(() =>
           <Form
             v-else
             class="flex items-center gap-4"
-            name="Overview Shoppinglist"
-            ref="shoppinglistForm"
-            @submit="handleCreateItem"
+            name="Overview shopping list form"
+            @submit="(values) => handleCreateItem(values as ShoppingItemValues)"
             :validation-schema="ShoppingListItemSchema"
           >
             <Button variant="outline" size="icon-sm" class="size-7" type="submit">
