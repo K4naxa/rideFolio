@@ -12,8 +12,7 @@ export async function seedVehicleParts(
   console.log('🔩 Seeding vehicle parts...');
 
   const { car, motorcycle, boat, other } = vehicleTypes;
-  const { car_fl, car_fr, car_rl, car_rr, car_front, car_rear, moto_front, moto_rear, carWheelLocs, motoFrontRear } =
-    locations;
+  const { car_front, car_rear, moto_front, moto_rear, carWheelLocs, motoFrontRear } = locations;
   const {
     cat_engine,
     cat_transmission_and_drivetrain,
