@@ -46,7 +46,7 @@
     "clsx": "^2.1.1",
     "echarts": "^6.0.0",
     "lucide-vue-next": "^0.555.0",
-    "motion-v": "^1.10.3",
+    "motion-v": "^2.0.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "reka-ui": "^2.9.1",

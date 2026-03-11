@@ -253,8 +253,8 @@ importers:
         specifier: ^0.555.0
         version: 0.555.0(vue@3.5.30(typescript@5.9.3))
       motion-v:
-        specifier: ^1.10.3
-        version: 1.10.3(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vue@3.5.30(typescript@5.9.3))
+        specifier: ^2.0.0
+        version: 2.0.0(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vue@3.5.30(typescript@5.9.3))
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@5.9.3)(vue@3.5.30(typescript@5.9.3))
@@ -5522,8 +5522,8 @@ packages:
   motion-utils@12.29.2:
     resolution: {integrity: sha512-G3kc34H2cX2gI63RqU+cZq+zWRRPSsNIOjpdl9TN4AQwC4sgwYPl/Q/Obf/d53nOm569T0fYK+tcoSV50BWx8A==}
 
-  motion-v@1.10.3:
-    resolution: {integrity: sha512-9Ewo/wwGv7FO3PqYJpllBF/Efc7tbeM1iinVrM73s0RUQrnXHwMZCaRX98u4lu0PQCrZghPPfCsQ14pWKIEbnQ==}
+  motion-v@2.0.0:
+    resolution: {integrity: sha512-oQuQMrPhti+Zps6OosOaW3b/eqzaGAuwI54XHJKq/dIWtQWcNzfyhTo4VB5xmp7yLN+3BE9FKF6skLsynfgbHQ==}
     peerDependencies:
       '@vueuse/core': '>=10.0.0'
       vue: '>=3.0.0'
@@ -12818,12 +12818,13 @@ snapshots:
 
   motion-utils@12.29.2: {}
 
-  motion-v@1.10.3(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vue@3.5.30(typescript@5.9.3)):
+  motion-v@2.0.0(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vue@3.5.30(typescript@5.9.3)):
     dependencies:
       '@vueuse/core': 14.2.1(vue@3.5.30(typescript@5.9.3))
       framer-motion: 12.35.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       hey-listen: 1.0.8
       motion-dom: 12.35.2
+      motion-utils: 12.29.2
       vue: 3.5.30(typescript@5.9.3)
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
