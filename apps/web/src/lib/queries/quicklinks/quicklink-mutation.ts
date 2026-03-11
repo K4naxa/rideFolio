@@ -27,8 +27,7 @@ export function useQuicklinkDelete() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await api.delete(`/quicklinks/${id}`);
-      return;
+      return api.delete(`/quicklinks/${id}`);
     },
     onSuccess: (_, id) => {
       queryClient.setQueryData(["quicklinks"], (old: Quicklink[] | undefined) => {

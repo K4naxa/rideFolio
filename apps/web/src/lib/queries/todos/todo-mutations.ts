@@ -107,8 +107,8 @@ export function useTodoToggle() {
 export function useTodoDelete() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ todoId, vehicleId }: { todoId: string; vehicleId: string }) => {
-      const response = await api.delete(`/todos/${todoId}`);
+    mutationFn: async (variables: { todoId: string; vehicleId: string }) => {
+      const response = await api.delete(`/todos/${variables.todoId}`);
       return response.data;
     },
     onSuccess: (_, variables) => {

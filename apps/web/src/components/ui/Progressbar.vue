@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Motion, percent } from "motion-v";
+import { Motion, percent as motionPercent } from "motion-v";
 import { type HTMLAttributes } from "vue";
 
 const props = defineProps<{
@@ -13,7 +13,7 @@ const props = defineProps<{
     <Motion
       tag="div"
       :initial="{ width: 0 }"
-      :animate="{ width: percent.transform(props.percent) }"
+      :animate="{ width: motionPercent.transform(props.percent) }"
       :class="['bg-accent h-full rounded-full shadow transition-all duration-300', props.barClass]"
     />
   </div>

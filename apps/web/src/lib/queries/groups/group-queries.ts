@@ -5,7 +5,6 @@ import { handleEmpty } from "@/lib/queries/util";
 import type { AccessibleGroup, GroupDetails } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
-import { useRouter } from "vue-router";
 
 export function useGroupsAll() {
   const { isAuthenticated } = useAuth();
@@ -19,7 +18,6 @@ export function useGroupsAll() {
 
 export function useGroupDetails(groupId: MaybeRef<string | undefined>) {
   const { isAuthenticated } = useAuth();
-  const router = useRouter();
 
   return useQuery({
     queryKey: computed(() => queryKeys.groups.detail(handleEmpty(groupId))),

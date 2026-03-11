@@ -70,8 +70,8 @@ export function useShoppingDelete() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["shopping-delete-item"],
-    mutationFn: async ({ itemId, vehicleId }: { itemId: string; vehicleId: string }) => {
-      const response = await api.delete(`/shopping-list/${itemId}`);
+    mutationFn: async (variables: { itemId: string; vehicleId: string }) => {
+      const response = await api.delete(`/shopping-list/${variables.itemId}`);
       return response.data;
     },
     onSuccess: (_, variables) => {

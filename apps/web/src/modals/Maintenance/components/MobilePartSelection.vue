@@ -61,8 +61,6 @@ const selectedCategory = ref<MaintenanceCategoryWithParts | null>(null);
 const selectedPart = ref<MaintenanceCategoryPart | null>(null);
 const isDrawerOpen = ref(false);
 
-const customNameInput = ref<string>("");
-
 function selectCategory(category: MaintenanceCategoryWithParts | null) {
   selectedCategory.value = category;
   newPart.value = {

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
 import type { Note } from "@repo/validation";
-import { api, fetchApi } from "@/lib/api";
+import { fetchApi } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
 

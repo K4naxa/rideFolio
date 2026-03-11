@@ -122,9 +122,10 @@ router.beforeEach(async (to, from, next) => {
       else return next({ name: "Login" });
     }
 
-    // If no meta properties match, allow navigation
+    // If no meta-properties match, allow navigation
     return next();
   } catch (e) {
+    console.error("Error checking authentication status:", e);
     return next({ name: "Login" });
   }
 });

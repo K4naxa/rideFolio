@@ -5,7 +5,6 @@ import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
-import { useStorageBreakdown } from "@/lib/queries/user/user-queries";
 import StorageBreakdownElement from "@/modals/Settings/components/StorageBreakdownElement.vue";
 import StorageUsageSection from "@/modals/Settings/components/StorageUsageSection.vue";
 import VehicleSlotElement from "@/modals/Settings/components/VehicleSlotElement.vue";
