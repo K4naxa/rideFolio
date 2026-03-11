@@ -29,7 +29,7 @@ import { TimelineModule } from './timeline/timeline.module';
     }),
     AuthModule.forRootAsync({
       useFactory: (emailService: EmailService) => ({
-        auth: createAuth(emailService), // Create auth instance with injected EmailService
+        auth: createAuth(emailService), // Create the auth instance with injected EmailService
       }),
       imports: [EmailModule],
       inject: [EmailService],

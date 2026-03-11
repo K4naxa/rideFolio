@@ -4,7 +4,6 @@ import { EmailService } from 'src/email/email.service';
 
 import { prisma } from 'src/lib/prisma';
 
-// @ts-ignore
 export const createAuth = (emailService: EmailService) => {
   return betterAuth({
     database: prismaAdapter(prisma, {
@@ -62,13 +61,14 @@ export const createAuth = (emailService: EmailService) => {
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, url, token }) => {
+      sendVerificationEmail: ({ user, url, token }) => {
         void emailService.sendEmailVerification({
-          user: user,
           userEmail: user.email,
           token: token,
           url: url,
         });
+        // Promise resolve to satisfy the expected return Promise
+        return Promise.resolve();
       },
     },
 
