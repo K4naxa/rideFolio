@@ -8,7 +8,6 @@ import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { authClient } from "@/lib/authClient";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { passwordUpdateSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { Field, Form } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -119,7 +118,7 @@ async function onEmailChangeSubmit(values: any) {
         <Form
           name="emailChange"
           ref="emailFormRef"
-          :validation-schema="toTypedSchema(emailSchema)"
+          :validation-schema="emailSchema"
           :initial-values="{ newEmail: '' }"
           @submit="onEmailChangeSubmit"
           class="flex flex-col gap-4"
@@ -147,7 +146,7 @@ async function onEmailChangeSubmit(values: any) {
         <Form
           name="PasswordChange"
           ref="passwordFormRef"
-          :validation-schema="toTypedSchema(passwordUpdateSchema)"
+          :validation-schema="passwordUpdateSchema"
           :initial-values="{
             currentPassword: '',
             newPassword: '',

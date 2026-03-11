@@ -20,7 +20,6 @@ import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehic
 import { useVehicleByIdQuery, useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
 import { useModalStore } from "@/stores/modal";
 import { FUEL_TYPES, getOdometerUnit, ODOMETER_TYPES, VehicleInputSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -66,15 +65,15 @@ const clientSchema = VehicleInputSchema.extend({
 // Form logic
 const { handleSubmit, values, resetForm } = useForm({
   name: "Vehicle form",
-  validationSchema: toTypedSchema(clientSchema),
+  validationSchema: clientSchema,
 });
 
 const onSubmit = handleSubmit(async (data) => {
   // if there's no modalData, we're creating a new vehicle.
   if (isCreatingNew.value) {
-    createVehicleAsync(data, {
+    await createVehicleAsync(data, {
       onSuccess: (data) => {
-        toast.success("Vehicle created succesfully");
+        toast.success("Vehicle created successfully");
         handleClose();
         setTimeout(() => {
           router.push(`/vehicles/${data.newVehicleId}`);
@@ -87,11 +86,11 @@ const onSubmit = handleSubmit(async (data) => {
       console.log("Editable vehicle ID is missing. Vehicle data: ", editableVehicle.value);
       return;
     }
-    updateVehicleAsync(
+    await updateVehicleAsync(
       { vehicleId: editableVehicle.value.id, data },
       {
         onSuccess: () => {
-          toast.success("Vehicle updated succesfully");
+          toast.success("Vehicle updated successfully");
           handleClose();
         },
         onError: () => {

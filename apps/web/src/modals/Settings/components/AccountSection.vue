@@ -10,7 +10,6 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { nameSchema } from "@repo/validation";
 import { useQueryClient } from "@tanstack/vue-query";
-import { toTypedSchema } from "@vee-validate/zod";
 import { Form } from "vee-validate";
 import { ref, useTemplateRef } from "vue";
 import { toast } from "vue-sonner";
@@ -85,7 +84,7 @@ async function onUsernameChangeSubmit(values: any) {
         <Form
           name="UsernameChange"
           ref="usernameFormRef"
-          :validation-schema="toTypedSchema(nameSchema)"
+          :validation-schema="nameSchema"
           :initial-values="{
             name: '',
           }"

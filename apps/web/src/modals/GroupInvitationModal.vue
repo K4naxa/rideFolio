@@ -18,7 +18,6 @@ import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import Label from "@/components/ui/label/Label.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
 import { array, cuid, object } from "zod";
 import { toast } from "vue-sonner";
 import { twMerge } from "tailwind-merge";
@@ -75,7 +74,7 @@ function handleClose() {
 }
 
 const { handleSubmit, values, resetForm } = useForm({
-  validationSchema: toTypedSchema(object({ groupId: cuid(), vehicleIds: array(cuid()) })),
+  validationSchema: object({ groupId: cuid(), vehicleIds: array(cuid()) }),
   initialValues: {
     groupId: props.notification.metadata.groupId,
     vehicleIds: [],
@@ -176,7 +175,6 @@ watch(
               <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
               <ul class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
                 <li
-                  for="selectedVehicle"
                   v-for="{ vehicleData } in usersOwnVehicles"
                   :key="vehicleData.id"
                   @click="
@@ -210,26 +208,3 @@ watch(
     </DialogContent>
   </Dialog>
 </template>
-
-<style scoped>
-/* ── Stage pill ── */
-.stage-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  border-radius: 999px;
-  padding: 2px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.stage-pill--green {
-  background: rgba(34, 197, 94, 0.12);
-  color: #86efac;
-  border-color: rgba(34, 197, 94, 0.22);
-}
-</style>

@@ -9,7 +9,6 @@ import VehicleItem from "@/components/vehicles/VehicleItem.vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useGroupAddVehicles } from "@/lib/queries/groups/group-mutations";
 import type { GroupDetails } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { twMerge } from "tailwind-merge";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed } from "vue";
@@ -32,7 +31,7 @@ const filteredVehicles = computed(() =>
 );
 
 const { handleSubmit, isSubmitting } = useForm({
-  validationSchema: toTypedSchema(object({ groupId: cuid(), vehicleIds: array(cuid()) })),
+  validationSchema: object({ groupId: cuid(), vehicleIds: array(cuid()) }),
 });
 
 const submit = handleSubmit(async (values) => {
@@ -67,7 +66,6 @@ const submit = handleSubmit(async (values) => {
           <ErrorMessage name="vehicleIds" class="text-destructive mt-1 ml-2 text-sm" />
           <ul class="scrollbar-macos w-full min-w-0 space-y-3 overflow-hidden pb-3">
             <li
-              for="selectedVehicle"
               v-for="{ vehicleData } in filteredVehicles"
               :key="vehicleData.id"
               @click="

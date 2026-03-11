@@ -7,7 +7,6 @@ import FormInput from "@/components/forms/FormInput.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useGroupInviteUser } from "@/lib/queries/groups/group-mutations";
 import { GROUP_MEMBER_ROLES, type GroupDetails, GroupInviteSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { isAxiosError } from "axios";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { toast } from "vue-sonner";
@@ -39,7 +38,7 @@ const validationSchema = GroupInviteSchema.refine(
 });
 
 const { handleSubmit, isSubmitting, setFieldError } = useForm({
-  validationSchema: toTypedSchema(validationSchema),
+  validationSchema: validationSchema,
 });
 
 const submit = handleSubmit(async (values) => {

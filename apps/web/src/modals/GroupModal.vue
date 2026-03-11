@@ -21,7 +21,6 @@ import { useGroupCreate, useGroupUpdate } from "@/lib/queries/groups/group-mutat
 import { useGroupDetails } from "@/lib/queries/groups/group-queries";
 import { useModalStore } from "@/stores/modal";
 import { GroupSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { twMerge } from "tailwind-merge";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";
@@ -33,7 +32,7 @@ const router = useRouter();
 const { mutateAsync: createGroup } = useGroupCreate();
 const { mutateAsync: updateGroup } = useGroupUpdate();
 const { handleSubmit, isSubmitting, resetForm } = useForm({
-  validationSchema: toTypedSchema(GroupSchema),
+  validationSchema: GroupSchema,
   initialValues: {
     name: "",
     description: "",

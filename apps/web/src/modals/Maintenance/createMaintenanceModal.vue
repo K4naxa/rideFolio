@@ -8,9 +8,8 @@ import UploadImage from "@/components/ui/UploadImage.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { MaintenanceSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { computed, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import PartsFormField from "./components/partsFormField.vue";
 import Icon from "@/components/icons/Icon.vue";
 import { useMaintenanceCreate } from "@/lib/queries/maintenances/maintenance-mutations";
@@ -43,7 +42,7 @@ const { mutateAsync: createMaintenanceAsync } = useMaintenanceCreate();
 
 const { resetForm, handleSubmit, values, isSubmitting } = useForm({
   name: "Create Maintenance Form",
-  validationSchema: toTypedSchema(MaintenanceSchema),
+  validationSchema: MaintenanceSchema,
   initialValues: {
     date: new Date(),
     parts: [],

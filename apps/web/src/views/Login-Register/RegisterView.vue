@@ -6,7 +6,6 @@ import CardHeader from "@/components/ui/card/CardHeader.vue";
 
 import { authClient } from "@/lib/authClient";
 import { RegisterSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
@@ -16,14 +15,15 @@ import LoginTabs from "./components/LoginTabs.vue";
 import FormInput from "@/components/forms/FormInput.vue";
 
 const redirectUrl = import.meta.env.VITE_FRONTEND_URL + "/dashboard";
-const clientSchema = toTypedSchema(
-  RegisterSchema.safeExtend({
-    confirmPassword: z.string().min(8, "Password must be at least 8 characters long"),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  }),
-);
+
+const refinedSchema = RegisterSchema.safeExtend({
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+  confirmPassword: z.string().min(8, "Password must be at least 8 characters long"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+const clientSchema = refinedSchema;
 const router = useRouter();
 
 const registrationError = ref<string | null>(null);

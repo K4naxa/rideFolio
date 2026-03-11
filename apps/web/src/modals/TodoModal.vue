@@ -3,11 +3,7 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
-import Select from "@/components/ui/select/Select.vue";
-import SelectContent from "@/components/ui/select/SelectContent.vue";
-import SelectItem from "@/components/ui/select/SelectItem.vue";
-import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
-import SelectValue from "@/components/ui/select/SelectValue.vue";
+
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import Label from "@/components/ui/label/Label.vue";
@@ -16,7 +12,6 @@ import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { TodoSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
@@ -40,7 +35,7 @@ const { mutateAsync: updateTodo } = useTodoUpdate();
 const showDueOptions = ref(false);
 
 const { handleSubmit, resetForm, isSubmitting, values } = useForm({
-  validationSchema: toTypedSchema(TodoSchema),
+  validationSchema: TodoSchema,
   initialValues: {
     title: "",
     vehicleId: currentVehicle.value?.vehicleData.id,
@@ -58,7 +53,6 @@ watch([isModalOpen, editableTodo], ([open, todo]) => {
         vehicleId: todo.vehicleId,
         title: todo.title,
         description: todo.description,
-        priority: todo.priority,
         dueDate: todo.dueDate?.date,
         dueOdometer: todo.dueOdometer?.value,
       },
@@ -71,7 +65,6 @@ watch([isModalOpen, editableTodo], ([open, todo]) => {
         vehicleId: currentVehicle.value?.vehicleData.id || "",
         title: "",
         description: "",
-        priority: null,
         dueDate: null,
         dueOdometer: null,
       },
@@ -81,9 +74,9 @@ watch([isModalOpen, editableTodo], ([open, todo]) => {
 
 const onSubmit = handleSubmit(async (values) => {
   if (creatingNew.value) {
-    createTodo(values, {
+    await createTodo(values, {
       onSuccess: () => {
-        toast.success("Todo created succesfully");
+        toast.success("Todo created successfully");
         handleClose();
       },
       onError: (error) => {
@@ -93,11 +86,11 @@ const onSubmit = handleSubmit(async (values) => {
     });
   } else {
     if (!editableTodo.value?.id) return toast.error("Error updating todo: Missing todo ID");
-    updateTodo(
+    await updateTodo(
       { todoId: editableTodo.value?.id, data: values },
       {
         onSuccess: () => {
-          toast.success("Todo updated succesfully");
+          toast.success("Todo updated successfully");
           handleClose();
         },
         onError: (error) => {
@@ -162,7 +155,7 @@ const onSubmit = handleSubmit(async (values) => {
       </div>
 
       <Transition name="slide">
-        <div v-if="showDueOptions" class="slide-panel" data-cy="due-options-panel">
+        <div v-show="showDueOptions" class="slide-panel" data-cy="due-options-panel">
           <div class="slide-content grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormDateInput name="dueDate" label="Due date" placeholder="Select due date" data-cy="due-date-input" />
             <FormInput

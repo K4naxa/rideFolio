@@ -2,13 +2,11 @@
 import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { Checkbox } from "@/components/ui/checkbox";
-import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useShoppingCreate, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
 import { ShoppingListItemSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { Field, Form } from "vee-validate";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 
@@ -114,7 +112,7 @@ const displayedItems = computed(() =>
             name="Overview Shoppinglist"
             ref="shoppinglistForm"
             @submit="handleCreateItem"
-            :validation-schema="toTypedSchema(ShoppingListItemSchema)"
+            :validation-schema="ShoppingListItemSchema"
           >
             <Button variant="outline" size="icon-sm" class="size-7" type="submit">
               <Icon name="plus" class="size-4" />

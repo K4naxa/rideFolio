@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
 import { useRoute, useRouter } from "vue-router";
 import { LoginSchema } from "@repo/validation";
 import { authClient } from "@/lib/authClient";
@@ -13,7 +12,6 @@ import { toast } from "vue-sonner";
 import LoginTabs from "./components/LoginTabs.vue";
 import Label from "@/components/ui/label/Label.vue";
 import FormInput from "@/components/forms/FormInput.vue";
-import { Separator } from "@/components/ui/separator";
 
 const route = useRoute();
 const router = useRouter();
@@ -26,7 +24,7 @@ const form = useForm({
     email: "",
     password: "",
   },
-  validationSchema: toTypedSchema(LoginSchema),
+  validationSchema: LoginSchema,
 });
 
 const onSubmit = form.handleSubmit(async (values) => {

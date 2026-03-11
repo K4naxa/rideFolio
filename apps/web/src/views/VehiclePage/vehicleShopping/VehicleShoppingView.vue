@@ -4,7 +4,6 @@ import FormInput from "@/components/forms/FormInput.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { ShoppingListItemSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 import ShoppingTable from "./components/shoppingTable.vue";
@@ -15,7 +14,7 @@ const { currentVehicleId } = useCurrentVehicle();
 const { mutateAsync: createItem } = useShoppingCreate();
 
 const { handleSubmit, resetForm } = useForm({
-  validationSchema: toTypedSchema(ShoppingListItemSchema),
+  validationSchema: ShoppingListItemSchema,
   initialValues: {
     vehicleId: currentVehicleId.value,
     name: "",
@@ -23,7 +22,7 @@ const { handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  createItem(values, {
+  await createItem(values, {
     onSuccess: () => {
       toast.success("Item added to shopping list");
       resetForm();

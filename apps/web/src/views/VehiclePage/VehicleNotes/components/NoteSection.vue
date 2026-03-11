@@ -4,14 +4,13 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { type Note, NoteSchema, type NoteSchemaType } from "@repo/validation";
 import { computed, type HTMLAttributes, onUnmounted, ref, useSlots, watch } from "vue";
-import { toTypedSchema } from "@vee-validate/zod";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { useCreateNote, useDeleteNote, useTogglePinNote, useUpdateNote } from "@/lib/queries/notes/note-mutations";
 import TipTapEditor from "@/components/notes/textEditor/TipTapEditor.vue";
 import { useNoteAutoSave } from "@/modals/composables/useNoteAutoSave";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils.ts";
 
 interface NoteSectionProps {
   note: Note | undefined;
@@ -47,7 +46,7 @@ const isPinned = computed(() => lastServerState.value?.pinned || false);
 
 // Form setup
 const { values, errors, meta, setFieldValue, resetForm } = useForm<NoteSchemaType>({
-  validationSchema: toTypedSchema(NoteSchema),
+  validationSchema: NoteSchema,
   initialValues: {
     title: props.note?.title || "",
     content: props.note?.content || "",
@@ -105,7 +104,7 @@ async function handleDelete() {
     emit("deleted");
 
     if (!hasHeaderSlot.value) {
-      router.replace({
+      await router.replace({
         query: { ...router.currentRoute.value.query, note: undefined },
       });
     }
@@ -139,7 +138,7 @@ defineExpose({
   values,
 });
 
-// Reset form whenever the note prop changes (i.e. when selecting a different note from the list)
+// Reset form whenever the note prop changes (when selecting a different note from the list)
 watch(
   () => props.note,
   (newNote) => {
@@ -169,7 +168,7 @@ watch(
 
 <template>
   <div class="mx-auto flex min-h-0 w-full max-w-4xl min-w-0 flex-1 flex-col">
-    <form :class="twMerge('flex min-h-0 min-w-0 flex-1 flex-col space-y-4', props.classForm)" @submit.prevent>
+    <form :class="cn('flex min-h-0 min-w-0 flex-1 flex-col space-y-4', props.classForm)" @submit.prevent>
       <!-- Header Slot with all controls/status exposed -->
       <slot
         name="header"

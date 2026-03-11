@@ -5,7 +5,6 @@ import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import { useQuicklinkCreate } from "@/lib/queries/quicklinks/quicklink-mutation";
 import { useModalStore } from "@/stores/modal";
 import { QuicklinkSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { computed, watch } from "vue";
 import FormInput from "@/components/forms/FormInput.vue";
@@ -17,7 +16,7 @@ const handleClose = () => modalStore.onClose();
 const { mutateAsync: createQuicklink } = useQuicklinkCreate();
 
 const { handleSubmit, resetForm, isSubmitting } = useForm({
-  validationSchema: toTypedSchema(QuicklinkSchema),
+  validationSchema: QuicklinkSchema,
   initialValues: {
     name: "",
     url: "",

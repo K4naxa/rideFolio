@@ -3,7 +3,6 @@ import VehicleSelect from "@/components/forms/VehicleSelect.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import { useModalStore } from "@/stores/modal";
 import { RefillSchema } from "@repo/validation";
-import { toTypedSchema } from "@vee-validate/zod";
 import { ErrorMessage, Field, useForm } from "vee-validate";
 import { computed, watch } from "vue";
 import { toast } from "vue-sonner";
@@ -33,18 +32,17 @@ const { selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSe
 );
 
 const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
-  validationSchema: toTypedSchema(
-    RefillSchema.extend({
-      odometer: z.coerce.number().refine(
-        async (value): Promise<boolean> => {
-          if (!value) return true;
-          if (!selectedVehicleLastRefillOdometer.value) return true;
-          return selectedVehicleLastRefillOdometer.value < value;
-        },
-        { message: "Must be greater than last refill " },
-      ),
-    }),
-  ),
+  validationSchema: RefillSchema.extend({
+    odometer: z.coerce.number().refine(
+      async (value): Promise<boolean> => {
+        if (!value) return true;
+        if (!selectedVehicleLastRefillOdometer.value) return true;
+        return selectedVehicleLastRefillOdometer.value < value;
+      },
+      { message: "Must be greater than last refill " },
+    ),
+  }),
+
   initialValues: {
     fullRefill: true,
     skippedRefill: false,
