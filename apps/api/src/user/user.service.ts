@@ -1,16 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CurrencyCode, ProfileUpdateValues, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
-import { LimitsService } from 'src/limits/limits.service';
-import { VehicleRepository } from 'src/vehicles/vehicleRepository';
+import { CurrencyCode, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private prisma: PrismaService,
-    private limitsService: LimitsService,
-    private vehicleRepository: VehicleRepository,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   // =================================================================
   // ==  GET USER PROFILE DATA ==
@@ -78,21 +72,6 @@ export class UsersService {
     };
   }
 
-  async updateProfile(id: string, data: ProfileUpdateValues): Promise<void> {
-    console.log('Updating user profile for user ID:', id, 'with data:', data);
-    await this.prisma.user.update({
-      where: { id },
-      data: {
-        name: data.name,
-        email: data.email,
-      },
-    });
-
-    const updatedUser = await this.prisma.user.findUnique({
-      where: { id },
-    });
-    console.log('Updated user profile:', updatedUser);
-  }
   async updatePreferences(userId: string, data: UpdatePreferenceValues): Promise<TBasicProfile> {
     await this.prisma.user.update({
       where: { id: userId },

@@ -13,6 +13,7 @@ export const nameSchema = z.object({
     .min(1, { message: "Username is required" })
     .max(30, { message: "Username must be at most 30 characters" }),
 });
+export type NameSchemaInput = z.infer<typeof nameSchema>;
 export const RegisterSchema = z
   .object({
     name: nameSchema.shape.name,
@@ -35,12 +36,6 @@ export const LoginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
-
-export const profileUpdateSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z.email({ message: "Invalid email address" }),
-});
-export type ProfileUpdateValues = z.infer<typeof profileUpdateSchema>;
 
 export const passwordUpdateSchema = z
   .object({

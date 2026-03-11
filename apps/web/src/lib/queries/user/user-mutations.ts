@@ -1,22 +1,6 @@
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
-import type { ProfileUpdateValues } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { toast } from "vue-sonner";
-
-export function useUserUpdate() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["update", "user-profile"],
-    mutationFn: async (data: ProfileUpdateValues) => {
-      return api.patch("users/profile", data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.basicProfile });
-      toast.success("Profile updated successfully");
-    },
-  });
-}
 
 export function useUserPreferenceUpdate() {
   const queryClient = useQueryClient();
