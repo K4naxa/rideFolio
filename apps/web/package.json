@@ -63,6 +63,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@repo/oxlint-config": "workspace:*",
     "@tanstack/eslint-plugin-query": "^5.91.4",
     "@tsconfig/node22": "^22.0.5",
     "@types/jsdom": "^27.0.0",
