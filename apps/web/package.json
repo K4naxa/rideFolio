@@ -26,7 +26,6 @@
     "@fontsource/roboto": "^5.2.10",
     "@formkit/auto-animate": "^0.9.0",
     "@internationalized/date": "^3.12.0",
-    "@number-flow/vue": "^0.4.12",
     "@repo/validation": "workspace:*",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-query": "^5.92.9",
