@@ -55,7 +55,7 @@ const submit = handleSubmit(async (values) => {
     description="Add vehicles to your group"
   >
     <template #default>
-      <FormInput type="text" name="groupId" :initial-value="props.group.id" hidden />
+      <FormInput type="text" name="groupId" :initial-value="props.group.id" hidden autocomplete="off" />
 
       <div class="grid min-h-36">
         <div v-if="filteredVehicles.length < 1" class="place-self-center">

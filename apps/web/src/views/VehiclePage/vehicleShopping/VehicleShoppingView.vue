@@ -38,6 +38,7 @@ const onSubmit = handleSubmit(async (values) => {
           name="name"
           type="text"
           placeholder="Name"
+          autocomplete="off"
           class="min-w-xs flex-1 sm:max-w-md"
           :validate-on-blur="false"
         />
@@ -45,6 +46,7 @@ const onSubmit = handleSubmit(async (values) => {
           name="price"
           type="number"
           placeholder="Price"
+          autocomplete="off"
           step="0.01"
           class="w-full min-w-32 flex-1 sm:max-w-32 sm:flex-none"
         />

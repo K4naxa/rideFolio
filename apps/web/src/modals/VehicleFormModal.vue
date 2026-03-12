@@ -174,7 +174,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <!-- Name -->
 
-            <FormInput placeholder="Nickname *" name="name" type="text" data-cy="name" />
+            <FormInput placeholder="Nickname *" name="name" type="text" data-cy="name" autocomplete="off" />
 
             <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
@@ -213,9 +213,9 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
 
           <!-- Make and Model -->
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <FormInput placeholder="Make" name="make" type="text" data-cy="make" />
+            <FormInput placeholder="Make" name="make" type="text" data-cy="make" autocomplete="off" />
 
-            <FormInput placeholder="Model" name="model" type="text" data-cy="model" />
+            <FormInput placeholder="Model" name="model" type="text" data-cy="model" autocomplete="off" />
           </div>
 
           <!-- Year and Odometer Type -->
@@ -224,6 +224,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
               placeholder="Year"
               type="number"
               name="year"
+              autocomplete="off"
               :min="1900"
               :max="new Date().getFullYear()"
               data-cy="year"
@@ -269,7 +270,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <!-- VIN -->
 
-            <FormInput placeholder="VIN" toUpperCase name="vin" type="text" data-cy="vin" />
+            <FormInput placeholder="VIN" toUpperCase name="vin" type="text" data-cy="vin" autocomplete="off" />
 
             <!-- License Plate -->
 
@@ -278,6 +279,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
               toUpperCase
               name="licensePlate"
               type="text"
+              autocomplete="off"
               data-cy="license-plate"
               :maxLength="10"
             />
@@ -299,6 +301,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
               placeholder="Odometer"
               name="odometer"
               type="number"
+              autocomplete="off"
               :min="0"
               input-mode="numeric"
               :suffix="getOdometerUnit(values.odometerType)"

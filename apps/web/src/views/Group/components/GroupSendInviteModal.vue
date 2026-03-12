@@ -67,8 +67,8 @@ const submit = handleSubmit(async (values) => {
     description="Invite a new member to your group"
   >
     <template #default>
-      <FormInput type="text" name="groupId" :initial-value="props.group.id" hidden />
-      <FormInput type="text" name="email" placeholder="user@example.com" label="Email" />
+      <FormInput type="text" name="groupId" :initial-value="props.group.id" hidden autocomplete="off" />
+      <FormInput type="text" name="email" placeholder="user@example.com" label="Email" autocomplete="email" />
       <Field name="roleToGrant" v-slot="{ value, handleChange }">
         <div>
           <ResponsiveSelect
