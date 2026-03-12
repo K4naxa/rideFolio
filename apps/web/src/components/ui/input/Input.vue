@@ -16,6 +16,7 @@ interface InputProps {
   icon?: IconProps["name"];
   placeholder?: string;
   autocomplete?: InputHTMLAttributes["autocomplete"];
+  required?: boolean;
 
   dataCy?: string;
 
@@ -75,6 +76,7 @@ const inputRef = useTemplateRef("inputRef");
         :type="props.type"
         ref="inputRef"
         :name="props.name"
+        :required="props.required"
         :autocomplete="props.autocomplete"
         :placeholder="props.placeholder"
         :aria-invalid="!!errorMessage"

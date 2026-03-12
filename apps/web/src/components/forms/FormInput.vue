@@ -14,6 +14,7 @@ const props = defineProps<{
   label?: string;
   placeholder?: string;
   autocomplete?: InputHTMLAttributes["autocomplete"];
+  required?: boolean;
 
   dataCy?: string;
 
