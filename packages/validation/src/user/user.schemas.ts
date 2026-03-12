@@ -9,17 +9,17 @@ import { odometerTypeCodes } from "../vehicle";
 
 export const nameSchema = z.object({
   name: z
-    .string()
+    .string("required")
     .min(1, { message: "Username is required" })
     .max(30, { message: "Username must be at most 30 characters" }),
 });
 export type NameSchemaInput = z.infer<typeof nameSchema>;
 export const RegisterSchema = z
   .object({
-    name: nameSchema.shape.name,
+    username: nameSchema.shape.name,
     email: z.email({ message: "Email has incorrect form" }),
     password: z
-      .string()
+      .string("required")
       .min(8, { message: "Password must be atleast 8 characters" }),
     image: z.string().nullable().optional(),
   })
@@ -32,7 +32,7 @@ export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
 export const LoginSchema = z.object({
   email: z.email({ message: "Invalid email" }),
-  password: z.string(),
+  password: z.string("required").min(1, "Password is required"),
   rememberMe: z.boolean().optional(),
 });
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
