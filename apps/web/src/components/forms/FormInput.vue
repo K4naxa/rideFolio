@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue";
+import type { HTMLAttributes, InputHTMLAttributes } from "vue";
 import { useField } from "vee-validate";
 import Input from "@/components/ui/input/Input.vue";
 import type { IconProps } from "@/components/icons/Icon.vue";
@@ -13,6 +13,8 @@ const props = defineProps<{
   type: "text" | "email" | "password" | "number" | "date" | "url";
   label?: string;
   placeholder?: string;
+  autocomplete?: InputHTMLAttributes["autocomplete"];
+
   dataCy?: string;
 
   prefix?: string;
@@ -66,6 +68,7 @@ async function handleBlur() {
     :type="props.type"
     :icon="props.icon"
     :label="props.label"
+    :autocomplete="props.autocomplete"
     :placeholder="props.placeholder"
     :data-cy="props.dataCy"
     :prefix="props.prefix"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type HTMLAttributes, useTemplateRef } from "vue";
+import { type HTMLAttributes, useTemplateRef, type InputHTMLAttributes } from "vue";
 import { twMerge } from "tailwind-merge";
 import Label from "../label/Label.vue";
 import Icon, { type IconProps } from "@/components/icons/Icon.vue";
@@ -15,6 +15,8 @@ interface InputProps {
   label?: string;
   icon?: IconProps["name"];
   placeholder?: string;
+  autocomplete?: InputHTMLAttributes["autocomplete"];
+
   dataCy?: string;
 
   prefix?: string;
@@ -73,6 +75,7 @@ const inputRef = useTemplateRef("inputRef");
         :type="props.type"
         ref="inputRef"
         :name="props.name"
+        :autocomplete="props.autocomplete"
         :placeholder="props.placeholder"
         :aria-invalid="!!errorMessage"
         :data-cy="props.dataCy"
