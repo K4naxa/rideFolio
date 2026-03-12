@@ -68,6 +68,8 @@ async function handleBlur() {
     :model-value="value"
     :type="props.type"
     :icon="props.icon"
+    :name="props.name"
+    :required="props.required"
     :label="props.label"
     :autocomplete="props.autocomplete"
     :placeholder="props.placeholder"
