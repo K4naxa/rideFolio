@@ -7,7 +7,7 @@ export default mergeConfig(
     test: {
       environment: "node",
       globals: true,
-      group: "threads",
+      pool: "threads",
     },
   }),
 );
