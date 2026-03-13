@@ -47,9 +47,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     },
     {
       onError({ error }) {
-        const message = error.message || "Please check your email and password and try again.";
-
-        authError.value = message;
+        authError.value = error.message || "Please check your email and password and try again.";
         form.setFieldError("password", "Incorrect email or password.");
         form.resetField("password");
       },
@@ -105,8 +103,7 @@ const onSubmit = form.handleSubmit(async (values) => {
                 <FormInput
                   type="password"
                   name="password"
-                  label=""
-                  id:="password-input"
+                  id="password-input"
                   placeholder="Enter your password"
                   autocomplete="current-password"
                   :validate-on-blur="false"
