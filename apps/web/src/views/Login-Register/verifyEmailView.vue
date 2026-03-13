@@ -4,14 +4,15 @@ import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import { authClient } from "@/lib/authClient";
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
 const router = useRouter();
+const route = useRoute();
 
-// Email passed via router state from RegisterView
-const email = ref<string>((history.state?.email as string) || "");
+// Email passed via router state from RegisterView or query param
+const email = ref<string>((history.state?.email as string) || (route.query.email as string) || "");
 
 const otp = ref("");
 const isSubmitting = ref(false);
@@ -24,25 +25,36 @@ const resendCooldown = ref(0);
 let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 const canResend = computed(() => resendCooldown.value === 0 && !isResending.value);
 
+function clearCooldownTimer() {
+  if (cooldownTimer) {
+    clearInterval(cooldownTimer);
+    cooldownTimer = null;
+  }
+}
+
 function startCooldown() {
+  clearCooldownTimer();
   resendCooldown.value = 60;
   cooldownTimer = setInterval(() => {
     resendCooldown.value--;
-    if (resendCooldown.value <= 0 && cooldownTimer) {
-      clearInterval(cooldownTimer);
-      cooldownTimer = null;
+    if (resendCooldown.value <= 0) {
+      clearCooldownTimer();
     }
   }, 1000);
 }
 
 onMounted(() => {
   if (!email.value) {
-    // No email in state — user landed here directly; send them back
+    // No email in state/query — user landed here directly; send them back
     router.replace({ name: "Register" });
     return;
   }
   // Start cooldown so they can't immediately resend
   startCooldown();
+});
+
+onUnmounted(() => {
+  clearCooldownTimer();
 });
 
 async function onSubmit() {
@@ -74,12 +86,9 @@ async function onSubmit() {
   }
 
   isSuccess.value = true;
-  toast.success("Email verified!", {
-    description: "Your account is ready. Redirecting to login…",
-  });
 
   setTimeout(() => {
-    router.push({ name: "Dashboard" });
+    router.push({ name: "Onboarding" });
   }, 2000);
 }
 
@@ -131,7 +140,7 @@ function handleOtpInput(e: Event) {
               </svg>
             </div>
             <h1 class="text-xl font-semibold">Email verified!</h1>
-            <p class="text-muted-foreground text-sm">Redirecting you to login…</p>
+            <p class="text-muted-foreground text-sm">Redirecting you to dashboard…</p>
           </CardHeader>
         </template>
 
