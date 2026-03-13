@@ -47,6 +47,13 @@ const onSubmit = form.handleSubmit(async (values) => {
     },
     {
       onError({ error }) {
+        if (error.code === "EMAIL_NOT_VERIFIED") {
+          router.push({
+            name: "Verify Email",
+            state: { email: values.email },
+          });
+          return;
+        }
         authError.value = error.message || "Please check your email and password and try again.";
         form.setFieldError("password", "Incorrect email or password.");
         form.resetField("password");
@@ -60,7 +67,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 </script>
 
 <template>
-  <main class="grid min-h-screen place-items-center p-2">
+  <main class="grid min-h-dvh place-items-center p-2">
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-4">
         <LoginTabs />
