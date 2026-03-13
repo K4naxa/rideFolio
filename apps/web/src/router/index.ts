@@ -24,6 +24,25 @@ const router = createRouter({
       meta: { guestOnly: true },
     },
     {
+      path: "/onboarding",
+      name: "Onboarding",
+      component: () => import("@/views/Onboarding/OnboardingView.vue"),
+      redirect: { name: "onboarding-preferences" },
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: "preferences",
+          name: "onboarding-preferences",
+          component: () => import("@/views/Onboarding/OnboardingPreferencesView.vue"),
+        },
+        {
+          path: "add-vehicle",
+          name: "onboarding-add-vehicle",
+          component: () => import("@/views/Onboarding/OnboardingAddVehicleView.vue"),
+        },
+      ],
+    },
+    {
       path: "/",
       component: () => import("@/Layouts/AuthLayout/AuthLayout.vue"),
       redirect: "/dashboard",
