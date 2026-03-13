@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { emailOTP } from 'better-auth/plugins';
 import { EmailService } from 'src/email/email.service';
 
 import { prisma } from 'src/lib/prisma';
@@ -12,7 +13,8 @@ export const createAuth = (emailService: EmailService) => {
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
-      requireEmailVerification: process.env.NODE_ENV === 'production',
+      requireEmailVerification: true,
+      // process.env.NODE_ENV === 'production'
       minPasswordLength: 8,
       revokeSessionsOnPasswordReset: true,
     },
@@ -32,6 +34,9 @@ export const createAuth = (emailService: EmailService) => {
       deleteUser: {
         enabled: true,
       },
+    },
+    emailVerification: {
+      autoSignInAfterVerification: true,
     },
     databaseHooks: {
       user: {
@@ -58,19 +63,19 @@ export const createAuth = (emailService: EmailService) => {
         },
       },
     },
-    emailVerification: {
-      sendOnSignUp: true,
-      autoSignInAfterVerification: true,
-      sendVerificationEmail: ({ user, url, token }) => {
-        void emailService.sendEmailVerification({
-          userEmail: user.email,
-          token: token,
-          url: url,
-        });
-        // Promise resolve to satisfy the expected return Promise
-        return Promise.resolve();
-      },
-    },
+    plugins: [
+      emailOTP({
+        // Replace link-based email verification with OTP-based flow
+        overrideDefaultEmailVerification: true,
+        otpLength: 6,
+        expiresIn: 600, // 10 minutes
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          if (type === 'email-verification') {
+            await emailService.sendOtpVerificationEmail({ userEmail: email, otp });
+          }
+        },
+      }),
+    ],
 
     session: {
       cookieCache: {

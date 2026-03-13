@@ -13,8 +13,6 @@ import { toast } from "vue-sonner";
 import { z } from "zod";
 import LoginTabs from "./components/LoginTabs.vue";
 
-const redirectUrl = import.meta.env.VITE_FRONTEND_URL + "/dashboard";
-
 const refinedSchema = RegisterSchema.safeExtend({
   password: z.string("required").min(8, "Password must be at least 8 characters long"),
   confirmPassword: z.string("required").min(8, "Password must be at least 8 characters long"),
@@ -51,7 +49,6 @@ const onSubmit = form.handleSubmit(async (values) => {
       email: values.email,
       password: values.password,
       name: values.username,
-      callbackURL: redirectUrl,
     },
     {
       onError: ({ error }) => {
@@ -67,10 +64,10 @@ const onSubmit = form.handleSubmit(async (values) => {
         });
       },
       onSuccess() {
-        toast.success("Registration successful!", {
-          description: "Please check your email to verify your account.",
+        router.push({
+          name: "Verify Email",
+          state: { email: values.email },
         });
-        router.push("/login");
       },
     },
   );

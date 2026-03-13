@@ -1,9 +1,12 @@
 import { useQueryClient } from "@tanstack/vue-query";
 import { createAuthClient } from "better-auth/vue";
+import { emailOTPClient } from "better-auth/client/plugins";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 
-export const authClient = createAuthClient({});
+export const authClient = createAuthClient({
+  plugins: [emailOTPClient()],
+});
 
 export function useAuth() {
   const router = useRouter();

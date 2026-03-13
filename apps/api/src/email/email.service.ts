@@ -17,22 +17,19 @@ export class EmailService {
     });
   }
 
-  async sendEmailVerification({ userEmail, token, url }: { userEmail: string; token: string; url: string }) {
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
-    const verificationUrl = `${frontendUrl}/verify-email?token=${token}`;
-
+  async sendOtpVerificationEmail({ userEmail, otp }: { userEmail: string; otp: string }) {
     try {
       await this.sendEmail({
         to: userEmail,
-        subject: 'Verify your email for RideFolio',
-        html: this.emailTemplates.getVerificationEmail(url),
-        text: `Please verify your email by clicking the following link: ${verificationUrl}`,
+        subject: 'Your RideFolio verification code',
+        html: this.emailTemplates.getOtpVerificationEmail(otp),
+        text: `Your RideFolio verification code is: ${otp}\n\nThis code expires in 10 minutes. Do not share it with anyone.`,
       });
 
-      this.logger.log(`📧 Sent email verification to ${userEmail}`);
+      this.logger.log(`📧 Sent OTP verification email to ${userEmail}`);
     } catch (error) {
-      this.logger.error(`Failed to send email verification to ${userEmail}`, error);
-      throw new Error('Failed to send verification email');
+      this.logger.error(`Failed to send OTP verification email to ${userEmail}`, error);
+      throw new Error('Failed to send OTP verification email');
     }
   }
 

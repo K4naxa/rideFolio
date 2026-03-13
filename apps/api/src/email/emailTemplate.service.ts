@@ -2,6 +2,74 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailTemplateService {
+  getOtpVerificationEmail(otp: string): string {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="color-scheme" content="light dark">
+      <meta name="supported-color-schemes" content="light dark">
+      <title>Your RideFolio verification code</title>
+      <style>
+        :root { color-scheme: light dark; }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        .email-body { background-color: #ffffff; padding: 20px 10px; }
+        .email-container { max-width: 480px; margin: 0 auto; }
+        .email-card { background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); }
+        .logo-section { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e5e5; }
+        .logo { font-size: 24px; font-weight: 700; color: #ff8c00 !important; text-decoration: none; letter-spacing: -0.5px; }
+        .email-title { font-size: 22px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0; text-align: center; }
+        .email-subtitle { font-size: 14px; color: #64748b; margin: 0 0 24px 0; text-align: center; }
+        .otp-container { text-align: center; margin: 28px 0; }
+        .otp-code { display: inline-block; font-size: 40px; font-weight: 700; letter-spacing: 12px; color: #ff8c00; background-color: #fff7ed; border: 2px solid #fed7aa; border-radius: 12px; padding: 16px 32px; font-family: 'Courier New', monospace; }
+        .expiry-notice { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 20px; padding: 10px; background-color: #fffbeb; border-radius: 6px; font-size: 12px; color: #92400e; }
+        .security-notice { margin-top: 24px; padding: 16px; background-color: #f0fdf4; border-radius: 8px; border-left: 3px solid #22c55e; }
+        .security-title { font-size: 12px; font-weight: 600; color: #166534; margin: 0 0 4px 0; }
+        .security-text { font-size: 12px; color: #15803d; margin: 0; }
+        .footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e5e5; text-align: center; }
+        .footer-text { font-size: 12px; color: #94a3b8; margin: 0 0 8px 0; }
+        @media (prefers-color-scheme: dark) {
+          .email-body { background-color: #030303 !important; }
+          .email-card { background-color: #0a0a0a !important; border-color: #262626 !important; }
+          .logo-section { border-bottom-color: #262626 !important; }
+          .email-title { color: #e5e5e5 !important; }
+          .email-subtitle { color: #a3a3a3 !important; }
+          .otp-code { color: #fb923c !important; background-color: #1c1008 !important; border-color: #7c2d12 !important; }
+          .expiry-notice { background-color: #1c1917 !important; color: #fbbf24 !important; }
+          .security-notice { background-color: #052e16 !important; border-left-color: #22c55e !important; }
+          .security-title { color: #4ade80 !important; }
+          .security-text { color: #86efac !important; }
+          .footer { border-top-color: #262626 !important; }
+          .footer-text { color: #737373 !important; }
+        }
+      </style>
+      </head>
+      <body>
+      <div class="email-body">
+        <div class="email-container">
+        <div class="email-card">
+          <div class="logo-section"><a href="#" class="logo">RideFolio</a></div>
+          <h1 class="email-title">Verify Your Email</h1>
+          <p class="email-subtitle">Enter the code below to complete your registration</p>
+          <div class="otp-container">
+            <span class="otp-code">${otp}</span>
+          </div>
+          <div class="expiry-notice"><span>This code expires in 10 minutes</span></div>
+          <div class="security-notice">
+            <p class="security-title">Security Notice</p>
+            <p class="security-text">Never share this code with anyone. RideFolio staff will never ask for your verification code.</p>
+          </div>
+          <div class="footer"><p class="footer-text">Need help? Contact our support team anytime.</p></div>
+        </div>
+        </div>
+      </div>
+      </body>
+    </html>
+    `;
+  }
+
   getVerificationEmail(verificationUrl: string): string {
     return `
     <!DOCTYPE html>
