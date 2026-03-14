@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { UsersModule } from './user/user.module';
 import { VehiclesModule } from 'src/vehicles/vehicles.module';
 import { GroupsController } from './groups/groups.controller';
@@ -27,6 +28,13 @@ import { TimelineModule } from './timeline/timeline.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000, // 1-minute window
+        limit: 60, // 100 requests per IP per window
+      },
+    ]),
     AuthModule.forRootAsync({
       useFactory: (emailService: EmailService) => ({
         auth: createAuth(emailService), // Create the auth instance with injected EmailService
@@ -53,6 +61,10 @@ import { TimelineModule } from './timeline/timeline.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
