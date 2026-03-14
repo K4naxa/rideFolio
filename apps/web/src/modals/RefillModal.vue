@@ -18,6 +18,7 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
 import Icon from "@/components/icons/Icon.vue";
 import FormInput from "@/components/forms/FormInput.vue";
+import FormError from "@/components/forms/FormError.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol, preferredVolumeUnit } = useCurrentUser();
@@ -132,14 +133,7 @@ const odometerPlaceholder = computed(() => {
     key="CreateRefillModal"
   >
     <form data-cy="create-refill-form" class="gaps-md flex flex-col">
-      <p
-        v-if="formError"
-        role="alert"
-        aria-live="assertive"
-        class="text-destructive rounded-md border border-current/20 bg-current/5 px-3 py-2 text-center text-sm"
-      >
-        {{ formError }}
-      </p>
+      <FormError :message="formError" />
 
       <!-- Vehicle -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">

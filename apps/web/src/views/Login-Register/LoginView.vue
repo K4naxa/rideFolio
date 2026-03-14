@@ -5,6 +5,7 @@ import { computed, ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { authClient } from "@/lib/authClient";
 import FormInput from "@/components/forms/FormInput.vue";
+import FormError from "@/components/forms/FormError.vue";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/ui/card/Card.vue";
 import { CardContent, CardHeader } from "@/components/ui/card";
@@ -78,16 +79,7 @@ const onSubmit = form.handleSubmit(async (values) => {
               <p class="text-muted-foreground text-balance">Log in to your account to continue</p>
             </CardHeader>
             <CardContent class="space-y-6">
-              <p
-                v-if="authError"
-                id="login-error"
-                role="alert"
-                aria-live="assertive"
-                data-cy="error"
-                class="text-destructive rounded-md border border-current/20 bg-current/5 px-3 py-2 text-center text-sm"
-              >
-                {{ authError }}
-              </p>
+              <FormError :message="authError" data-cy="error" />
 
               <FormInput
                 label="Email"

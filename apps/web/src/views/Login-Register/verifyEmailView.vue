@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FormError from "@/components/forms/FormError.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
@@ -165,14 +166,7 @@ function handleOtpInput(e: Event) {
           </CardHeader>
 
           <CardContent class="flex flex-col gap-5">
-            <p
-              v-if="authError"
-              role="alert"
-              aria-live="assertive"
-              class="text-destructive rounded-md border border-current/20 bg-current/5 px-3 py-2 text-center text-sm"
-            >
-              {{ authError }}
-            </p>
+            <FormError :message="authError" />
 
             <form @submit.prevent="onSubmit" novalidate :aria-busy="isSubmitting" class="flex flex-col gap-5">
               <div class="flex flex-col gap-1">

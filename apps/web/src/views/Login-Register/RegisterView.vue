@@ -4,6 +4,7 @@ import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import FormInput from "@/components/forms/FormInput.vue";
+import FormError from "@/components/forms/FormError.vue";
 import { authClient } from "@/lib/authClient";
 import { RegisterSchema } from "@repo/validation";
 import { useForm } from "vee-validate";
@@ -75,7 +76,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 </script>
 
 <template>
-  <main class="grid min-h-screen place-items-center p-2">
+  <main class="grid min-h-dvh place-items-center p-2">
     <div class="w-full max-w-sm md:max-w-xl">
       <div class="flex flex-col gap-4">
         <LoginTabs />
@@ -86,15 +87,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           </CardHeader>
           <form @submit.prevent="onSubmit" novalidate :aria-busy="form.isSubmitting.value" data-cy="register-form">
             <CardContent class="flex flex-col gap-6 px-6">
-              <p
-                v-if="authError"
-                role="alert"
-                aria-live="assertive"
-                data-cy="error"
-                class="text-destructive rounded-md border border-current/20 bg-current/5 px-3 py-2 text-center text-sm"
-              >
-                {{ authError }}
-              </p>
+              <FormError :message="authError" data-cy="error" />
 
               <FormInput
                 id="register-username"
