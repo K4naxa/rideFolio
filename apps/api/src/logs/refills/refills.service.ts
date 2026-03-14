@@ -1,5 +1,5 @@
 import { UnitConversionService } from '../../utils/unit-conversion.service';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma, Refill, Vehicle } from 'prisma/generated/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -161,6 +161,281 @@ export class RefillsService {
 
       // Update user's storage usage
       await this.limitsService.incrementStorageUsage(tx, vehicle.ownerId, 'REFILL', byteSize);
+    });
+  }
+
+  async deleteRefill(userSession: UserSession, refillId: string): Promise<void> {
+    const existingRefill = await this.prisma.refill.findFirst({ where: { id: refillId } });
+    if (!existingRefill) throw new NotFoundException('Refill not found');
+
+    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId);
+    const isHourly = vehicle.odometerType === 'HOUR';
+    const oldOdometer = this.getOdometerValue(existingRefill, isHourly);
+
+    const isLatestRefill = !(await this.prisma.refill.findFirst({
+      where: { vehicleId: existingRefill.vehicleId, date: { gt: existingRefill.date } },
+      orderBy: { date: 'asc' },
+      select: { id: true },
+    }));
+
+    await this.prisma.$transaction(async (tx) => {
+      // Snapshot old state before deletion
+      const oldSelfConsumption = existingRefill.fullRefill
+        ? await this.calculateConsumption(tx, existingRefill, oldOdometer, existingRefill.fuelAmount_L, isHourly)
+        : null;
+
+      const oldNextSnapshot = await this.getNextFullRefillSnaphot({
+        tx,
+        vehicleId: existingRefill.vehicleId,
+        date: existingRefill.date,
+        vehicle,
+      });
+
+      // Delete the refill
+      await tx.refill.delete({ where: { id: refillId } });
+
+      // Recalculate the next full refill's consumption (its period changed)
+      let newNextConsumption: ConsumptionResult = null;
+      if (oldNextSnapshot) {
+        newNextConsumption = await this.recalculateConsumption({ tx, oldRefill: oldNextSnapshot.refill, vehicle });
+      }
+
+      // Compute deltas: new contributions minus old contributions
+      const validFuelDelta =
+        (newNextConsumption?.validFuel ?? 0) -
+        ((oldSelfConsumption?.validFuel ?? 0) + (oldNextSnapshot?.consumption?.validFuel ?? 0));
+      const validUnitsDelta =
+        (newNextConsumption?.validUnits ?? 0) -
+        ((oldSelfConsumption?.validUnits ?? 0) + (oldNextSnapshot?.consumption?.validUnits ?? 0));
+
+      // Update vehicle stats
+      const vehicleUpdateData: Prisma.VehicleUpdateInput = {
+        lifetimeTotalValidFuelForConsumption_L: { increment: validFuelDelta },
+        lifetimeTotalValidUnitsForConsumption_km: isHourly ? undefined : { increment: validUnitsDelta },
+        lifetimeTotalValidUnitsForConsumption_hour: isHourly ? { increment: validUnitsDelta } : undefined,
+        lifetimeTotalCost: { increment: -(existingRefill.costTotal ?? 0) },
+        lifetimeTotalFuelConsumed_L: { increment: -existingRefill.fuelAmount_L },
+      };
+
+      if (isLatestRefill) {
+        // Find the new latest refill to reset vehicle odometer
+        const newLatestRefill = await tx.refill.findFirst({
+          where: { vehicleId: existingRefill.vehicleId },
+          orderBy: { date: 'desc' },
+        });
+
+        if (newLatestRefill) {
+          const newLatestOdo = this.getOdometerValue(newLatestRefill, isHourly);
+          Object.assign(vehicleUpdateData, {
+            odometer_hour: isHourly ? newLatestOdo : null,
+            odometer_km: isHourly ? null : newLatestOdo,
+            lastRefillOdometer_hour: isHourly ? newLatestOdo : null,
+            lastRefillOdometer_km: isHourly ? null : newLatestOdo,
+            lifetimeTotalTrackedUnits_km: isHourly ? null : newLatestOdo - (vehicle.initialOdometer_km || 0),
+            lifetimeTotalTrackedUnits_hour: isHourly ? newLatestOdo - (vehicle.initialOdometer_hour || 0) : null,
+          });
+        } else {
+          // No refills remain — reset to initial values
+          Object.assign(vehicleUpdateData, {
+            odometer_hour: vehicle.initialOdometer_hour,
+            odometer_km: vehicle.initialOdometer_km,
+            lastRefillOdometer_hour: null,
+            lastRefillOdometer_km: null,
+            lifetimeTotalTrackedUnits_km: 0,
+            lifetimeTotalTrackedUnits_hour: 0,
+          });
+        }
+      }
+
+      await tx.vehicle.update({ where: { id: vehicle.id }, data: vehicleUpdateData });
+
+      // Update monthly statistics (negative deltas)
+      await this.updateMonthlyStatistics(tx, vehicle, existingRefill.date, {
+        validUnitsForConsumption: validUnitsDelta,
+        validFuelForConsumption: validFuelDelta,
+        totalFuelConsumed: -existingRefill.fuelAmount_L,
+        totalFuelCost: -(existingRefill.costTotal ?? 0),
+      });
+
+      // Decrement storage
+      await this.limitsService.decrementStorageUsage(tx, vehicle.ownerId, 'REFILL', existingRefill.sizeBytes);
+    });
+  }
+
+  async editRefill(userSession: UserSession, refillId: string, refillData: RefillSchemaOutput): Promise<void> {
+    const existingRefill = await this.prisma.refill.findFirst({ where: { id: refillId } });
+    if (!existingRefill) throw new NotFoundException('Refill not found');
+
+    if (refillData.vehicleId !== existingRefill.vehicleId) {
+      throw new BadRequestException('Cannot change the vehicle of a refill');
+    }
+
+    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId);
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userSession.user.id },
+      select: { volumeUnit: true },
+    });
+    if (!user) throw new Error('User not found');
+
+    const isHourly = vehicle.odometerType === 'HOUR';
+    const normalizedOdometer = this.unitConversion.normalizeOdometer(refillData.odometer, vehicle.odometerType);
+    const fuelLiters = this.unitConversion.normalizeFuelAmount(refillData.fuelAmount, user.volumeUnit);
+    const newByteSize = await this.limitsService.canUpdateLog(
+      userSession.user.id,
+      vehicle.ownerId,
+      existingRefill.sizeBytes,
+      refillData,
+    );
+
+    // Validate odometer against adjacent refills, excluding self
+    const [previousRefill, nextRefill] = await Promise.all([
+      this.prisma.refill.findFirst({
+        where: { vehicleId: existingRefill.vehicleId, date: { lt: refillData.date }, id: { not: refillId } },
+        orderBy: { date: 'desc' },
+      }),
+      this.prisma.refill.findFirst({
+        where: { vehicleId: existingRefill.vehicleId, date: { gt: refillData.date }, id: { not: refillId } },
+        orderBy: { date: 'asc' },
+      }),
+    ]);
+    this.validateOdometerValue(normalizedOdometer, previousRefill, nextRefill, isHourly);
+
+    const oldOdometer = this.getOdometerValue(existingRefill, isHourly);
+    const dateChanged =
+      existingRefill.date.getFullYear() !== refillData.date.getFullYear() ||
+      existingRefill.date.getMonth() !== refillData.date.getMonth() ||
+      existingRefill.date.getDate() !== refillData.date.getDate() ||
+      existingRefill.date.getTime() !== refillData.date.getTime();
+
+    await this.prisma.$transaction(async (tx) => {
+      // Phase 1: Snapshot old state
+      const oldSelfConsumption = existingRefill.fullRefill
+        ? await this.calculateConsumption(tx, existingRefill, oldOdometer, existingRefill.fuelAmount_L, isHourly)
+        : null;
+
+      const oldNextAtOldDate = await this.getNextFullRefillSnaphot({
+        tx,
+        vehicleId: existingRefill.vehicleId,
+        date: existingRefill.date,
+        vehicle,
+      });
+
+      // If date changed, also snapshot the next full refill at the new date position
+      const oldNextAtNewDate = dateChanged
+        ? await this.getNextFullRefillSnaphot({
+            tx,
+            vehicleId: existingRefill.vehicleId,
+            date: refillData.date,
+            vehicle,
+          })
+        : null;
+
+      // Phase 2: Update the refill record
+      const updatedRefill = await tx.refill.update({
+        where: { id: refillId },
+        data: {
+          date: refillData.date,
+          odometer_hour: isHourly ? normalizedOdometer : null,
+          odometer_km: isHourly ? null : normalizedOdometer,
+          fullRefill: refillData.fullRefill,
+          skippedRefill: refillData.skippedRefill,
+          fuelAmount_L: fuelLiters,
+          pricePerUnit: refillData.pricePerUnit,
+          costTotal: refillData.costTotal,
+          notes: refillData.notes,
+          consumption_L_per_100km: null,
+          consumption_L_per_hour: null,
+          sizeBytes: newByteSize,
+        },
+      });
+
+      // Phase 3: Recalculate new state
+      const newSelfConsumption = refillData.fullRefill
+        ? await this.calculateConsumption(tx, updatedRefill, normalizedOdometer, fuelLiters, isHourly)
+        : null;
+
+      // Persist new self consumption
+      await tx.refill.update({
+        where: { id: refillId },
+        data: {
+          consumption_L_per_100km: isHourly ? null : (newSelfConsumption?.consumption ?? null),
+          consumption_L_per_hour: isHourly ? (newSelfConsumption?.consumption ?? null) : null,
+        },
+      });
+
+      // Recalculate affected next-full-refills
+      let newNextAtOldDate: ConsumptionResult = null;
+      if (oldNextAtOldDate) {
+        newNextAtOldDate = await this.recalculateConsumption({ tx, oldRefill: oldNextAtOldDate.refill, vehicle });
+      }
+
+      let newNextAtNewDate: ConsumptionResult = null;
+      if (oldNextAtNewDate && oldNextAtNewDate.refill.id !== oldNextAtOldDate?.refill.id) {
+        newNextAtNewDate = await this.recalculateConsumption({ tx, oldRefill: oldNextAtNewDate.refill, vehicle });
+      }
+
+      // Phase 4: Compute deltas
+      const newValidFuel =
+        (newSelfConsumption?.validFuel ?? 0) + (newNextAtOldDate?.validFuel ?? 0) + (newNextAtNewDate?.validFuel ?? 0);
+      const oldValidFuel =
+        (oldSelfConsumption?.validFuel ?? 0) +
+        (oldNextAtOldDate?.consumption?.validFuel ?? 0) +
+        (oldNextAtNewDate?.consumption?.validFuel ?? 0);
+      const validFuelDelta = newValidFuel - oldValidFuel;
+
+      const newValidUnits =
+        (newSelfConsumption?.validUnits ?? 0) +
+        (newNextAtOldDate?.validUnits ?? 0) +
+        (newNextAtNewDate?.validUnits ?? 0);
+      const oldValidUnits =
+        (oldSelfConsumption?.validUnits ?? 0) +
+        (oldNextAtOldDate?.consumption?.validUnits ?? 0) +
+        (oldNextAtNewDate?.consumption?.validUnits ?? 0);
+      const validUnitsDelta = newValidUnits - oldValidUnits;
+
+      const costDelta = (refillData.costTotal ?? 0) - (existingRefill.costTotal ?? 0);
+      const fuelDelta = fuelLiters - existingRefill.fuelAmount_L;
+
+      // Phase 5: Update vehicle stats
+      const vehicleUpdateData: Prisma.VehicleUpdateInput = {
+        lifetimeTotalValidFuelForConsumption_L: { increment: validFuelDelta },
+        lifetimeTotalValidUnitsForConsumption_km: isHourly ? undefined : { increment: validUnitsDelta },
+        lifetimeTotalValidUnitsForConsumption_hour: isHourly ? { increment: validUnitsDelta } : undefined,
+        lifetimeTotalCost: { increment: costDelta },
+        lifetimeTotalFuelConsumed_L: { increment: fuelDelta },
+      };
+
+      if (!nextRefill) {
+        // This is the latest refill — update vehicle odometer
+        Object.assign(vehicleUpdateData, {
+          odometer_hour: isHourly ? normalizedOdometer : null,
+          odometer_km: isHourly ? null : normalizedOdometer,
+          lastRefillOdometer_hour: isHourly ? normalizedOdometer : null,
+          lastRefillOdometer_km: isHourly ? null : normalizedOdometer,
+          lifetimeTotalTrackedUnits_km: isHourly ? null : normalizedOdometer - (vehicle.initialOdometer_km || 0),
+          lifetimeTotalTrackedUnits_hour: isHourly ? normalizedOdometer - (vehicle.initialOdometer_hour || 0) : null,
+        });
+      }
+
+      await tx.vehicle.update({ where: { id: vehicle.id }, data: vehicleUpdateData });
+
+      // Phase 6: Update monthly stats — reverse old month, add new month (nets correctly when same month)
+      await this.updateMonthlyStatistics(tx, vehicle, existingRefill.date, {
+        validUnitsForConsumption: -oldValidUnits,
+        validFuelForConsumption: -oldValidFuel,
+        totalFuelConsumed: -existingRefill.fuelAmount_L,
+        totalFuelCost: -(existingRefill.costTotal ?? 0),
+      });
+      await this.updateMonthlyStatistics(tx, vehicle, refillData.date, {
+        validUnitsForConsumption: newValidUnits,
+        validFuelForConsumption: newValidFuel,
+        totalFuelConsumed: fuelLiters,
+        totalFuelCost: refillData.costTotal ?? 0,
+      });
+
+      // Phase 7: Sync storage
+      await this.limitsService.syncStorageUsage(tx, vehicle.ownerId, 'REFILL', existingRefill.sizeBytes, newByteSize);
     });
   }
 

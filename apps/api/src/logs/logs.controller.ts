@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { MaintenanceInput, MaintenanceSchema, RefillSchema, RefillSchemaOutput } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import z, { ZodType } from 'zod';
@@ -25,6 +25,26 @@ export class LogsController {
     refillDto: RefillSchemaOutput,
   ) {
     await this.refillService.createRefill(SessionUser, refillDto);
+    return { status: 'success' };
+  }
+
+  @Put('refill/:refillId')
+  async editRefill(
+    @Session() SessionUser: UserSession,
+    @Param('refillId', new ZodValidationPipe(z.cuid())) refillId: string,
+    @Body(new ZodValidationPipe(RefillSchema as ZodType))
+    refillDto: RefillSchemaOutput,
+  ) {
+    await this.refillService.editRefill(SessionUser, refillId, refillDto);
+    return { status: 'success' };
+  }
+
+  @Delete('refill/:refillId')
+  async deleteRefill(
+    @Session() SessionUser: UserSession,
+    @Param('refillId', new ZodValidationPipe(z.cuid())) refillId: string,
+  ) {
+    await this.refillService.deleteRefill(SessionUser, refillId);
     return { status: 'success' };
   }
 
