@@ -14,21 +14,27 @@ export function useRefillCreate() {
     onSuccess(_, variables) {
       queryClient.setQueryData<TAccessibleVehicle[]>(queryKeys.vehicles.all, (old) => {
         if (!old) return old;
-        return old.map((vehicle) =>
-          vehicle.vehicleData.id === variables.vehicleId
-            ? {
-                ...vehicle,
-                vehicleData: {
-                  ...vehicle.vehicleData,
-                  odometerData: {
-                    ...vehicle.vehicleData.odometerData,
-                    value: variables.odometer as number | null,
-                    lastRefillValue: variables.odometer as number | null,
-                  },
-                },
-              }
-            : vehicle,
-        );
+        return old.map((vehicle) => {
+          if (vehicle.vehicleData.id !== variables.vehicleId) return vehicle;
+
+          const newOdometer = variables.odometer as number | null;
+          const currentOdometer = vehicle.vehicleData.odometerData?.value;
+          const isLatestRefill = newOdometer != null && (currentOdometer == null || newOdometer > currentOdometer);
+
+          if (!isLatestRefill) return vehicle;
+
+          return {
+            ...vehicle,
+            vehicleData: {
+              ...vehicle.vehicleData,
+              odometerData: {
+                ...vehicle.vehicleData.odometerData,
+                value: newOdometer,
+                lastRefillValue: newOdometer,
+              },
+            },
+          };
+        });
       });
 
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.consumptionCharts(variables.vehicleId) });

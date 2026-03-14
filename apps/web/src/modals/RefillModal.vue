@@ -4,15 +4,15 @@ import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import { useModalStore } from "@/stores/modal";
 import { RefillSchema } from "@repo/validation";
 import { ErrorMessage, Field, useForm } from "vee-validate";
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import Switch from "@/components/ui/switch/Switch.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import z from "zod";
 import { useRefillCreate } from "@/lib/queries/refills/refill-mutations";
+import { AxiosError } from "axios";
 import { useSelectedVehicle } from "@/lib/composables/useSelectedVehicle";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import FormDateInput from "@/components/forms/FormDateInput.vue";
@@ -31,17 +31,10 @@ const { selectedVehicleLastRefillOdometer, selectedVehicleOdometerUnit } = useSe
   computed(() => values.vehicleId),
 );
 
-const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm({
-  validationSchema: RefillSchema.extend({
-    odometer: z.coerce.number().refine(
-      async (value): Promise<boolean> => {
-        if (!value) return true;
-        if (!selectedVehicleLastRefillOdometer.value) return true;
-        return selectedVehicleLastRefillOdometer.value < value;
-      },
-      { message: "Must be greater than last refill " },
-    ),
-  }),
+const formError = ref<string | null>(null);
+
+const { handleSubmit, resetForm, isSubmitting, values, setFieldValue, setFieldError } = useForm({
+  validationSchema: RefillSchema,
 
   initialValues: {
     fullRefill: true,
@@ -52,10 +45,18 @@ const { handleSubmit, resetForm, isSubmitting, values, setFieldValue } = useForm
 });
 
 const onSubmit = handleSubmit(async (values) => {
+  formError.value = null;
   await createRefill(values, {
     onSuccess: () => {
       toast.success("Refill created successfully");
       handleClose();
+    },
+    onError: (error) => {
+      const data = (error as AxiosError<{ message?: string; field?: string }>).response?.data;
+      if (data?.field === "odometer") {
+        setFieldError("odometer", data.message);
+      }
+      formError.value = data?.message || "Something went wrong. Please try again.";
     },
   });
 });
@@ -90,6 +91,7 @@ const handleCostTotalChange = (value: string | number) => {
 
 watch(isModalOpen, (open) => {
   if (open) {
+    formError.value = null;
     if (currentVehicleId.value)
       resetForm({
         values: {
@@ -130,6 +132,15 @@ const odometerPlaceholder = computed(() => {
     key="CreateRefillModal"
   >
     <form data-cy="create-refill-form" class="gaps-md flex flex-col">
+      <p
+        v-if="formError"
+        role="alert"
+        aria-live="assertive"
+        class="text-destructive rounded-md border border-current/20 bg-current/5 px-3 py-2 text-center text-sm"
+      >
+        {{ formError }}
+      </p>
+
       <!-- Vehicle -->
       <Field v-slot="{ value, handleChange }" name="vehicleId">
         <VehicleSelect
