@@ -162,13 +162,11 @@ export class MaintenanceService {
       },
       update: {
         totalMaintenanceCost: { increment: costTotal },
-        monthlyRunningCost: { increment: costTotal },
       },
       create: {
         vehicleId,
         year,
         month,
-        monthlyRunningCost: costTotal,
         totalMaintenanceCost: costTotal,
       },
     });

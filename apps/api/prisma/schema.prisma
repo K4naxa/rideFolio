@@ -590,11 +590,6 @@ model VehicleMonthlyStatistics {
   totalFuelConsumed_L  Float @default(0)
   totalFuelCost        Float @default(0)
   totalMaintenanceCost Float @default(0)
-  monthlyRunningCost   Float @default(0)
-
-  // monthly units (distance / time )
-  monthlyOdometerUnits_km   Float @default(0)
-  monthlyOdometerUnits_hour Float @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

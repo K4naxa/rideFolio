@@ -51,7 +51,6 @@ export class RefillsService {
 
     // validate odometer increase
     this.validateOdometerIncrease(previousLog, normalizedOdometer, isOdometerHourly);
-    const odometerDelta = this.calculateOdometerDelta(previousLog, normalizedOdometer, isOdometerHourly);
     // 4. Start prisma transaction
     await this.prisma.$transaction(async (tx) => {
       let consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null } = {
@@ -132,7 +131,6 @@ export class RefillsService {
         fuelLiters,
         refillData.costTotal ?? 0,
         consumptionResult,
-        odometerDelta,
         isOdometerHourly,
       );
 
@@ -294,7 +292,6 @@ export class RefillsService {
     fuelLiters: number,
     costTotal: number,
     consumptionResult: { consumption: number | null; validFuel: number | null; validUnits: number | null },
-    odometerDelta: { deltaKm: number; deltaHour: number },
     isOdometerHourly: boolean,
   ): Promise<void> {
     const year = refillDate.getFullYear();
@@ -320,9 +317,6 @@ export class RefillsService {
         monthlyValidFuelForConsumption_L: consumptionResult.validFuel ?? 0,
         monthlyValidUnitsForConsumption_km: isOdometerHourly ? 0 : (consumptionResult.validUnits ?? 0),
         monthlyValidUnitsForConsumption_hour: isOdometerHourly ? (consumptionResult.validUnits ?? 0) : 0,
-        monthlyOdometerUnits_km: odometerDelta.deltaKm,
-        monthlyOdometerUnits_hour: odometerDelta.deltaHour,
-        monthlyRunningCost: costTotal,
       },
       update: {
         totalFuelConsumed_L: { increment: fuelLiters },
@@ -330,9 +324,6 @@ export class RefillsService {
         monthlyValidFuelForConsumption_L: { increment: consumptionResult.validFuel ?? 0 },
         monthlyValidUnitsForConsumption_km: { increment: isOdometerHourly ? 0 : (consumptionResult.validUnits ?? 0) },
         monthlyValidUnitsForConsumption_hour: { increment: isOdometerHourly ? (consumptionResult.validUnits ?? 0) : 0 },
-        monthlyOdometerUnits_km: { increment: odometerDelta.deltaKm },
-        monthlyOdometerUnits_hour: { increment: odometerDelta.deltaHour },
-        monthlyRunningCost: { increment: costTotal },
       },
     });
   }
