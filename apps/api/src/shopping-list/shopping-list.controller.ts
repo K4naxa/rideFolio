@@ -3,7 +3,7 @@ import { ShoppingItem, ShoppingItemValues, ShoppingListItemSchema } from '@repo/
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ShoppingListService } from 'src/shopping-list/shopping-list.service';
-import { ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 
 @Controller('shopping-list')
 export class ShoppingListController {
@@ -18,21 +18,27 @@ export class ShoppingListController {
   }
 
   @Get(':vehicleId')
-  async getItems(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string): Promise<ShoppingItem[]> {
+  async getItems(
+    @Session() userSession: UserSession,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
+  ): Promise<ShoppingItem[]> {
     return await this.shoppingListService.getItemsForVehicle(userSession, vehicleId);
   }
 
   @Patch(':itemId/toggle')
   async togglePurchased(
     @Session() userSession: UserSession,
-    @Param('itemId') itemId: string,
-    @Body() body: { isPurchased: boolean },
+    @Param('itemId', new ZodValidationPipe(z.cuid())) itemId: string,
+    @Body('isPurchased', new ZodValidationPipe(z.boolean())) isPurchased: boolean,
   ): Promise<ShoppingItem> {
-    return await this.shoppingListService.toggleItemPurchased(userSession, itemId, body.isPurchased);
+    return await this.shoppingListService.toggleItemPurchased(userSession, itemId, isPurchased);
   }
 
   @Delete(':itemId')
-  async deleteItem(@Session() userSession: UserSession, @Param('itemId') itemId: string): Promise<void> {
+  async deleteItem(
+    @Session() userSession: UserSession,
+    @Param('itemId', new ZodValidationPipe(z.cuid())) itemId: string,
+  ): Promise<void> {
     await this.shoppingListService.deleteItem(userSession, itemId);
   }
 }

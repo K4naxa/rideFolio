@@ -4,7 +4,7 @@ import { VehiclesService } from 'src/vehicles/vehicles.service';
 
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { BasicVehicle, TAccessibleVehicle, VehicleInput, VehicleInputSchema, VehicleType } from '@repo/validation';
-import { ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 import { AllowAnonymous, Session, UserSession } from '@thallesp/nestjs-better-auth';
 
 @Controller('vehicles')
@@ -29,14 +29,17 @@ export class VehiclesController {
   @Put(':vehicleId')
   async updateVehicle(
     @Session() userSession: UserSession,
-    @Param('vehicleId') vehicleId: string,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
     @Body(new ZodValidationPipe(VehicleInputSchema as ZodType)) vehicleDTO: VehicleInput,
   ) {
     return await this.vehiclesService.update(userSession, vehicleId, vehicleDTO);
   }
 
   @Delete(':vehicleId')
-  async deleteVehicle(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
+  async deleteVehicle(
+    @Session() userSession: UserSession,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
+  ) {
     console.log('Received request to delete vehicle with ID:', vehicleId);
 
     return await this.vehiclesService.delete(userSession, vehicleId);
@@ -45,7 +48,7 @@ export class VehiclesController {
   @Get('by-id/:vehicleId')
   async getVehicleById(
     @Session() userSession: UserSession,
-    @Param('vehicleId') vehicleId: string,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
   ): Promise<BasicVehicle> {
     return await this.vehiclesService.getVehicleById(userSession, vehicleId);
   }
@@ -61,7 +64,10 @@ export class VehiclesController {
   }
 
   @Get('upcoming-activity/:vehicleId')
-  async getUpcomingActivityForVehicle(@Session() userSession: UserSession, @Param('vehicleId') vehicleId: string) {
+  async getUpcomingActivityForVehicle(
+    @Session() userSession: UserSession,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
+  ) {
     return await this.vehiclesService.getUpcomingActivity(userSession, vehicleId);
   }
 }

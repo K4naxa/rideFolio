@@ -3,7 +3,7 @@ import { Quicklink, QuicklinkSchema, QuicklinkSchemaType } from '@repo/validatio
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { QuicklinksService } from 'src/quicklinks/quicklinks.service';
-import { ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 
 @Controller('quicklinks')
 export class QuicklinksController {
@@ -23,7 +23,7 @@ export class QuicklinksController {
   }
 
   @Delete(':id')
-  deleteQuicklink(@Session() userSession: UserSession, @Param('id') id: string) {
+  deleteQuicklink(@Session() userSession: UserSession, @Param('id', new ZodValidationPipe(z.cuid())) id: string) {
     return this.quicklinksService.deleteQuicklink(userSession, id);
   }
 }

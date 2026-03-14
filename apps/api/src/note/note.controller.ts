@@ -3,7 +3,7 @@ import { Note, NoteSchema, NoteSchemaType } from '@repo/validation';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { NoteService } from 'src/note/note.service';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { ZodType } from 'zod/v4/classic/external.cjs';
+import z, { ZodType } from 'zod';
 
 @Controller('notes')
 export class NoteController {
@@ -23,15 +23,18 @@ export class NoteController {
   }
 
   @Get('by-id/:noteId')
-  async getNoteById(@Session() session: UserSession, @Param('noteId') noteId: string): Promise<Note> {
+  async getNoteById(
+    @Session() session: UserSession,
+    @Param('noteId', new ZodValidationPipe(z.cuid())) noteId: string,
+  ): Promise<Note> {
     return this.noteService.getNoteById(session.user.id, noteId);
   }
 
   @Patch(':noteId/pin')
   async toggleNotePin(
     @Session() session: UserSession,
-    @Param('noteId') noteId: string,
-    @Body('pinned') pinned: boolean,
+    @Param('noteId', new ZodValidationPipe(z.cuid())) noteId: string,
+    @Body('pinned', new ZodValidationPipe(z.boolean())) pinned: boolean,
   ): Promise<Note> {
     return await this.noteService.notePinnedToggle(session, noteId, pinned);
   }
@@ -39,20 +42,23 @@ export class NoteController {
   @Patch(':noteId')
   async updateNote(
     @Session() session: UserSession,
-    @Param('noteId') noteId: string,
+    @Param('noteId', new ZodValidationPipe(z.cuid())) noteId: string,
     @Body(new ZodValidationPipe(NoteSchema as ZodType)) noteDto: NoteSchemaType,
   ): Promise<Note> {
     return await this.noteService.updateNote(session, noteId, noteDto);
   }
 
   @Delete(':noteId')
-  async deleteNote(@Session() session: UserSession, @Param('noteId') noteId: string) {
+  async deleteNote(@Session() session: UserSession, @Param('noteId', new ZodValidationPipe(z.cuid())) noteId: string) {
     await this.noteService.deleteNote(session, noteId);
     return { status: 'success' };
   }
 
   @Get('vehicle/:vehicleId')
-  async getNotesForVehicle(@Session() session: UserSession, @Param('vehicleId') vehicleId: string) {
+  async getNotesForVehicle(
+    @Session() session: UserSession,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
+  ) {
     return this.noteService.getNotesForVehicle(session, vehicleId);
   }
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MaintenanceInput, MaintenanceSchema, RefillSchema, RefillSchemaOutput } from '@repo/validation';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 
 import { LogsService } from './logs.service';
 import { RefillsService } from './refills/refills.service';
@@ -31,8 +31,8 @@ export class LogsController {
   @Get('refills/chart/:vehicleId/:limit')
   async getRefills(
     @Session() SessionUser: UserSession,
-    @Param('vehicleId') vehicleId: string,
-    @Param('limit') limit: string,
+    @Param('vehicleId', new ZodValidationPipe(z.cuid())) vehicleId: string,
+    @Param('limit', new ZodValidationPipe(z.string().datetime())) limit: string,
   ) {
     const limitDate = new Date(limit);
     return await this.refillService.getRefillsForChart(SessionUser, vehicleId, limitDate);
@@ -41,7 +41,9 @@ export class LogsController {
   // ** MAINTENANCE **
   @AllowAnonymous() // Allow anonymous access
   @Get('maintenance/categories/:vehicleTypeCode')
-  async getCategoriesAndParts(@Param('vehicleTypeCode') vehicleType: VehicleType['code']) {
+  async getCategoriesAndParts(
+    @Param('vehicleTypeCode', new ZodValidationPipe(z.string().min(1))) vehicleType: VehicleType['code'],
+  ) {
     return await this.maintenanceService.getCategoriesWithParts(vehicleType);
   }
 
