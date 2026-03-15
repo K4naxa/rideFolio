@@ -3,7 +3,7 @@ import Badge from "@/components/ui/badge/Badge.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { computed, ref } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 
 import { useModalStore } from "@/stores/modal";
 import { useRouter } from "vue-router";
@@ -35,6 +35,11 @@ const deleteModalDescription = computed(() =>
     ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
     : "Are you sure you want to delete this vehicle? This action cannot be undone.",
 );
+
+const vehicleHeroNameEl = useTemplateRef("vehicleHeroNameEl");
+defineExpose({
+  vehicleHeroNameEl,
+});
 </script>
 
 <template>
@@ -60,7 +65,7 @@ const deleteModalDescription = computed(() =>
           <div class="grid h-24 w-full grid-cols-1 grid-rows-[3.5rem_1fr]">
             <!-- Name -->
             <div class="flex w-full place-items-end justify-between gap-4 text-white">
-              <h1 class="truncate text-3xl leading-tight text-inherit">
+              <h1 id="vehicle-hero-name" ref="vehicleHeroNameEl" class="truncate text-3xl leading-tight text-inherit">
                 {{ currentVehicle?.vehicleData.name || "Unnamed Vehicle" }}
               </h1>
 

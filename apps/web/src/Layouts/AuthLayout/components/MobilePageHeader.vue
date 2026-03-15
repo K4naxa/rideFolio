@@ -9,6 +9,7 @@ import { useNotifications } from "@/lib/composables/useNotifications.ts";
 defineProps<{
   wrapperClass?: HTMLAttributes["class"];
   hideSidebarTrigger?: boolean;
+  headerStyle?: HTMLAttributes["style"];
 }>();
 
 const isMobile = useIsMobile();
@@ -19,8 +20,9 @@ const { hasUnreadNotifications } = useNotifications();
 <template>
   <header
     v-if="isMobile"
-    class="h-AppHeader sticky top-0 z-20 flex w-screen items-center gap-2 border-none px-4 transition-[background-color,border-color,color] duration-300"
+    class="sticky top-0 z-20 flex h-(--app-header-height) w-screen items-center gap-2 border-none px-4"
     :class="twMerge('bg-background border-b', wrapperClass)"
+    :style="headerStyle"
   >
     <!-- Left: always the sidebar trigger -->
     <div class="relative">
