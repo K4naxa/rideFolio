@@ -40,14 +40,12 @@ export class GroupsService {
 
         // 3. Add optional vehicles to the group if provided
         if (vehicleIds && vehicleIds.length > 0) {
-          for (const id of vehicleIds) {
-            await prisma.groupVehicle.create({
-              data: {
-                groupId: group.id,
-                vehicleId: id,
-              },
-            });
-          }
+          await prisma.groupVehicle.createMany({
+            data: vehicleIds.map((id) => ({
+              groupId: group.id,
+              vehicleId: id,
+            })),
+          });
         }
 
         console.log(`Created new group with id: ${group.id}`);
@@ -115,21 +113,19 @@ export class GroupsService {
         });
 
         //   Notify users about the removal of vehicles
-        for (const vehicle of vehiclesToRemove) {
-          // Skip notifying if the vehicle belongs to the sessionUser
-          if (userSession.user.id === vehicle.vehicle.ownerId) continue;
-
-          await this.notificationService.create({
-            type: GROUP_VEHICLE_REMOVED_NOTIFICATION.type,
+        const vehicleRemovalNotifications = vehiclesToRemove
+          .filter((vehicle) => userSession.user.id !== vehicle.vehicle.ownerId)
+          .map((vehicle) => ({
+            type: GROUP_VEHICLE_REMOVED_NOTIFICATION.type as typeof GROUP_VEHICLE_REMOVED_NOTIFICATION.type,
             userId: vehicle.vehicle.ownerId,
             meta: {
               groupId,
               groupName: group.name,
               vehicleName: vehicle.vehicle.name,
             },
-            transactionClient: tx,
-          });
-        }
+          }));
+
+        await this.notificationService.createMany(vehicleRemovalNotifications, tx);
       }
 
       // update group details
@@ -232,10 +228,14 @@ export class GroupsService {
       include: {
         vehicles: {
           select: {
-            vehicle: true,
+            vehicle: {
+              select: { id: true, ownerId: true },
+            },
           },
         },
-        members: true,
+        members: {
+          select: { userId: true, role: true },
+        },
       },
     });
 
@@ -252,9 +252,12 @@ export class GroupsService {
         where: { groupId_userId: { groupId, userId } },
       });
       // 2. Remove the member's vehicles from the group
-      for (const v of leavingUserVehicles) {
-        await tx.groupVehicle.delete({
-          where: { groupId_vehicleId: { groupId, vehicleId: v.vehicle.id } },
+      if (leavingUserVehicles.length > 0) {
+        await tx.groupVehicle.deleteMany({
+          where: {
+            groupId,
+            vehicleId: { in: leavingUserVehicles.map((v) => v.vehicle.id) },
+          },
         });
       }
     });
@@ -373,17 +376,17 @@ export class GroupsService {
       });
 
       // 2. Notify members that the group has been disbanded
-      for (const member of groupToDelete.members) {
-        if (member.userId === userSession.user.id) continue; // Skip notifying the user who deleted the group
-        await this.notificationService.create({
-          type: GROUP_DISBANDED_NOTIFICATION.type,
+      const disbandNotifications = groupToDelete.members
+        .filter((member) => member.userId !== userSession.user.id)
+        .map((member) => ({
+          type: GROUP_DISBANDED_NOTIFICATION.type as typeof GROUP_DISBANDED_NOTIFICATION.type,
           userId: member.userId,
           meta: {
             groupName: groupToDelete.name,
           },
-          transactionClient: tx,
-        });
-      }
+        }));
+
+      await this.notificationService.createMany(disbandNotifications, tx);
 
       // 3. Delete the group
       await tx.group.delete({
