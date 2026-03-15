@@ -51,7 +51,7 @@ export class VehiclesService {
 
       const vehicle = await this.prisma.$transaction(async (tx) => {
         // Create vehicle
-        const vehicle = await this.prisma.vehicle.create({
+        const vehicle = await tx.vehicle.create({
           data: {
             ...formattedVehicleData,
 
