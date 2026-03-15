@@ -165,7 +165,7 @@ export class RefillsService {
   }
 
   async deleteRefill(userSession: UserSession, refillId: string): Promise<void> {
-    const existingRefill = await this.prisma.refill.findFirst({ where: { id: refillId } });
+    const existingRefill = await this.prisma.refill.findUnique({ where: { id: refillId } });
     if (!existingRefill) throw new NotFoundException('Refill not found');
 
     const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId);
@@ -263,19 +263,20 @@ export class RefillsService {
   }
 
   async editRefill(userSession: UserSession, refillId: string, refillData: RefillSchemaOutput): Promise<void> {
-    const existingRefill = await this.prisma.refill.findFirst({ where: { id: refillId } });
+    const existingRefill = await this.prisma.refill.findUnique({ where: { id: refillId } });
     if (!existingRefill) throw new NotFoundException('Refill not found');
 
     if (refillData.vehicleId !== existingRefill.vehicleId) {
       throw new BadRequestException('Cannot change the vehicle of a refill');
     }
 
-    const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId);
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: userSession.user.id },
-      select: { volumeUnit: true },
-    });
+    const [vehicle, user] = await Promise.all([
+      this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId),
+      this.prisma.user.findUnique({
+        where: { id: userSession.user.id },
+        select: { volumeUnit: true },
+      }),
+    ]);
     if (!user) throw new Error('User not found');
 
     const isHourly = vehicle.odometerType === 'HOUR';
@@ -484,6 +485,11 @@ export class RefillsService {
     const [user, refills] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: UserSession.user.id },
+        select: {
+          volumeUnit: true,
+          consumptionUnitCode_distance: true,
+          consumptionUnitCode_hour: true,
+        },
       }),
 
       this.prisma.refill.findMany({
