@@ -7,7 +7,6 @@ import { twMerge } from "tailwind-merge";
 import { useNotifications } from "@/lib/composables/useNotifications.ts";
 
 defineProps<{
-  transparent?: boolean;
   wrapperClass?: HTMLAttributes["class"];
   hideSidebarTrigger?: boolean;
 }>();
@@ -20,8 +19,8 @@ const { hasUnreadNotifications } = useNotifications();
 <template>
   <header
     v-if="isMobile"
-    class="h-AppHeader sticky top-0 z-20 flex w-screen items-center gap-2 border-none px-4"
-    :class="twMerge(transparent ? 'bg-transparent' : 'bg-background border-b', wrapperClass)"
+    class="h-AppHeader sticky top-0 z-20 flex w-screen items-center gap-2 border-none px-4 transition-[background-color,border-color,color] duration-300"
+    :class="twMerge('bg-background border-b', wrapperClass)"
   >
     <!-- Left: always the sidebar trigger -->
     <div class="relative">
