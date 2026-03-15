@@ -41,16 +41,14 @@ export class LimitsService {
             maxVehicles: true,
           },
         },
-      },
-    });
-    const vehicleCount = await this.prisma.vehicle.count({
-      where: {
-        ownerId: userId,
+        _count: {
+          select: { ownedVehicles: true },
+        },
       },
     });
 
     if (!user) throw new ForbiddenException('user not found');
-    return { ...user, vehicleCount };
+    return { ...user, vehicleCount: user._count.ownedVehicles };
   }
 
   // LIMIT CHECKING
@@ -98,9 +96,30 @@ export class LimitsService {
 
   // COMBINED VALIDATORS
   async canCreateVehicle(userId: string, data: VehicleInput): Promise<number> {
-    await this.enforceVehicleLimit(userId);
+    const user = await this.getUserWithPlan(userId);
+
+    // Check vehicle limit
+    if (!this.isUnlimited(user.plan.maxVehicles) && user.vehicleCount >= user.plan.maxVehicles) {
+      throw new ForbiddenException({
+        code: 'VEHICLE_LIMIT_EXCEEDED',
+        message: `Vehicle limit reached (${user.vehicleCount}/${user.plan.maxVehicles}). Please upgrade your plan.`,
+      });
+    }
+
+    // Check storage limit
     const sizeBytes = this.calculateSizeBytes(data) + CREATION_SYSTEM_OVERHEAD_BUFFER;
-    await this.enforceStorageLimit(userId, userId, sizeBytes);
+    if (!this.isUnlimited(user.plan.maxStorageBytes)) {
+      const projectedUsage = user.storageUsageBytes + BigInt(sizeBytes);
+      if (projectedUsage > user.plan.maxStorageBytes) {
+        const usedMB = this.unitConversion.getMBFromBytes(user.storageUsageBytes);
+        const limitMB = this.unitConversion.getMBFromBytes(user.plan.maxStorageBytes);
+        throw new ForbiddenException({
+          code: 'STORAGE_LIMIT_EXCEEDED',
+          message: `Storage limit exceeded (${usedMB.toFixed(2)} MB / ${limitMB.toFixed(2)} MB). Please upgrade your plan.`,
+        });
+      }
+    }
+
     return sizeBytes;
   }
 
