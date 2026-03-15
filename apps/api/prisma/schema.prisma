@@ -454,6 +454,8 @@ model Todo {
 
   @@index([vehicleId])
   @@index([isCompleted])
+  @@index([vehicleId, isCompleted])
+  @@index([completedAt_date])
 }
 
 model Note {
@@ -470,6 +472,9 @@ model Note {
   sizeBytes   Int
   createdAt   DateTime @default(now())
   createdById String?
+
+  @@index([vehicleId])
+  @@index([createdById])
 }
 
 model ShoppingListItem {
@@ -636,6 +641,8 @@ model Account {
   updatedAt             DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Verification {
@@ -659,4 +666,6 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
