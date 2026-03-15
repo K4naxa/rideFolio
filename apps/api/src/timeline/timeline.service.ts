@@ -135,7 +135,7 @@ export class TimelineService {
     if (shouldInclude.todosCompleted) {
       const completedTodos = await this.prisma.todo.findMany({
         where: {
-          vehicleId,
+          vehicleId: { in: vehicles },
           completedAt_date: {
             not: null,
             lt: cursorDate,
