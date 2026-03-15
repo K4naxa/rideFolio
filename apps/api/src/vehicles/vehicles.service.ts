@@ -102,23 +102,20 @@ export class VehiclesService {
   }
 
   async delete(userSession: UserSession, vehicleId: string) {
-    console.log('Deleting vehicle with ID:', vehicleId);
-
     // TODO: Delete images from storage and update storage usage accordingly
 
-    const vehicle = await this.prisma.vehicle.findUnique({
-      where: { id: vehicleId, ownerId: userSession.user.id },
-      select: {
-        sizeBytes: true,
-        id: true,
-        image: true,
-        refills: { select: { sizeBytes: true } },
-        maintenances: { select: { sizeBytes: true } },
-        todos: { select: { sizeBytes: true } },
-        notes: { select: { sizeBytes: true } },
-        shoppingListItems: { select: { sizeBytes: true } },
-      },
-    });
+    const [vehicle, refillsSum, maintenancesSum, todosSum, notesSum, shoppingSum] = await Promise.all([
+      this.prisma.vehicle.findUnique({
+        where: { id: vehicleId, ownerId: userSession.user.id },
+        select: { sizeBytes: true, id: true, image: true },
+      }),
+      this.prisma.refill.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.maintenance.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.todo.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.note.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.shoppingListItem.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+    ]);
+
     if (!vehicle)
       throw new NotFoundException({
         code: 'NOT_FOUND_OR_ACCESS_DENIED',
@@ -126,11 +123,11 @@ export class VehiclesService {
       });
 
     const vehicleBytes = vehicle.sizeBytes;
-    const refillsBytes = vehicle.refills.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-    const maintenancesBytes = vehicle.maintenances.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-    const todosBytes = vehicle.todos.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-    const notesBytes = vehicle.notes.reduce((acc, curr) => acc + curr.sizeBytes, 0);
-    const shoppingListItemsBytes = vehicle.shoppingListItems.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+    const refillsBytes = refillsSum._sum.sizeBytes ?? 0;
+    const maintenancesBytes = maintenancesSum._sum.sizeBytes ?? 0;
+    const todosBytes = todosSum._sum.sizeBytes ?? 0;
+    const notesBytes = notesSum._sum.sizeBytes ?? 0;
+    const shoppingListItemsBytes = shoppingSum._sum.sizeBytes ?? 0;
 
     await this.prisma.$transaction(async (tx) => {
       await Promise.all([
