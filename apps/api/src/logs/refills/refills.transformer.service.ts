@@ -40,7 +40,7 @@ export class RefillsTransformerService {
     } satisfies RefillSelect;
   }
 
-  toClientRefill(refill: DB_ClientRefill, user: User): TRefillForClient {
+  toClientRefill(refill: DB_ClientRefill, user: Pick<User, 'volumeUnit' | 'consumptionUnitCode_distance' | 'consumptionUnitCode_hour'>): TRefillForClient {
     const isVehicleHourly = refill.vehicle.odometerType === 'HOUR';
     const userConsumptionUnit = isVehicleHourly ? user.consumptionUnitCode_hour : user.consumptionUnitCode_distance;
     const odometerBaseValue = isVehicleHourly ? refill.vehicle.odometer_hour : refill.vehicle.odometer_km;
