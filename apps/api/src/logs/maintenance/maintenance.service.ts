@@ -79,18 +79,9 @@ export class MaintenanceService {
       maintenanceData,
     );
 
-    // 2. Fetch user and vehicle details
-    const user = await this.prisma.user.findUnique({
-      where: { id: userSession.user.id },
-    });
-    if (!user) {
-      // Should never happen, but just to satisfy TypeScript
-      throw new Error('user not found.');
-    }
-
     // TODO: create create logic for image to bucket upload & image to db
 
-    // 3. normalize data
+    // 2. normalize data
     const isOdometerHourly = vehicle.odometerType === 'HOUR';
     const normalizedOdometer = this.unitConversion.normalizeOdometer(maintenanceData.odometer, vehicle.odometerType);
 
