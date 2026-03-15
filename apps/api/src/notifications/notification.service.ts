@@ -54,6 +54,33 @@ export class NotificationService {
     // Future: emit event handler here to push real-time updates to the user via WebSocket or similar
   }
 
+  async createMany<TType extends NotificationType>(
+    notifications: Array<{
+      type: TType;
+      userId: string;
+      meta: NotificationMetaMap[TType];
+    }>,
+    transactionClient?: Prisma.TransactionClient,
+  ): Promise<void> {
+    if (notifications.length === 0) return;
+
+    const data = notifications.map((n) => {
+      const def = this.registry.get(n.type);
+      return {
+        type: def.type,
+        userId: n.userId,
+        title: def.defaultTitle,
+        message: def.buildMessage(n.meta),
+        requiresAction: def.requiresAction,
+        expiresAt: def.ttlSeconds ? new Date(Date.now() + def.ttlSeconds * 1000) : null,
+        metadata: n.meta as Prisma.InputJsonValue,
+      };
+    });
+
+    const client = transactionClient ?? this.prisma;
+    await client.notification.createMany({ data });
+  }
+
   async getUserNotifications(userSession: UserSession) {
     return this.prisma.notification.findMany({
       where: {
