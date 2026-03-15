@@ -12,7 +12,13 @@ export class MaintenanceTransformerService {
   ) {}
   DB_ClientMaintenance_include() {
     return {
-      vehicle: true,
+      vehicle: {
+        select: {
+          odometerType: true,
+          odometer_hour: true,
+          odometer_km: true,
+        },
+      },
       parts: {
         include: this.partTransformer.DB_MaintenancePart_Include(),
       },

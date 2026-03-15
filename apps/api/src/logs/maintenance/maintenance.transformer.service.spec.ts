@@ -12,7 +12,9 @@ describe('MaintenanceTransformerService', () => {
     // Mock the part transformer — its own logic is tested separately
     partTransformer = {
       DB_MaintenancePart_Include: jest.fn().mockReturnValue({}),
-      toDisplayFormat: jest.fn().mockReturnValue([{ groupId: 'g1', partId: 'p1', partCode: 'OIL', label: 'Oil', locations: [] }]),
+      toDisplayFormat: jest
+        .fn()
+        .mockReturnValue([{ groupId: 'g1', partId: 'p1', partCode: 'OIL', label: 'Oil', locations: [] }]),
     } as any;
     service = new MaintenanceTransformerService(unitConversion, partTransformer);
   });
@@ -20,7 +22,10 @@ describe('MaintenanceTransformerService', () => {
   describe('DB_ClientMaintenance_include', () => {
     it('returns a valid Prisma include object', () => {
       const include = service.DB_ClientMaintenance_include();
-      expect(include).toHaveProperty('vehicle', true);
+      expect(include).toHaveProperty('vehicle');
+      expect(include.vehicle).toEqual({
+        select: { odometerType: true, odometer_hour: true, odometer_km: true },
+      });
       expect(include).toHaveProperty('parts');
     });
   });
