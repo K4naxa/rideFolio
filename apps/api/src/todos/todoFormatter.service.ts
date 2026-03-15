@@ -16,7 +16,13 @@ export class TodoFormatterService {
           image: true,
         },
       },
-      vehicle: true,
+      vehicle: {
+        select: {
+          odometerType: true,
+          odometer_km: true,
+          odometer_hour: true,
+        },
+      },
       completedBy: {
         select: {
           id: true,
@@ -113,7 +119,7 @@ export class TodoFormatterService {
     };
   }
 
-  formatDueOdometer(todo: Todo, vehicle: Vehicle): BaseTodo['dueOdometer'] {
+  formatDueOdometer(todo: Todo, vehicle: OdometerVehicle): BaseTodo['dueOdometer'] {
     // Check if todo has any odometer value set
     if (!todo.dueOdometer_hour && !todo.dueOdometer_km) {
       return null;
@@ -129,13 +135,15 @@ export class TodoFormatterService {
     };
   }
 
-  private getVehicleBaseOdometer(vehicle: Vehicle): number {
+  private getVehicleBaseOdometer(vehicle: OdometerVehicle): number {
     return vehicle.odometerType === 'HOUR' ? vehicle.odometer_hour || 0 : vehicle.odometer_km || 0;
   }
 
-  private getTodoBaseOdometer(todo: Todo, vehicle: Vehicle): number {
+  private getTodoBaseOdometer(todo: Todo, vehicle: OdometerVehicle): number {
     return vehicle.odometerType === 'HOUR' ? todo.dueOdometer_hour || 0 : todo.dueOdometer_km || 0;
   }
 }
 
 export type DB_baseTodo = TodoGetPayload<{ include: ReturnType<TodoFormatterService['DB_include_baseTodo']> }>;
+
+type OdometerVehicle = Pick<Vehicle, 'odometerType' | 'odometer_km' | 'odometer_hour'>;
