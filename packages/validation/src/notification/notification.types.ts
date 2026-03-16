@@ -8,6 +8,8 @@ export interface GroupNotificationMeta {
     inviteId: string;
     sender: { name: string; image: string | null };
     roleToGrant: string;
+    memberCount: number;
+    vehicleCount: number;
   };
   GROUP_MEMBER_REMOVED: { groupName: string };
   GROUP_ROLE_UPDATED: { groupId: string; groupName: string; newRole: string };

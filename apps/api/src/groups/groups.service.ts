@@ -446,6 +446,12 @@ export class GroupsService {
             name: true,
             description: true,
             membersCanAddVehicles: true,
+            _count: {
+              select: {
+                members: true,
+                vehicles: true,
+              },
+            },
           },
         },
       },
@@ -463,6 +469,8 @@ export class GroupsService {
         inviteId: groupInvite.id,
         sender: groupInvite.sender,
         roleToGrant: inviteData.roleToGrant,
+        memberCount: groupInvite.group._count.members,
+        vehicleCount: groupInvite.group._count.vehicles,
       },
     });
   }
