@@ -54,9 +54,13 @@ function handleKeydown(e: KeyboardEvent) {
   if (e.key === "Escape" && open.value) close();
 }
 
-onClickOutside(desktopNotificationPanel, () => {
-  if (open.value) close();
-});
+onClickOutside(
+  desktopNotificationPanel,
+  () => {
+    if (open.value) close();
+  },
+  { ignore: ["[data-radix-popper-content-wrapper]", "[role=dialog]", "[data-vaul-drawer]"] },
+);
 
 onMounted(() => window.addEventListener("keydown", handleKeydown));
 onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
