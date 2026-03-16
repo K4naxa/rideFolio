@@ -285,18 +285,16 @@ onClickOutside(tooltipTriggerRef, () => (tooltipOpen.value = false));
         type="button"
         ref="tooltipTriggerRef"
         class="cursor-pointer"
-        @click="tooltipOpen = tooltipOpen = true"
-        onmouseenter="tooltipOpen = true"
-        onmouseleave="tooltipOpen = false"
-        onkeydown="
-          (e) => e.preventDefault();
-          e.key === 'Enter' && (tooltipOpen = !tooltipOpen);
-        "
+        @click="tooltipOpen = true"
+        @mouseenter="tooltipOpen = true"
+        @mouseleave="tooltipOpen = false"
+        @keydown.enter.prevent="tooltipOpen = !tooltipOpen"
+        @keydown.escape="tooltipOpen = false"
       >
         <component :is="iconComponent" :class="iconClass" />
       </TooltipTrigger>
       <TooltipContent>{{ props.tooltip }}</TooltipContent>
     </Tooltip>
   </tooltip-provider>
-  <component v-else-if="props.name" :is="iconComponent" :class="iconClass" />
+  <component v-else-if="props.name" :is="iconComponent" :class="iconClass" aria-hidden="true" />
 </template>
