@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
 import EmptyHeader from "@/components/ui/empty/EmptyHeader.vue";
@@ -57,6 +57,7 @@ const handleCleanup = async () => {
   }
 };
 
+const priceListRef = useTemplateRef<HTMLElement>("priceListRef");
 const longestPriceWidth = ref(0);
 const gridColStyle = computed(() => {
   let cappedWidth = Math.max(longestPriceWidth.value, 48);
@@ -66,7 +67,8 @@ const gridColStyle = computed(() => {
 
 const updateLongestPriceWidth = () => {
   nextTick(() => {
-    const priceElements = document.querySelectorAll(".ShoppingItemPriceContainer");
+    if (!priceListRef.value) return;
+    const priceElements = priceListRef.value.querySelectorAll(".ShoppingItemPriceContainer");
 
     let maxWidth = 0;
     priceElements.forEach((el) => {
@@ -78,7 +80,7 @@ const updateLongestPriceWidth = () => {
 };
 
 onMounted(updateLongestPriceWidth);
-watch(filteredItems, updateLongestPriceWidth, { deep: true });
+watch(() => filteredItems.value.length, updateLongestPriceWidth);
 </script>
 <template>
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded border">
@@ -103,7 +105,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
       </div>
 
       <!-- Table Body -->
-      <ul class="divide-border divide-y">
+      <ul ref="priceListRef" class="divide-border divide-y">
         <li
           v-for="item in filteredItems"
           :key="item.id"
