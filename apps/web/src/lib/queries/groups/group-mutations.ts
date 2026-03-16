@@ -166,7 +166,6 @@ export function useGroupMemberRemove() {
   return useMutation({
     mutationKey: ["group-remove-member"],
     mutationFn: async ({ groupId, userId }: { groupId: string; userId: string }) => {
-      console.log("Removing member with userId:", userId, "from group with groupId:", groupId);
       return await api.delete(`/groups/${groupId}/members/${userId}`);
     },
     onSuccess: (_, variables) => {
