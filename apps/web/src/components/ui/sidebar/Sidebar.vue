@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import type { SidebarProps } from ".";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import SheetDescription from "@/components/ui/sheet/SheetDescription.vue";
-import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
-import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from "./utils";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 defineOptions({
   inheritAttrs: false,
@@ -32,26 +29,26 @@ const isMobile = useIsMobile();
     <slot />
   </div>
 
-  <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
-    <SheetContent
+  <Drawer v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile" direction="left">
+    <DrawerContent
       data-sidebar="sidebar"
       data-slot="sidebar"
       data-mobile="true"
       :side="side"
-      class="bg-background text-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+      class="bg-background text-foreground w-(--sidebar-width) rounded-l-none rounded-r p-0 [&>button]:hidden"
       :style="{
         '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
       }"
     >
-      <SheetHeader class="sr-only">
-        <SheetTitle>Sidebar</SheetTitle>
-        <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-      </SheetHeader>
+      <DrawerHeader class="sr-only">
+        <DrawerTitle>Sidebar</DrawerTitle>
+        <DrawerDescription>Displays the mobile sidebar.</DrawerDescription>
+      </DrawerHeader>
       <div class="flex h-full w-full flex-col">
         <slot />
       </div>
-    </SheetContent>
-  </Sheet>
+    </DrawerContent>
+  </Drawer>
 
   <div
     v-else

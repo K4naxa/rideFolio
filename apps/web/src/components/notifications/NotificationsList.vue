@@ -27,7 +27,7 @@ function handleNotificationClick(notification: Notification) {
 </script>
 
 <template>
-  <ul v-if="notifications && notifications.length > 0" class="space-y-2">
+  <ul v-if="notifications && notifications.length > 0" class="space-y-2 p-2">
     <li
       v-for="notification in notifications"
       :key="notification.id"

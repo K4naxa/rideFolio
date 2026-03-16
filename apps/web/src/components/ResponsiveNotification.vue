@@ -5,12 +5,15 @@ import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import { useQueryClient } from "@tanstack/vue-query";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { useIsMobile } from "@/lib/composables/useMediaQuery";
-import Sheet from "@/components/ui/sheet/Sheet.vue";
-import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
-import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
-import SheetFooter from "@/components/ui/sheet/SheetFooter.vue";
-import SheetClose from "@/components/ui/sheet/SheetClose.vue";
-import SheetContent from "@/components/ui/sheet/SheetContent.vue";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+  DrawerClose,
+  DrawerDescription,
+} from "@/components/ui/drawer";
 import { SIDEBAR_WIDTH, useSidebar } from "@/components/ui/sidebar/utils";
 import NotificationsList from "@/components/notifications/NotificationsList.vue";
 import { onClickOutside } from "@vueuse/core";
@@ -30,6 +33,9 @@ function toggle() {
   if (open.value) {
     close();
   } else {
+    // Blur trigger so focus transfers to drawer content,
+    // avoiding aria-hidden conflict when two drawers are stacked
+    (document.activeElement as HTMLElement)?.blur();
     open.value = true;
   }
 }
@@ -58,7 +64,14 @@ onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
 
 <template>
   <!-- Trigger — shared between mobile and desktop -->
-  <Button variant="outline" size="icon" class="relative shadow-none" @click="toggle" aria-label="Notifications">
+  <Button
+    variant="outline"
+    :aria-activedescendant="open"
+    size="icon"
+    class="relative shadow-none"
+    @click="toggle"
+    aria-label="Notifications"
+  >
     <Icon name="bell" />
 
     <div v-if="hasUnreadNotifications" class="absolute top-1 right-1 flex size-2">
@@ -69,27 +82,23 @@ onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
     </div>
   </Button>
 
-  <!--
-    Mobile: controlled Sheet (no SheetTrigger).
-    SheetContent uses DialogPortal → renders at <body> level, stacking
-    on top of the existing sidebar Sheet automatically.
-  -->
-  <Sheet v-if="isMobile" :open="open" @update:open="handleOpenChange">
-    <SheetContent side="left" hide-close-button>
-      <SheetHeader class="flex-row gap-4 p-4">
-        <SheetClose>
-          <Icon name="chevronLeft" />
-        </SheetClose>
-        <SheetTitle>Notifications</SheetTitle>
-      </SheetHeader>
+  <!-- Mobile: Drawer slides in from left, stacking on top of the sidebar drawer -->
+  <Drawer v-if="isMobile" :open="open" @update:open="handleOpenChange" direction="left" :should-scale-background="false">
+    <DrawerContent class="bg-background text-foreground rounded-l-none rounded-r p-0">
+      <DrawerHeader class="p-4">
+        <DrawerTitle class="flex flex-row items-center gap-4">
+          <DrawerClose> <Icon name="chevronLeft" /> </DrawerClose> Notifications</DrawerTitle
+        >
+        <DrawerDescription class="sr-only"> View your unread notifications </DrawerDescription>
+      </DrawerHeader>
       <NotificationsList />
-      <SheetFooter>
-        <SheetClose as-child>
+      <DrawerFooter>
+        <DrawerClose as-child>
           <Button variant="outline" class="w-full">Close</Button>
-        </SheetClose>
-      </SheetFooter>
-    </SheetContent>
-  </Sheet>
+        </DrawerClose>
+      </DrawerFooter>
+    </DrawerContent>
+  </Drawer>
 
   <!--
     Desktop: Teleport to <body> so the panel lives in the root stacking
@@ -105,12 +114,12 @@ onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
     >
       <div
         v-if="open"
-        class="bg-background fixed inset-y-0 z-10 flex w-80 flex-col gap-6 border-r p-4 shadow-lg"
+        class="bg-background fixed inset-y-0 z-10 flex w-80 flex-col gap-6 border-r shadow-lg"
         :style="{ left: desktopPanelLeft, transition: 'all 0.2s ease' }"
         ref="DesktopNotificationPanel"
       >
         <!-- Header -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 p-4">
           <Button variant="ghost" size="icon-sm" class="shrink-0" @click="close">
             <Icon name="chevronLeft" class="size-4" />
             <span class="sr-only">Close</span>
