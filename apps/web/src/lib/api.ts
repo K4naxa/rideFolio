@@ -31,7 +31,6 @@ export async function fetchApi<T>(url: string): Promise<T> {
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
-    console.log("API Error Interceptor triggered");
     handleApiError(error);
     return Promise.reject(error);
   },
