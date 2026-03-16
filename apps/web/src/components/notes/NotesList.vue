@@ -38,27 +38,30 @@ const formatDate = (dateString: string | Date) => {
     <li
       v-for="note in filteredNotes"
       :key="note.id"
-      class="card group cardHover flex cursor-pointer flex-col gap-2 p-5 transition-colors"
+      tabindex="0"
       @click="selectNote(note)"
+      @keydown.enter="selectNote(note)"
+      @keydown.space.prevent="selectNote(note)"
     >
-      <!--      Header-->
-      <span class="relative flex justify-between gap-4 font-medium">
-        {{ note.title }}
+      <button class="card group cardHover flex cursor-pointer flex-col gap-2 p-5 transition-colors">
+        <!--      Header-->
+        <span class="relative flex justify-between gap-4 font-medium">
+          {{ note.title }}
 
-        <Icon v-if="note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
-      </span>
+          <Icon v-if="note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
+        </span>
 
-      <!--      Content-->
-      <div class="flex w-full flex-col">
-        <span v-if="note.content" class="text-muted-foreground mt-1 line-clamp-5 overflow-hidden text-sm break-all">
+        <!--      Content-->
+        <span
+          v-if="note.content"
+          class="text-muted-foreground line-clamp-5 overflow-hidden text-start text-sm break-all"
+        >
           {{ getTextSnippet(String(note.content), 500) }}
         </span>
-      </div>
 
-      <!--      footer-->
-      <div class="mt-auto flex flex-col items-start gap-2">
-        <span class="text-muted-foreground ml-auto text-xs">Last edited: {{ formatDate(note.updatedAt) }}</span>
-      </div>
+        <!--      footer-->
+        <span class="text-muted-foreground mt-auto ml-auto text-xs">Last edited: {{ formatDate(note.updatedAt) }}</span>
+      </button>
     </li>
   </ul>
 </template>
