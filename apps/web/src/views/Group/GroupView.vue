@@ -180,7 +180,7 @@ async function handleRemoveMember() {
         <!-- ── Members ──────────────────────────────────────────── -->
         <section>
           <div class="mb-3 flex items-center justify-between gap-4">
-            <h3 class="flex items-center gap-2"><Icon name="users" /> Members</h3>
+            <h2 class="flex items-center gap-2"><Icon name="users" /> Members</h2>
             <Button v-if="canManageGroup" variant="outline" size="sm" @click="showInviteModal = true">
               <Icon name="userPlus" class="mr-1.5" />
               Invite
@@ -490,7 +490,7 @@ async function handleRemoveMember() {
         <!-- ── Vehicles ──────────────────────────────────────────── -->
         <section>
           <div class="mb-3 flex items-center justify-between gap-4">
-            <h3 class="flex items-center gap-2"><Icon name="carFront" /> Vehicles</h3>
+            <h2 class="flex items-center gap-2"><Icon name="carFront" /> Vehicles</h2>
             <Button
               v-if="canManageGroup || data?.rules.membersCanAddVehicles"
               variant="outline"
