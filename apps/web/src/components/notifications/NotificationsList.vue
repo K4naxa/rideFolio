@@ -27,16 +27,20 @@ function handleNotificationClick(notification: Notification) {
 </script>
 
 <template>
-  <ul v-if="notifications && notifications.length > 0" class="space-y-2 px-2">
+  <ul v-if="notifications && notifications.length > 0" class="space-y-2">
     <li
       v-for="notification in notifications"
       :key="notification.id"
-      class="listHover grid grid-cols-[1fr_1rem] items-center gap-2 rounded-md p-2"
+      :role="notification.requiresAction ? 'button' : undefined"
+      :tabindex="notification.requiresAction ? 0 : undefined"
+      class="listHover grid grid-cols-[1fr_1rem] items-center gap-2 rounded-md p-2 px-3"
       :class="[
         notification.requiresAction ? 'cursor-pointer' : 'cursor-default',
-        notification.isRead ? 'bg-background' : 'bg-accent/50',
+        notification.isRead ? '' : 'bg-sidebar-accent',
       ]"
       @click="handleNotificationClick(notification)"
+      @keydown.enter="handleNotificationClick(notification)"
+      @keydown.space.prevent="handleNotificationClick(notification)"
     >
       <div>
         <h3>{{ notification.title }}</h3>
