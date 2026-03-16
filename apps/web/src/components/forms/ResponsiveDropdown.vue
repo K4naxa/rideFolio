@@ -40,6 +40,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isMobile = useIsMobile();
 const isOpen = ref(false);
+
+defineSlots<{
+  trigger: (props: { close?: () => void }) => void;
+  header: (props: { close: () => void }) => void;
+}>();
 </script>
 
 <template>
@@ -81,12 +86,15 @@ const isOpen = ref(false);
     </DrawerTrigger>
     <DrawerContent>
       <DrawerHeader>
-        <div class="flex justify-between gap-2">
-          <slot name="header">
-            <DrawerTitle>{{ props.title || "Options" }}</DrawerTitle>
-            <DrawerDescription v-if="props.description">{{ props.description }}</DrawerDescription>
-          </slot>
-        </div>
+        <template v-if="$slots.header">
+          <DrawerTitle class="sr-only">{{ props.title || "Options" }}</DrawerTitle>
+          <DrawerDescription class="sr-only">{{ props.description || "Available actions" }}</DrawerDescription>
+          <slot name="header" :close="() => (isOpen = false)" />
+        </template>
+        <template v-else>
+          <DrawerTitle>{{ props.title || "Options" }}</DrawerTitle>
+          <DrawerDescription v-if="props.description">{{ props.description }}</DrawerDescription>
+        </template>
         <Separator class="mt-2" />
       </DrawerHeader>
 
