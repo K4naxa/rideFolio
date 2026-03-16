@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Icon from "@/components/icons/Icon.vue";
-import NoteListMobileItem from "@/components/notes/noteListMobileItem.vue";
+import NoteItem from "@/components/notes/NoteItem.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
 
@@ -41,13 +41,8 @@ const modalStore = useModalStore();
       <Empty v-else-if="notes && notes.length === 0">
         <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
       </Empty>
-      <ul v-auto-animate class="gaps-md grid w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <NoteListMobileItem
-          v-for="note in notes?.slice(0, 4)"
-          :key="note.id"
-          :note="note"
-          @note-click="handleNoteClick"
-        />
+      <ul class="gaps-md grid w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <NoteItem v-for="note in notes?.slice(0, 4)" :key="note.id" :note="note" @note-click="handleNoteClick" />
 
         <Button v-if="notes && notes.length > 4" variant="link" size="sm" asChild class="mr-auto">
           <RouterLink :to="`/vehicles/${currentVehicleId}/notes`" class="flex items-center gap-1">

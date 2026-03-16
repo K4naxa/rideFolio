@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import Icon from "@/components/icons/Icon.vue";
-
 import type { Note } from "@repo/validation";
 import { computed, ref } from "vue";
 import { useModalStore } from "@/stores/modal.ts";
-import { getTextSnippet } from "@/lib/utils/noteUtils.ts";
+import NoteItem from "@/components/notes/NoteItem.vue";
 
 const props = defineProps<{ notes: Note[] }>();
 
@@ -24,14 +22,6 @@ const filteredNotes = computed(() => {
 const selectNote = (note: Note) => {
   modalStore.onOpen("createNote", note.id);
 };
-
-const formatDate = (dateString: string | Date) => {
-  return new Date(dateString).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
 </script>
 <template>
   <ul class="gaps-sm grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
@@ -43,25 +33,7 @@ const formatDate = (dateString: string | Date) => {
       @keydown.enter="selectNote(note)"
       @keydown.space.prevent="selectNote(note)"
     >
-      <button class="card group cardHover flex cursor-pointer flex-col gap-2 p-5 transition-colors">
-        <!--      Header-->
-        <span class="relative flex justify-between gap-4 font-medium">
-          {{ note.title }}
-
-          <Icon v-if="note.pinned" name="pin" class="text-primary absolute top-0 right-0 size-4" />
-        </span>
-
-        <!--      Content-->
-        <span
-          v-if="note.content"
-          class="text-muted-foreground line-clamp-5 overflow-hidden text-start text-sm break-all"
-        >
-          {{ getTextSnippet(String(note.content), 500) }}
-        </span>
-
-        <!--      footer-->
-        <span class="text-muted-foreground mt-auto ml-auto text-xs">Last edited: {{ formatDate(note.updatedAt) }}</span>
-      </button>
+      <NoteItem :note="note" />
     </li>
   </ul>
 </template>
