@@ -80,6 +80,7 @@ const inputRef = useTemplateRef("inputRef");
         :autocomplete="props.autocomplete"
         :placeholder="props.placeholder"
         :aria-invalid="!!errorMessage"
+        :aria-describedby="errorMessage && props.name ? `${props.name}-error` : undefined"
         :data-cy="props.dataCy"
         :disabled="disabled"
         @input="handleInput"
@@ -97,7 +98,9 @@ const inputRef = useTemplateRef("inputRef");
     </div>
     <p
       v-if="errorMessage"
+      :id="props.name ? `${props.name}-error` : undefined"
       :data-cy="props.dataCy ? `${props.dataCy}-error` : undefined"
+      role="alert"
       class="text-destructive mt-1 ml-2 text-sm"
     >
       {{ errorMessage }}
