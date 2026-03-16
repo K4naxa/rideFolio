@@ -14,7 +14,6 @@ import { useIsMobile } from "@/lib/composables/useMediaQuery";
 import { type HTMLAttributes, ref } from "vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuLabel from "@/components/ui/dropdown-menu/DropdownMenuLabel.vue";
-import DropdownMenuSeparator from "@/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 
 interface DropdownItem {
@@ -60,7 +59,6 @@ defineSlots<{
     </DropdownMenuTrigger>
     <DropdownMenuContent :align="props.align" :class="props.contentClass">
       <DropdownMenuLabel v-if="props.title">{{ props.title }}</DropdownMenuLabel>
-      <DropdownMenuSeparator v-if="props.title && props.items.length > 0" />
       <DropdownMenuItem
         v-for="item in props.items"
         v-show="!item.hidden"
