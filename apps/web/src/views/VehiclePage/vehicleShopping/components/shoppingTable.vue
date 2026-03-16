@@ -61,8 +61,6 @@ const longestPriceWidth = ref(0);
 const gridColStyle = computed(() => {
   let cappedWidth = Math.max(longestPriceWidth.value, 48);
   cappedWidth = Math.min(cappedWidth, isMobile.value ? 60 : 190);
-  console.log("Comparing widths:", longestPriceWidth.value, cappedWidth);
-  console.log("isMobile:", isMobile.value);
   return `grid-template-columns: 3rem auto ${cappedWidth}px 3rem;`;
 });
 
@@ -105,8 +103,8 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
       </div>
 
       <!-- Table Body -->
-      <ul v-auto-animate class="divide-border divide-y">
-        <div
+      <ul class="divide-border divide-y">
+        <li
           v-for="item in filteredItems"
           :key="item.id"
           class="hover:bg-card grid gap-4 px-2 lg:gap-6"
@@ -143,7 +141,7 @@ watch(filteredItems, updateLongestPriceWidth, { deep: true });
           <Button variant="outline" size="icon" @click="deleteItem({ itemId: item.id, vehicleId: item.vehicleId })">
             <Icon name="trash" className="stroke-inherit" />
           </Button>
-        </div>
+        </li>
       </ul>
     </div>
 
