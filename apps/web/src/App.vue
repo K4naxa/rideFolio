@@ -13,6 +13,7 @@ import QuickLinkModal from "@/modals/QuickLinkModal.vue";
 import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.vue";
 import SettingsModal from "@/modals/Settings/SettingsModal.vue";
 import ShoppingItemModal from "@/modals/ShoppingItemModal.vue";
+import VehicleDetailsDialog from "@/modals/VehicleDetailsDialog.vue";
 
 configure({});
 
@@ -45,4 +46,5 @@ const themeStore = useThemeStore();
   <QuickLinkModal />
   <SettingsModal />
   <ShoppingItemModal />
+  <VehicleDetailsDialog />
 </template>

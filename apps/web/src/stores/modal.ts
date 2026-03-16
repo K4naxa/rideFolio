@@ -11,7 +11,8 @@ export type ModalType =
   | "group"
   | "settings"
   | "quicklink"
-  | "createShoppingItem";
+  | "createShoppingItem"
+  | "vehicleDetails";
 
 export const useModalStore = defineStore("modal", {
   state: () => ({
