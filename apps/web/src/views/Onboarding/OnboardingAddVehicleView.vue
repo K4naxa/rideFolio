@@ -251,7 +251,7 @@ const onSubmitVehicle = handleSubmit(async (inputValues) => {
           >
             <span v-if="isCreatingVehicle">
               <Spinner class="mr-2" />
-              Creating...
+              Creating…
             </span>
             <span v-else>Create Vehicle</span>
           </Button>

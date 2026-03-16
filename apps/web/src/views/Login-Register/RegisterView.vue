@@ -138,8 +138,8 @@ const onSubmit = form.handleSubmit(async (values) => {
                 data-cy="confirm-password-input"
               />
 
-              <Button type="submit" class="w-full" :disabled="form.isSubmitting.value" data-cy="submit">
-                {{ form.isSubmitting.value ? "Creating account..." : "Register" }}
+              <Button type="submit" class="w-full" :disabled="form.isSubmitting" data-cy="submit">
+                {{ form.isSubmitting ? "Creating account…" : "Register" }}
               </Button>
 
               <div class="flex w-full items-center gap-2">
