@@ -58,7 +58,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
 
 <template>
   <!-- Trigger — shared between mobile and desktop -->
-  <Button variant="outline" size="icon" class="relative shadow-none" @click="toggle">
+  <Button variant="outline" size="icon" class="relative shadow-none" @click="toggle" aria-label="Notifications">
     <Icon name="bell" />
 
     <div v-if="hasUnreadNotifications" class="absolute top-1 right-1 flex size-2">
