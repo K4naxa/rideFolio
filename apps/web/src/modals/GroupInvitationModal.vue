@@ -48,9 +48,7 @@ const hasOwnVehicles = computed(() => usersOwnVehicles.value && usersOwnVehicles
 function handleAccept() {
   acceptInvite(props.notification.metadata.inviteId, {
     onSuccess: () => {
-      console.log("Invite accepted successfully");
       if (hasOwnVehicles.value && props.notification.metadata.membersCanAddVehicles) {
-        console.log("User can add vehicles, moving to vehicle selection stage");
         stage.value = "vehicles";
       } else {
         emit("update:open", false);

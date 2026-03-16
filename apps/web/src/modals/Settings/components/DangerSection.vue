@@ -15,7 +15,6 @@ import { useModalStore } from "@/stores/modal";
 
 const modalStore = useModalStore();
 async function deleteAccount() {
-  console.log("Deleting account...");
   authClient.deleteUser(
     {},
     {

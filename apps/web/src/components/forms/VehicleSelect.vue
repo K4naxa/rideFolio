@@ -55,7 +55,6 @@ const { data: vehicles } = useVehiclesAll();
 const selectedVehicle = computed(() => vehicles?.value?.find((vehicle) => vehicle.vehicleData.id === props.value));
 
 function handleSelect(value: string) {
-  console.log("Selected vehicle ID:", value);
   emit("valueChange", value);
   isOpen.value = false;
 }

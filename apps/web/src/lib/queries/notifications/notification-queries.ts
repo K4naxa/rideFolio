@@ -10,7 +10,6 @@ export function useNotificationsQuery() {
     queryKey: queryKeys.notification.all,
     queryFn: async () => {
       const res = await api.get<Notification[]>("/notifications");
-      console.log("Fetched notifications:", res.data);
       return res.data;
     },
     enabled: isAuthenticated,

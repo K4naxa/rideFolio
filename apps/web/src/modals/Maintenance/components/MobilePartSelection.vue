@@ -99,10 +99,7 @@ function handleLocationToggle(location: PartLocation) {
 }
 
 function addPart() {
-  console.log("Adding part:", newPart.value);
   if (!newPart.value.partId) return;
-
-  console.log("still adding part");
 
   emit("addPart", newPart.value);
   isDrawerOpen.value = false;

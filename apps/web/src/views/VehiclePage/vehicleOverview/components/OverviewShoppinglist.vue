@@ -27,7 +27,6 @@ const isCreatingItem = ref(false);
 const inputRef = useTemplateRef<HTMLInputElement>("inputRef");
 
 const handleCreateItem = (values: ShoppingItemValues) => {
-  console.log("Creating item with values:", values);
   createItem(
     {
       ...values,

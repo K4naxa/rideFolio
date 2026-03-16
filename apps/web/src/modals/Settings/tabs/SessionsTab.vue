@@ -27,7 +27,6 @@ onMounted(async () => {
 
 async function refreshSessions() {
   try {
-    console.log("Refreshing sessions...");
     isRefreshing.value = true;
     const result = await authClient.listSessions();
     const curSession = authClient.useSession();
@@ -36,7 +35,6 @@ async function refreshSessions() {
   } catch {
     toast.error("Failed to refresh sessions. Please try again.");
   } finally {
-    console.log("Finished refreshing sessions.");
     isRefreshing.value = false;
   }
 }

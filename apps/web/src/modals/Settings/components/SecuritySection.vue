@@ -27,7 +27,6 @@ const isEmailChanging = ref(false);
 const emailFormRef = ref<InstanceType<typeof Form> | null>(null);
 
 async function onPasswordChangeSubmit(values: PasswordUpdateValues) {
-  console.log("Submitting password change with values:", values);
   isPasswordChanging.value = true;
 
   try {
@@ -49,7 +48,6 @@ async function onPasswordChangeSubmit(values: PasswordUpdateValues) {
         },
       },
     );
-    console.log("Password change response:", { data, error });
   } finally {
     isPasswordChanging.value = false;
   }
@@ -159,7 +157,7 @@ async function onEmailChangeSubmit(values: z.infer<typeof emailSchema>) {
           />
 
           <FormInput type="password" name="newPassword" placeholder="New password" autocomplete="new-password" />
-          <FormInput type="password" name="newPasswordConfirmation" placeholder="new password" autoco />
+          <FormInput type="password" name="newPasswordConfirmation" placeholder="Confirm new password" autocomplete="new-password" />
           <Field v-slot="{ value, handleChange }" name="revokeOtherSessions">
             <Label class="flex items-center gap-2">
               <Checkbox class="size-5" :model-value="value" @update:model-value="handleChange" />

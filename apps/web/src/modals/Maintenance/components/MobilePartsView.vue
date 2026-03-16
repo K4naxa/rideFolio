@@ -26,7 +26,6 @@ const { data: partCategories, isLoading: partCategoriesLoading } = useMaintenanc
 const { cleanupPartsForVehicleType } = usePartCleaner();
 
 function addPart(part: MaintenancePartInput) {
-  console.log("in add part" + part);
   push(part);
 }
 
@@ -76,8 +75,6 @@ watch(
     const oldPartsCount = oldParts.length || 0;
     const cleanedParts = cleanupPartsForVehicleType(oldParts, newCategories);
     const newPartsCount = cleanedParts.length;
-
-    console.log("new parts ");
 
     replace(cleanedParts);
 

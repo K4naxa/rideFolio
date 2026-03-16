@@ -1,6 +1,6 @@
 import type { IconProps } from "@/components/icons/Icon.vue";
 import { useVehiclesAll } from "@/lib/queries/vehicles/vehicle-queries";
-import { computed, type MaybeRef, unref, watch } from "vue";
+import { computed, type MaybeRef, unref } from "vue";
 
 export function useSelectedVehicle(vehicleId: MaybeRef<string | undefined>) {
   const { data: vehicles } = useVehiclesAll();
@@ -27,16 +27,6 @@ export function useSelectedVehicle(vehicleId: MaybeRef<string | undefined>) {
     );
   });
   const selectedVehicleTypeCode = computed(() => selectedVehicle.value?.vehicleData.type.code);
-
-  watch(
-    () => vehicleId,
-    (newVal) => {
-      if (!newVal) return;
-      console.log("Selected vehicle changed:", newVal);
-      console.log("selected Vehicle odometer Unit:  ", selectedVehicleOdometerUnit.value);
-      console.log("selected Vehicle last Refill Odometer:  ", selectedVehicleLastRefillOdometer.value);
-    },
-  );
 
   return {
     hasSelectedVehicle,

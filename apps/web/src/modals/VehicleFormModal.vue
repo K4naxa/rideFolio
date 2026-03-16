@@ -83,7 +83,6 @@ const onSubmit = handleSubmit(async (data) => {
   } else {
     if (!editableVehicle.value?.id) {
       toast.error("Failed to update vehicle. Please try again.");
-      console.log("Editable vehicle ID is missing. Vehicle data: ", editableVehicle.value);
       return;
     }
     await updateVehicleAsync(
@@ -339,7 +338,7 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
       <DialogFooter>
         <Button v-if="createPending" disabled variant="submit">
           <Spinner class="mr-2" />
-          {{ isCreatingNew ? "Creating..." : "Updating..." }}
+          {{ isCreatingNew ? "Creating…" : "Updating…" }}
         </Button>
         <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit">
           {{ isCreatingNew ? "Create" : "Update" }}

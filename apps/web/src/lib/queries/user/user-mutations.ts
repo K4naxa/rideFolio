@@ -15,14 +15,13 @@ export function useUserPreferenceUpdate() {
     mutationKey: ["update", "user-preference"],
     onSuccess: (data, variables) => {
       if (
-        variables.key === "volumeUnit " ||
+        variables.key === "volumeUnit" ||
         variables.key === "consumptionUnitCode_distance" ||
         variables.key === "consumptionUnitCode_fuel"
       ) {
         queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
         queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
       }
-      console.log("Preference updated successfully:", data);
       queryClient.setQueryData(queryKeys.user.basicProfile, data);
     },
   });

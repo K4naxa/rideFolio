@@ -76,10 +76,8 @@ watch([isModalOpen, group], ([open, groupData]) => {
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("Submitting group form:", values);
   if (group.value) {
     try {
-      console.log("Updating group:", values);
       await updateGroup(
         { groupId: group.value.id, values },
         {
@@ -93,10 +91,8 @@ const onSubmit = handleSubmit(async (values) => {
       );
     } catch (error) {
       toast.error("Something went wrong, please try again.");
-      console.log("Failed to update group:", error);
     }
   } else {
-    console.log("Creating group:", values);
     await createGroup(values, {
       onSuccess: (data) => {
         toast.success("Group created successfully!");
@@ -233,7 +229,7 @@ const onSubmit = handleSubmit(async (values) => {
             </span>
             <span v-else>
               <Spinner />
-              {{ group ? "Saving.." : "Creating.." }}
+              {{ group ? "Saving…" : "Creating…" }}
             </span>
           </Button>
           <Button type="button" variant="outline" @click="handleClose" data-cy="cancel-refill-btn">Cancel</Button>

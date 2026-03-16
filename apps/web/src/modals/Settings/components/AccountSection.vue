@@ -21,7 +21,6 @@ const showUsernameChangeDialog = ref(false);
 const isUsernameChanging = ref(false);
 const usernameFormRef = useTemplateRef<InstanceType<typeof Form>>("usernameFormRef");
 async function onUsernameChangeSubmit(values: NameSchemaInput) {
-  console.log("Submitting username change with values:", values);
   isUsernameChanging.value = true;
 
   try {
