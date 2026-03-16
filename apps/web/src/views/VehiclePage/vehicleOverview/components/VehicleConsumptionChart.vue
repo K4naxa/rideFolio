@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef, watch } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import VChart from "vue-echarts";
@@ -22,6 +22,20 @@ import { onClickOutside } from "@vueuse/core";
 use([CanvasRenderer, LineChart, TooltipComponent, GridComponent]);
 
 const themeStore = useThemeStore();
+
+/** Resolve a CSS color to rgba with the given alpha using a temporary canvas */
+function withAlpha(color: string, alpha: number): string {
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (!ctx) return color;
+  ctx.fillStyle = color;
+  // Canvas normalizes any CSS color to #rrggbb or rgba
+  const hex = ctx.fillStyle;
+  // hex is "#rrggbb" format
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 const { currentVehicleId } = useCurrentVehicle();
 const timeRange = ref(90); // days
 
@@ -31,11 +45,6 @@ const {
   isPlaceholderData,
   isError,
 } = useVehicleConsumptionChart(currentVehicleId, timeRange);
-
-// Watch for changes in chart data
-watch(chartData, (newData) => {
-  console.log("Chart data updated:", newData);
-});
 
 // Chart options
 const chartOptions = computed((): EChartsOption => {
@@ -140,13 +149,13 @@ const chartOptions = computed((): EChartsOption => {
       symbolSize: 6,
       lineStyle: {
         width: 2,
-        color: "rgba(225, 113, 0, 0.8)",
+        color: themeStore.colors.primary,
       },
       areaStyle: {
         color: new graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "rgba(225, 113, 0, 0.7)" },
-          { offset: 0.5, color: "rgba(225, 113, 0, 0.3)" },
-          { offset: 1, color: "rgba(225, 113, 0, 0)" },
+          { offset: 0, color: withAlpha(themeStore.colors.primary, 0.7) },
+          { offset: 0.5, color: withAlpha(themeStore.colors.primary, 0.4) },
+          { offset: 1, color: withAlpha(themeStore.colors.primary, 0) },
         ]),
         origin: "start",
       },

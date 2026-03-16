@@ -117,7 +117,7 @@ const filteredTodos = computed(() => {
       <h1>Your Todos</h1>
 
       <Button variant="default" class="" @click="modalStore.onOpen('createTodo')">
-        <Icon name="plus" class="stroke-white" />
+        <Icon name="plus" />
         Create Todo
       </Button>
     </header>

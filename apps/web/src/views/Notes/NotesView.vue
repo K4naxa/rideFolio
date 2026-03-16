@@ -118,7 +118,7 @@ const filteredNotes = computed(() => {
       <h1>Your Notes</h1>
 
       <Button variant="default" class="" @click="modalStore.onOpen('createNote')">
-        <Icon name="plus" class="stroke-white" />
+        <Icon name="plus" />
         Create Note
       </Button>
     </header>

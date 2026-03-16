@@ -61,7 +61,7 @@ const filteredNotes = computed(() => {
         <Input v-model="searchQuery" type="text" icon="search" placeholder="Search notes..." class="w-full max-w-96" />
         <div class="flex content-center justify-evenly gap-4">
           <Button variant="default" class="flex-1 sm:w-auto" @click="modalStore.onOpen('createNote')">
-            <Icon name="plus" class="stroke-white" />
+            <Icon name="plus" />
             <span class="hidden md:block">Create Note</span>
           </Button>
         </div>

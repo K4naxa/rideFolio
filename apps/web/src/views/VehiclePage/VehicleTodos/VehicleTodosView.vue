@@ -62,7 +62,7 @@ const filteredTodos = computed(() => {
         <Input v-model="searchQuery" type="text" icon="search" placeholder="Search todos..." class="w-full max-w-96" />
         <div class="flex content-center justify-evenly gap-4">
           <Button variant="default" class="flex-1 sm:w-auto" @click="modalStore.onOpen('createTodo')">
-            <Icon name="plus" class="stroke-white" />
+            <Icon name="plus" />
             <span class="hidden md:block">Create To-do</span>
           </Button>
         </div>
