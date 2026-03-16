@@ -94,8 +94,6 @@ export function useTodoToggle() {
 
       // update upcoming activity cache if the toggled todo is part of it
       queryClient.invalidateQueries({ queryKey: queryKeys.user.upcomingActivity });
-
-      toast.success(`Todo marked as ${data.isCompleted ? "complete" : "incomplete"}`);
     },
     onError: (error) => {
       console.error("Todo API: Toggle Error  ", error);
