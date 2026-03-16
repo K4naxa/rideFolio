@@ -15,6 +15,7 @@ import { useModalStore } from "@/stores/modal.ts";
 
 const props = defineProps<{
   todo: BaseTodo;
+  showVehicle?: boolean;
 }>();
 
 const { mutateAsync: toggleTodo } = useTodoToggle();
@@ -41,7 +42,7 @@ function handleEdit() {
   <!--  Desktop Dialog -->
   <Dialog v-if="!isMobile" v-slot="{ close }" v-model:open="isOpen">
     <DialogTrigger as-child>
-      <TodoItem :todo />
+      <TodoItem :todo :show-vehicle="props.showVehicle" />
     </DialogTrigger>
 
     <DialogContent class="max-w-xl">
@@ -51,7 +52,7 @@ function handleEdit() {
 
   <Drawer v-else v-model:open="isOpen">
     <DrawerTrigger asChild>
-      <TodoItem class="min-w-80" :todo />
+      <TodoItem class="min-w-80" :todo :show-vehicle="props.showVehicle" />
     </DrawerTrigger>
 
     <DrawerContent class="overflow-visible!">
