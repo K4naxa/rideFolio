@@ -1,58 +1,20 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import FormInput from "@/components/forms/FormInput.vue";
-
-import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { ShoppingListItemSchema } from "@repo/validation";
-import { useForm } from "vee-validate";
-import { toast } from "vue-sonner";
+import Icon from "@/components/icons/Icon.vue";
 import ShoppingTable from "./components/shoppingTable.vue";
-import { useShoppingCreate } from "@/lib/queries/shopping/shopping-mutations";
+import { useModalStore } from "@/stores/modal";
 
-const { currentVehicleId } = useCurrentVehicle();
-
-const { mutateAsync: createItem } = useShoppingCreate();
-
-const { handleSubmit, resetForm } = useForm({
-  validationSchema: ShoppingListItemSchema,
-  initialValues: {
-    vehicleId: currentVehicleId.value,
-    name: "",
-  },
-});
-
-const onSubmit = handleSubmit(async (values) => {
-  await createItem(values, {
-    onSuccess: () => {
-      toast.success("Item added to shopping list");
-      resetForm();
-    },
-  });
-});
+const modalStore = useModalStore();
 </script>
+
 <template>
   <main class="flex-1 space-y-6">
-    <form @submit="onSubmit">
-      <div class="flex flex-wrap items-start justify-evenly gap-4 sm:justify-normal">
-        <FormInput
-          name="name"
-          type="text"
-          placeholder="Name"
-          autocomplete="off"
-          class="min-w-xs flex-1 sm:max-w-md"
-          :validate-on-blur="false"
-        />
-        <FormInput
-          name="price"
-          type="number"
-          placeholder="Price"
-          autocomplete="off"
-          step="0.01"
-          class="w-full min-w-32 flex-1 sm:max-w-32 sm:flex-none"
-        />
-        <Button type="submit" class="flex-1 sm:flex-none">Add Item</Button>
-      </div>
-    </form>
+    <div class="flex items-center justify-between">
+      <Button @click="modalStore.onOpen('createShoppingItem')">
+        <Icon name="plus" />
+        Add Item
+      </Button>
+    </div>
 
     <div class="flex min-h-0 flex-1">
       <ShoppingTable />

@@ -4,13 +4,15 @@ import Button from "@/components/ui/button/Button.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
-import { useShoppingCreate, useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
-import { type ShoppingItemValues, ShoppingListItemSchema } from "@repo/validation";
-import { Field, Form } from "vee-validate";
-import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
+import { computed, ref } from "vue";
+import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
+import { useModalStore } from "@/stores/modal.ts";
+import { useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations.ts";
 
 const { currentVehicleId } = useCurrentVehicle();
+const { preferredCurrencySymbol: cu } = useCurrentUser();
+const modalStore = useModalStore();
 
 // used for showing purchased items that have been toggled in this render
 const initialRenderTime = ref(Date.now());
@@ -21,32 +23,6 @@ const {
   isError: isShoppingError,
 } = useVehicleShopping(currentVehicleId);
 const { mutate: toggleItem } = useShoppingToggle();
-const { mutate: createItem } = useShoppingCreate();
-
-const isCreatingItem = ref(false);
-const inputRef = useTemplateRef<HTMLInputElement>("inputRef");
-
-const handleCreateItem = (values: ShoppingItemValues) => {
-  createItem(
-    {
-      ...values,
-    },
-    {
-      onSuccess: () => {
-        isCreatingItem.value = false;
-      },
-    },
-  );
-};
-
-// Autofocus the input when the form appears
-watch(isCreatingItem, (newValue) => {
-  if (newValue) {
-    nextTick(() => {
-      inputRef.value?.focus();
-    });
-  }
-});
 
 // Filtered list to show unpurchased items and recently purchased items (toggled after initial render)
 const displayedItems = computed(() =>
@@ -59,7 +35,18 @@ const displayedItems = computed(() =>
 
 <template>
   <div class="flex h-full max-h-96 min-h-0 flex-col">
-    <h2 class="mb-1">Shopping list</h2>
+    <div class="mb-1 flex items-center justify-between gap-2">
+      <h2>Shopping list</h2>
+
+      <Button
+        @click="modalStore.onOpen('createShoppingItem')"
+        variant="ghost"
+        size="icon-sm"
+        class="shrink-0 cursor-pointer"
+      >
+        <Icon name="plus" />
+      </Button>
+    </div>
 
     <div class="scrollbar-macos h-full overflow-y-auto rounded">
       <div v-if="isShoppingLoading" class="grid flex-1 place-items-center">
@@ -69,7 +56,7 @@ const displayedItems = computed(() =>
         <span class="text-destructive">Error loading shopping list.</span>
       </div>
 
-      <ul v-else class="card divide-y">
+      <ul v-else class="card divide-y overflow-x-hidden">
         <li
           v-for="item in displayedItems"
           :key="item.id"
@@ -86,47 +73,12 @@ const displayedItems = computed(() =>
             class="group-hover:bg-accent/10 group-hover:border-foreground/50 size-6 bg-transparent"
             variant="secondary"
           />
-          <div class="flex flex-col gap-0">
+          <div class="flex w-full items-center justify-between gap-4">
             <span class="line-through" :class="item.isPurchased && 'text-muted-foreground purchased'">
               {{ item.name }}
             </span>
+            <span class="text-muted-foreground shrink-0" v-if="item.price"> {{ item.price }} {{ cu }} </span>
           </div>
-        </li>
-
-        <!-- New item Form -->
-        <li
-          class="text-muted-foreground hover:text-foreground list-none px-3 py-2.5 transition-colors duration-100"
-          @click="isCreatingItem = true"
-        >
-          <div v-if="!isCreatingItem" class="flex cursor-pointer items-center gap-4">
-            <div class="grid size-6 place-items-center">
-              <Icon name="plus" />
-            </div>
-            <span class="">Add new item</span>
-          </div>
-
-          <Form
-            v-else
-            class="flex items-center gap-4"
-            name="Overview shopping list form"
-            @submit="(values) => handleCreateItem(values as ShoppingItemValues)"
-            :validation-schema="ShoppingListItemSchema"
-          >
-            <Button variant="outline" size="icon-sm" class="size-7" type="submit">
-              <Icon name="plus" class="size-4" />
-            </Button>
-            <Field name="vehicleId" type="hidden" :value="currentVehicleId" />
-            <Field name="isPurchased" type="hidden" :value="false" />
-            <Field name="name" v-slot="{ value, handleChange }">
-              <input
-                ref="inputRef"
-                class="inputMinimal"
-                :value="value"
-                @change="handleChange"
-                @keydown.esc="isCreatingItem = false"
-              />
-            </Field>
-          </Form>
         </li>
       </ul>
     </div>
