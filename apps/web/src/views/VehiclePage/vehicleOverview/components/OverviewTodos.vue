@@ -69,14 +69,6 @@ const isMobile = useIsMobile();
         :style="{ gridTemplateRows: `repeat(${Math.min(displayedTodos.length, 3)}, minmax(0, 1fr))` }"
       >
         <TodoInteractive v-for="todo in displayedTodos" :key="todo.id" :todo="todo" />
-
-        <li
-          class="text-muted-foreground hover:text-primary-foreground hidden cursor-pointer list-none items-center gap-4 px-1.5 py-2.5 transition-colors duration-100 md:flex"
-          @click="modalStore.onOpen('createTodo')"
-        >
-          <Icon name="plus" class="size-4" />
-          <span class="">Add new To-do</span>
-        </li>
       </ul>
     </div>
   </div>
