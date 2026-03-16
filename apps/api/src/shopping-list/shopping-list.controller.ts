@@ -17,6 +17,11 @@ export class ShoppingListController {
     return await this.shoppingListService.createItem(userSession, itemDto);
   }
 
+  @Get()
+  async getShoppinglistItems(@Session() userSession: UserSession) {
+    return this.shoppingListService.getAllItems(userSession);
+  }
+
   @Get(':vehicleId')
   async getItems(
     @Session() userSession: UserSession,

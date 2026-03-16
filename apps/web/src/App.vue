@@ -12,6 +12,7 @@ import GroupModal from "./modals/GroupModal.vue";
 import QuickLinkModal from "@/modals/QuickLinkModal.vue";
 import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.vue";
 import SettingsModal from "@/modals/Settings/SettingsModal.vue";
+import ShoppingItemModal from "@/modals/ShoppingItemModal.vue";
 
 configure({});
 
@@ -43,4 +44,5 @@ const themeStore = useThemeStore();
   <GroupModal />
   <QuickLinkModal />
   <SettingsModal />
+  <ShoppingItemModal />
 </template>

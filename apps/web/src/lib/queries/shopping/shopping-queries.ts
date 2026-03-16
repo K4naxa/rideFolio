@@ -4,14 +4,17 @@ import { handleEmpty } from "@/lib/queries/util";
 import type { ShoppingItem } from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
+import { useAuth } from "@/lib/authClient.ts";
 
 export function useShoppingAll() {
+  const auth = useAuth();
   return useQuery({
     queryKey: queryKeys.shoppingList.all,
     queryFn: async () => {
       return await fetchApi<ShoppingItem[]>(`/shopping-list`);
     },
-    enabled: false,
+    staleTime: 1000 * 60 * 10,
+    enabled: auth.isAuthenticated,
   });
 }
 

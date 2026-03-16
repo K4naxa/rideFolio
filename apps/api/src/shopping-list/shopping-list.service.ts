@@ -31,6 +31,14 @@ export class ShoppingListService {
     });
   }
 
+  async getAllItems(userSession: UserSession): Promise<ShoppingItem[]> {
+    return this.prisma.shoppingListItem.findMany({
+      where: { ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
+      select: ShoppingListDB_Select,
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   async getItemsForVehicle(userSession: UserSession, vehicleId: string): Promise<ShoppingItem[]> {
     await this.authValidation.hasAccessToVehicle(userSession.user.id, vehicleId);
 
