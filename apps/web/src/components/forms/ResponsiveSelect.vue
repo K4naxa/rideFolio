@@ -67,7 +67,6 @@ function toSelectValue(value: T | undefined): string {
 
 function fromSelectValue(value: string): T {
   const option = props.options.find((opt) => String(opt.value) === value);
-  console.log("fromSelectValue:", value, option);
   return option?.value as T;
 }
 </script>
@@ -142,6 +141,7 @@ function fromSelectValue(value: string): T {
       <ul class="flex flex-col gap-1 pb-2" role="listbox">
         <Button
           variant="menu"
+          role="option"
           v-for="option in options"
           :key="String(option.value)"
           :aria-selected="modelValue === option.value"
