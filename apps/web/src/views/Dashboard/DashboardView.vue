@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Icon from "@/components/icons/Icon.vue";
-import ResponsiveActivityPreview from "@/components/previews/ResponsiveActivityPreview.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
+import TodoInteractive from "@/components/todos/TodoInteractive.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Card from "@/components/ui/card/Card.vue";
 import CardContent from "@/components/ui/card/CardContent.vue";
@@ -9,7 +8,6 @@ import CardDescription from "@/components/ui/card/CardDescription.vue";
 import CardFooter from "@/components/ui/card/CardFooter.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
-import Label from "@/components/ui/label/Label.vue";
 
 import Progressbar from "@/components/ui/Progressbar.vue";
 import VehicleScrollArea from "@/components/VehicleScrollArea.vue";
@@ -19,8 +17,6 @@ import { useUpcomingActivityQuery } from "@/lib/queries/upcomingEvents-query";
 import { formatBytesToMB } from "@/lib/utils";
 
 import QuickLinkSection from "@/views/Dashboard/components/QuickLinkSection.vue";
-import { useTimeAgoIntl } from "@vueuse/core";
-import { twMerge } from "tailwind-merge";
 import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 
 const { currentUser } = useCurrentUser();
@@ -40,61 +36,32 @@ const { data: upcomingActivity } = useUpcomingActivityQuery();
       <!-- left side -->
       <section class="gaps-lg flex flex-col">
         <div class="flex flex-col overflow-hidden md:max-h-96">
-          <h3 class="mb-2">Up Next</h3>
+          <h2 class="mb-2">Up Next</h2>
           <Card v-if="!upcomingActivity || upcomingActivity.length === 0" class="rounded border">
             <CardContent class="flex flex-col items-center gap-4 py-4 text-center lg:p-12">
               <Icon name="calendar" class="text-muted-foreground size-6" />
               <div class="space-y-1">
                 <p class="text-sm font-medium">No upcoming events</p>
                 <CardDescription>
-                  Your up coming reminders and tasks will appear here. <br />
-                  Create a new to-do or reminder to get started.
+                  Your upcoming reminders and tasks will appear here.
+                  Create a new to-do to get started.
                 </CardDescription>
               </div>
             </CardContent>
           </Card>
 
-          <div
+          <ul
             v-else
             class="gaps-sm scrollbar-macos grid flex-1 grid-flow-col grid-rows-2 overflow-x-auto pb-2 md:grid-flow-row md:grid-cols-2 md:grid-rows-none"
           >
-            <ResponsiveActivityPreview
-              v-for="event in upcomingActivity"
-              :item="event"
-              :key="event.data.id"
-              :activity="event"
-            >
-              <template #trigger v-if="event.type === 'todo'">
-                <button
-                  :class="
-                    twMerge(
-                      'cardBackground flex h-fit w-80 cursor-pointer flex-col rounded rounded-l-none border border-l-4 px-4 py-3 shadow-sm md:w-full',
-                      (event.data.dueDate?.overdue || event.data.dueOdometer?.overdue) && 'border-l-destructive!',
-                    )
-                  "
-                >
-                  <div class="flex justify-between gap-4">
-                    <Label class="truncate text-base">{{ event.data.title }}</Label>
-                    <Badge variant="muted" class="text-xs">{{ event.vehicle.name }}</Badge>
-                  </div>
-                  <div
-                    class="text-muted-foreground mt-auto flex items-center gap-1 text-sm"
-                    v-if="event.data.dueDate?.date || event.data.dueOdometer?.remaining"
-                  >
-                    Due
-                    <p v-if="event.data.dueDate?.date" class=" ">
-                      <span :class="twMerge(event.data.dueDate?.overdue && 'text-destructive')">{{
-                        useTimeAgoIntl(new Date(event.data.dueDate.date))
-                      }}</span>
-                    </p>
-                    <p v-if="event.data.dueOdometer?.remaining">
-                      / {{ event.data.dueOdometer?.remaining }} {{ event.data.dueOdometer?.unit }}
-                    </p>
-                  </div>
-                </button>
-              </template>
-            </ResponsiveActivityPreview>
-          </div>
+            <template v-for="event in upcomingActivity" :key="event.data.id">
+              <TodoInteractive
+                v-if="event.type === 'todo'"
+                :todo="event.data"
+                show-vehicle
+              />
+            </template>
+          </ul>
         </div>
 
         <QuickLinkSection />
@@ -103,7 +70,7 @@ const { data: upcomingActivity } = useUpcomingActivityQuery();
       <!-- right side -->
       <section class="flex flex-col">
         <header class="mb-2">
-          <h3>Overview</h3>
+          <h2>Overview</h2>
         </header>
 
         <Card class="">

@@ -24,13 +24,21 @@ const isOverdue = computed(
   () => (props.todo.dueOdometer?.overdue || props.todo.dueDate?.overdue) && !props.todo.isCompleted,
 );
 const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdometer?.value);
+
+const dueDateAgo = computed(() => (props.todo.dueDate?.date ? useTimeAgo(new Date(props.todo.dueDate.date)) : null));
+
+const odometerText = computed(() => {
+  if (!props.todo.dueOdometer) return "";
+  const { overdue, remaining, unit } = props.todo.dueOdometer;
+  return overdue ? `${remaining} ${unit} ago` : `in ${remaining} ${unit}`;
+});
 </script>
 
 <template>
   <div
     :class="
       twMerge(
-        'card group cardHover cursor-pointer px-3 py-2 transition-[border] duration-150 md:max-h-full md:w-full',
+        'card group cardHover cursor-pointer px-3 py-2 transition-colors duration-150 md:max-h-full md:w-full',
         isOverdue && 'border-l-destructive! border-l-3!',
       )
     "
@@ -46,6 +54,7 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
 
       <Checkbox
         :model-value="todo.isCompleted"
+        :aria-label="`Mark &quot;${todo.title}&quot; as ${todo.isCompleted ? 'incomplete' : 'complete'}`"
         @click.stop
         @update:model-value="
           toggleTodo({
@@ -57,9 +66,9 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
         variant="secondary"
       />
     </div>
-    <!-- Description -->
+
     <span
-      v-if="todo.description || !props.minimized"
+      v-if="todo.description && !props.minimized"
       class="text-muted-foreground block overflow-hidden text-start text-sm"
     >
       {{ todo.description }}
@@ -68,17 +77,13 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
     <div v-if="hasDueInfo" class="mt-2 flex items-center gap-2 text-xs [&_svg]:size-4">
       <Label class="text-muted-foreground text-xs">Due: </Label>
 
-      <Badge v-if="todo.dueDate" :variant="todo.dueDate.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
-        <Icon name="calendar" /> {{ useTimeAgo(new Date(todo.dueDate.date)) }}
+      <Badge v-if="todo.dueDate && dueDateAgo" :variant="todo.dueDate.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
+        <Icon name="calendar" /> {{ dueDateAgo }}
       </Badge>
 
       <Badge v-if="todo.dueOdometer" :variant="todo.dueOdometer.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
         <Icon name="odoDistance" />
-        {{
-          todo.dueOdometer.overdue
-            ? todo.dueOdometer.remaining + " " + todo.dueOdometer.unit + " " + "ago"
-            : "in" + " " + todo.dueOdometer.remaining + " " + todo.dueOdometer.unit
-        }}
+        {{ odometerText }}
       </Badge>
     </div>
   </div>
@@ -98,7 +103,7 @@ const hasDueInfo = computed(() => props.todo.dueDate?.date || props.todo.dueOdom
   height: 1px;
   background-color: currentColor;
   transform: scaleX(0);
-  transition: transform 0.1s ease-in-out;
+  transition: transform 0.15s cubic-bezier(0.25, 0, 0.2, 1);
   transform-origin: left;
 }
 .line-through.completed::after {

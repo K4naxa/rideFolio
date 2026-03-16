@@ -13,7 +13,7 @@ const props = defineProps<TodoTableProps>();
   <div class="scrollbar-thin h-full min-h-0 w-full min-w-0 flex-1 overflow-auto" key="scrollArea">
     <!-- Table Body -->
     <ul class="gaps-sm grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-      <todo-item :todo="todo" v-for="todo in props.todos" :key="todo.id" :showVehicle />
+      <TodoItem v-for="todo in props.todos" :key="todo.id" :todo="todo" :show-vehicle="showVehicle" />
     </ul>
   </div>
 </template>

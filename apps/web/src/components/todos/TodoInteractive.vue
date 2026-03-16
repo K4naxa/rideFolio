@@ -58,10 +58,10 @@ function handleEdit() {
     <DrawerContent class="overflow-visible!">
       <!-- Floating item that peeks above the drawer -->
       <template #floatingItem>
-        <TodoItem :todo class="" />
+        <TodoItem :todo />
       </template>
 
-      <drawer-header class="px-3">
+      <DrawerHeader class="px-3">
         <Button
           :variant="todo.isCompleted ? 'secondary' : 'default'"
           class="w-full"
@@ -69,11 +69,11 @@ function handleEdit() {
         >
           Mark as {{ props.todo.isCompleted ? "incomplete" : "complete" }}
         </Button>
-      </drawer-header>
+      </DrawerHeader>
 
       <div class="flex flex-col">
         <Button variant="menu" @click="handleEdit"> <Icon name="edit" /> Edit </Button>
-        <Button variant="menu" class="text-red-500" @click="handleDelete"> <Icon name="trash" /> Delete </Button>
+        <Button variant="menu" class="text-destructive" @click="handleDelete"> <Icon name="trash" /> Delete </Button>
       </div>
     </DrawerContent>
   </Drawer>
