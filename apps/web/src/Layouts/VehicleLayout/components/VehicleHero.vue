@@ -3,38 +3,13 @@ import Badge from "@/components/ui/badge/Badge.vue";
 
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 
-import { computed, ref, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 
-import { useModalStore } from "@/stores/modal";
-import { useRouter } from "vue-router";
-import { useVehicleDelete } from "@/lib/queries/vehicles/vehicle-mutations";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
-import ResponsiveDropdown from "@/components/forms/ResponsiveDropdown.vue";
-import VehicleItem from "@/components/vehicles/VehicleItem.vue";
-import AlertModal from "@/modals/alertModal.vue";
+import VehicleControls from "@/Layouts/VehicleLayout/components/VehicleControls.vue";
 
-const router = useRouter();
-const modalStore = useModalStore();
-const { mutateAsync: deleteVehicle } = useVehicleDelete();
-const { currentVehicle, currentVehicleId, isVehicleOwner } = useCurrentVehicle();
-const isDeleteModalOpen = ref(false);
-
-function handleDeleteClick() {
-  isDeleteModalOpen.value = true;
-}
-
-async function handleConfirmDelete() {
-  if (!currentVehicleId.value) return;
-  await deleteVehicle(currentVehicleId.value);
-  router.push("/dashboard");
-}
-
-const deleteModalDescription = computed(() =>
-  currentVehicle.value?.vehicleData.name
-    ? `Are you sure you want to delete <b>${currentVehicle.value.vehicleData.name}</b>? <br/> This action cannot be undone.`
-    : "Are you sure you want to delete this vehicle? This action cannot be undone.",
-);
+const { currentVehicle, isVehicleOwner } = useCurrentVehicle();
 
 const vehicleHeroNameEl = useTemplateRef("vehicleHeroNameEl");
 defineExpose({
@@ -50,7 +25,7 @@ defineExpose({
         :type="currentVehicle?.vehicleData.type.code"
         class="absolute inset-0 h-60 w-full rounded-none"
       />
-      <div class="absolute inset-0 bg-black/40" />
+      <div class="absolute inset-0 bg-black/20 md:bg-black/40" />
     </div>
 
     <div class="relative z-10 -mt-14">
@@ -69,26 +44,9 @@ defineExpose({
                 {{ currentVehicle?.vehicleData.name || "Unnamed Vehicle" }}
               </h1>
 
-              <ResponsiveDropdown
-                :items="[
-                  {
-                    label: 'Edit',
-                    action: () => modalStore.onOpen('createVehicle', currentVehicleId),
-                    icon: 'edit',
-                    disabled: !isVehicleOwner,
-                  },
-                  {
-                    label: 'Delete',
-                    action: handleDeleteClick,
-                    icon: 'trash',
-                    disabled: !isVehicleOwner,
-                  },
-                ]"
-              >
-                <template #header>
-                  <VehicleItem :vehicle="currentVehicle?.vehicleData" />
-                </template>
-              </ResponsiveDropdown>
+              <div class="hidden md:block">
+                <VehicleControls v-if="isVehicleOwner" />
+              </div>
             </div>
 
             <!-- Details -->
@@ -148,15 +106,5 @@ defineExpose({
         </div>
       </MainContentWrapper>
     </div>
-
-    <AlertModal
-      v-model:open="isDeleteModalOpen"
-      title="Delete Vehicle"
-      :description="deleteModalDescription"
-      actionLabel="Delete"
-      cancelLabel="Cancel"
-      actionClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-      @action="handleConfirmDelete"
-    />
   </div>
 </template>

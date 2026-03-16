@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MainContentWrapper from "@/Layouts/MainContentWrapper.vue";
 import MobilePageHeader from "@/Layouts/AuthLayout/components/MobilePageHeader.vue";
 import { useElementBounding } from "@vueuse/core";
+import VehicleControls from "@/Layouts/VehicleLayout/components/VehicleControls.vue";
 
 interface VehicleTab {
   to: string;
@@ -74,13 +75,16 @@ const titleOpacity = computed(() => Math.min(1, Math.max((backgroundOpacity.valu
   <div class="flex min-w-0 flex-1 flex-col">
     <!-- Vehicle layout Hero -->
     <MobilePageHeader
+      class="justify-between"
       :header-style="{
+        color: `color-mix(in srgb, var(--color-foreground) ${backgroundOpacity * 100}%, white)`,
         backgroundColor: `color-mix(in srgb, var(--color-background) ${backgroundOpacity * 100}%, transparent)`,
       }"
     >
       <h1 class="truncate transition-opacity duration-150" :style="{ opacity: titleOpacity }">
         {{ currentVehicle?.vehicleData.name }}
       </h1>
+      <VehicleControls />
     </MobilePageHeader>
 
     <VehicleHero ref="vehicleHeroEl" class="-mt-(--app-header-height)" />
