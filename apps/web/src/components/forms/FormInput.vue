@@ -84,5 +84,3 @@ async function handleBlur() {
     @blur="handleBlur"
   />
 </template>
-
-<style scoped></style>

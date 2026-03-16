@@ -160,4 +160,3 @@ watch(() => filteredItems.value.length, updateLongestPriceWidth);
     </div>
   </div>
 </template>
-<style scoped></style>

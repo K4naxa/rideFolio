@@ -44,5 +44,3 @@ const themeStore = useThemeStore();
   <QuickLinkModal />
   <SettingsModal />
 </template>
-
-<style scoped></style>

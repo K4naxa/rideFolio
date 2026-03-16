@@ -17,5 +17,3 @@ import MobileBottomNav from "./components/MobileBottomNav.vue";
   </div>
   <MobileBottomNav />
 </template>
-
-<style></style>

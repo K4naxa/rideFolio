@@ -60,5 +60,3 @@ function handleNotificationClick(notification: Notification) {
     v-model:open="showGroupInviteModal"
   />
 </template>
-
-<style scoped></style>

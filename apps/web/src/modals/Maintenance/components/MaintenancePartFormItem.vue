@@ -132,5 +132,3 @@ function isLocationSelected(location: PartLocation, part: MaintenancePartInput):
     </div>
   </div>
 </template>
-
-<style scoped></style>

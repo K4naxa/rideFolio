@@ -37,4 +37,3 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     </ComboboxContent>
   </ComboboxPortal>
 </template>
-<style scoped></style>

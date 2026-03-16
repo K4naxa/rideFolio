@@ -80,5 +80,3 @@ defineExpose({ close, isOpen });
     </PopoverContent>
   </Popover>
 </template>
-
-<style scoped></style>

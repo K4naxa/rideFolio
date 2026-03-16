@@ -106,4 +106,3 @@ async function handleDeleteQuicklink(id: string) {
     </div>
   </section>
 </template>
-<style></style>

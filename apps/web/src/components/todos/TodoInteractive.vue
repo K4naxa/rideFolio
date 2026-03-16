@@ -78,5 +78,3 @@ function handleEdit() {
     </DrawerContent>
   </Drawer>
 </template>
-
-<style scoped></style>

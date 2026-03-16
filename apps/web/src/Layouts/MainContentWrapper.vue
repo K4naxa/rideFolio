@@ -15,4 +15,3 @@ const props = defineProps<{
     </div>
   </div>
 </template>
-<style></style>
