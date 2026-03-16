@@ -37,6 +37,11 @@ const deleteModalDescription = computed(() =>
   <ResponsiveDropdown
     :items="[
       {
+        label: 'Details',
+        action: () => modalStore.onOpen('vehicleDetails', currentVehicleId),
+        icon: 'fileText',
+      },
+      {
         label: 'Edit',
         action: () => modalStore.onOpen('createVehicle', currentVehicleId),
         icon: 'edit',

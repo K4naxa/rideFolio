@@ -100,3 +100,34 @@ export type TAccessibleVehicle = {
 };
 
 export type TVehicleOwner = { id: string; name: string };
+
+export type VehicleDetails = {
+  vehicle: BasicVehicle;
+  owner: TVehicleOwner;
+  createdAt: string;
+
+  lifetimeStats: {
+    totalFuelConsumed: number | null;
+    totalCost: number | null;
+    totalTrackedDistance: number | null;
+    totalTrackedHours: number | null;
+  };
+
+  counts: {
+    refills: number;
+    maintenances: number;
+    todos: number;
+    notes: number;
+    shoppingItems: number;
+  };
+
+  storage: {
+    vehicleBytes: number;
+    refillBytes: number;
+    maintenanceBytes: number;
+    todoBytes: number;
+    noteBytes: number;
+    shoppingBytes: number;
+    totalBytes: number;
+  };
+};

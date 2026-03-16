@@ -2,7 +2,7 @@ import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleTransformerService } from './vehicleTransformer.service';
 import { VehicleRepository } from './vehicleRepository';
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ActivityItem, BasicVehicle, TAccessibleVehicle, VehicleInput, VehicleType } from '@repo/validation';
+import { ActivityItem, BasicVehicle, TAccessibleVehicle, VehicleDetails, VehicleInput, VehicleType } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -151,6 +151,80 @@ export class VehiclesService {
       ]);
     });
   }
+  async getVehicleDetails(userSession: UserSession, vehicleId: string): Promise<VehicleDetails> {
+    const vehicle = await this.prisma.vehicle.findFirst({
+      where: {
+        id: vehicleId,
+        ...VehicleAccessPrisma.forUser(userSession.user.id),
+      },
+      include: {
+        ...this.vehicleTransformer.DBInclude_BasicVehicle,
+        owner: { select: { id: true, name: true } },
+        _count: {
+          select: {
+            refills: true,
+            maintenances: true,
+            todos: true,
+            notes: true,
+            shoppingListItems: true,
+          },
+        },
+      },
+    });
+
+    if (!vehicle) {
+      throw new NotFoundException({
+        code: 'NOT_FOUND_OR_ACCESS_DENIED',
+        message: 'Vehicle not found or access denied.',
+      });
+    }
+
+    const [refillsSum, maintenancesSum, todosSum, notesSum, shoppingSum] = await Promise.all([
+      this.prisma.refill.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.maintenance.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.todo.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.note.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+      this.prisma.shoppingListItem.aggregate({ where: { vehicleId }, _sum: { sizeBytes: true } }),
+    ]);
+
+    const refillBytes = refillsSum._sum.sizeBytes ?? 0;
+    const maintenanceBytes = maintenancesSum._sum.sizeBytes ?? 0;
+    const todoBytes = todosSum._sum.sizeBytes ?? 0;
+    const noteBytes = notesSum._sum.sizeBytes ?? 0;
+    const shoppingBytes = shoppingSum._sum.sizeBytes ?? 0;
+
+    return {
+      vehicle: this.vehicleTransformer.toBasicVehicle(vehicle),
+      owner: { id: vehicle.owner.id, name: vehicle.owner.name },
+      createdAt: vehicle.createdAt.toISOString(),
+
+      lifetimeStats: {
+        totalFuelConsumed: vehicle.lifetimeTotalFuelConsumed_L,
+        totalCost: vehicle.lifetimeTotalCost,
+        totalTrackedDistance: vehicle.lifetimeTotalTrackedUnits_km,
+        totalTrackedHours: vehicle.lifetimeTotalTrackedUnits_hour,
+      },
+
+      counts: {
+        refills: vehicle._count.refills,
+        maintenances: vehicle._count.maintenances,
+        todos: vehicle._count.todos,
+        notes: vehicle._count.notes,
+        shoppingItems: vehicle._count.shoppingListItems,
+      },
+
+      storage: {
+        vehicleBytes: vehicle.sizeBytes,
+        refillBytes,
+        maintenanceBytes,
+        todoBytes,
+        noteBytes,
+        shoppingBytes,
+        totalBytes: vehicle.sizeBytes + refillBytes + maintenanceBytes + todoBytes + noteBytes + shoppingBytes,
+      },
+    };
+  }
+
   // ***       FETCH       ***
   async getVehicleTypes(): Promise<VehicleType[]> {
     try {

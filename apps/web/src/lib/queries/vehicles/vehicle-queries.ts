@@ -2,7 +2,13 @@ import { fetchApi } from "@/lib/api";
 import { useAuth } from "@/lib/authClient";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import { handleEmpty } from "@/lib/queries/util";
-import { type BasicVehicle, type TAccessibleVehicle, type TRefillForClient, type VehicleType } from "@repo/validation";
+import {
+  type BasicVehicle,
+  type TAccessibleVehicle,
+  type TRefillForClient,
+  type VehicleDetails,
+  type VehicleType,
+} from "@repo/validation";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type MaybeRef, unref } from "vue";
 
@@ -31,6 +37,14 @@ export function useVehicleTypes(options?: { enabled?: MaybeRef<boolean> }) {
     staleTime: 1000 * 60 * 60,
     enabled: options?.enabled ?? true,
     refetchOnMount: true,
+  });
+}
+
+export function useVehicleDetailsQuery(vehicleId: MaybeRef<string | undefined>) {
+  return useQuery({
+    queryKey: computed(() => ["vehicles", "details-info", unref(vehicleId)]),
+    queryFn: async () => await fetchApi<VehicleDetails>(`vehicles/details/${unref(vehicleId)}`),
+    enabled: computed(() => !!unref(vehicleId)),
   });
 }
 
