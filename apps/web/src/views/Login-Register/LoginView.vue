@@ -111,8 +111,8 @@ const onSubmit = form.handleSubmit(async (values) => {
                 />
               </div>
 
-              <Button type="submit" class="w-full" :disabled="form.isSubmitting.value" data-cy="submit">
-                {{ form.isSubmitting.value ? "Logging in..." : "Log in" }}
+              <Button type="submit" class="w-full" :disabled="form.isSubmitting" data-cy="submit">
+                {{ form.isSubmitting ? "Logging in…" : "Log in" }}
               </Button>
 
               <div class="flex w-full items-center gap-2">
@@ -171,4 +171,3 @@ const onSubmit = form.handleSubmit(async (values) => {
     </div>
   </main>
 </template>
-<style scoped></style>
