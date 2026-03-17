@@ -14,6 +14,9 @@ import CreateMaintenanceModal from "@/modals/Maintenance/createMaintenanceModal.
 import SettingsModal from "@/modals/Settings/SettingsModal.vue";
 import ShoppingItemModal from "@/modals/ShoppingItemModal.vue";
 import VehicleDetailsDialog from "@/modals/VehicleDetailsDialog.vue";
+import RefillDetailsDialog from "@/modals/RefillDetailsDialog.vue";
+import MaintenanceDetailsDialog from "@/modals/MaintenanceDetailsDialog.vue";
+import TodoDetailsDialog from "@/modals/TodoDetailsDialog.vue";
 
 configure({});
 
@@ -47,4 +50,7 @@ const themeStore = useThemeStore();
   <SettingsModal />
   <ShoppingItemModal />
   <VehicleDetailsDialog />
+  <RefillDetailsDialog />
+  <MaintenanceDetailsDialog />
+  <TodoDetailsDialog />
 </template>
