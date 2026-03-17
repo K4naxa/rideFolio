@@ -18,6 +18,7 @@ import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import { Label } from "@/components/ui/label";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
 import { useVehicles } from "@/lib/composables/useVehicles.ts";
+import { useModalStore } from "@/stores/modal.ts";
 
 // ─── Filters state ──────────────────────────────────────────────────────────
 
@@ -151,7 +152,7 @@ const typeConfig = {
     icon: "todo" as const,
     label: "Task Created",
     iconClass: "text-todo",
-    bgClass: "bg-todo/10 dark:bg-todo-500/15",
+    bgClass: "bg-todo/10 dark:bg-todo/15",
     accentClass: "border-l-todo",
     badgeClass: "bg-todo/10 text-todo",
   },
@@ -166,6 +167,22 @@ const typeConfig = {
 } as const;
 
 const isMobile = useIsMobile();
+const modalStore = useModalStore();
+
+function handleItemClick(item: TimelineItem) {
+  switch (item.type) {
+    case "refill":
+      modalStore.onOpen("refillDetails", item.data.id);
+      break;
+    case "maintenance":
+      modalStore.onOpen("maintenanceDetails", item.data.id);
+      break;
+    case "todo-created":
+    case "todo-completed":
+      modalStore.onOpen("todoDetails", item.data.id);
+      break;
+  }
+}
 </script>
 
 <template>
@@ -175,7 +192,6 @@ const isMobile = useIsMobile();
       <MobilePageHeader class="flex justify-between gap-4">
         <h1>Timeline</h1>
         <div class="flex items-center gap-2">
-          <!-- Clear all – visible only when any filter is active -->
           <Button
             v-if="activeFilterCount > 0"
             variant="ghost"
@@ -186,8 +202,6 @@ const isMobile = useIsMobile();
             <Icon name="close" />
             <span class="hidden sm:inline">Clear</span>
           </Button>
-
-          <!-- Advanced filter button -->
 
           <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
             <template #trigger>
@@ -205,16 +219,14 @@ const isMobile = useIsMobile();
 
             <template #content>
               <div class="gaps-sm flex flex-col md:w-sm">
-                <div>
-                  <VehicleSelect
-                    placeholder="Select a vehicle"
-                    :value="tempVehicleId"
-                    @value-change="(value) => (tempVehicleId = value)"
-                  />
-                </div>
+                <VehicleSelect
+                  placeholder="Select a vehicle"
+                  :value="tempVehicleId"
+                  @value-change="(value: string) => (tempVehicleId = value)"
+                />
                 <div class="gaps-sm grid grid-cols-2">
-                  <date-input placeholder="Select a date" label="From" v-model="tempStartDate" />
-                  <date-input placeholder="Select a date" label="To" v-model="tempEndDate" />
+                  <DateInput placeholder="Select a date" label="From" v-model="tempStartDate" />
+                  <DateInput placeholder="Select a date" label="To" v-model="tempEndDate" />
                 </div>
               </div>
             </template>
@@ -230,11 +242,10 @@ const isMobile = useIsMobile();
 
     <header class="mb-4 hidden md:block"><h1>Timeline</h1></header>
 
-    <!-- controls -->
-    <div class="mb-4 flex items-center gap-4">
+    <!-- ── Type filter chips + advanced filters ──────────────── -->
+    <div class="bg-background top-0 mb-4 flex h-14 items-center gap-4 md:sticky">
       <ScrollableNav class="scrollbar-none flex justify-between gap-8">
         <div class="flex items-center gap-2 overflow-x-auto">
-          <!-- All -->
           <button
             :class="
               twMerge(
@@ -249,7 +260,6 @@ const isMobile = useIsMobile();
             All
           </button>
 
-          <!-- Per-type chips -->
           <button
             v-for="tf in typeFilters"
             :key="tf.type"
@@ -268,8 +278,8 @@ const isMobile = useIsMobile();
           </button>
         </div>
       </ScrollableNav>
+
       <div v-if="!isMobile" class="ml-auto flex items-center gap-2">
-        <!-- Clear all – visible only when any filter is active -->
         <Button
           v-if="activeFilterCount > 0"
           variant="ghost"
@@ -280,8 +290,6 @@ const isMobile = useIsMobile();
           <Icon name="close" />
           <span class="hidden sm:inline">Clear</span>
         </Button>
-
-        <!-- Advanced filter button -->
 
         <ResponsivePopover title="Filters" description="Select custom filters for the timeline view.">
           <template #trigger>
@@ -299,16 +307,14 @@ const isMobile = useIsMobile();
 
           <template #content>
             <div class="gaps-sm flex flex-col md:w-sm">
-              <div>
-                <VehicleSelect
-                  placeholder="Select a vehicle"
-                  :value="tempVehicleId"
-                  @value-change="(value) => (tempVehicleId = value)"
-                />
-              </div>
+              <VehicleSelect
+                placeholder="Select a vehicle"
+                :value="tempVehicleId"
+                @value-change="(value: string) => (tempVehicleId = value)"
+              />
               <div class="gaps-sm grid grid-cols-2">
-                <date-input placeholder="Select a date" label="From" v-model="tempStartDate" />
-                <date-input placeholder="Select a date" label="To" v-model="tempEndDate" />
+                <DateInput placeholder="Select a date" label="From" v-model="tempStartDate" />
+                <DateInput placeholder="Select a date" label="To" v-model="tempEndDate" />
               </div>
             </div>
           </template>
@@ -346,7 +352,7 @@ const isMobile = useIsMobile();
       enter-active-class="transition-opacity duration-200 ease-out"
       leave-active-class="transition-opacity duration-200 ease-in"
       enter-from-class="opacity-0"
-      leaveToClass="opacity-0"
+      leave-to-class="opacity-0"
       mode="out-in"
     >
       <!-- ── Loading skeletons ────────────────────────────────────── -->
@@ -388,7 +394,7 @@ const isMobile = useIsMobile();
           <div
             :class="
               twMerge(
-                'from-background mobileOffScreenScroll sticky top-(--app-header-height) z-10 mb-4 flex items-center gap-3 bg-linear-to-b to-transparent py-1 backdrop-blur-sm',
+                'from-background mobileOffScreenScroll sticky top-(--app-header-height) z-10 mb-4 flex items-center gap-3 bg-linear-to-b to-transparent py-1 backdrop-blur-sm md:top-14',
                 groupIdx > 0 && 'mt-8',
               )
             "
@@ -401,11 +407,11 @@ const isMobile = useIsMobile();
 
           <!-- Items -->
           <TransitionGroup
-            enterActiveClass="transition-all duration-300 ease-out "
-            leaveActiveClass="transition-all duration-100 hidden"
-            enterFromClass="opacity-0 "
-            leaveToClass="opacity-0 translate-x-20"
-            move-class="transition-all duration-200 ease-out "
+            enter-active-class="transition-all duration-300 ease-out"
+            leave-active-class="transition-all duration-100 hidden"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0 translate-x-20"
+            move-class="transition-all duration-200 ease-out"
           >
             <div v-for="(item, itemIdx) in groupItems" :key="`${item.type}-${item.data.id}`" class="flex gap-4">
               <!-- Icon + connector -->
@@ -436,15 +442,19 @@ const isMobile = useIsMobile();
 
               <!-- Content card -->
               <div
-                class="card cardHover mb-4 min-w-0 flex-1 overflow-hidden rounded border border-l-2"
+                class="card cardHover mb-4 min-w-0 flex-1 cursor-pointer overflow-hidden rounded border border-l-2"
                 :class="typeConfig[item.type].accentClass"
+                role="button"
+                tabindex="0"
+                @click="handleItemClick(item)"
+                @keydown.enter="handleItemClick(item)"
               >
                 <!-- ── Refill ── -->
                 <template v-if="item.type === 'refill'">
                   <div class="border-b px-3 py-2">
-                    <div class="flex items-start gap-3">
-                      <Badge :class="typeConfig['refill'].badgeClass" class="font-medium"> Fuel Refill</Badge>
-                      <div class="ml-auto flex items-center gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                      <Badge :class="typeConfig['refill'].badgeClass" class="font-medium">Fuel Refill</Badge>
+                      <div class="flex items-center gap-4">
                         <Badge v-if="!filters.vehicleId" variant="accent">
                           {{ getVehicleNameById(item.data.vehicleId) }}
                         </Badge>
@@ -459,7 +469,7 @@ const isMobile = useIsMobile();
                       {{ item.data.notes }}
                     </p>
                   </div>
-                  <!--    Info -->
+
                   <div class="infoSectionWrapper">
                     <div class="flex flex-col gap-1">
                       <Label class="text-xs"><Icon name="refill" size="sm" /> Amount</Label>
@@ -470,19 +480,17 @@ const isMobile = useIsMobile();
                     </div>
 
                     <div class="flex flex-col gap-1">
-                      <Label class="text-xs"> <Icon name="odoDistance" size="sm" /> Odometer</Label>
+                      <Label class="text-xs"><Icon name="odoDistance" size="sm" /> Odometer</Label>
                       <span>
-                        <span class="text-card-foreground font-medium"> {{ item.data.odometer.value }} </span>
+                        <span class="text-card-foreground font-medium">{{ item.data.odometer.value }}</span>
                         {{ item.data.odometer.unit }}
                       </span>
                     </div>
 
                     <div v-if="item.data.costTotal" class="flex flex-col gap-1">
-                      <Label class="text-xs"> <Icon name="billing" size="sm" /> Cost </Label>
+                      <Label class="text-xs"><Icon name="billing" size="sm" /> Cost</Label>
                       <span>
-                        <span class="text-card-foreground font-medium">
-                          {{ item.data.costTotal.toFixed(2) }}
-                        </span>
+                        <span class="text-card-foreground font-medium">{{ item.data.costTotal.toFixed(2) }}</span>
                         {{ user.preferredCurrencySymbol }}
                       </span>
                     </div>
@@ -492,9 +500,9 @@ const isMobile = useIsMobile();
                 <!-- ── Maintenance ── -->
                 <template v-else-if="item.type === 'maintenance'">
                   <div class="border-b px-3 py-2">
-                    <div class="mb-2 flex items-start justify-between gap-3">
+                    <div class="flex items-start justify-between gap-3">
                       <Badge :class="typeConfig['maintenance'].badgeClass" class="font-medium">Maintenance</Badge>
-                      <div class="ml-auto flex items-center gap-4">
+                      <div class="flex items-center gap-4">
                         <Badge v-if="!filters.vehicleId" variant="accent">
                           {{ getVehicleNameById(item.data.vehicleId) }}
                         </Badge>
@@ -505,13 +513,12 @@ const isMobile = useIsMobile();
                       </div>
                     </div>
 
-                    <p class="text-sm font-medium">{{ item.data.title }}</p>
-                    <span class="text-muted-foreground text-sm">{{ item.data.notes }}</span>
+                    <p class="mt-1.5 text-sm font-medium">{{ item.data.title }}</p>
+                    <p v-if="item.data.notes" class="text-muted-foreground text-sm">{{ item.data.notes }}</p>
                   </div>
 
-                  <!--                  Parts -->
-                  <div v-if="item.data.parts.length > 0" class="flex gap-2 border-b px-3 py-2">
-                    <Label class="text-muted-foreground">Parts: </Label>
+                  <div v-if="item.data.parts.length > 0" class="flex flex-wrap gap-2 border-b px-3 py-2">
+                    <Label class="text-muted-foreground">Parts:</Label>
                     <Badge
                       variant="muted"
                       class="rounded-full font-medium"
@@ -519,35 +526,29 @@ const isMobile = useIsMobile();
                       :key="part.groupId"
                     >
                       {{ part.customName ?? part.partCode }}
-                      <span v-if="part.locations.length" class="ml-1">
-                        {{ part.locations.length }}
-                      </span>
+                      <span v-if="part.locations.length" class="ml-1">{{ part.locations.length }}</span>
                     </Badge>
                   </div>
 
-                  <!--    Info -->
                   <div class="infoSectionWrapper">
                     <div v-if="item.data.serviceProvider" class="flex flex-col gap-1">
-                      <Label class="text-xs"> <Icon name="location" size="sm" /> Service</Label>
-                      <span class="text-card-foreground">
-                        {{ item.data.serviceProvider }}
-                      </span>
+                      <Label class="text-xs"><Icon name="location" size="sm" /> Service</Label>
+                      <span class="text-card-foreground font-medium">{{ item.data.serviceProvider }}</span>
                     </div>
 
                     <div class="flex flex-col gap-1">
                       <Label class="text-xs"><Icon name="odoDistance" size="sm" /> Odometer</Label>
                       <span>
-                        <span class="text-card-foreground font-medium">
-                          {{ item.data.odometerData.value }}
-                        </span>
+                        <span class="text-card-foreground font-medium">{{ item.data.odometerData.value }}</span>
                         {{ item.data.odometerData.unit }}
                       </span>
                     </div>
 
                     <div v-if="item.data.costTotal" class="flex flex-col gap-1">
-                      <Label class="text-xs"> <Icon name="billing" size="sm" /> Cost </Label>
-                      <span class="text-card-foreground font-medium">
-                        {{ item.data.costTotal.toFixed(2) }}
+                      <Label class="text-xs"><Icon name="billing" size="sm" /> Cost</Label>
+                      <span>
+                        <span class="text-card-foreground font-medium">{{ item.data.costTotal.toFixed(2) }}</span>
+                        {{ user.preferredCurrencySymbol }}
                       </span>
                     </div>
                   </div>
@@ -555,23 +556,23 @@ const isMobile = useIsMobile();
 
                 <!-- ── Todo Created ── -->
                 <template v-else-if="item.type === 'todo-created'">
-                  <div class="flex items-start justify-between gap-3 px-3 py-2">
-                    <Badge :class="typeConfig['todo-created'].badgeClass" class="font-medium"> Task Created</Badge>
-                    <div class="ml-auto flex items-center gap-4">
-                      <Badge v-if="!filters.vehicleId" variant="accent">
-                        {{ getVehicleNameById(item.data.vehicleId) }}
-                      </Badge>
-                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                        <Icon name="calendar" size="sm" />
-                        {{ new Date(item.timestamp).toLocaleDateString() }}
-                      </span>
+                  <div class="border-b px-3 py-2">
+                    <div class="flex items-start justify-between gap-3">
+                      <Badge :class="typeConfig['todo-created'].badgeClass" class="font-medium">Task Created</Badge>
+                      <div class="flex items-center gap-4">
+                        <Badge v-if="!filters.vehicleId" variant="accent">
+                          {{ getVehicleNameById(item.data.vehicleId) }}
+                        </Badge>
+                        <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                          <Icon name="calendar" size="sm" />
+                          {{ new Date(item.timestamp).toLocaleDateString() }}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div class="space-y-1.5 px-3 pb-3">
-                    <p class="text-sm font-medium">
-                      {{ item.data.title }}
-                    </p>
-                    <p v-if="item.data.description" class="text-muted-foreground text-sm">
+                  <div class="px-3 py-2">
+                    <p class="text-sm font-medium">{{ item.data.title }}</p>
+                    <p v-if="item.data.description" class="text-muted-foreground mt-1 text-sm">
                       {{ item.data.description }}
                     </p>
                   </div>
@@ -579,24 +580,23 @@ const isMobile = useIsMobile();
 
                 <!-- ── Todo Completed ── -->
                 <template v-else-if="item.type === 'todo-completed'">
-                  <div class="flex items-start justify-between gap-3 px-3 py-2">
-                    <Badge :class="typeConfig['todo-completed'].badgeClass" class="font-medium"> Task Completed</Badge>
-
-                    <div class="ml-auto flex items-center gap-4">
-                      <Badge v-if="!filters.vehicleId" variant="accent">
-                        {{ getVehicleNameById(item.data.vehicleId) }}
-                      </Badge>
-                      <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                        <Icon name="calendar" size="sm" />
-                        {{ new Date(item.timestamp).toLocaleDateString() }}
-                      </span>
+                  <div class="border-b px-3 py-2">
+                    <div class="flex items-start justify-between gap-3">
+                      <Badge :class="typeConfig['todo-completed'].badgeClass" class="font-medium">Task Completed</Badge>
+                      <div class="flex items-center gap-4">
+                        <Badge v-if="!filters.vehicleId" variant="accent">
+                          {{ getVehicleNameById(item.data.vehicleId) }}
+                        </Badge>
+                        <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
+                          <Icon name="calendar" size="sm" />
+                          {{ new Date(item.timestamp).toLocaleDateString() }}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div class="space-y-1.5 px-3 pb-3">
-                    <p class="text-sm font-medium">
-                      {{ item.data.title }}
-                    </p>
-                    <p v-if="item.data.description" class="text-muted-foreground text-sm">
+                  <div class="px-3 py-2">
+                    <p class="text-sm font-medium">{{ item.data.title }}</p>
+                    <p v-if="item.data.description" class="text-muted-foreground mt-1 text-sm">
                       {{ item.data.description }}
                     </p>
                   </div>
