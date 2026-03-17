@@ -3,7 +3,6 @@ import { useCurrentGroup } from "@/lib/composables/useCurrentGroup";
 import { useGroupDetails } from "@/lib/queries/groups/group-queries";
 import { computed, ref } from "vue";
 import GroupManagementDropdown from "./components/GroupManagementDropdown.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
 import Icon from "@/components/icons/Icon.vue";
 import {
   getGroupInviteStateNameKey,
@@ -27,6 +26,8 @@ import { toast } from "vue-sonner";
 import GroupErrorState from "./components/GroupErrorState.vue";
 import CardDescription from "@/components/ui/card/CardDescription.vue";
 import VehicleItem from "@/components/vehicles/VehicleItem.vue";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 import AlertModal from "@/modals/alertModal.vue";
 import {
   useGroupInviteCancel,
@@ -146,7 +147,7 @@ async function handleRemoveMember() {
 </script>
 
 <template lang="html">
-  <MainContentWrapper class="md:pt-12 lg:pt-20">
+  <MainContentWrapper class="lg:pt-20">
     <template #mobile-header>
       <MobilePageHeader class="justify-between">
         <span class="text-lg font-medium"> {{ data?.name }} </span>
@@ -154,23 +155,28 @@ async function handleRemoveMember() {
       </MobilePageHeader>
     </template>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="flex flex-col items-center py-20">
+      <Spinner class="text-muted-foreground size-8" />
+    </div>
+
     <!-- Error State -->
-    <GroupErrorState v-if="isError" />
+    <GroupErrorState v-else-if="isError" />
 
     <!-- Main Content -->
     <div v-else-if="data" class="gaps-md flex w-full flex-col">
       <!-- Page header (desktop only) -->
-      <header class="hidden md:block">
-        <div class="flex items-center justify-between">
-          <h1 class="font-bold tracking-tight">{{ data.name }}</h1>
-          <div class="flex items-center gap-4">
-            <Badge variant="secondary">
-              {{ getGroupMemberRoleNameKey(data.userRole) }}
-            </Badge>
-            <GroupManagementDropdown v-if="!isLoading && !isError" :details="data" />
-          </div>
+      <header class="mb-4 hidden justify-between gap-4 md:flex">
+        <div>
+          <h1>{{ data.name }}</h1>
+          <CardDescription v-if="data.description">{{ data.description }}</CardDescription>
         </div>
-        <CardDescription>{{ data.description }}</CardDescription>
+        <div class="flex items-center gap-4">
+          <Badge variant="secondary">
+            {{ getGroupMemberRoleNameKey(data.userRole) }}
+          </Badge>
+          <GroupManagementDropdown :details="data" />
+        </div>
       </header>
 
       <!-- Mobile: description below header -->
@@ -320,14 +326,16 @@ async function handleRemoveMember() {
               </div>
             </li>
 
-            <!-- Mobile empty state -->
-            <li
-              v-if="!data?.members?.length && !data?.invites?.length"
-              class="card flex flex-col items-center gap-2 py-8 text-center"
-            >
-              <Icon name="users" class="text-muted-foreground size-6" />
-              <p class="text-sm font-medium">No members yet</p>
-              <CardDescription>Invite people to collaborate in this group.</CardDescription>
+            <li v-if="!data?.members?.length && !data?.invites?.length">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <Icon name="users" />
+                  </EmptyMedia>
+                  <EmptyTitle>No members yet</EmptyTitle>
+                  <EmptyDescription>Invite people to collaborate in this group.</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             </li>
           </ul>
 
@@ -475,13 +483,16 @@ async function handleRemoveMember() {
               </li>
 
               <!-- Desktop empty state row -->
-              <li
-                v-if="!data?.members?.length && !data?.invites?.length"
-                class="flex flex-col items-center gap-2 py-10 text-center"
-              >
-                <Icon name="users" class="text-muted-foreground size-6" />
-                <p class="text-sm font-medium">No members yet</p>
-                <CardDescription>Invite people to collaborate in this group.</CardDescription>
+              <li v-if="!data?.members?.length && !data?.invites?.length">
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <Icon name="users" />
+                    </EmptyMedia>
+                    <EmptyTitle>No members yet</EmptyTitle>
+                    <EmptyDescription>Invite people to collaborate in this group.</EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               </li>
             </ul>
           </ScrollableNav>
@@ -502,10 +513,9 @@ async function handleRemoveMember() {
               Add Vehicle
             </Button>
           </div>
-          <Separator />
 
           <!-- Vehicle list -->
-          <ul v-if="data?.vehicles?.length" class="mt-2 flex flex-col divide-y overflow-hidden rounded border">
+          <ul v-if="data?.vehicles?.length" class="card flex flex-col divide-y overflow-hidden">
             <li
               v-for="vehicle in data?.vehicles"
               :key="vehicle.data.id"
@@ -528,11 +538,15 @@ async function handleRemoveMember() {
           </ul>
 
           <!-- Vehicles empty state -->
-          <div v-else class="card mt-2 flex flex-col items-center gap-2 py-8 text-center">
-            <Icon name="carFront" class="text-muted-foreground size-6" />
-            <p class="text-sm font-medium">No vehicles in this group</p>
-            <CardDescription>Add a vehicle to start tracking it as a group.</CardDescription>
-          </div>
+          <Empty v-else>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Icon name="carFront" />
+              </EmptyMedia>
+              <EmptyTitle>No vehicles in this group</EmptyTitle>
+              <EmptyDescription>Add a vehicle to start tracking it as a group.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         </section>
       </div>
     </div>
