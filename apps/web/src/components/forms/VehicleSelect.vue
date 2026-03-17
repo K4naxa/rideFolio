@@ -121,19 +121,27 @@ function handleSelect(value: string) {
   <template v-else>
     <Drawer v-model:open="isOpen">
       <DrawerTrigger as-child>
-        <Button
-          variant="outline"
+        <button
           v-if="selectedVehicle"
           type="button"
-          :class="twMerge('h-fit w-full p-0!', props.triggerClass)"
+          :class="twMerge('inputField h-fit w-full bg-transparent! p-0!', props.triggerClass)"
         >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
-        </Button>
-        <Button variant="outline" v-else type="button" :class="twMerge('h-fit w-full p-0!', props.triggerClass)">
+        </button>
+        <button
+          v-else
+          type="button"
+          :class="
+            twMerge(
+              'inputField flex h-fit w-full items-center justify-between border bg-transparent',
+              props.triggerClass,
+            )
+          "
+        >
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
-        </Button>
+        </button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader class="text-left">
