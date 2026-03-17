@@ -44,7 +44,6 @@ const odometerText = computed(() => {
     "
   >
     <div class="flex w-full items-center gap-4">
-      <Badge v-if="props.showVehicle" variant="accent">{{ getVehicleNameById(todo.vehicleId) }}</Badge>
       <span
         class="w-fit truncate text-sm font-medium line-through"
         :class="todo.isCompleted && 'text-muted-foreground completed'"
@@ -52,19 +51,29 @@ const odometerText = computed(() => {
         {{ todo.title }}
       </span>
 
-      <Checkbox
-        :model-value="todo.isCompleted"
-        :aria-label="`Mark &quot;${todo.title}&quot; as ${todo.isCompleted ? 'incomplete' : 'complete'}`"
-        @click.stop
-        @update:model-value="
-          toggleTodo({
-            todoId: todo.id,
-            complete: !todo.isCompleted,
-          })
-        "
-        class="group-hover:border-primary ml-auto size-6"
-        variant="secondary"
-      />
+      <div class="ml-auto flex gap-4">
+        <Badge
+          v-if="props.showVehicle"
+          variant="accent"
+          class="bg-sidebar-accent text-sidebar-accent-foreground border-border border"
+        >
+          {{ getVehicleNameById(todo.vehicleId) }}
+        </Badge>
+
+        <Checkbox
+          :model-value="todo.isCompleted"
+          :aria-label="`Mark &quot;${todo.title}&quot; as ${todo.isCompleted ? 'incomplete' : 'complete'}`"
+          @click.stop
+          @update:model-value="
+            toggleTodo({
+              todoId: todo.id,
+              complete: !todo.isCompleted,
+            })
+          "
+          class="group-hover:border-primary size-6"
+          variant="secondary"
+        />
+      </div>
     </div>
 
     <span
@@ -77,7 +86,10 @@ const odometerText = computed(() => {
     <div v-if="hasDueInfo" class="mt-2 flex items-center gap-2 text-xs [&_svg]:size-4">
       <Label class="text-muted-foreground text-xs">Due: </Label>
 
-      <Badge v-if="todo.dueDate && dueDateAgo" :variant="todo.dueDate.overdue && !todo.isCompleted ? 'destructive' : 'muted'">
+      <Badge
+        v-if="todo.dueDate && dueDateAgo"
+        :variant="todo.dueDate.overdue && !todo.isCompleted ? 'destructive' : 'muted'"
+      >
         <Icon name="calendar" /> {{ dueDateAgo }}
       </Badge>
 
