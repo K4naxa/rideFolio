@@ -48,6 +48,14 @@ export class LogsController {
     return { status: 'success' };
   }
 
+  @Get('refill/:refillId')
+  async getRefillById(
+    @Session() SessionUser: UserSession,
+    @Param('refillId', new ZodValidationPipe(z.cuid())) refillId: string,
+  ) {
+    return await this.refillService.getRefillById(SessionUser, refillId);
+  }
+
   @Get('refills/chart/:vehicleId/:limit')
   async getRefills(
     @Session() SessionUser: UserSession,
@@ -65,6 +73,23 @@ export class LogsController {
     @Param('vehicleTypeCode', new ZodValidationPipe(z.string().min(1))) vehicleType: VehicleType['code'],
   ) {
     return await this.maintenanceService.getCategoriesWithParts(vehicleType);
+  }
+
+  @Get('maintenance/:maintenanceId')
+  async getMaintenanceById(
+    @Session() SessionUser: UserSession,
+    @Param('maintenanceId', new ZodValidationPipe(z.cuid())) maintenanceId: string,
+  ) {
+    return await this.maintenanceService.getMaintenanceById(SessionUser, maintenanceId);
+  }
+
+  @Delete('maintenance/:maintenanceId')
+  async deleteMaintenance(
+    @Session() SessionUser: UserSession,
+    @Param('maintenanceId', new ZodValidationPipe(z.cuid())) maintenanceId: string,
+  ) {
+    await this.maintenanceService.deleteMaintenance(SessionUser, maintenanceId);
+    return { status: 'success' };
   }
 
   @Post('maintenance')
