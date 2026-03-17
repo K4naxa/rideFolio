@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
-import Icon from "@/components/icons/Icon.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import VehicleAvatar from "@/components/vehicles/VehicleAvatar.vue";
@@ -11,6 +10,8 @@ import { computed } from "vue";
 import { useUserQuery } from "@/lib/queries/user/user-queries.ts";
 import { getCurrencySymbol } from "@repo/validation";
 import { useModalStore } from "@/stores/modal.ts";
+import StatCard from "@/components/ui/StatCard.vue";
+import DetailRow from "@/components/ui/DetailRow.vue";
 
 const modalStore = useModalStore();
 
@@ -66,6 +67,7 @@ const totalEntries = computed(() => {
     :open="isOpen"
     @update:open="handleOpenChange"
     title="Vehicle Details"
+    description="View your vehicle details"
     content-class="max-w-xl"
   >
     <!-- Loading state -->
@@ -77,13 +79,9 @@ const totalEntries = computed(() => {
     <template v-else-if="details">
       <!-- Vehicle Identity -->
       <div class="flex items-start gap-4">
-        <VehicleAvatar
-          :src="vehicle?.image"
-          :type="vehicle?.type.code"
-          class="h-20 w-28 shrink-0 rounded-lg"
-        />
+        <VehicleAvatar :src="vehicle?.image" :type="vehicle?.type.code" class="h-20 w-28 shrink-0 rounded-lg" />
         <div class="flex min-w-0 flex-col gap-1.5">
-          <h3 class="truncate text-lg font-medium leading-tight">{{ vehicle?.name }}</h3>
+          <h3 class="truncate text-lg leading-tight font-medium">{{ vehicle?.name }}</h3>
           <div class="flex flex-wrap items-center gap-1.5">
             <Badge v-if="vehicle?.make" class="bg-muted text-foreground rounded-md text-xs font-normal">
               {{ vehicle.make }}
@@ -95,9 +93,7 @@ const totalEntries = computed(() => {
               {{ vehicle.year }}
             </Badge>
           </div>
-          <span class="text-muted-foreground text-xs">
-            Owned by {{ details.owner.name }}
-          </span>
+          <span class="text-muted-foreground text-xs"> Owned by {{ details.owner.name }} </span>
         </div>
       </div>
 
@@ -105,9 +101,9 @@ const totalEntries = computed(() => {
 
       <!-- Vehicle Information -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Information</h4>
+        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Information</h4>
         <div class="grid grid-cols-2 gap-x-6 gap-y-2.5">
-          <DetailRow label="Type" :value="vehicle?.type.nameKey?.split('.').pop() ?? ''" />
+          <DetailRow label="Type" :value="vehicle?.type.code" />
           <DetailRow label="Fuel type" :value="FUEL_TYPES[vehicle?.fuelType as FuelTypeCode]?.label ?? ''" />
           <DetailRow v-if="vehicle?.licensePlate" label="License plate" :value="vehicle.licensePlate" />
           <DetailRow v-if="vehicle?.vin" label="VIN" :value="vehicle.vin" />
@@ -128,47 +124,28 @@ const totalEntries = computed(() => {
 
       <!-- Lifetime Stats -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Lifetime Stats</h4>
+        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Lifetime Stats</h4>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <StatCard
-            icon="refill"
-            :value="details.counts.refills"
-            label="Refills"
-          />
-          <StatCard
-            icon="maintenance"
-            :value="details.counts.maintenances"
-            label="Maintenances"
-          />
-          <StatCard
-            icon="todo"
-            :value="details.counts.todos"
-            label="To-dos"
-          />
-          <StatCard
-            icon="notes"
-            :value="details.counts.notes"
-            label="Notes"
-          />
-          <StatCard
-            icon="shoppingCart"
-            :value="details.counts.shoppingItems"
-            label="Shopping items"
-          />
-          <StatCard
-            icon="stats"
-            :value="totalEntries"
-            label="Total entries"
-          />
+          <StatCard icon="refill" :value="details.counts.refills" label="Refills" />
+          <StatCard icon="maintenance" :value="details.counts.maintenances" label="Maintenances" />
+          <StatCard icon="todo" :value="details.counts.todos" label="To-dos" />
+          <StatCard icon="notes" :value="details.counts.notes" label="Notes" />
+          <StatCard icon="shoppingCart" :value="details.counts.shoppingItems" label="Shopping items" />
+          <StatCard icon="stats" :value="totalEntries" label="Total entries" />
         </div>
       </section>
 
       <!-- Fuel & Cost Summary -->
       <section
-        v-if="details.lifetimeStats.totalFuelConsumed || details.lifetimeStats.totalCost || details.lifetimeStats.totalTrackedDistance || details.lifetimeStats.totalTrackedHours"
+        v-if="
+          details.lifetimeStats.totalFuelConsumed ||
+          details.lifetimeStats.totalCost ||
+          details.lifetimeStats.totalTrackedDistance ||
+          details.lifetimeStats.totalTrackedHours
+        "
         class="flex flex-col gap-3"
       >
-        <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Consumption & Cost</h4>
+        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Consumption & Cost</h4>
         <div class="grid grid-cols-2 gap-x-6 gap-y-2.5">
           <DetailRow
             v-if="details.lifetimeStats.totalFuelConsumed"
@@ -198,7 +175,7 @@ const totalEntries = computed(() => {
       <!-- Storage -->
       <section class="flex flex-col gap-3">
         <div class="flex items-baseline justify-between">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Cloud Storage</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Cloud Storage</h4>
           <span class="text-foreground text-sm font-medium tabular-nums">{{ totalStorageMB }} MB</span>
         </div>
 
@@ -224,46 +201,3 @@ const totalEntries = computed(() => {
     </template>
   </ResponsiveFormDialog>
 </template>
-
-<!-- DetailRow sub-component -->
-<script lang="ts">
-import { defineComponent, h } from "vue";
-
-const DetailRow = defineComponent({
-  name: "DetailRow",
-  props: {
-    label: { type: String, required: true },
-    value: { type: String, required: true },
-  },
-  setup(props) {
-    return () =>
-      h("div", { class: "flex flex-col gap-0.5" }, [
-        h("span", { class: "text-muted-foreground text-xs" }, props.label),
-        h("span", { class: "text-foreground text-sm font-medium" }, props.value || "\u2014"),
-      ]);
-  },
-});
-
-const StatCard = defineComponent({
-  name: "StatCard",
-  props: {
-    icon: { type: String, required: true },
-    value: { type: Number, required: true },
-    label: { type: String, required: true },
-  },
-  setup(props) {
-    return () =>
-      h(
-        "div",
-        { class: "bg-muted/50 flex items-center gap-3 rounded-lg px-3 py-2.5" },
-        [
-          h(Icon, { name: props.icon as any, size: "sm", class: "text-muted-foreground shrink-0" }),
-          h("div", { class: "flex flex-col" }, [
-            h("span", { class: "text-foreground text-base font-medium tabular-nums leading-tight" }, String(props.value)),
-            h("span", { class: "text-muted-foreground text-xs leading-tight" }, props.label),
-          ]),
-        ],
-      );
-  },
-});
-</script>

@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
 import { useRefillByIdQuery } from "@/lib/queries/refills/refill-queries.ts";
 import { useRefillDelete } from "@/lib/queries/refills/refill-mutations.ts";
 import { computed, ref } from "vue";
+import DetailRow from "@/components/ui/DetailRow.vue";
 
 const modalStore = useModalStore();
 
@@ -26,9 +27,7 @@ const { data: refill, isLoading } = useRefillByIdQuery(refillId);
 
 // Vehicle data from cache
 const { data: vehicles } = useVehiclesAll();
-const vehicle = computed(() =>
-  vehicles.value?.find((v) => v.vehicleData.id === refill.value?.vehicleId)?.vehicleData,
-);
+const vehicle = computed(() => vehicles.value?.find((v) => v.vehicleData.id === refill.value?.vehicleId)?.vehicleData);
 
 const { preferredCurrencySymbol } = useCurrentUser();
 
@@ -81,13 +80,9 @@ async function handleDelete() {
     <template v-else-if="refill">
       <!-- Vehicle identity -->
       <div class="flex items-start gap-4">
-        <VehicleAvatar
-          :src="vehicle?.image"
-          :type="vehicle?.type.code"
-          class="h-16 w-22 shrink-0 rounded-lg"
-        />
+        <VehicleAvatar :src="vehicle?.image" :type="vehicle?.type.code" class="h-16 w-22 shrink-0 rounded-lg" />
         <div class="flex min-w-0 flex-col gap-1">
-          <h3 class="truncate text-lg font-medium leading-tight">{{ vehicle?.name }}</h3>
+          <h3 class="truncate text-lg leading-tight font-medium">{{ vehicle?.name }}</h3>
           <div class="flex flex-wrap items-center gap-1.5">
             <Badge v-if="vehicle?.make" class="bg-muted text-foreground rounded-md text-xs font-normal">
               {{ vehicle.make }}
@@ -112,9 +107,7 @@ async function handleDelete() {
           <Icon name="fullRefill" size="sm" />
           Full tank
         </Badge>
-        <Badge v-if="!refill.fullRefill" class="bg-muted text-muted-foreground gap-1 font-medium">
-          Partial fill
-        </Badge>
+        <Badge v-if="!refill.fullRefill" class="bg-muted text-muted-foreground gap-1 font-medium"> Partial fill </Badge>
         <Badge v-if="refill.skippedRefill" class="bg-warning/15 text-warning gap-1 font-medium">
           <Icon name="skipped" size="sm" />
           Missed fill-up
@@ -125,7 +118,7 @@ async function handleDelete() {
 
       <!-- Main data grid -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Details</h4>
+        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Details</h4>
         <div class="grid grid-cols-2 gap-x-6 gap-y-3">
           <DetailRow label="Fuel amount" :value="`${refill.fuelVolume.value} ${refill.fuelVolume.unit}`" />
           <DetailRow label="Odometer" :value="`${refill.odometer.value.toLocaleString()} ${refill.odometer.unit}`" />
@@ -151,7 +144,7 @@ async function handleDelete() {
       <template v-if="refill.notes">
         <Separator />
         <section class="flex flex-col gap-2">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Notes</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Notes</h4>
           <p class="text-foreground text-sm leading-relaxed whitespace-pre-line">{{ refill.notes }}</p>
         </section>
       </template>
@@ -160,7 +153,7 @@ async function handleDelete() {
       <template v-if="refill.creator">
         <Separator />
         <section class="flex flex-col gap-2">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Logged by</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Logged by</h4>
           <div class="flex items-center gap-2">
             <div class="bg-muted flex size-7 items-center justify-center rounded-full">
               <Icon name="user" size="sm" class="text-muted-foreground" />
@@ -174,7 +167,7 @@ async function handleDelete() {
       <template v-if="false">
         <Separator />
         <section class="flex flex-col gap-3">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Attachments</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Attachments</h4>
           <div class="border-border flex flex-col items-center gap-2 rounded-lg border border-dashed px-4 py-6">
             <div class="bg-muted rounded-full p-2">
               <Icon name="files" class="text-muted-foreground" />
@@ -210,23 +203,3 @@ async function handleDelete() {
     </template>
   </ResponsiveFormDialog>
 </template>
-
-<!-- DetailRow sub-component -->
-<script lang="ts">
-import { defineComponent, h } from "vue";
-
-const DetailRow = defineComponent({
-  name: "DetailRow",
-  props: {
-    label: { type: String, required: true },
-    value: { type: String, required: true },
-  },
-  setup(props) {
-    return () =>
-      h("div", { class: "flex flex-col gap-0.5" }, [
-        h("span", { class: "text-muted-foreground text-xs" }, props.label),
-        h("span", { class: "text-foreground text-sm font-medium" }, props.value || "\u2014"),
-      ]);
-  },
-});
-</script>
