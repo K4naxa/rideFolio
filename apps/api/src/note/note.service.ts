@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppNotFoundException } from 'src/exceptions';
 import { Note, NoteSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { Prisma } from 'prisma/generated/client';
@@ -42,7 +43,7 @@ export class NoteService {
       where: { id: noteId },
     });
     if (!note) {
-      throw new NotFoundException('Note not found');
+      throw new AppNotFoundException();
     }
 
     // Validate permissions
@@ -95,7 +96,7 @@ export class NoteService {
       include: { vehicle: true },
     });
 
-    if (!updatedNote) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!updatedNote) throw new AppNotFoundException();
 
     return this.toNoteFormat(updatedNote);
   }
@@ -106,7 +107,7 @@ export class NoteService {
       include: { vehicle: { select: { ownerId: true } } },
     });
 
-    if (!note) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!note) throw new AppNotFoundException();
 
     await this.prisma.$transaction(async (tx) => {
       await this.limitsService.decrementStorageUsage(tx, note.vehicle.ownerId, 'NOTE', note.sizeBytes);
@@ -124,7 +125,7 @@ export class NoteService {
         vehicle: true,
       },
     });
-    if (!note) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!note) throw new AppNotFoundException();
 
     return this.toNoteFormat(note);
   }

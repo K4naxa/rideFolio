@@ -1,5 +1,6 @@
 import { UnitConversionService } from '../../utils/unit-conversion.service';
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { AppBadRequestException, AppNotFoundException } from 'src/exceptions';
 import { Prisma, Refill, Vehicle } from 'prisma/generated/client';
 import { RefillSchemaOutput, TRefillForClient } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -166,7 +167,7 @@ export class RefillsService {
 
   async deleteRefill(userSession: UserSession, refillId: string): Promise<void> {
     const existingRefill = await this.prisma.refill.findUnique({ where: { id: refillId } });
-    if (!existingRefill) throw new NotFoundException('Refill not found');
+    if (!existingRefill) throw new AppNotFoundException();
 
     const vehicle = await this.authValidation.hasAccessToVehicle(userSession.user.id, existingRefill.vehicleId);
     const isHourly = vehicle.odometerType === 'HOUR';
@@ -264,10 +265,10 @@ export class RefillsService {
 
   async editRefill(userSession: UserSession, refillId: string, refillData: RefillSchemaOutput): Promise<void> {
     const existingRefill = await this.prisma.refill.findUnique({ where: { id: refillId } });
-    if (!existingRefill) throw new NotFoundException('Refill not found');
+    if (!existingRefill) throw new AppNotFoundException();
 
     if (refillData.vehicleId !== existingRefill.vehicleId) {
-      throw new BadRequestException('Cannot change the vehicle of a refill');
+      throw AppBadRequestException.formError('Cannot change the vehicle of a refill');
     }
 
     const [vehicle, user] = await Promise.all([
@@ -479,6 +480,31 @@ export class RefillsService {
     });
   }
 
+  async getRefillById(userSession: UserSession, refillId: string): Promise<TRefillForClient> {
+    const refill = await this.prisma.refill.findUnique({
+      where: { id: refillId },
+      select: this.refillTransformer.DB_refill_select(),
+    });
+
+    if (!refill) throw new AppNotFoundException();
+
+    // Validate user has access to the vehicle this refill belongs to
+    await this.authValidation.hasAccessToVehicle(userSession.user.id, refill.vehicle.id);
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userSession.user.id },
+      select: {
+        volumeUnit: true,
+        consumptionUnitCode_distance: true,
+        consumptionUnitCode_hour: true,
+      },
+    });
+
+    if (!user) throw new AppNotFoundException();
+
+    return this.refillTransformer.toClientRefill(refill, user);
+  }
+
   async getRefillsForChart(UserSession: UserSession, vehicleId: string, dateLimit: Date): Promise<TRefillForClient[]> {
     await this.authValidation.hasAccessToVehicle(UserSession.user.id, vehicleId);
 
@@ -503,7 +529,7 @@ export class RefillsService {
       }),
     ]);
 
-    if (!user) throw new BadRequestException('User not found');
+    if (!user) throw AppBadRequestException.formError('User not found');
 
     // Single-pass grouping with running average
     return refills.map((refill) => {
@@ -535,7 +561,7 @@ export class RefillsService {
         message = `Odometer must be less than ${maxValue} for the selected date.`;
       }
 
-      throw new BadRequestException({ message, field: 'odometer' });
+      throw AppBadRequestException.fieldError('odometer', message);
     }
   }
 
@@ -546,9 +572,7 @@ export class RefillsService {
         refill: refill,
         isHourly: isHourly,
       });
-      throw new BadRequestException({
-        message: `Something went wrong. Please try again.`,
-      });
+      throw AppBadRequestException.unknown();
     }
 
     return value;

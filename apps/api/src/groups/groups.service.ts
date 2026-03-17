@@ -1,4 +1,5 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppBadRequestException, AppForbiddenException, AppNotFoundException } from 'src/exceptions';
 import { Group, GroupMemberRole, Prisma } from 'prisma/generated/client';
 import { AccessibleGroup, GroupDetails, GroupInviteValues, GroupSchemaValues } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -54,15 +55,11 @@ export class GroupsService {
     } catch (error) {
       console.error('ERROR creating a group: ', error);
 
-      throw new BadRequestException({
-        message: 'Error creating a new group',
-      });
+      throw AppBadRequestException.formError('Error creating a new group');
     }
 
     if (!createdGroup) {
-      throw new BadRequestException({
-        message: 'Failed to create group',
-      });
+      throw AppBadRequestException.formError('Failed to create group');
     }
 
     return { newGroupId: createdGroup.id };
@@ -96,7 +93,7 @@ export class GroupsService {
       },
     });
 
-    if (!group) throw new NotFoundException(`Group not found or access denied.`);
+    if (!group) throw new AppNotFoundException();
 
     const vehiclesToRemove = group.vehicles.filter((v) => !vehicleIds.some((id) => id === v.vehicleId));
 
@@ -194,7 +191,7 @@ export class GroupsService {
       },
     });
 
-    if (!group || !groupVehicle) throw new NotFoundException(`Group or vehicle not found, or access denied.`);
+    if (!group || !groupVehicle) throw new AppNotFoundException();
 
     await this.prisma.$transaction(async (tx) => {
       // Delete the vehicle
@@ -241,8 +238,8 @@ export class GroupsService {
 
     // Prevent removing the owner of the group
     const memberToRemove = group?.members.find((member) => member.userId === userId);
-    if (!memberToRemove) throw new NotFoundException('Member not found in the group.');
-    if (memberToRemove.role === 'OWNER') throw new BadRequestException('Cannot remove the owner of the group.');
+    if (!memberToRemove) throw new AppNotFoundException();
+    if (memberToRemove.role === 'OWNER') throw AppBadRequestException.formError('Cannot remove the owner of the group.');
 
     const leavingUserVehicles = group?.vehicles.filter((v) => v.vehicle.ownerId === userId) || [];
 
@@ -288,7 +285,7 @@ export class GroupsService {
       include: this.groupTransformer.DB_GroupDetails_Include(),
     });
 
-    if (!groupDetails) throw new NotFoundException(`Group not found or access denied.`);
+    if (!groupDetails) throw new AppNotFoundException();
     return this.groupTransformer.toGroupDetails(groupDetails, userSession.user.id);
   }
 
@@ -311,7 +308,7 @@ export class GroupsService {
           },
         });
         if (!isOwner) {
-          throw new ForbiddenException(`Only the current OWNER can transfer ownership.`);
+          throw new AppForbiddenException();
         }
 
         // 1. Update the current OWNER to ADMIN
@@ -336,7 +333,7 @@ export class GroupsService {
       where: { id: groupId },
       select: { name: true },
     });
-    if (!group) throw new NotFoundException('Group not found.');
+    if (!group) throw new AppNotFoundException();
 
     // Notify the user about the role update if he did not do it himself (admins)
     if (userSession.user.id !== userId) {
@@ -361,7 +358,7 @@ export class GroupsService {
     });
 
     if (!groupToDelete) {
-      throw new ForbiddenException(`Group not found or access denied.`);
+      throw new AppForbiddenException();
     }
 
     await this.prisma.$transaction(async (tx) => {
@@ -423,7 +420,7 @@ export class GroupsService {
       where: { email: inviteData.email },
       select: { id: true },
     });
-    if (!receiver) throw new NotFoundException(`user not found.`);
+    if (!receiver) throw new AppNotFoundException();
 
     // 3. Create the group invite
     const groupInvite = await this.prisma.groupInvite.create({
@@ -507,7 +504,7 @@ export class GroupsService {
     const invite = await this.prisma.groupInvite.findUnique({
       where: { id: inviteId, receiverId: userSession.user.id },
     });
-    if (!invite) throw new NotFoundException(`Invite not found or access denied.`);
+    if (!invite) throw new AppNotFoundException();
 
     // Add user to the accepted group
     await this.prisma.$transaction(async (tx) => {
@@ -521,7 +518,7 @@ export class GroupsService {
     const invite = await this.prisma.groupInvite.findUnique({
       where: { id: inviteId, receiverId: userSession.user.id },
     });
-    if (!invite) throw new NotFoundException(`Invite not found or access denied.`);
+    if (!invite) throw new AppNotFoundException();
     // 2. Delete the invite
     await this.prisma.groupInvite.delete({
       where: { id: invite.id },
@@ -541,7 +538,7 @@ export class GroupsService {
       },
     });
     console.log('user invite permissions:', user);
-    if (!user) throw new ForbiddenException('You do not have permission to invite users to this group.');
+    if (!user) throw new AppForbiddenException();
   }
 
   private async addUserToGroup(

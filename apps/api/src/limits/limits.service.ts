@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { AppForbiddenException } from 'src/exceptions';
 import { MaintenanceInput, StorageBreakdown, VehicleInput } from '@repo/validation';
 import { Prisma, StorageUsageCategory } from 'prisma/generated/client';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
@@ -47,7 +48,7 @@ export class LimitsService {
       },
     });
 
-    if (!user) throw new ForbiddenException('user not found');
+    if (!user) throw new AppForbiddenException();
     return { ...user, vehicleCount: user._count.ownedVehicles };
   }
 

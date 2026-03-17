@@ -1,5 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { AppNotFoundException } from 'src/exceptions';
 import { Group, Vehicle } from 'prisma/generated/client';
 import { VehicleAccessPrisma } from '../auth/vehicle-access.prisma';
 
@@ -14,10 +15,7 @@ export class AuthValidationService {
 
     // If no vehicle is found, throw an exception.
     if (!vehicle) {
-      throw new NotFoundException({
-        code: 'NOT_FOUND_OR_ACCESS_DENIED',
-        message: 'Vehicle not found or access denied.',
-      });
+      throw new AppNotFoundException();
     }
 
     return vehicle;
@@ -42,7 +40,7 @@ export class AuthValidationService {
       Logger.error(
         'Permission denied: user: ' + userId + ' does not have permission to add vehicles to group: ' + groupId,
       );
-      throw new NotFoundException('Group not found or access denied.');
+      throw new AppNotFoundException();
     }
 
     return group;

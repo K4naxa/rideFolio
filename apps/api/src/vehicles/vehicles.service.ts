@@ -1,7 +1,8 @@
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { VehicleTransformerService } from './vehicleTransformer.service';
 import { VehicleRepository } from './vehicleRepository';
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { AppBadRequestException, AppNotFoundException } from 'src/exceptions';
 import { ActivityItem, BasicVehicle, TAccessibleVehicle, VehicleDetails, VehicleInput, VehicleType } from '@repo/validation';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
@@ -76,9 +77,7 @@ export class VehiclesService {
       // Link the vehicle to the user's private group
     } catch (error) {
       Logger.error('Error creating vehicle:', error);
-      throw new BadRequestException({
-        message: 'Unexpected error',
-      });
+      throw AppBadRequestException.unknown();
     }
   }
 
@@ -95,10 +94,7 @@ export class VehiclesService {
     });
 
     if (!result)
-      throw new NotFoundException({
-        code: 'NOT_FOUND_OR_ACCESS_DENIED',
-        message: 'Vehicle not found or access denied.',
-      });
+      throw new AppNotFoundException();
   }
 
   async delete(userSession: UserSession, vehicleId: string) {
@@ -117,10 +113,7 @@ export class VehiclesService {
     ]);
 
     if (!vehicle)
-      throw new NotFoundException({
-        code: 'NOT_FOUND_OR_ACCESS_DENIED',
-        message: 'Vehicle not found or access denied.',
-      });
+      throw new AppNotFoundException();
 
     const vehicleBytes = vehicle.sizeBytes;
     const refillsBytes = refillsSum._sum.sizeBytes ?? 0;
@@ -173,10 +166,7 @@ export class VehiclesService {
     });
 
     if (!vehicle) {
-      throw new NotFoundException({
-        code: 'NOT_FOUND_OR_ACCESS_DENIED',
-        message: 'Vehicle not found or access denied.',
-      });
+      throw new AppNotFoundException();
     }
 
     const [refillsSum, maintenancesSum, todosSum, notesSum, shoppingSum] = await Promise.all([
@@ -240,7 +230,7 @@ export class VehiclesService {
       });
     } catch (error) {
       console.error('Error fetching vehicle types:', error);
-      throw new BadRequestException({ message: 'Failed to fetch vehicle types.' });
+      throw AppBadRequestException.formError('Failed to fetch vehicle types.');
     }
   }
 
@@ -254,7 +244,7 @@ export class VehiclesService {
       });
     } catch (error) {
       console.error('Error fetching accessible vehicles:', error);
-      throw new BadRequestException({ message: 'Failed to fetch vehicles.' });
+      throw AppBadRequestException.formError('Failed to fetch vehicles.');
     }
   }
 
@@ -310,10 +300,7 @@ export class VehiclesService {
       where: { code: typeCode, isActive: true },
     });
     if (!vehicleType) {
-      throw new BadRequestException({
-        message: 'Invalid vehicle type provided',
-        field: 'type',
-      });
+      throw AppBadRequestException.fieldError('type', 'Invalid vehicle type provided');
     }
   }
 }

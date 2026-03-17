@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppNotFoundException } from 'src/exceptions';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CurrencyCode, TBasicProfile, UpdatePreferenceValues } from '@repo/validation';
 
@@ -44,7 +45,7 @@ export class UsersService {
 
     if (!user) {
       // This should never happen
-      throw new NotFoundException(`user not found or unauthorized access`);
+      throw new AppNotFoundException();
     }
 
     return {

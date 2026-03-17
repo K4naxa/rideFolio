@@ -1,4 +1,5 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppForbiddenException, AppNotFoundException } from 'src/exceptions';
 import { Vehicle } from 'prisma/generated/client';
 import { BaseTodo, TodoSchemaType } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -25,7 +26,7 @@ export class TodosService {
       where: { id: todoDto.vehicleId, ...VehicleAccessPrisma.forUser(userSession.user.id) },
     });
 
-    if (!vehicle) throw new ForbiddenException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!vehicle) throw new AppForbiddenException();
 
     const sizeBytes = await this.limitsService.canCreateLog(userSession.user.id, vehicle.ownerId, todoDto);
 
@@ -74,7 +75,7 @@ export class TodosService {
       include: this.todoFormatter.DB_include_baseTodo(),
     });
 
-    if (!todo) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!todo) throw new AppNotFoundException();
 
     return this.todoFormatter.toBaseTodo(todo);
   }
@@ -101,7 +102,7 @@ export class TodosService {
         select: { vehicle: { select: { odometerType: true, odometer_km: true, odometer_hour: true } } },
       })
       .then((r) => r?.vehicle);
-    if (!vehicle) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!vehicle) throw new AppNotFoundException();
 
     // if toggling !complete
     if (!complete) {
@@ -140,7 +141,7 @@ export class TodosService {
       where: { id: todoId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
       include: { vehicle: { select: { ownerId: true } } },
     });
-    if (!todo) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!todo) throw new AppNotFoundException();
 
     await this.prisma.$transaction(async (tx) => {
       await tx.todo.delete({
@@ -160,7 +161,7 @@ export class TodosService {
       where: { id: todoId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
       include: { vehicle: true },
     });
-    if (!oldTodo) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!oldTodo) throw new AppNotFoundException();
 
     const ownerId = oldTodo.vehicle.ownerId;
 

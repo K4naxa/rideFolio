@@ -1,12 +1,15 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { AppBadRequestException, AppForbiddenException, AppNotFoundException } from 'src/exceptions';
 import { Prisma, VehicleType } from 'prisma/generated/client';
-import { MaintenanceCategoryWithParts, MaintenanceInput } from '@repo/validation';
+import { ClientMaintenance, MaintenanceCategoryWithParts, MaintenanceInput } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthValidationService } from 'src/utils/authValidation.service';
 import { UnitConversionService } from 'src/utils/unit-conversion.service';
 import { LimitsService } from 'src/limits/limits.service';
 import { MaintenancePartTransformer } from 'src/logs/maintenance/maintenance-part.transformer';
+import { MaintenanceTransformerService } from 'src/logs/maintenance/maintenance.transformer.service';
+import { VehicleAccessPrisma } from '../../auth/vehicle-access.prisma';
 
 @Injectable()
 export class MaintenanceService {
@@ -16,7 +19,21 @@ export class MaintenanceService {
     private unitConversion: UnitConversionService,
     private limitsService: LimitsService,
     private partTransformer: MaintenancePartTransformer,
+    private maintenanceTransformer: MaintenanceTransformerService,
   ) {}
+
+  async getMaintenanceById(userSession: UserSession, maintenanceId: string): Promise<ClientMaintenance> {
+    const maintenance = await this.prisma.maintenance.findUnique({
+      where: { id: maintenanceId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
+      include: this.maintenanceTransformer.DB_ClientMaintenance_include(),
+    });
+
+    if (!maintenance) throw new AppForbiddenException();
+
+    // Validate user has access to the vehicle this maintenance belongs to
+
+    return this.maintenanceTransformer.toClientFormat(maintenance);
+  }
 
   async getCategoriesWithParts(vehicleType: VehicleType['code']): Promise<MaintenanceCategoryWithParts[]> {
     const vehicleType_id = await this.prisma.vehicleType.findUnique({
@@ -25,7 +42,7 @@ export class MaintenanceService {
     });
 
     if (!vehicleType_id) {
-      throw new BadRequestException(`Vehicle type not found: ${String(vehicleType)}`);
+      throw AppBadRequestException.formError(`Vehicle type not found: ${String(vehicleType)}`);
     }
 
     const categories = await this.prisma.maintenanceCategory.findMany({
@@ -129,8 +146,46 @@ export class MaintenanceService {
     });
   }
 
+  async deleteMaintenance(userSession: UserSession, maintenanceId: string): Promise<void> {
+    const maintenance = await this.prisma.maintenance.findUnique({
+      where: { id: maintenanceId },
+      include: { vehicle: { select: { id: true, ownerId: true } } },
+    });
+
+    if (!maintenance) throw new AppNotFoundException();
+
+    await this.authValidation.hasAccessToVehicle(userSession.user.id, maintenance.vehicleId);
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.maintenance.delete({ where: { id: maintenanceId } });
+
+      // Reverse monthly statistics
+      if (maintenance.costTotal && maintenance.costTotal > 0) {
+        await this.updateMonthlyStatistics({
+          prisma: tx,
+          vehicleId: maintenance.vehicleId,
+          date: maintenance.date,
+          costTotal: -maintenance.costTotal,
+        });
+
+        // Reverse vehicle lifetime total cost
+        await tx.vehicle.update({
+          where: { id: maintenance.vehicleId },
+          data: { lifetimeTotalCost: { decrement: maintenance.costTotal } },
+        });
+      }
+
+      // Decrement storage
+      await this.limitsService.decrementStorageUsage(
+        tx,
+        maintenance.vehicle.ownerId,
+        'MAINTENANCE',
+        maintenance.sizeBytes,
+      );
+    });
+  }
+
   // TODO: Update maintenance
-  // TODO: Delete maintenance
 
   // Helpers
   private async updateMonthlyStatistics({

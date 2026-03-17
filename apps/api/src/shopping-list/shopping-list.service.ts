@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppNotFoundException } from 'src/exceptions';
 import { ShoppingItem, ShoppingItemValues, ShoppingListDB_Select } from '@repo/validation';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { LimitsService } from 'src/limits/limits.service';
@@ -59,7 +60,7 @@ export class ShoppingListService {
       select: ShoppingListDB_Select,
     });
 
-    if (!result) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!result) throw new AppNotFoundException();
 
     return result;
   }
@@ -69,7 +70,7 @@ export class ShoppingListService {
       where: { id: itemId, ...VehicleAccessPrisma.nestedForUser(userSession.user.id) },
       include: { vehicle: { select: { ownerId: true } } },
     });
-    if (!item) throw new NotFoundException({ code: 'NOT_FOUND_OR_ACCESS_DENIED' });
+    if (!item) throw new AppNotFoundException();
 
     await this.prisma.$transaction(async (tx) => {
       await this.limitsService.decrementStorageUsage(tx, item.vehicle.ownerId, 'SHOPPING_LIST', item.sizeBytes);
