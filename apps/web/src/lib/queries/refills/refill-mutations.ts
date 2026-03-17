@@ -2,6 +2,7 @@ import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/queryKeys";
 import type { RefillSchemaInput, TAccessibleVehicle } from "@repo/validation";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { toast } from "vue-sonner";
 
 export function useRefillCreate() {
   const queryClient = useQueryClient();
@@ -40,6 +41,27 @@ export function useRefillCreate() {
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.consumptionCharts(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.heroStatCards(variables.vehicleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
+    },
+  });
+}
+
+export function useRefillDelete() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (variables: { refillId: string; vehicleId: string }) => {
+      const response = await api.delete(`/logs/refill/${variables.refillId}`);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.consumptionCharts(variables.vehicleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.heroStatCards(variables.vehicleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vehicles.all });
+      toast.success("Refill deleted successfully");
+    },
+    onError: (error) => {
+      console.error("Refill API: Delete Error ", error);
+      toast.error("Error deleting the refill");
     },
   });
 }
