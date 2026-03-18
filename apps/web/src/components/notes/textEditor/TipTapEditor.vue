@@ -71,7 +71,7 @@ const editor = useEditor({
   },
   editorProps: {
     attributes: {
-      class: "flex-1 outline-none break-words whitespace-pre-wrap w-full min-h-96",
+      class: "flex-1 outline-none break-words whitespace-pre-wrap w-full",
     },
   },
 });
