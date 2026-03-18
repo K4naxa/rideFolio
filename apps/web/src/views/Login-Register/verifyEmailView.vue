@@ -8,6 +8,7 @@ import { authClient } from "@/lib/authClient";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import Icon from "@/components/icons/Icon.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -206,8 +207,8 @@ function handleOtpInput(e: Event) {
             </p>
 
             <p class="text-muted-foreground text-center text-sm">
-              <Button variant="link" as-child class="h-auto p-0 text-sm">
-                <router-link to="/register">← Back to registration</router-link>
+              <Button variant="link" as-child class="flex h-auto items-center gap-2 p-0 text-sm">
+                <router-link to="/register"><Icon name="arrowLeft" /> Back to registration</router-link>
               </Button>
             </p>
           </CardContent>
