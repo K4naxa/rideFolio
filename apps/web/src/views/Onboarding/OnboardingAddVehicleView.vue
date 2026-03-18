@@ -249,11 +249,11 @@ const onSubmitVehicle = handleSubmit(async (inputValues) => {
             :disabled="isCreatingVehicle"
             @click="onSubmitVehicle"
           >
-            <span v-if="isCreatingVehicle">
-              <Spinner class="mr-2" />
+            <template v-if="isCreatingVehicle">
+              <Spinner />
               Creating…
-            </span>
-            <span v-else>Create Vehicle</span>
+            </template>
+            <template v-else>Create Vehicle</template>
           </Button>
         </DialogFooter>
       </CardContent>
