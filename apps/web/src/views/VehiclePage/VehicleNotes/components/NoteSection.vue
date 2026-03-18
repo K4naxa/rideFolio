@@ -136,6 +136,11 @@ if (!hasHeaderSlot.value) {
 defineExpose({
   saveStatus,
   values,
+  isNew,
+  isPinned,
+  isDeleting,
+  handleDelete,
+  handleTogglePin,
 });
 
 // Reset form whenever the note prop changes (when selecting a different note from the list)
@@ -198,7 +203,7 @@ watch(
           placeholder="Write your note here..."
           :editable="true"
           :error="errors.content ?? undefined"
-          class="min-h-40 gap-2"
+          class="min-h-32 gap-2 md:min-h-92"
         >
           <div>
             <Field v-slot="{ value, handleChange }" name="title">
@@ -208,7 +213,7 @@ watch(
                 type="text"
                 placeholder="Title"
                 maxlength="50"
-                class="w-full text-2xl"
+                class="w-full text-xl font-medium"
                 @keydown.enter.prevent="focus()"
               />
             </Field>
