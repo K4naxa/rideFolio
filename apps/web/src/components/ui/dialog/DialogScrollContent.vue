@@ -18,7 +18,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     <DialogOverlay
       :class="
         twMerge(
-          'fixed inset-0 z-50 grid place-items-center overflow-x-hidden overflow-y-auto bg-black/30 backdrop-blur-sm md:p-4 lg:p-8',
+          'fixed inset-0 z-50 grid place-items-center overflow-hidden bg-black/30 backdrop-blur-sm md:p-4',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:animate-in data-[state=closed]:animate-out duration-200 ease-in-out',
         )
       "
@@ -27,7 +27,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         ref="dialogContentRef"
         :class="
           twMerge(
-            'bg-card bottom-safe-area data relative isolate z-50 flex h-full w-full min-w-0 flex-1 flex-col gap-4 rounded border-0 p-4 shadow-lg sm:rounded-lg md:my-8 md:h-fit md:w-full md:border lg:p-6',
+            'bg-card bottom-safe-area relative isolate z-50 flex h-full max-h-full w-full min-w-0 flex-col overflow-hidden rounded border-0 shadow-lg sm:rounded-lg md:my-8 md:h-fit md:max-h-[calc(100vh-4rem)] md:w-full md:border',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-250',
             'focus-visible:outline-none',
             props.class,
@@ -44,7 +44,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
           }
         "
       >
-        <slot />
+        <div class="scrollbar-thin flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 lg:p-6">
+          <slot />
+        </div>
       </DialogContent>
     </DialogOverlay>
   </DialogPortal>
