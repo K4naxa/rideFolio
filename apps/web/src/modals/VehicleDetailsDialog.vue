@@ -12,6 +12,7 @@ import { getCurrencySymbol } from "@repo/validation";
 import { useModalStore } from "@/stores/modal.ts";
 import StatCard from "@/components/ui/StatCard.vue";
 import DetailRow from "@/components/ui/DetailRow.vue";
+import SectionHeader from "@/components/ui/SectionHeader.vue";
 
 const modalStore = useModalStore();
 
@@ -101,7 +102,7 @@ const totalEntries = computed(() => {
 
       <!-- Vehicle Information -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Information</h4>
+        <SectionHeader>Information</SectionHeader>
         <div class="grid grid-cols-2 gap-x-6 gap-y-2.5">
           <DetailRow label="Type" :value="vehicle?.type.code" />
           <DetailRow label="Fuel type" :value="FUEL_TYPES[vehicle?.fuelType as FuelTypeCode]?.label ?? ''" />
@@ -124,7 +125,7 @@ const totalEntries = computed(() => {
 
       <!-- Lifetime Stats -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Lifetime Stats</h4>
+        <SectionHeader>Lifetime Stats</SectionHeader>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <StatCard icon="refill" :value="details.counts.refills" label="Refills" />
           <StatCard icon="maintenance" :value="details.counts.maintenances" label="Maintenances" />
@@ -145,7 +146,7 @@ const totalEntries = computed(() => {
         "
         class="flex flex-col gap-3"
       >
-        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Consumption & Cost</h4>
+        <SectionHeader>Consumption & Cost</SectionHeader>
         <div class="grid grid-cols-2 gap-x-6 gap-y-2.5">
           <DetailRow
             v-if="details.lifetimeStats.totalFuelConsumed"
@@ -175,7 +176,7 @@ const totalEntries = computed(() => {
       <!-- Storage -->
       <section class="flex flex-col gap-3">
         <div class="flex items-baseline justify-between">
-          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Cloud Storage</h4>
+          <SectionHeader>Cloud Storage</SectionHeader>
           <span class="text-foreground text-sm font-medium tabular-nums">{{ totalStorageMB }} MB</span>
         </div>
 
