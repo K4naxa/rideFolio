@@ -5,7 +5,6 @@ import { BaseTodo } from "../todo";
 export const TimelineEventTypes = [
   "refill",
   "maintenance",
-  "todo-created",
   "todo-completed",
 ] as const;
 export type TimelineEventType = (typeof TimelineEventTypes)[number];
@@ -23,12 +22,6 @@ export interface TimelineMaintenanceItem {
   data: ClientMaintenance;
 }
 
-export interface TimelineTodoCreatedItem {
-  type: "todo-created";
-  timestamp: Date;
-  data: BaseTodo;
-}
-
 export interface TimelineTodoCompletedItem {
   type: "todo-completed";
   timestamp: Date;
@@ -38,7 +31,6 @@ export interface TimelineTodoCompletedItem {
 export type TimelineItem =
   | TimelineRefillItem
   | TimelineMaintenanceItem
-  | TimelineTodoCreatedItem
   | TimelineTodoCompletedItem;
 
 export type TimelineResponse = {

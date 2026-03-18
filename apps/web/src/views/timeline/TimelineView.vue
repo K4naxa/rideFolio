@@ -49,7 +49,6 @@ const allItems = computed<TimelineItem[]>(() => data.value?.pages.flatMap((p) =>
 const typeFilters = [
   { type: "refill" as TimelineEventType, label: "Refills", icon: "refill" as const },
   { type: "maintenance" as TimelineEventType, label: "Maintenance", icon: "maintenance" as const },
-  { type: "todo-created" as TimelineEventType, label: "Created", icon: "todo" as const },
   { type: "todo-completed" as TimelineEventType, label: "Completed", icon: "circleCheck" as const },
 ] as const;
 
@@ -148,14 +147,6 @@ const typeConfig = {
     accentClass: "border-l-maintenance",
     badgeClass: "bg-maintenance/10 text-maintenance",
   },
-  "todo-created": {
-    icon: "todo" as const,
-    label: "Task Created",
-    iconClass: "text-todo",
-    bgClass: "bg-todo/10 dark:bg-todo/15",
-    accentClass: "border-l-todo",
-    badgeClass: "bg-todo/10 text-todo",
-  },
   "todo-completed": {
     icon: "circleCheck" as const,
     label: "Task Completed",
@@ -177,7 +168,6 @@ function handleItemClick(item: TimelineItem) {
     case "maintenance":
       modalStore.onOpen("maintenanceDetails", item.data.id);
       break;
-    case "todo-created":
     case "todo-completed":
       modalStore.onOpen("todoDetails", item.data.id);
       break;
@@ -551,30 +541,6 @@ function handleItemClick(item: TimelineItem) {
                         {{ user.preferredCurrencySymbol }}
                       </span>
                     </div>
-                  </div>
-                </template>
-
-                <!-- ── Todo Created ── -->
-                <template v-else-if="item.type === 'todo-created'">
-                  <div class="border-b px-3 py-2">
-                    <div class="flex items-start justify-between gap-3">
-                      <Badge :class="typeConfig['todo-created'].badgeClass" class="font-medium">Task Created</Badge>
-                      <div class="flex items-center gap-4">
-                        <Badge v-if="!filters.vehicleId" variant="accent">
-                          {{ getVehicleNameById(item.data.vehicleId) }}
-                        </Badge>
-                        <span class="text-muted-foreground flex shrink-0 items-center gap-2 text-sm">
-                          <Icon name="calendar" size="sm" />
-                          {{ new Date(item.timestamp).toLocaleDateString() }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="px-3 py-2">
-                    <p class="text-sm font-medium">{{ item.data.title }}</p>
-                    <p v-if="item.data.description" class="text-muted-foreground mt-1 text-sm">
-                      {{ item.data.description }}
-                    </p>
                   </div>
                 </template>
 

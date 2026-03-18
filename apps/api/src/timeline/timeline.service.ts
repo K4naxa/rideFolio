@@ -52,7 +52,6 @@ export class TimelineService {
     const shouldInclude = {
       refills: !eventTypes || eventTypes.includes('refill'),
       maintenances: !eventTypes || eventTypes.includes('maintenance'),
-      todosCreated: !eventTypes || eventTypes.includes('todo-created'),
       todosCompleted: !eventTypes || eventTypes.includes('todo-completed'),
     };
 
@@ -102,31 +101,6 @@ export class TimelineService {
           type: 'maintenance' as const,
           timestamp: maintenance.date,
           data: this.maintenanceTransformer.toClientFormat(maintenance),
-        })),
-      );
-    }
-
-    // Fetch todos (created)
-    if (shouldInclude.todosCreated) {
-      const todos = await this.prisma.todo.findMany({
-        where: {
-          vehicleId: { in: vehicles },
-          createdAt: {
-            lt: cursorDate,
-            ...(startDate && { gte: startDate }),
-            ...(endDate && { lte: endDate }),
-          },
-        },
-        include: this.todoTransformer.DB_include_baseTodo(),
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-      });
-
-      items.push(
-        ...todos.map((todo) => ({
-          type: 'todo-created' as const,
-          timestamp: todo.createdAt,
-          data: this.todoTransformer.toBaseTodo(todo),
         })),
       );
     }
