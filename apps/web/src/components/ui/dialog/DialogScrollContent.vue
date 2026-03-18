@@ -34,15 +34,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
           )
         "
         v-bind="forwarded"
-        @pointer-down-outside="
-          (event) => {
-            const originalEvent = event.detail.originalEvent;
-            const target = originalEvent.target as HTMLElement;
-            if (originalEvent.offsetX > target.clientWidth || originalEvent.offsetY > target.clientHeight) {
-              event.preventDefault();
-            }
-          }
-        "
       >
         <div class="scrollbar-thin flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 lg:p-6">
           <slot />
