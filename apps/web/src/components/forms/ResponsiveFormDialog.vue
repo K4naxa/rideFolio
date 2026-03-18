@@ -67,7 +67,7 @@ function handleOpenChange(value: boolean) {
   <!-- Mobile: Bottom sheet drawer -->
   <template v-else>
     <Drawer :open="props.open" @update:open="handleOpenChange">
-      <DrawerContent class="data-[vaul-drawer-direction=bottom]:max-h-[90vh]" dismiss-from-pill>
+      <DrawerContent dismiss-from-pill>
         <!-- Scrollable body -->
         <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain">
           <slot name="mobileHeader">
