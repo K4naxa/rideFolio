@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
 import { useMaintenanceByIdQuery } from "@/lib/queries/maintenances/maintenance-queries.ts";
 import { useMaintenanceDelete } from "@/lib/queries/maintenances/maintenance-mutations.ts";
 import { computed, ref } from "vue";
+import DetailRow from "@/components/ui/DetailRow.vue";
 
 const modalStore = useModalStore();
 
@@ -19,15 +20,15 @@ const isOpen = computed(() => modalStore.isOpen && modalStore.type === "maintena
 const maintenanceId = computed(() => (isOpen.value ? modalStore.itemId : undefined));
 
 function handleOpenChange(value: boolean) {
-  if (!value) modalStore.onClose();
+  if (!value && modalStore.type === "maintenanceDetails") modalStore.onClose();
 }
 
 const { data: maintenance, isLoading } = useMaintenanceByIdQuery(maintenanceId);
 
 // Vehicle data from cache
 const { data: vehicles } = useVehiclesAll();
-const vehicle = computed(() =>
-  vehicles.value?.find((v) => v.vehicleData.id === maintenance.value?.vehicleId)?.vehicleData,
+const vehicle = computed(
+  () => vehicles.value?.find((v) => v.vehicleData.id === maintenance.value?.vehicleId)?.vehicleData,
 );
 
 const { preferredCurrencySymbol } = useCurrentUser();
@@ -76,13 +77,9 @@ async function handleDelete() {
     <template v-else-if="maintenance">
       <!-- Vehicle identity -->
       <div class="flex items-start gap-4">
-        <VehicleAvatar
-          :src="vehicle?.image"
-          :type="vehicle?.type.code"
-          class="h-16 w-22 shrink-0 rounded-lg"
-        />
+        <VehicleAvatar :src="vehicle?.image" :type="vehicle?.type.code" class="h-16 w-22 shrink-0 rounded-lg" />
         <div class="flex min-w-0 flex-col gap-1">
-          <h3 class="truncate text-lg font-medium leading-tight">{{ vehicle?.name }}</h3>
+          <h3 class="truncate text-lg leading-tight font-medium">{{ vehicle?.name }}</h3>
           <div class="flex flex-wrap items-center gap-1.5">
             <Badge v-if="vehicle?.make" class="bg-muted text-foreground rounded-md text-xs font-normal">
               {{ vehicle.make }}
@@ -109,7 +106,7 @@ async function handleDelete() {
       <!-- Notes / description -->
       <template v-if="maintenance.notes">
         <section class="flex flex-col gap-2">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Description</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Description</h4>
           <p class="text-foreground text-sm leading-relaxed whitespace-pre-line">{{ maintenance.notes }}</p>
         </section>
       </template>
@@ -118,7 +115,7 @@ async function handleDelete() {
 
       <!-- Key details grid -->
       <section class="flex flex-col gap-3">
-        <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Details</h4>
+        <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Details</h4>
         <div class="grid grid-cols-2 gap-x-6 gap-y-3">
           <DetailRow
             label="Odometer"
@@ -129,11 +126,7 @@ async function handleDelete() {
             label="Total cost"
             :value="`${preferredCurrencySymbol}${maintenance.costTotal.toFixed(2)}`"
           />
-          <DetailRow
-            v-if="maintenance.serviceProvider"
-            label="Service provider"
-            :value="maintenance.serviceProvider"
-          />
+          <DetailRow v-if="maintenance.serviceProvider" label="Service provider" :value="maintenance.serviceProvider" />
         </div>
       </section>
 
@@ -141,7 +134,7 @@ async function handleDelete() {
       <template v-if="maintenance.parts.length > 0">
         <Separator />
         <section class="flex flex-col gap-3">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Parts</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Parts</h4>
           <div class="flex flex-col gap-2">
             <div
               v-for="part in maintenance.parts"
@@ -155,12 +148,7 @@ async function handleDelete() {
                 <span v-if="part.label" class="text-muted-foreground text-xs">{{ part.label }}</span>
               </div>
               <div v-if="part.locations.length" class="flex flex-wrap gap-1">
-                <Badge
-                  v-for="loc in part.locations"
-                  :key="loc.id"
-                  variant="muted"
-                  class="text-xs font-normal"
-                >
+                <Badge v-for="loc in part.locations" :key="loc.id" variant="muted" class="text-xs font-normal">
                   {{ loc.nameKey.split(".").pop() }}
                 </Badge>
               </div>
@@ -173,7 +161,7 @@ async function handleDelete() {
       <template v-if="maintenance.image">
         <Separator />
         <section class="flex flex-col gap-3">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Photo</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Photo</h4>
           <img
             :src="maintenance.image"
             alt="Maintenance photo"
@@ -187,7 +175,7 @@ async function handleDelete() {
       <template v-if="false">
         <Separator />
         <section class="flex flex-col gap-3">
-          <h4 class="text-muted-foreground text-xs font-medium uppercase tracking-wide">Attachments</h4>
+          <h4 class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Attachments</h4>
           <div class="border-border flex flex-col items-center gap-2 rounded-lg border border-dashed px-4 py-6">
             <div class="bg-muted rounded-full p-2">
               <Icon name="files" class="text-muted-foreground" />
@@ -223,23 +211,3 @@ async function handleDelete() {
     </template>
   </ResponsiveFormDialog>
 </template>
-
-<!-- DetailRow sub-component -->
-<script lang="ts">
-import { defineComponent, h } from "vue";
-
-const DetailRow = defineComponent({
-  name: "DetailRow",
-  props: {
-    label: { type: String, required: true },
-    value: { type: String, required: true },
-  },
-  setup(props) {
-    return () =>
-      h("div", { class: "flex flex-col gap-0.5" }, [
-        h("span", { class: "text-muted-foreground text-xs" }, props.label),
-        h("span", { class: "text-foreground text-sm font-medium" }, props.value || "\u2014"),
-      ]);
-  },
-});
-</script>

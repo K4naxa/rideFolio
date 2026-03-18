@@ -20,7 +20,7 @@ const isOpen = computed(() => modalStore.isOpen && modalStore.type === "refillDe
 const refillId = computed(() => (isOpen.value ? modalStore.itemId : undefined));
 
 function handleOpenChange(value: boolean) {
-  if (!value) modalStore.onClose();
+  if (!value && modalStore.type === "refillDetails") modalStore.onClose();
 }
 
 const { data: refill, isLoading } = useRefillByIdQuery(refillId);

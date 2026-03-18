@@ -18,7 +18,7 @@ const isOpen = computed(() => modalStore.isOpen && modalStore.type === "todoDeta
 const todoId = computed(() => (isOpen.value ? modalStore.itemId : undefined));
 
 function handleOpenChange(value: boolean) {
-  if (!value) modalStore.onClose();
+  if (!value && modalStore.type === "todoDetails") modalStore.onClose();
 }
 
 const { data: todo, isLoading } = useTodoById(todoId);
