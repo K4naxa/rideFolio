@@ -124,7 +124,7 @@ defineExpose({
     <div
       :class="
         twMerge(
-          'scrollbar bg-card [&_input]: [&_input]: flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto rounded border-0 p-4 [&_input]:focus-visible:ring-0! [&_input]:focus-visible:outline-0! ' +
+          'scrollbar bg-input [&_input]: [&_input]: flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto rounded border-0 p-4 [&_input]:focus-visible:ring-0! [&_input]:focus-visible:outline-0! ' +
             '[&_input]:text-foreground/90',
           characterCountIsAtLimit ? 'border-destructive rounded border' : '',
           props.class,
