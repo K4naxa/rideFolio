@@ -12,10 +12,10 @@ import CardDescription from "@/components/ui/card/CardDescription.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import FormInput from "@/components/forms/FormInput.vue";
-import SelectLabel from "@/components/ui/select/SelectLabel.vue";
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
+import type { ResponsiveSelectOption } from "@/components/forms/ResponsiveSelect.vue";
+import { type IconProps } from "@/components/icons/Icon.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
@@ -36,11 +36,27 @@ const { handleSubmit, values } = useForm({
   validationSchema: VehicleInputSchema,
 });
 
-const selectedVehicleIcon = computed(() => {
-  const selectedType = values.type;
-  const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
-  return vehicleType?.icon as IconProps["name"];
-});
+const vehicleTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  (vehicleTypes?.value ?? []).map((type) => ({
+    value: type.code,
+    label: type.code,
+    icon: (type.icon as IconProps["name"]) ?? "otherVehicle",
+  })),
+);
+
+const odometerTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  Object.values(ODOMETER_TYPES).map((type) => ({
+    value: type.code,
+    label: type.label,
+  })),
+);
+
+const fuelTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  Object.values(FUEL_TYPES).map((type) => ({
+    value: type.code,
+    label: type.label,
+  })),
+);
 
 function skipOnboarding() {
   router.push({ name: "Dashboard" });
@@ -98,33 +114,14 @@ const onSubmitVehicle = handleSubmit(async (inputValues) => {
 
             <Field v-slot="{ value, handleChange }" name="type">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
-                  <SelectTrigger class="w-full" data-cy="type-trigger">
-                    <div class="flex items-center gap-3">
-                      <Icon v-if="selectedVehicleIcon" :name="selectedVehicleIcon" class="h-4 w-4" />
-                      <SelectValue placeholder="Select vehicle type *" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Vehicle type</SelectLabel>
-                    <Separator class="mb-1" />
-                    <SelectItem
-                      v-for="type in vehicleTypes"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`type-${type.code}-select`"
-                    >
-                      <span class="flex items-center gap-2">
-                        <Icon
-                          :name="type.icon ? (type.icon as IconProps['name']) : 'otherVehicle'"
-                          :type="type"
-                          class="h-4 w-4"
-                        />
-                        {{ type.code }}
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="vehicleTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  placeholder="Select vehicle type *"
+                  title="Vehicle type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage name="type" class="text-destructive mt-1 ml-1 text-sm" data-cy="type-error" />
               </div>
             </Field>
@@ -148,24 +145,14 @@ const onSubmitVehicle = handleSubmit(async (inputValues) => {
 
             <Field v-slot="{ value, handleChange }" name="odometerType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
-                  <SelectTrigger class="w-full" data-cy="odometer-type-trigger">
-                    <SelectValue placeholder="Odometer type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Odometer type</SelectLabel>
-                    <Separator class="mb-1" />
-
-                    <SelectItem
-                      v-for="type in ODOMETER_TYPES"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`odometer-type-${type.code}-select`"
-                    >
-                      {{ type.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="odometerTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  placeholder="Odometer type"
+                  title="Odometer type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage
                   name="odometerType"
                   class="text-destructive mt-1 ml-1 text-sm"
@@ -215,24 +202,14 @@ const onSubmitVehicle = handleSubmit(async (inputValues) => {
 
             <Field v-slot="{ value, handleChange }" name="fuelType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange">
-                  <SelectTrigger class="w-full" data-cy="fuel-type-trigger">
-                    <SelectValue placeholder="Fuel type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Fuel type</SelectLabel>
-                    <Separator class="mb-1" />
-
-                    <SelectItem
-                      v-for="type in FUEL_TYPES"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`fuel-type-${type.code}-select`"
-                    >
-                      {{ type.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="fuelTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  placeholder="Fuel type"
+                  title="Fuel type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage name="fuelType" class="text-destructive mt-1 ml-1 text-sm" data-cy="fuel-type-error" />
               </div>
             </Field>

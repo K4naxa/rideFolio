@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon, { type IconProps } from "@/components/icons/Icon.vue";
+import { type IconProps } from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
@@ -7,12 +7,6 @@ import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import Select from "@/components/ui/select/Select.vue";
-import SelectContent from "@/components/ui/select/SelectContent.vue";
-import SelectItem from "@/components/ui/select/SelectItem.vue";
-import SelectLabel from "@/components/ui/select/SelectLabel.vue";
-import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
-import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
@@ -26,6 +20,8 @@ import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import z from "zod";
 import FormInput from "@/components/forms/FormInput.vue";
+import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
+import type { ResponsiveSelectOption } from "@/components/forms/ResponsiveSelect.vue";
 
 const router = useRouter();
 
@@ -100,11 +96,27 @@ const onSubmit = handleSubmit(async (data) => {
   }
 });
 
-const selectedVehicleIcon = computed(() => {
-  const selectedType = values.type;
-  const vehicleType = vehicleTypes?.value ? vehicleTypes.value.find((type) => type.code === selectedType) : undefined;
-  return vehicleType?.icon as IconProps["name"];
-});
+const vehicleTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  (vehicleTypes?.value ?? []).map((type) => ({
+    value: type.code,
+    label: type.code,
+    icon: (type.icon as IconProps["name"]) ?? "otherVehicle",
+  })),
+);
+
+const odometerTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  Object.values(ODOMETER_TYPES).map((type) => ({
+    value: type.code,
+    label: type.label,
+  })),
+);
+
+const fuelTypeOptions = computed<ResponsiveSelectOption<string>[]>(() =>
+  Object.values(FUEL_TYPES).map((type) => ({
+    value: type.code,
+    label: type.label,
+  })),
+);
 
 watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
   if (open && vehicle) {
@@ -178,33 +190,15 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
             <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
-                  <SelectTrigger class="w-full" data-cy="type-trigger">
-                    <div class="flex items-center gap-3">
-                      <Icon v-if="selectedVehicleIcon" :name="selectedVehicleIcon" class="h-4 w-4" />
-                      <SelectValue placeholder="Select vehicle type *" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Vehicle type</SelectLabel>
-                    <Separator class="mb-1" />
-                    <SelectItem
-                      v-for="type in vehicleTypes"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`type-${type.code}-select`"
-                    >
-                      <span class="flex items-center gap-2">
-                        <Icon
-                          :name="type.icon ? (type.icon as IconProps['name']) : 'otherVehicle'"
-                          :type="type"
-                          class="h-4 w-4"
-                        />
-                        {{ type.code }}
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="vehicleTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  :disabled="!isCreatingNew"
+                  placeholder="Select vehicle type *"
+                  title="Vehicle type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage name="type" class="text-destructive mt-1 ml-1 text-sm" data-cy="type-error" />
               </div>
             </Field>
@@ -231,24 +225,15 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
 
             <Field v-slot="{ value, handleChange }" name="odometerType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
-                  <SelectTrigger class="w-full" data-cy="odometer-type-trigger">
-                    <SelectValue placeholder="Odometer type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Odometer type</SelectLabel>
-                    <Separator class="mb-1" />
-
-                    <SelectItem
-                      v-for="type in ODOMETER_TYPES"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`odometer-type-${type.code}-select`"
-                    >
-                      {{ type.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="odometerTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  :disabled="!isCreatingNew"
+                  placeholder="Odometer type"
+                  title="Odometer type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage
                   name="odometerType"
                   class="text-destructive mt-1 ml-1 text-sm"
@@ -310,24 +295,15 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
             <!-- Fuel Type -->
             <Field v-slot="{ value, handleChange }" name="fuelType">
               <div>
-                <Select :model-value="value" @update:model-value="handleChange" :disabled="!isCreatingNew">
-                  <SelectTrigger class="w-full" data-cy="fuel-type-trigger">
-                    <SelectValue placeholder="Fuel type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectLabel>Fuel type</SelectLabel>
-                    <Separator class="mb-1" />
-
-                    <SelectItem
-                      v-for="type in FUEL_TYPES"
-                      :key="type.code"
-                      :value="type.code"
-                      :data-cy="`fuel-type-${type.code}-select`"
-                    >
-                      {{ type.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <ResponsiveSelect
+                  :options="fuelTypeOptions"
+                  :modelValue="value"
+                  @update:model-value="handleChange"
+                  :disabled="!isCreatingNew"
+                  placeholder="Fuel type"
+                  title="Fuel type"
+                  triggerClass="inputField"
+                />
                 <ErrorMessage name="fuelType" class="text-destructive mt-1 ml-1 text-sm" data-cy="fuel-type-error" />
               </div>
             </Field>
