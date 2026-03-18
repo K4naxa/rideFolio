@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { type IconProps } from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
-import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
-import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
-import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
-import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehicle-mutations";
 import { useVehicleByIdQuery, useVehiclesAll, useVehicleTypes } from "@/lib/queries/vehicles/vehicle-queries";
@@ -155,178 +150,168 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
 </script>
 
 <template>
-  <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="w-full max-w-3xl">
-      <DialogHeader>
-        <DialogTitle>{{ isCreatingNew ? "Create new vehicle" : "Edit vehicle" }}</DialogTitle>
-        <DialogDescription>
-          {{
-            isCreatingNew
-              ? "Fill in the details below to add a new vehicle to your garage."
-              : "Edit the details of your vehicle."
-          }}
-        </DialogDescription>
-      </DialogHeader>
+  <ResponsiveFormDialog
+    :open="isModalOpen"
+    @close="handleClose"
+    :title="isCreatingNew ? 'Create vehicle' : 'Edit vehicle'"
+    :description="
+      isCreatingNew
+        ? 'Fill in the details below to add a new vehicle to your garage.'
+        : 'Edit the details of your vehicle.'
+    "
+    content-class="max-w-3xl"
+  >
+    <form @submit="onSubmit" class="space-y-8">
+      <!-- Image Upload -->
+      <Field v-slot="{ value, handleChange }" name="image">
+        <UploadImage disabled title="Upload a picture" :value="value" @change="handleChange" data-cy="image" />
+        <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
+      </Field>
 
-      <form @submit="onSubmit" class="space-y-8">
-        <!-- Image Upload -->
-        <Field v-slot="{ value, handleChange }" name="image">
-          <UploadImage disabled title="Upload a picture" :value="value" @change="handleChange" data-cy="image" />
-          <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
-        </Field>
+      <!-- Identity -->
+      <div class="space-y-4">
+        <SectionHeader>Identity</SectionHeader>
 
-        <!-- Identity -->
-        <div class="space-y-4">
-          <SectionHeader>Identity</SectionHeader>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormInput label="Name" placeholder="Weekend Toy" name="name" type="text" data-cy="name" autocomplete="off" />
 
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormInput
-              label="Name"
-              placeholder="Weekend Toy"
-              name="name"
-              type="text"
-              data-cy="name"
-              autocomplete="off"
-            />
-
-            <Field v-slot="{ value, handleChange }" name="type">
-              <div>
-                <ResponsiveSelect
-                  :options="vehicleTypeOptions"
-                  :modelValue="value"
-                  @update:model-value="handleChange"
-                  :disabled="!isCreatingNew"
-                  placeholder="Choose a type"
-                  description="What type of vehicle are you adding?"
-                  title="Vehicle type"
-                  label="Vehicle type"
-                  triggerClass="inputField"
-                />
-                <ErrorMessage name="type" class="text-destructive mt-1 ml-1 text-sm" data-cy="type-error" />
-              </div>
-            </Field>
-          </div>
+          <Field v-slot="{ value, handleChange }" name="type">
+            <div>
+              <ResponsiveSelect
+                :options="vehicleTypeOptions"
+                :modelValue="value"
+                @update:model-value="handleChange"
+                :disabled="!isCreatingNew"
+                placeholder="Choose a type"
+                description="What type of vehicle are you adding?"
+                title="Vehicle type"
+                label="Vehicle type"
+                triggerClass="inputField"
+              />
+              <ErrorMessage name="type" class="text-destructive mt-1 ml-1 text-sm" data-cy="type-error" />
+            </div>
+          </Field>
         </div>
+      </div>
 
-        <!-- Vehicle info -->
-        <div class="space-y-4">
-          <SectionHeader>Vehicle info</SectionHeader>
+      <!-- Vehicle info -->
+      <div class="space-y-4">
+        <SectionHeader>Vehicle info</SectionHeader>
 
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormInput label="Make" placeholder="Porsche" name="make" type="text" data-cy="make" autocomplete="off" />
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormInput label="Make" placeholder="Porsche" name="make" type="text" data-cy="make" autocomplete="off" />
 
-            <FormInput label="Model" placeholder="911" name="model" type="text" data-cy="model" autocomplete="off" />
+          <FormInput label="Model" placeholder="911" name="model" type="text" data-cy="model" autocomplete="off" />
 
-            <FormInput
-              label="Year"
-              placeholder="1997"
-              type="number"
-              name="year"
-              autocomplete="off"
-              :min="1900"
-              :max="new Date().getFullYear()"
-              data-cy="year"
-            />
-          </div>
+          <FormInput
+            label="Year"
+            placeholder="1997"
+            type="number"
+            name="year"
+            autocomplete="off"
+            :min="1900"
+            :max="new Date().getFullYear()"
+            data-cy="year"
+          />
         </div>
+      </div>
 
-        <!-- Tracking setup -->
-        <div class="space-y-4">
-          <SectionHeader>Tracking</SectionHeader>
+      <!-- Tracking setup -->
+      <div class="space-y-4">
+        <SectionHeader>Tracking</SectionHeader>
 
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field v-slot="{ value, handleChange }" name="odometerType">
-              <div>
-                <ResponsiveSelect
-                  :options="odometerTypeOptions"
-                  :modelValue="value"
-                  @update:model-value="handleChange"
-                  :disabled="!isCreatingNew"
-                  placeholder="Select unit"
-                  description="What unit does the odometer use?"
-                  title="Odometer unit"
-                  label="Odometer unit"
-                  triggerClass="inputField"
-                />
-                <ErrorMessage
-                  name="odometerType"
-                  class="text-destructive mt-1 ml-1 text-sm"
-                  data-cy="odometer-type-error"
-                />
-              </div>
-            </Field>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field v-slot="{ value, handleChange }" name="odometerType">
+            <div>
+              <ResponsiveSelect
+                :options="odometerTypeOptions"
+                :modelValue="value"
+                @update:model-value="handleChange"
+                :disabled="!isCreatingNew"
+                placeholder="Select unit"
+                description="What unit does the odometer use?"
+                title="Odometer unit"
+                label="Odometer unit"
+                triggerClass="inputField"
+              />
+              <ErrorMessage
+                name="odometerType"
+                class="text-destructive mt-1 ml-1 text-sm"
+                data-cy="odometer-type-error"
+              />
+            </div>
+          </Field>
 
-            <FormInput
-              label="Current reading"
-              :disabled="!isCreatingNew"
-              placeholder="58000"
-              name="odometer"
-              type="number"
-              autocomplete="off"
-              :min="0"
-              input-mode="numeric"
-              :suffix="getOdometerUnit(values.odometerType)"
-              data-cy="odometer"
-            />
+          <FormInput
+            label="Current reading"
+            :disabled="!isCreatingNew"
+            placeholder="58000"
+            name="odometer"
+            type="number"
+            autocomplete="off"
+            :min="0"
+            input-mode="numeric"
+            :suffix="getOdometerUnit(values.odometerType)"
+            data-cy="odometer"
+          />
 
-            <Field v-slot="{ value, handleChange }" name="fuelType">
-              <div>
-                <ResponsiveSelect
-                  :options="fuelTypeOptions"
-                  :modelValue="value"
-                  @update:model-value="handleChange"
-                  :disabled="!isCreatingNew"
-                  placeholder="Select fuel"
-                  title="Fuel type"
-                  label="Fuel type"
-                  triggerClass="inputField"
-                />
-                <ErrorMessage name="fuelType" class="text-destructive mt-1 ml-1 text-sm" data-cy="fuel-type-error" />
-              </div>
-            </Field>
-          </div>
+          <Field v-slot="{ value, handleChange }" name="fuelType">
+            <div>
+              <ResponsiveSelect
+                :options="fuelTypeOptions"
+                :modelValue="value"
+                @update:model-value="handleChange"
+                :disabled="!isCreatingNew"
+                placeholder="Select fuel"
+                title="Fuel type"
+                label="Fuel type"
+                triggerClass="inputField"
+              />
+              <ErrorMessage name="fuelType" class="text-destructive mt-1 ml-1 text-sm" data-cy="fuel-type-error" />
+            </div>
+          </Field>
         </div>
+      </div>
 
-        <!-- Registration -->
-        <div class="space-y-4">
-          <SectionHeader>Registration</SectionHeader>
+      <!-- Registration -->
+      <div class="space-y-4">
+        <SectionHeader>Registration</SectionHeader>
 
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormInput
-              label="License plate"
-              placeholder="ABC-123"
-              toUpperCase
-              name="licensePlate"
-              type="text"
-              autocomplete="off"
-              data-cy="license-plate"
-              :maxLength="10"
-            />
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormInput
+            label="License plate"
+            placeholder="ABC-123"
+            toUpperCase
+            name="licensePlate"
+            type="text"
+            autocomplete="off"
+            data-cy="license-plate"
+            :maxLength="10"
+          />
 
-            <FormInput
-              label="VIN"
-              placeholder="17-character identifier"
-              toUpperCase
-              name="vin"
-              type="text"
-              data-cy="vin"
-              autocomplete="off"
-            />
-          </div>
+          <FormInput
+            label="VIN"
+            placeholder="17-character identifier"
+            toUpperCase
+            name="vin"
+            type="text"
+            data-cy="vin"
+            autocomplete="off"
+          />
         </div>
-      </form>
+      </div>
+    </form>
 
-      <DialogFooter class="mt-4">
-        <Button v-if="createPending" disabled variant="submit">
-          <Spinner class="mr-2" />
-          {{ isCreatingNew ? "Creating…" : "Updating…" }}
-        </Button>
-        <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit">
-          {{ isCreatingNew ? "Create" : "Update" }}
-        </Button>
+    <template #footer>
+      <Button v-if="createPending" disabled variant="submit">
+        <Spinner class="mr-2" />
+        {{ isCreatingNew ? "Creating…" : "Updating…" }}
+      </Button>
+      <Button v-else type="button" @click="onSubmit" variant="submit" data-cy="submit">
+        {{ isCreatingNew ? "Create" : "Update" }}
+      </Button>
 
-        <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Cancel </Button>
-      </DialogFooter>
-    </DialogScrollContent>
-  </Dialog>
+      <Button type="button" variant="outline" class="w-full sm:w-auto" @click="handleClose"> Cancel </Button>
+    </template>
+  </ResponsiveFormDialog>
 </template>
