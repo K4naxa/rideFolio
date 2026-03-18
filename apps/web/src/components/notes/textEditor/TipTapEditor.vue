@@ -139,13 +139,3 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Target the Tiptap editor instance */
-:deep(.ProseMirror) {
-  overflow-wrap: break-word;
-  word-break: break-word;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-</style>
