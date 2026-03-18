@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
-// Components
-import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
-import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
-import { DialogScrollContent } from "@/components/ui/dialog";
+import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import Icon from "@/components/icons/Icon.vue";
@@ -23,52 +18,45 @@ const { data: editableNote } = useNoteByIdQuery(
   computed(() => (modalStore.type === "createNote" && modalStore.itemId ? modalStore.itemId : undefined)),
 );
 
+const noteSectionRef = ref<InstanceType<typeof NoteSection> | null>(null);
+
 const handleClose = () => {
   modalStore.onClose();
 };
 </script>
 
 <template>
-  <Dialog :open="isModalOpen" @update:open="handleClose">
-    <DialogScrollContent class="h-full max-w-4xl lg:h-fit lg:max-h-[90vh] lg:min-h-96">
-      <NoteSection :note="editableNote" @close="handleClose" @deleted="handleClose">
-        <template #header="{ isNew, isPinned, isDeleting, saveStatus, onDelete, onTogglePin }">
-          <DialogHeader>
-            <DialogTitle class="flex items-center">
-              <Icon name="notes" /> {{ isNew ? "New Note" : "Edit Note" }}
+  <ResponsiveFormDialog
+    :open="isModalOpen"
+    @close="handleClose"
+    :title="editableNote ? 'Edit Note' : 'New Note'"
+    icon="notes"
+    content-class="max-w-4xl lg:min-h-96"
+  >
+    <template #headerActions>
+      <div class="grid aspect-square w-8 place-items-center rounded-sm border">
+        <Spinner v-if="noteSectionRef?.saveStatus === 'saving'" class="size-4" />
+        <SaveIcon v-else-if="noteSectionRef?.saveStatus === 'pending'" class="stroke-warning size-4" />
+        <CheckIcon v-else class="stroke-success size-4" />
+      </div>
 
-              <div class="ml-auto flex items-center gap-2">
-                <!-- Status indicator -->
-                <div class="grid aspect-square w-8 place-items-center rounded-sm border">
-                  <Spinner v-if="saveStatus === 'saving'" class="size-4" />
-                  <SaveIcon v-else-if="saveStatus === 'pending'" class="stroke-warning size-4" />
-                  <CheckIcon v-else class="stroke-success size-4" />
-                </div>
+      <template v-if="!noteSectionRef?.isNew">
+        <Button
+          variant="ghost"
+          size="icon"
+          :disabled="noteSectionRef?.isDeleting"
+          class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
+          @click="noteSectionRef?.handleDelete()"
+        >
+          <Icon name="trash" class="size-4 stroke-inherit" />
+        </Button>
 
-                <!-- Actions for existing notes -->
-                <template v-if="!isNew">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    :disabled="isDeleting"
-                    class="stroke-muted-foreground hover:bg-destructive/20 hover:stroke-destructive"
-                    @click="onDelete"
-                  >
-                    <Icon name="trash" class="size-4 stroke-inherit" />
-                  </Button>
+        <Button variant="ghost" size="icon" @click="noteSectionRef?.handleTogglePin()">
+          <Icon name="pin" :class="['size-4', noteSectionRef?.isPinned && 'stroke-primary']" />
+        </Button>
+      </template>
+    </template>
 
-                  <Button variant="ghost" size="icon" @click="onTogglePin">
-                    <Icon :name="isPinned ? 'pin' : 'pin'" :class="['size-4', isPinned && 'stroke-primary']" />
-                  </Button>
-                </template>
-              </div>
-            </DialogTitle>
-            <DialogDescription class="sr-only">
-              {{ isNew ? "Create a new note" : "Edit your note" }}
-            </DialogDescription>
-          </DialogHeader>
-        </template>
-      </NoteSection>
-    </DialogScrollContent>
-  </Dialog>
+    <NoteSection ref="noteSectionRef" :note="editableNote" @close="handleClose" @deleted="handleClose" />
+  </ResponsiveFormDialog>
 </template>
