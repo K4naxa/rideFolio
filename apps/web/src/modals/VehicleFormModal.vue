@@ -7,7 +7,6 @@ import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogScrollContent from "@/components/ui/dialog/DialogScrollContent.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import UploadImage from "@/components/ui/UploadImage.vue";
 import { useVehicleCreate, useVehicleUpdate } from "@/lib/queries/vehicles/vehicle-mutations";
@@ -22,6 +21,7 @@ import z from "zod";
 import FormInput from "@/components/forms/FormInput.vue";
 import ResponsiveSelect from "@/components/forms/ResponsiveSelect.vue";
 import type { ResponsiveSelectOption } from "@/components/forms/ResponsiveSelect.vue";
+import SectionHeader from "@/components/ui/SectionHeader.vue";
 
 const router = useRouter();
 
@@ -175,19 +175,20 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
           <ErrorMessage name="image" class="text-destructive mt-1 ml-1 text-sm" />
         </Field>
 
-        <!-- Basic information -->
-        <div class="space-y-6">
-          <div>
-            <h4 class="mb-2">Basic details</h4>
-            <Separator />
-          </div>
+        <!-- Identity -->
+        <div class="space-y-4">
+          <SectionHeader>Identity</SectionHeader>
 
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <!-- Name -->
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormInput
+              label="Name"
+              placeholder="Weekend Toy"
+              name="name"
+              type="text"
+              data-cy="name"
+              autocomplete="off"
+            />
 
-            <FormInput placeholder="Nickname *" name="name" type="text" data-cy="name" autocomplete="off" />
-
-            <!-- Type -->
             <Field v-slot="{ value, handleChange }" name="type">
               <div>
                 <ResponsiveSelect
@@ -195,26 +196,30 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
                   :modelValue="value"
                   @update:model-value="handleChange"
                   :disabled="!isCreatingNew"
-                  placeholder="Select vehicle type *"
+                  placeholder="Choose a type"
+                  description="What type of vehicle are you adding?"
                   title="Vehicle type"
+                  label="Vehicle type"
                   triggerClass="inputField"
                 />
                 <ErrorMessage name="type" class="text-destructive mt-1 ml-1 text-sm" data-cy="type-error" />
               </div>
             </Field>
           </div>
+        </div>
 
-          <!-- Make and Model -->
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <FormInput placeholder="Make" name="make" type="text" data-cy="make" autocomplete="off" />
+        <!-- Vehicle info -->
+        <div class="space-y-4">
+          <SectionHeader>Vehicle info</SectionHeader>
 
-            <FormInput placeholder="Model" name="model" type="text" data-cy="model" autocomplete="off" />
-          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormInput label="Make" placeholder="Porsche" name="make" type="text" data-cy="make" autocomplete="off" />
 
-          <!-- Year and Odometer Type -->
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <FormInput label="Model" placeholder="911" name="model" type="text" data-cy="model" autocomplete="off" />
+
             <FormInput
-              placeholder="Year"
+              label="Year"
+              placeholder="1997"
               type="number"
               name="year"
               autocomplete="off"
@@ -222,7 +227,14 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
               :max="new Date().getFullYear()"
               data-cy="year"
             />
+          </div>
+        </div>
 
+        <!-- Tracking setup -->
+        <div class="space-y-4">
+          <SectionHeader>Tracking</SectionHeader>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field v-slot="{ value, handleChange }" name="odometerType">
               <div>
                 <ResponsiveSelect
@@ -230,8 +242,10 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
                   :modelValue="value"
                   @update:model-value="handleChange"
                   :disabled="!isCreatingNew"
-                  placeholder="Odometer type"
-                  title="Odometer type"
+                  placeholder="Select unit"
+                  description="What unit does the odometer use?"
+                  title="Odometer unit"
+                  label="Odometer unit"
                   triggerClass="inputField"
                 />
                 <ErrorMessage
@@ -241,48 +255,11 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
                 />
               </div>
             </Field>
-          </div>
-        </div>
-
-        <!-- Vehicle legal information -->
-        <div class="space-y-4">
-          <div>
-            <h4 class="mb-2">Vehicle specific details</h4>
-            <Separator />
-          </div>
-
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <!-- VIN -->
-
-            <FormInput placeholder="VIN" toUpperCase name="vin" type="text" data-cy="vin" autocomplete="off" />
-
-            <!-- License Plate -->
 
             <FormInput
-              placeholder="License plate"
-              toUpperCase
-              name="licensePlate"
-              type="text"
-              autocomplete="off"
-              data-cy="license-plate"
-              :maxLength="10"
-            />
-          </div>
-        </div>
-
-        <!-- Technical details -->
-        <div class="space-y-4">
-          <div>
-            <h4 class="mb-2">Technical details</h4>
-            <Separator />
-          </div>
-
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <!-- Odometer -->
-
-            <FormInput
+              label="Current reading"
               :disabled="!isCreatingNew"
-              placeholder="Odometer"
+              placeholder="58000"
               name="odometer"
               type="number"
               autocomplete="off"
@@ -292,7 +269,6 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
               data-cy="odometer"
             />
 
-            <!-- Fuel Type -->
             <Field v-slot="{ value, handleChange }" name="fuelType">
               <div>
                 <ResponsiveSelect
@@ -300,8 +276,9 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
                   :modelValue="value"
                   @update:model-value="handleChange"
                   :disabled="!isCreatingNew"
-                  placeholder="Fuel type"
+                  placeholder="Select fuel"
                   title="Fuel type"
+                  label="Fuel type"
                   triggerClass="inputField"
                 />
                 <ErrorMessage name="fuelType" class="text-destructive mt-1 ml-1 text-sm" data-cy="fuel-type-error" />
@@ -309,9 +286,37 @@ watch([isModalOpen, editableVehicle], ([open, vehicle]) => {
             </Field>
           </div>
         </div>
+
+        <!-- Registration -->
+        <div class="space-y-4">
+          <SectionHeader>Registration</SectionHeader>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormInput
+              label="License plate"
+              placeholder="ABC-123"
+              toUpperCase
+              name="licensePlate"
+              type="text"
+              autocomplete="off"
+              data-cy="license-plate"
+              :maxLength="10"
+            />
+
+            <FormInput
+              label="VIN"
+              placeholder="17-character identifier"
+              toUpperCase
+              name="vin"
+              type="text"
+              data-cy="vin"
+              autocomplete="off"
+            />
+          </div>
+        </div>
       </form>
 
-      <DialogFooter>
+      <DialogFooter class="mt-4">
         <Button v-if="createPending" disabled variant="submit">
           <Spinner class="mr-2" />
           {{ isCreatingNew ? "Creating…" : "Updating…" }}
