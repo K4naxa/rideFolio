@@ -18,6 +18,7 @@ import { useUserPreferenceUpdate } from "@/lib/queries/user/user-mutations";
 
 import {
   consumptionUnits_distance,
+  consumptionUnits_hour,
   CURRENCIES,
   getConsumptionUnitNamekey,
   getCurrencyName,
@@ -44,7 +45,12 @@ const currencies = computed(() =>
   })),
 );
 
-const distanceUnits = consumptionUnits_distance.map((unit) => ({
+const distanceConsumptionUnits = consumptionUnits_distance.map((unit) => ({
+  value: unit.code,
+  label: getConsumptionUnitNamekey(unit.code),
+}));
+
+const hourlyConsumptionUnits = consumptionUnits_hour.map((unit) => ({
   value: unit.code,
   label: getConsumptionUnitNamekey(unit.code),
 }));
@@ -79,19 +85,34 @@ function skipOnboarding() {
               :modelValue="currentUser?.preferences.volumeUnit"
               @select="(v) => handlePreferenceChange('volumeUnit', v)"
               placeholder="Select unit"
-              title="Volume Unit"
+              title="Fuel volume unit"
+              description="Used when creating refills and effects consumption calculations"
               triggerClass="w-full"
             />
           </div>
 
           <div class="grid gap-2">
-            <Label>Distance Odometer</Label>
+            <Label>Distance consumption</Label>
             <ResponsiveSelect
-              :options="distanceUnits"
+              :options="distanceConsumptionUnits"
               :modelValue="currentUser?.preferences.consumptionUnitCode_distance"
               @select="(v) => handlePreferenceChange('consumptionUnitCode_distance', v)"
               placeholder="Select unit"
-              title="Distance Unit"
+              title="Distance consumption units"
+              description="Used to display consumption values inside the app"
+              triggerClass="w-full"
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <Label>Hourly consumption</Label>
+            <ResponsiveSelect
+              :options="hourlyConsumptionUnits"
+              :modelValue="currentUser?.preferences.consumptionUnitCode_hour"
+              @select="(v) => handlePreferenceChange('consumptionUnitCode_hour', v)"
+              placeholder="Select unit"
+              title="Hourly consumption units"
+              description="Used to display consumption values inside the app"
               triggerClass="w-full"
             />
           </div>
@@ -99,7 +120,9 @@ function skipOnboarding() {
       </div>
 
       <div class="space-y-4">
-        <h3 class="text-muted-foreground flex items-center gap-2 text-sm font-medium tracking-wide uppercase">Region</h3>
+        <h3 class="text-muted-foreground flex items-center gap-2 text-sm font-medium tracking-wide uppercase">
+          Region
+        </h3>
         <div class="grid gap-2">
           <Label>Currency</Label>
           <ResponsiveSelect
@@ -121,4 +144,3 @@ function skipOnboarding() {
     </CardFooter>
   </Card>
 </template>
-
