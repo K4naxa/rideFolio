@@ -47,6 +47,9 @@ function handleOpenChange(value: boolean) {
           <DialogTitle>
             <Icon v-if="icon" :name="icon" />
             {{ props.title }}
+            <div v-if="$slots.headerActions" class="ml-auto flex items-center gap-2">
+              <slot name="headerActions" />
+            </div>
           </DialogTitle>
           <DialogDescription v-if="props.description">
             {{ props.description }}
@@ -82,9 +85,12 @@ function handleOpenChange(value: boolean) {
                     {{ props.description }}
                   </DrawerDescription>
                 </div>
-                <Button variant="ghost" size="icon-sm" class="shrink-0" @click="handleOpenChange(false)">
-                  <Icon name="close" class="size-4" />
-                </Button>
+                <div class="flex shrink-0 items-center gap-1">
+                  <slot name="headerActions" />
+                  <Button variant="ghost" size="icon-sm" class="shrink-0" @click="handleOpenChange(false)">
+                    <Icon name="close" class="size-4" />
+                  </Button>
+                </div>
               </div>
             </DrawerHeader>
           </slot>
