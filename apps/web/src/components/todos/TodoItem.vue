@@ -30,7 +30,7 @@ const dueDateAgo = computed(() => (props.todo.dueDate?.date ? useTimeAgo(new Dat
 const odometerText = computed(() => {
   if (!props.todo.dueOdometer) return "";
   const { overdue, remaining, unit } = props.todo.dueOdometer;
-  return overdue ? `${remaining} ${unit} ago` : `in ${remaining} ${unit}`;
+  return overdue ? `${remaining ? Math.abs(remaining) : "N/A"} ${unit} ago` : `in ${remaining} ${unit}`;
 });
 </script>
 
