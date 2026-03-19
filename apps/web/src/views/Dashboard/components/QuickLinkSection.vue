@@ -18,10 +18,11 @@ import { useQuicklinkDelete } from "@/lib/queries/quicklinks/quicklink-mutation"
 import { getFaviconUrl } from "@/lib/utils";
 import { ExternalLinkIcon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
+import FetchError from "@/components/ui/FetchError.vue";
 
 const isEditing = ref(false);
 
-const { data: links, isPending: isLoading } = useQuicklinks();
+const { data: links, isPending: isLoading, isError, isFetching, refetch } = useQuicklinks();
 const { mutateAsync: deleteQuicklink } = useQuicklinkDelete();
 
 const modalStore = useModalStore();
@@ -64,6 +65,9 @@ async function handleDeleteQuicklink(id: string) {
       <template v-if="isLoading">
         <Skeleton v-for="n in 4" :key="n" class="h-8 w-28 rounded-md" />
       </template>
+
+      <!-- Error -->
+      <FetchError v-else-if="isError" title="Failed to load quick links" :refetch :isFetching class="border-0" />
 
       <!-- Quicklinks -->
       <Tooltip placement="top" v-else v-for="link in links" :key="link.id" :delay-duration="200">
