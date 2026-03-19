@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import FormVehicleSelect from "@/components/forms/FormVehicleSelect.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Checkbox from "@/components/ui/checkbox/Checkbox.vue";
@@ -12,7 +12,7 @@ import { useTodoCreate, useTodoUpdate } from "@/lib/queries/todos/todo-mutations
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useModalStore } from "@/stores/modal";
 import { TodoSchema } from "@repo/validation";
-import { ErrorMessage, Field, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import { useTodoById } from "@/lib/queries/todos/todo-queries";
@@ -114,17 +114,7 @@ const onSubmit = handleSubmit(async (values) => {
     key="TodoModal"
   >
     <form data-cy="create-todo-form" class="contents">
-      <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <div v-if="!currentVehicle">
-          <VehicleSelect
-            :value="value"
-            @valueChange="handleChange"
-            placeholder="Select a vehicle"
-            data-cy="vehicle-select"
-          />
-          <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
-        </div>
-      </Field>
+      <FormVehicleSelect v-if="!currentVehicle" name="vehicleId" placeholder="Select a vehicle" label="Vehicle" />
 
       <FormInput
         name="title"

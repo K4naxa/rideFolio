@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import FormVehicleSelect from "@/components/forms/FormVehicleSelect.vue";
 
-import { ErrorMessage, Field, useForm } from "vee-validate";
+import { Field, useForm } from "vee-validate";
 import { type Note, NoteSchema, type NoteSchemaType } from "@repo/validation";
 import { computed, type HTMLAttributes, onUnmounted, ref, useSlots, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -187,12 +187,12 @@ watch(
       />
 
       <!-- Vehicle Selection -->
-      <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <div v-if="isNew && !currentVehicleId">
-          <VehicleSelect :value="value" @valueChange="handleChange" placeholder="Select a vehicle" />
-          <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" />
-        </div>
-      </Field>
+      <FormVehicleSelect
+        v-if="isNew && !currentVehicleId"
+        name="vehicleId"
+        placeholder="Select a vehicle"
+        label="Vehicle"
+      />
 
       <!-- Editor -->
       <div class="flex min-h-0 min-w-0 flex-1 flex-col">

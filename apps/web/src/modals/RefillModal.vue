@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import VehicleSelect from "@/components/forms/VehicleSelect.vue";
+import FormVehicleSelect from "@/components/forms/FormVehicleSelect.vue";
 import ResponsiveFormDialog from "@/components/forms/ResponsiveFormDialog.vue";
 import { useModalStore } from "@/stores/modal";
 import { RefillSchema } from "@repo/validation";
-import { ErrorMessage, Field, useForm } from "vee-validate";
+import { Field, useForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import Switch from "@/components/ui/switch/Switch.vue";
@@ -136,16 +136,7 @@ const odometerPlaceholder = computed(() => {
       <FormError :message="formError" />
 
       <!-- Vehicle -->
-      <Field v-slot="{ value, handleChange }" name="vehicleId">
-        <VehicleSelect
-          :value="value"
-          @valueChange="handleChange"
-          placeholder="Select a vehicle"
-          data-cy="vehicle-select"
-          :description="'Select from vehicles you have access to.'"
-        />
-        <ErrorMessage name="vehicleId" class="text-destructive mt-1 ml-2 text-sm" data-cy="vehicle-error" />
-      </Field>
+      <FormVehicleSelect name="vehicleId" placeholder="Select a vehicle" label="Vehicle" />
 
       <!-- Date & Odometer -->
       <div class="gaps-md grid sm:grid-cols-2">
