@@ -13,6 +13,7 @@ import Label from "@/components/ui/label/Label.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useVehicleConsumptionChart } from "@/lib/queries/vehicles/vehicle-queries";
 import Icon from "@/components/icons/Icon.vue";
+import FetchError from "@/components/ui/FetchError.vue";
 import { EllipsisVerticalIcon } from "lucide-vue-next";
 import Button from "@/components/ui/button/Button.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
@@ -44,6 +45,8 @@ const {
   isLoading,
   isPlaceholderData,
   isError,
+  isFetching,
+  refetch,
 } = useVehicleConsumptionChart(currentVehicleId, timeRange);
 
 // Chart options
@@ -220,9 +223,13 @@ onClickOutside(chartContainer, () => {
 
     <!-- Chart -->
     <div class="relative flex h-full w-full flex-1" ref="chartContainer">
-      <div v-if="isError" class="bg-background/70 absolute inset-0 grid place-items-center">
-        <p class="text-destructive m-auto text-center">Error loading consumption data.</p>
-      </div>
+      <FetchError
+        v-if="isError"
+        title="Failed to load consumption data"
+        :refetch
+        :isFetching
+        class="absolute inset-0 z-10 bg-background/80"
+      />
       <div
         v-if="isLoading || isPlaceholderData"
         class="bg-card/30 absolute bottom-0 left-0 z-10 grid h-full w-full place-items-center"
