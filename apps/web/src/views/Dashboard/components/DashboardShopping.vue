@@ -3,18 +3,20 @@ import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import FetchError from "@/components/ui/FetchError.vue";
 import { useShoppingAll } from "@/lib/queries/shopping/shopping-queries";
 import { useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser";
 import { useModalStore } from "@/stores/modal";
 import { computed, ref } from "vue";
 import DashboardSection from "./DashboardSection.vue";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const modalStore = useModalStore();
 const { preferredCurrencySymbol: cu } = useCurrentUser();
 const initialRenderTime = ref(Date.now());
 
-const { data: shoppingList, isLoading, isError } = useShoppingAll({ enabled: true });
+const { data: shoppingList, isLoading, isError, isFetching, refetch } = useShoppingAll();
 const { mutate: toggleItem } = useShoppingToggle();
 
 const displayedItems = computed(() =>
@@ -39,15 +41,15 @@ const MAX_ITEMS = 8;
       <div v-if="isLoading" class="grid h-32 place-items-center">
         <Spinner class="text-muted-foreground size-8" />
       </div>
-      <div v-else-if="isError" class="grid h-32 place-items-center">
-        <span class="text-destructive text-sm">Failed to load shopping list.</span>
-      </div>
-      <div v-else-if="!displayedItems || displayedItems.length === 0" class="grid h-32 place-items-center text-center">
-        <div class="space-y-1">
-          <p class="text-muted-foreground text-sm">Shopping list is empty</p>
-          <p class="text-muted-foreground/70 text-xs">Add items you need for your vehicles.</p>
-        </div>
-      </div>
+      <FetchError v-else-if="isError" title="Failed to load shopping list" :refetch :isFetching />
+
+      <Empty v-else-if="!displayedItems || displayedItems.length === 0" class="card">
+        <EmptyHeader>
+          <EmptyTitle>Shopping list is empty</EmptyTitle>
+          <EmptyDescription> Add items you need for your vehicles.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+
       <ul v-else class="card divide-y overflow-x-hidden">
         <li
           v-for="item in displayedItems.slice(0, MAX_ITEMS)"
