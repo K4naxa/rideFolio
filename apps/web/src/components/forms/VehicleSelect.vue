@@ -68,21 +68,14 @@ function handleSelect(value: string) {
         <button
           v-if="selectedVehicle"
           type="button"
-          :class="twMerge('inputField h-fit w-full bg-transparent! p-0!', props.triggerClass)"
+          :class="
+            twMerge('bg-input flex h-fit w-full items-center justify-between rounded border p-0!', props.triggerClass)
+          "
         >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
         </button>
-        <button
-          v-else
-          type="button"
-          :class="
-            twMerge(
-              'inputField flex h-fit w-full items-center justify-between border bg-transparent',
-              props.triggerClass,
-            )
-          "
-        >
+        <button v-else type="button" :class="twMerge('inputField justify-between', props.triggerClass)">
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
         </button>
@@ -124,21 +117,14 @@ function handleSelect(value: string) {
         <button
           v-if="selectedVehicle"
           type="button"
-          :class="twMerge('inputField h-fit w-full bg-transparent! p-0!', props.triggerClass)"
+          :class="
+            twMerge('bg-input flex h-fit w-full items-center justify-between rounded border p-0!', props.triggerClass)
+          "
         >
           <VehicleItem :vehicle="selectedVehicle.vehicleData" variant="small" />
           <Icon name="chevronDown" class="text-muted-foreground mr-2" />
         </button>
-        <button
-          v-else
-          type="button"
-          :class="
-            twMerge(
-              'inputField flex h-fit w-full items-center justify-between border bg-transparent',
-              props.triggerClass,
-            )
-          "
-        >
+        <button v-else type="button" :class="twMerge('inputField justify-between', props.triggerClass)">
           <span class="text-muted-foreground py-2">{{ placeholder }}</span>
           <Icon name="chevronDown" class="text-muted-foreground" />
         </button>
