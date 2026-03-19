@@ -72,7 +72,7 @@ function handleOpenChange(value: boolean) {
     <Drawer :open="props.open" @update:open="handleOpenChange">
       <DrawerContent dismiss-from-pill>
         <!-- Scrollable body -->
-        <div class="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto overscroll-contain">
+        <div class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain">
           <slot name="mobileHeader">
             <DrawerHeader class="-px-4 border-b text-left">
               <div class="flex items-start justify-between gap-2">
