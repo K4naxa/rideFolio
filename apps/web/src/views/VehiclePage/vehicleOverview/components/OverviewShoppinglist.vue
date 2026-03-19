@@ -3,12 +3,14 @@ import Icon from "@/components/icons/Icon.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import FetchError from "@/components/ui/FetchError.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
 import { useVehicleShopping } from "@/lib/queries/shopping/shopping-queries";
 import { computed, ref } from "vue";
 import { useCurrentUser } from "@/lib/composables/useCurrentUser.ts";
 import { useModalStore } from "@/stores/modal.ts";
 import { useShoppingToggle } from "@/lib/queries/shopping/shopping-mutations.ts";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const { currentVehicleId } = useCurrentVehicle();
 const { preferredCurrencySymbol: cu } = useCurrentUser();
@@ -21,6 +23,8 @@ const {
   data: shoppingList,
   isLoading: isShoppingLoading,
   isError: isShoppingError,
+  isFetching,
+  refetch,
 } = useVehicleShopping(currentVehicleId);
 const { mutate: toggleItem } = useShoppingToggle();
 
@@ -52,9 +56,14 @@ const displayedItems = computed(() =>
       <div v-if="isShoppingLoading" class="grid flex-1 place-items-center">
         <Spinner class="text-muted-foreground size-10" />
       </div>
-      <div v-else-if="isShoppingError" class="grid flex-1 place-items-center">
-        <span class="text-destructive">Error loading shopping list.</span>
-      </div>
+      <FetchError v-else-if="isShoppingError" title="Failed to load shopping list" :refetch :isFetching />
+
+      <Empty v-else-if="!displayedItems || displayedItems.length === 0" class="card">
+        <EmptyHeader>
+          <EmptyTitle>Shopping list is empty</EmptyTitle>
+          <EmptyDescription>Add items you need for this vehicle.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
 
       <ul v-else class="card divide-y overflow-x-hidden">
         <li

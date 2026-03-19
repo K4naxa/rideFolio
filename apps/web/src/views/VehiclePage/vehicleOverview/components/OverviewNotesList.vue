@@ -3,8 +3,8 @@ import Icon from "@/components/icons/Icon.vue";
 import NoteItem from "@/components/notes/NoteItem.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Empty from "@/components/ui/empty/Empty.vue";
-
 import EmptyDescription from "@/components/ui/empty/EmptyDescription.vue";
+import FetchError from "@/components/ui/FetchError.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useCurrentVehicle } from "@/lib/composables/useCurrentVehicle";
@@ -12,10 +12,17 @@ import { useVehicleNotes } from "@/lib/queries/notes/note-queries";
 import { useModalStore } from "@/stores/modal";
 import type { Note } from "@repo/validation";
 import { RouterLink } from "vue-router";
+import { EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const { currentVehicleId } = useCurrentVehicle();
 
-const { data: notes, isLoading: isNotesLoading, isError: isNotesError } = useVehicleNotes(currentVehicleId);
+const {
+  data: notes,
+  isLoading: isNotesLoading,
+  isError: isNotesError,
+  isFetching,
+  refetch,
+} = useVehicleNotes(currentVehicleId);
 function handleNoteClick(note: Note) {
   modalStore.onOpen("createNote", note.id);
 }
@@ -35,11 +42,12 @@ const modalStore = useModalStore();
       <div v-if="isNotesLoading" class="grid flex-1 place-items-center">
         <Spinner class="text-muted-foreground size-10" />
       </div>
-      <div v-else-if="isNotesError" class="grid flex-1 place-items-center">
-        <span class="text-destructive">Error loading notes.</span>
-      </div>
-      <Empty v-else-if="notes && notes.length === 0">
-        <EmptyDescription class=""> You have no notes for this vehicle. </EmptyDescription>
+      <FetchError v-else-if="isNotesError" title="Failed to load notes" :refetch :isFetching />
+      <Empty v-else-if="!notes || notes.length === 0" class="card">
+        <EmptyHeader>
+          <EmptyTitle> No notes yet </EmptyTitle>
+          <EmptyDescription> Jot down something about your vehicles. </EmptyDescription>
+        </EmptyHeader>
       </Empty>
       <ul class="gaps-md grid w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <NoteItem v-for="note in notes?.slice(0, 4)" :key="note.id" :note="note" @note-click="handleNoteClick" />

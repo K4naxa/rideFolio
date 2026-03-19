@@ -10,6 +10,8 @@ import ScrollableNav from "@/components/ui/ScrollableNav.vue";
 import TodoInteractive from "@/components/todos/TodoInteractive.vue";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/lib/composables/useMediaQuery.ts";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import FetchError from "@/components/ui/FetchError.vue";
 
 const { currentVehicleId } = useCurrentVehicle();
 const modalStore = useModalStore();
@@ -17,7 +19,13 @@ const modalStore = useModalStore();
 // used for showing completed todos that have been toggled in this render
 const initialRenderTime = ref(Date.now());
 
-const { data: todos, isLoading: isTodosLoading, isError: isTodosError } = useVehicleTodos(currentVehicleId);
+const {
+  data: todos,
+  isLoading: isTodosLoading,
+  isError: isTodosError,
+  isFetching,
+  refetch,
+} = useVehicleTodos(currentVehicleId);
 
 // Filter the list to show uncompleted todos and recently completed todos (toggled after initial render)
 const displayedTodos = computed(
@@ -38,16 +46,22 @@ const isMobile = useIsMobile();
       <Button variant="ghost" size="icon-sm" @click="modalStore.onOpen('createTodo')"><Icon name="plus" /></Button>
     </div>
 
-    <ScrollableNav v-if="isMobile">
+    <div v-if="isTodosLoading" class="grid flex-1 place-items-center">
+      <Spinner class="text-muted-foreground size-10" />
+    </div>
+
+    <FetchError v-else-if="isTodosError" title="Failed to load to-dos" :refetch :isFetching />
+
+    <Empty v-else-if="displayedTodos.length === 0" class="card">
+      <EmptyHeader>
+        <EmptyTitle>No pending to-dos</EmptyTitle>
+        <EmptyDescription>Create one to start tracking tasks.</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+
+    <ScrollableNav v-else-if="isMobile">
       <div class="scrollbar-macos flex overflow-y-auto py-2 lg:h-full">
-        <div v-if="isTodosLoading" class="grid flex-1 place-items-center">
-          <Spinner class="text-muted-foreground size-10" />
-        </div>
-        <div v-else-if="isTodosError" class="grid flex-1 place-items-center">
-          <span class="text-destructive">Error loading todos.</span>
-        </div>
         <ul
-          v-else
           class="gaps-sm grid w-full grid-flow-col flex-col overflow-auto pb-2 md:flex"
           :style="{ gridTemplateRows: `repeat(${Math.min(displayedTodos.length, 3)}, minmax(0, 1fr))` }"
         >
@@ -57,14 +71,7 @@ const isMobile = useIsMobile();
     </ScrollableNav>
 
     <div v-else class="scrollbar-macos flex overflow-y-auto py-2 lg:h-full">
-      <div v-if="isTodosLoading" class="grid flex-1 place-items-center">
-        <Spinner class="text-muted-foreground size-10" />
-      </div>
-      <div v-else-if="isTodosError" class="grid flex-1 place-items-center">
-        <span class="text-destructive">Error loading todos.</span>
-      </div>
       <ul
-        v-else
         class="grid w-full grid-flow-col flex-col gap-2 pb-2 md:flex"
         :style="{ gridTemplateRows: `repeat(${Math.min(displayedTodos.length, 3)}, minmax(0, 1fr))` }"
       >
